@@ -3,6 +3,8 @@ package com.servoy.mobile.client.util;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.google.gwt.core.client.GWT;
+
 /*
 This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
 
@@ -139,6 +141,31 @@ public class Utils
 		return getAsLong(o.toString());
 	}
 	
+	public static int[] splitAsIntegers(String d)
+	{
+		if (d == null) return null;
+
+		try
+		{
+			String tk[] = d.split(",");
+			if(tk != null)
+			{
+				int[] splitIntegers = new int[tk.length];
+				for(int i = 0; i < tk.length; i++)
+				{
+					splitIntegers[i] = Utils.getAsInteger(tk[i]);
+				}
+				return splitIntegers;
+			}
+		}
+		catch (Exception ex)
+		{
+			GWT.log("Error during splitAsIntegers", ex);
+		}
+		
+		return null;
+	}	
+
 	private static final char[] CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray(); 
 	public static String createStringUUID() 
 	{

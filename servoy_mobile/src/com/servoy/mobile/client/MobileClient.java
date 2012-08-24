@@ -21,10 +21,13 @@ import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Response;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.user.client.Window;
 import com.servoy.mobile.client.dataprocessing.FoundSetManager;
 import com.servoy.mobile.client.dataprocessing.OfflineDataProxy;
 import com.servoy.mobile.client.dto.ValueListDescription;
+import com.servoy.mobile.client.solutionmodel.JSSolutionModel;
 import com.servoy.mobile.client.util.Failure;
 import com.sksamuel.jqm4gwt.Mobile;
 
@@ -40,6 +43,7 @@ public abstract class MobileClient implements EntryPoint
 	private FoundSetManager foundSetManager;
 	private OfflineDataProxy offlineDataProxy;
 	private FormManager formManager;
+	private JSSolutionModel solutionModel;
 	
 	@Override
 	public void onModuleLoad() 
@@ -48,6 +52,7 @@ public abstract class MobileClient implements EntryPoint
 		foundSetManager = new FoundSetManager(this);
 		offlineDataProxy = new OfflineDataProxy(foundSetManager,getServerURL());
 		formManager = createFormManager();
+		solutionModel = createJSSolutionModel(null);
 		
 		if (!foundSetManager.hasContent() && isOnline())
 		{
@@ -64,6 +69,17 @@ public abstract class MobileClient implements EntryPoint
 	protected abstract String getServerURL();
 
 	protected abstract String getSolutionName();
+	
+	protected JSSolutionModel createJSSolutionModel(String formsJSON)
+	{
+		if(formsJSON != null)
+		{
+			JSONArray forms = JSONParser.parseStrict(formsJSON).isArray();
+			if(forms != null) return (JSSolutionModel)forms.getJavaScriptObject().cast(); 
+		}
+
+		return null; 
+	}
 
 	public void sync() 
 	{
@@ -169,6 +185,11 @@ public abstract class MobileClient implements EntryPoint
 	public FoundSetManager getFoundSetManager() 
 	{
 		return foundSetManager;
+	}
+	
+	public JSSolutionModel getSolutionModel()
+	{
+		return solutionModel;
 	}
 	
 	public void showFirstForm()
