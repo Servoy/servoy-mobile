@@ -64,6 +64,10 @@ public class FoundSet
 		return retval;
 	}
 	
+	public FoundSetManager getFoundSetManager() {
+		return foundSetManager;
+	}
+	
 	public int getSize()
 	{
 		return foundSetDescription.getRecords().length();

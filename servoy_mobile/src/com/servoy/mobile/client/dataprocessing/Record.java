@@ -19,9 +19,14 @@ Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
+import com.servoy.mobile.client.dto.DataProviderDescription;
+import com.servoy.mobile.client.dto.EntityDescription;
 import com.servoy.mobile.client.dto.RecordDescription;
+import com.servoy.mobile.client.dto.RelationDescription;
 import com.servoy.mobile.client.dto.RowDescription;
 import com.servoy.mobile.client.scripting.Scope;
 
@@ -42,6 +47,7 @@ public class Record extends Scope
 		parent = p;
 		recordDescription = rd;
 		relatedFoundSets = new HashMap<String,FoundSet>();
+		exportColumns();
 	}
 	
 	//new record
@@ -49,8 +55,6 @@ public class Record extends Scope
 	{
 		this(foundSet,rd);
 		rowDescription = rowd;
-		
-		// TODO export all 
 	}
 
 	public Object getPK()
@@ -135,13 +139,29 @@ public class Record extends Scope
 
 	@Override
 	public void setVariableType(String variable, int type) {
-		// TODO Auto-generated method stub
-		
 	}
 
+	private final Map<String,Integer> variableTypes = new HashMap<String, Integer>(); 
 	@Override
 	public int getVariableType(String variable) {
-		// TODO Auto-generated method stub
-		return 0;
+		Integer type = variableTypes.get(variable);
+		if (type != null) return type.intValue();
+		return -4; // IColumnTypes.MEDIA;
+	}
+	
+	private void exportColumns() {
+		EntityDescription entityDescription = parent.getFoundSetManager().getEntityDescription(parent.getEntityName());
+		// export all dataproviders
+		JsArray<DataProviderDescription> dataProviders = entityDescription.getDataProviders();
+		for (int i = 0; i < dataProviders.length(); i++) {
+			DataProviderDescription dp = dataProviders.get(i);
+			variableTypes.put(dp.getName(), dp.getType());
+			exportProperty(dp.getName());
+		}
+		JsArray<RelationDescription> primaryRelations = entityDescription.getPrimaryRelations();
+		// export all relations
+		for (int i = 0; i < primaryRelations.length(); i++) {
+			exportProperty(primaryRelations.get(i).getName());
+		}
 	}
 }

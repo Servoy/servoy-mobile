@@ -224,7 +224,7 @@ public class FoundSetManager
 		return null;
 	}
 	
-	private EntityDescription getEntityDescription(String entityName)
+	EntityDescription getEntityDescription(String entityName)
 	{
 		if (entities == null) return null;
 		for (int i = 0; i < entities.length(); i++) 
