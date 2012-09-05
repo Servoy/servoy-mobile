@@ -17,6 +17,8 @@ with this program; if not, see http://www.gnu.org/licenses or write to the Free
 Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
 */
 
+import java.util.HashMap;
+
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -28,6 +30,8 @@ import com.servoy.mobile.client.dataprocessing.FoundSetManager;
 import com.servoy.mobile.client.dataprocessing.OfflineDataProxy;
 import com.servoy.mobile.client.dto.ValueListDescription;
 import com.servoy.mobile.client.solutionmodel.JSSolutionModel;
+import com.servoy.mobile.client.scripting.GlobalScope;
+import com.servoy.mobile.client.scripting.Scope;
 import com.servoy.mobile.client.util.Failure;
 import com.sksamuel.jqm4gwt.Mobile;
 
@@ -35,11 +39,11 @@ import com.sksamuel.jqm4gwt.Mobile;
  * The main mobile client entry point
  * @author jblok
  */
-public abstract class MobileClient implements EntryPoint 
+public class MobileClient implements EntryPoint 
 {
 	protected I18NMessages messages = (I18NMessages) GWT.create(I18NMessages.class);
 
-	private Scope globalScope;
+	private final HashMap<String, GlobalScope> scopes = new HashMap<String, GlobalScope>();
 	private FoundSetManager foundSetManager;
 	private OfflineDataProxy offlineDataProxy;
 	private FormManager formManager;
@@ -48,11 +52,11 @@ public abstract class MobileClient implements EntryPoint
 	@Override
 	public void onModuleLoad() 
 	{
-		globalScope = new Scope();
 		foundSetManager = new FoundSetManager(this);
 		offlineDataProxy = new OfflineDataProxy(foundSetManager,getServerURL());
-		formManager = createFormManager();
-		solutionModel = createJSSolutionModel(null);
+		formManager = new FormManager(this);
+		solutionModel = createJSSolutionModel();
+		export();
 		
 		if (!foundSetManager.hasContent() && isOnline())
 		{
@@ -64,22 +68,21 @@ public abstract class MobileClient implements EntryPoint
 		}
 	}
 	
-	protected abstract FormManager createFormManager();
-	
-	protected abstract String getServerURL();
-
-	protected abstract String getSolutionName();
-	
-	protected JSSolutionModel createJSSolutionModel(String formsJSON)
-	{
-		if(formsJSON != null)
-		{
-			JSONArray forms = JSONParser.parseStrict(formsJSON).isArray();
-			if(forms != null) return (JSSolutionModel)forms.getJavaScriptObject().cast(); 
-		}
-
-		return null; 
+	protected String getServerURL() {
+		// TODO hardcoded for host itself.
+		String hostPageBaseURL = GWT.getHostPageBaseURL();
+		return hostPageBaseURL.substring(0,hostPageBaseURL.length()-1);
 	}
+
+	protected String getSolutionName() {
+		// TODO hardcoded to "test"
+		return "test";
+	}
+
+	protected native JSSolutionModel createJSSolutionModel() /*-{
+	    // Get a reference to the first customer in the JSON array from earlier
+	    return $wnd._solutiondata_; 
+	  }-*/;
 
 	public void sync() 
 	{
@@ -207,11 +210,6 @@ public abstract class MobileClient implements EntryPoint
 		offlineDataProxy.setLoginCredentials(identifier,password);
 	}
 
-	public Scope getGlobalScope()
-	{
-		return globalScope;
-	}
-	
 	//check to see if currently connected to IP network
 	private final native boolean isOnline()/*-{ 
 		try
@@ -234,4 +232,52 @@ public abstract class MobileClient implements EntryPoint
 	{
 		return foundSetManager.getValueListItems(valueListName);
 	}
+	
+	public Scope getGlobalScope()
+	{
+		return getGlobalScope("globals");
+	}
+	
+	public GlobalScope getGlobalScope(String name) {
+		GlobalScope scope = scopes.get(name);
+		if (scope == null) {
+			scope = new GlobalScope(name);
+			scopes.put(name, scope);
+		}
+		return scope;
+	}
+
+	private native void export()/*-{
+		$wnd._ServoyUtils_.application = this;
+		$wnd._ServoyUtils_.getGlobalScope = function(name) {
+			 return $wnd._ServoyUtils_.application.@com.servoy.mobile.client.MobileClient::getGlobalScope(Ljava/lang/String;)(name);
+		}
+		$wnd._ServoyUtils_.setScopeVariableType = function(scope,name,type) {
+			 return scope.@com.servoy.mobile.client.scripting.Scope::setVariableType(Ljava/lang/String;I)(name,type);
+		}
+		$wnd._ServoyUtils_.getScopeVariable = function(scope,name) {
+			 var type =  scope.@com.servoy.mobile.client.scripting.Scope::getVariableType(Ljava/lang/String;)(name);
+			 if (type == 8 || type == 4) {
+			 	var value = scope.@com.servoy.mobile.client.scripting.Scope::getVariableNumberValue(Ljava/lang/String;)(name);
+			 	return isNaN(value)?null:value;
+			 }
+			 else if (type == 93) {
+			 	return scope.@com.servoy.mobile.client.scripting.Scope::getVariableDateValue(Ljava/lang/String;)(name);
+			 }
+			 return scope.@com.servoy.mobile.client.scripting.Scope::getVariableValue(Ljava/lang/String;)(name);
+		}
+		$wnd._ServoyUtils_.setScopeVariable = function(scope,name,value) {
+			 var type =  scope.@com.servoy.mobile.client.scripting.Scope::getVariableType(Ljava/lang/String;)(name);
+			 if (typeof value == "number" || type == 8 || type == 4) {
+			 	scope.@com.servoy.mobile.client.scripting.Scope::setVariableNumberValue(Ljava/lang/String;D)(name,value);
+			 }
+			 else if (type == 93) {
+			 	scope.@com.servoy.mobile.client.scripting.Scope::setVariableDateValue(Ljava/lang/String;Lcom/google/gwt/core/client/JsDate;)(name,value);
+			 }
+			 else {
+			 	scope.@com.servoy.mobile.client.scripting.Scope::setVariableValue(Ljava/lang/String;Ljava/lang/Object;)(name,value);
+			 }
+		}
+		$wnd._ServoyInit_.init();
+	}-*/;
 }

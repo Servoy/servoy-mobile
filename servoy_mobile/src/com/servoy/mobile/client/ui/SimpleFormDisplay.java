@@ -17,8 +17,8 @@ with this program; if not, see http://www.gnu.org/licenses or write to the Free
 Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
 */
 
+import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.solutionmodel.JSForm;
-import com.servoy.mobile.client.solutionmodel.JSSolutionModel;
 
 /**
  * Basic form display
@@ -29,9 +29,9 @@ public class SimpleFormDisplay implements IFormDisplay
 {
 	private FormPage formPage;
 	
-	public SimpleFormDisplay(JSSolutionModel solutionModel, JSForm form)
+	public SimpleFormDisplay(MobileClient application, JSForm form)
 	{
-		formPage = new FormPage(solutionModel, form);
+		formPage = new FormPage(application, form);
 	}
 	
 	@Override

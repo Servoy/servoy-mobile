@@ -23,6 +23,8 @@ import java.util.HashMap;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.user.client.ui.Widget;
+import com.servoy.mobile.client.MobileClient;
+import com.servoy.mobile.client.scripting.FormScope;
 import com.servoy.mobile.client.solutionmodel.JSComponent;
 import com.servoy.mobile.client.solutionmodel.JSField;
 import com.servoy.mobile.client.solutionmodel.JSForm;
@@ -42,11 +44,14 @@ import com.sksamuel.jqm4gwt.toolbar.JQMToolBarButton;
  */
 public class FormPage extends JQMPage
 {
-	protected JSSolutionModel solutionModel;
+	protected MobileClient application;
+	private JSForm form;
+	private FormScope formScope;
 	
-	public FormPage(JSSolutionModel solutionModel, JSForm form)
+	public FormPage(MobileClient application, JSForm form)
 	{
-		this.solutionModel = solutionModel;
+		this.application = application;
+		this.form = form;
 		
 		JsArray<JSComponent> formComponents = form.getComponents();
 		
@@ -118,12 +123,20 @@ public class FormPage extends JQMPage
 		}		
 
 		if(text == null) text = "";
-		return new JQMHeader(text, leftToolbarButton, rightToolbarButton);
-
+		JQMHeader header = new JQMHeader(text);
+		
+		if (leftToolbarButton != null) {
+			header.setLeftButton(leftToolbarButton);
+		}
+		else if (rightToolbarButton != null) {
+			header.setLeftButton(rightToolbarButton);
+		}
+		return header;
 	}
 
 	public void createContent(ArrayList<JSComponent> contentComponents)
 	{
+		JSSolutionModel solutionModel = application.getSolutionModel();
 		Collections.sort(contentComponents, PositionComparator.YX_COMPARATOR);
 		HashMap<String, JQMFieldset> fieldsetMap = new HashMap<String, JQMFieldset>();
 		JSGraphicalComponent gc;
@@ -166,7 +179,14 @@ public class FormPage extends JQMPage
 	{
 		Collections.sort(footerComponents, PositionComparator.XY_COMPARATOR);
 		JQMFooter footer = new JQMFooter();
-		for(JSComponent c : footerComponents) footer.add(ComponentFactory.createComponent(solutionModel, c));
+		for(JSComponent c : footerComponents) footer.add(ComponentFactory.createComponent(application.getSolutionModel(), c));
 		return footer;
+	}
+
+	public FormScope getFormScope() {
+		if (formScope == null) {
+			formScope = new FormScope(application, form);
+		}
+		return formScope;
 	}
 }

@@ -24,31 +24,26 @@ import com.google.gwt.core.client.JavaScriptObject;
  */
 public class JSSolutionModel extends JavaScriptObject
 {
-	public static final int FORM_SEARCH_BY_NAME = 0;
-	public static final int FORM_SEARCH_BY_UUID = 1;
-	
 	protected JSSolutionModel() {}
 
 	public final native int length() /*-{ return this.length; }-*/;
 	public final native JSForm get(int i) /*-{ return this[i];     }-*/;
 	
-	public final JSForm getForm(int searchMode, String searchValue)
+	public final JSForm getForm(String name)
 	{
-		JSForm form;
 		for(int i = 0; i < length(); i++)
 		{
-			form = get(i);
-			switch(searchMode)
-			{
-				case FORM_SEARCH_BY_NAME:
-					if(form.getName().equals(searchValue)) return form;
-					break;
-				case FORM_SEARCH_BY_UUID:
-					if(form.getUUID().equals(searchValue)) return form;
-					break;
-			}
+			if(get(i).getName().equals(name)) return get(i);
 		}
-		
+		return null;
+	}
+	
+	public final JSForm getFormByUUID(String uuid)
+	{
+		for(int i = 0; i < length(); i++)
+		{
+			if(get(i).getUUID().equals(uuid)) return get(i);
+		}
 		return null;
 	}
 }

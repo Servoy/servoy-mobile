@@ -21,6 +21,9 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
+import com.servoy.mobile.client.scripting.FormScope;
+import com.servoy.mobile.client.solutionmodel.JSForm;
+import com.servoy.mobile.client.ui.FormPage;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.JQMPage;
 
@@ -28,38 +31,58 @@ import com.sksamuel.jqm4gwt.JQMPage;
  * The main form manager, should be subclassed
  * @author jblok
  */
-public abstract class FormManager 
+public class FormManager 
 {
 	protected MobileClient application;
-	protected LinkedHashMap<String, JQMPage> pageMap = new LinkedHashMap<String, JQMPage>();
+	protected LinkedHashMap<String, FormPage> pageMap = new LinkedHashMap<String, FormPage>();
 	protected History history = new History();
 	
 	protected FormManager(MobileClient mc)
 	{
 		this.application = mc;
+		export();
 	}
 	
-	protected abstract JQMPage getFirstForm();
-
-	protected abstract JQMPage getLoginForm();
-
-	public abstract void showForm(String formName, Object data); 
-
-	protected JQMPage getForm(String id) 
-	{
-		return pageMap.get(id);
+	protected FormPage getFirstForm() {
+		JSForm jsForm = application.getSolutionModel().get(0);
+		return getForm(jsForm.getName());
 	}
-	protected void showForm(String id, JQMPage page) 
+
+	protected FormPage getLoginForm() {
+		// TODO impl
+		return null;
+	}
+
+	public void showForm(String formName, Object data) {
+		
+		FormPage form = getForm(formName);
+		if (form != null) {
+			JQMContext.changePage(form);
+		}
+		
+	}
+
+	protected FormPage getForm(String name) 
+	{
+		FormPage formPage = pageMap.get(name);
+		if (formPage == null) {
+			JSForm form = application.getSolutionModel().getForm(name);
+			formPage = new FormPage(application, form);
+			pageMap.put(name, formPage);
+		}
+		return formPage;
+	}
+	protected void showForm(String id, FormPage page) 
 	{
 		if (!pageMap.containsKey(id))
 		{
 			pageMap.put(id,page);
 			if (pageMap.size() > 16)
 			{
-				Iterator<Entry<String,JQMPage>> it = pageMap.entrySet().iterator();
-				Entry<String,JQMPage> entry = it.next();
+				Iterator<Entry<String,FormPage>> it = pageMap.entrySet().iterator();
+				Entry<String,FormPage> entry = it.next();
 				it.remove(); //remove first/oldest entry
-				JQMPage oldPage = entry.getValue();
+				FormPage oldPage = entry.getValue();
 				removePage(oldPage);
 			}
 		}
@@ -90,13 +113,13 @@ public abstract class FormManager
 
 	void removeAllForms() 
 	{
-		Iterator<JQMPage> it = pageMap.values().iterator();
+		Iterator<FormPage> it = pageMap.values().iterator();
 		while (it.hasNext()) 
 		{
 			JQMPage oldPage = it.next();
 			removePage(oldPage);
 		}
-		pageMap = new LinkedHashMap<String, JQMPage>();
+		pageMap = new LinkedHashMap<String, FormPage>();
 	}
 
 	public void showFirstForm() 
@@ -108,4 +131,18 @@ public abstract class FormManager
 	{
 		JQMContext.changePage(getFirstForm());
 	}
+	
+	public FormScope getFormScope(String name) {
+		FormPage form = getForm(name);
+		if (form != null) {
+			return form.getFormScope();
+		}
+		return null;
+	}
+	
+	public native void export() /*-{
+			$wnd._ServoyUtils_.getFormScope = function(name) {
+			 return this.@com.servoy.mobile.client.FormManager::getFormScope(Ljava/lang/String;)(name);
+		}
+	}-*/;
 }

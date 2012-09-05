@@ -19,6 +19,7 @@ Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.user.client.ui.Widget;
+import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.solutionmodel.JSComponent;
 import com.servoy.mobile.client.solutionmodel.JSField;
 import com.servoy.mobile.client.solutionmodel.JSForm;
@@ -43,12 +44,12 @@ public class ComponentFactory
 	 * 
 	 * @return form display
 	 */
-	public static IFormDisplay createFormDisplay(JSSolutionModel solutionModel, JSForm form)
+	public static IFormDisplay createFormDisplay(MobileClient application, JSForm form)
 	{		
 		int viewType = form.getView();
 		if(viewType == JSForm.VIEW_TYPE_LIST || viewType == JSForm.VIEW_TYPE_LIST_LOCKED)
 		{
-			return new ListFormDisplay(solutionModel, form);
+			return new ListFormDisplay(application, form);
 		}
 		
 		JsArray<JSComponent> formComponents = form.getComponents();
@@ -61,11 +62,11 @@ public class ComponentFactory
 			mobileProperties = component.getMobileProperties();
 			if(mobileProperties != null && mobileProperties.isFormTabPanel() && (tabPanel = component.isTabPanel()) != null)
 			{
-				return new TabsFormDisplay(solutionModel, form, tabPanel);
+				return new TabsFormDisplay(application, form, tabPanel);
 			}
 		}
 		
-		return new SimpleFormDisplay(solutionModel, form);
+		return new SimpleFormDisplay(application, form);
 	}
 	
 	/**
@@ -107,14 +108,17 @@ public class ComponentFactory
 					case JSField.DISPLAY_TYPE_TEXT_AREA:
 						componentWidget = new DataTextArea(field);
 						break;
-					case JSField.DISPLAY_TYPE_CHECKS:
-						componentWidget = new DataCheckboxSet(field);
+					case JSField.DISPLAY_TYPE_COMBOBOX:
+						componentWidget = new DataSelect(field);
 						break;
 					case JSField.DISPLAY_TYPE_RADIOS:
 						componentWidget = new DataRadioSet(field);
 						break;
-					case JSField.DISPLAY_TYPE_COMBOBOX:
-						componentWidget = new DataSelect(field);
+					case JSField.DISPLAY_TYPE_CHECKS:
+						componentWidget = new DataCheckboxSet(field);
+						break;
+					case JSField.DISPLAY_TYPE_CALENDAR:
+						componentWidget = new DataTextField(field);
 						break;
 					case JSField.DISPLAY_TYPE_LIST_BOX:
 						componentWidget = new DataList(field);
@@ -136,7 +140,7 @@ public class ComponentFactory
 					
 					if(tabs.length() > 0)
 					{
-						componentWidget = new FormList(solutionModel.getForm(JSSolutionModel.FORM_SEARCH_BY_UUID, tabs.get(0).getContainsFormID()));
+						componentWidget = new FormList(solutionModel.getFormByUUID(tabs.get(0).getContainsFormID()));
 						sizeProperty = tabPanel.getSize();
 					}
 				}

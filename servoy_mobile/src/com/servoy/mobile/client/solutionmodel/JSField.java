@@ -37,6 +37,6 @@ public class JSField extends JSComponent
 	public final native String getDataProviderID() /*-{ return this.dataProviderID;	}-*/;
 	public final native String getSize() /*-{ return this.size;	}-*/;
 	public final native String getLocation() /*-{ return this.location;	}-*/;
-	public final native int getDisplayType() /*-{ return this.displayType;	}-*/;
+	public final native int getDisplayType() /*-{ return this.displayType?this.displayType:0;	}-*/;
 	public final native String getGroupID() /*-{ return this.groupID;	}-*/;
 }

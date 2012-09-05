@@ -19,6 +19,7 @@ Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
 
 import java.util.ArrayList;
 
+import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.solutionmodel.JSComponent;
 import com.servoy.mobile.client.solutionmodel.JSForm;
 import com.servoy.mobile.client.solutionmodel.JSSolutionModel;
@@ -32,9 +33,9 @@ public class ListFormDisplay implements IFormDisplay
 {
 	private ListFormPage listFormPage;
 	
-	public ListFormDisplay(JSSolutionModel solutionModel, JSForm form)
+	public ListFormDisplay(MobileClient application, JSForm form)
 	{
-		listFormPage = new ListFormPage(solutionModel, form);
+		listFormPage = new ListFormPage(application, form);
 	}
 	
 	@Override
@@ -46,9 +47,9 @@ public class ListFormDisplay implements IFormDisplay
 	class ListFormPage extends FormPage
 	{
 		private JSForm form;
-		public ListFormPage(JSSolutionModel solutionModel, JSForm form)
+		public ListFormPage(MobileClient application, JSForm form)
 		{
-			super(solutionModel, form);
+			super(application, form);
 			this.form = form;
 		}
 		

@@ -23,6 +23,7 @@ import java.util.HashMap;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.solutionmodel.JSComponent;
 import com.servoy.mobile.client.solutionmodel.JSForm;
 import com.servoy.mobile.client.solutionmodel.JSSolutionModel;
@@ -43,13 +44,13 @@ public class TabsFormDisplay implements IFormDisplay
 {
 	private HashMap<String, TabFormPage> tabPages;
 	private String currentDisplayFormName;
-	private JSSolutionModel solutionModel;
+	private MobileClient application;
 	private JSTabPanel tabPanel;
 	private NavigationBar navigationBar;
 	
-	public TabsFormDisplay(JSSolutionModel solutionModel, JSForm form, JSTabPanel tabPanel)
+	public TabsFormDisplay(MobileClient application, JSForm form, JSTabPanel tabPanel)
 	{
-		this.solutionModel = solutionModel;
+		this.application = application;
 		this.tabPanel = tabPanel;
 	}
 	
@@ -80,12 +81,11 @@ public class TabsFormDisplay implements IFormDisplay
 		if(tabFormPage == null)
 		{
 			JsArray<JSTab> tabs = tabPanel.getTabs();
-			JSForm tabForm;
-
+			JSSolutionModel solutionModel = application.getSolutionModel();
 			for(int i = 0; i < tabs.length(); i++)
 			{
-				tabForm = solutionModel.getForm(JSSolutionModel.FORM_SEARCH_BY_UUID, tabs.get(i).getContainsFormID());
-				tabFormPage = new TabFormPage(solutionModel, tabForm);
+				JSForm tabForm = solutionModel.getFormByUUID(tabs.get(i).getContainsFormID());
+				tabFormPage = new TabFormPage(application, tabForm);
 				tabPages.put(formID, tabFormPage);
 			}	
 		}
@@ -94,9 +94,9 @@ public class TabsFormDisplay implements IFormDisplay
 	
 	class TabFormPage extends FormPage
 	{
-		public TabFormPage(JSSolutionModel solutionModel, JSForm form)
+		public TabFormPage(MobileClient application, JSForm form)
 		{
-			super(solutionModel, form);
+			super(application, form);
 		}
 		
 		@Override
@@ -140,14 +140,12 @@ public class TabsFormDisplay implements IFormDisplay
 		NavigationBar()
 		{
 			JsArray<JSTab> tabs = tabPanel.getTabs();
-			JSForm tabForm;
-			NavigationButton navButton;
-			String tabFormID;
+			JSSolutionModel solutionModel = application.getSolutionModel();
 			for(int i = 0; i < tabs.length(); i++)
 			{
-				tabFormID = tabs.get(i).getContainsFormID();
-				tabForm = solutionModel.getForm(JSSolutionModel.FORM_SEARCH_BY_UUID, tabFormID);
-				navButton = new NavigationButton(tabForm.getName(), tabFormID);
+				String tabFormID = tabs.get(i).getContainsFormID();
+				JSForm tabForm = solutionModel.getFormByUUID(tabFormID);
+				NavigationButton navButton = new NavigationButton(tabForm.getName(), tabFormID);
 				navButton.addClickHandler(navigationClickHandler);
 				navButtons.put(tabFormID, navButton);
 				add(navButton);

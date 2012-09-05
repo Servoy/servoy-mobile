@@ -23,12 +23,13 @@ import java.util.HashMap;
 import com.google.gwt.core.client.JsArrayString;
 import com.servoy.mobile.client.dto.RecordDescription;
 import com.servoy.mobile.client.dto.RowDescription;
+import com.servoy.mobile.client.scripting.Scope;
 
 /**
  * The mobile record
  * @author jblok
  */
-public class Record
+public class Record extends Scope
 {
 	protected FoundSet parent;
 	protected RecordDescription recordDescription;
@@ -48,6 +49,8 @@ public class Record
 	{
 		this(foundSet,rd);
 		rowDescription = rowd;
+		
+		// TODO export all 
 	}
 
 	public Object getPK()
@@ -128,5 +131,17 @@ public class Record
 				getRelatedFoundSet(relationName);
 			}
 		}
+	}
+
+	@Override
+	public void setVariableType(String variable, int type) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int getVariableType(String variable) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }
