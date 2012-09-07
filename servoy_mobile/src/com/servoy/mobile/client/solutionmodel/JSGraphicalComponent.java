@@ -28,7 +28,7 @@ public class JSGraphicalComponent extends JSComponent
 	public final native String getSize() /*-{ return this.size;	}-*/;
 	public final native String getLocation() /*-{ return this.location;	}-*/;
 	public final native String getText() /*-{ return this.text;	}-*/;
-	public final native boolean isShowClick() /*-{ return this.showClick ? this.showClick : false;	}-*/;
+	public final native boolean isShowClick() /*-{ return this.showClick ? this.showClick : true;	}-*/;
 	public final native String getActionMethodID() /*-{ return this.onActionMethodID;	}-*/;
 	public final native String getGroupID() /*-{ return this.groupID;	}-*/;
 }
