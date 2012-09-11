@@ -2,9 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry exported="true" kind="lib" path="lib/gwt-html5-storage.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/gwtexporter-2.4.0-M1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/gwtmodernizr-1.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jqm4gwt.jar"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>

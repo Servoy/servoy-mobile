@@ -13,10 +13,9 @@
 
   <!-- Other module inherits                                      -->
   <inherits name='com.sksamuel.Jqm4gwt' />
-  <inherits name='com.google.gwt.modernizr.Gwtmodernizr' />
-  <inherits name='com.google.code.gwt.storage.Html5Storage' />
-  <inherits name='org.timepedia.exporter.Exporter'/>  
-  <set-property name="export" value="yes"/>
+  <!-- <inherits name='com.google.gwt.modernizr.Gwtmodernizr' /> -->
+  <!-- <inherits name='org.timepedia.exporter.Exporter'/>  -->  
+  <!-- <set-property name="export" value="yes"/> -->
   
     <!-- Specify the app entry point class.                         -->
   <entry-point class='com.servoy.mobile.client.MobileClient'/>
