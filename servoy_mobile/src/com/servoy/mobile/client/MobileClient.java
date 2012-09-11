@@ -243,7 +243,7 @@ public class MobileClient implements EntryPoint
 		GlobalScope scope = scopes.get(name);
 		if (scope == null)
 		{
-			scope = new GlobalScope(name);
+			scope = new GlobalScope(name, this);
 			scopes.put(name, scope);
 		}
 		return scope;

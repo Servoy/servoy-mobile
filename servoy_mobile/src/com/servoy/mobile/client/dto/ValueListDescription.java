@@ -1,13 +1,14 @@
 package com.servoy.mobile.client.dto;
 
-import org.timepedia.exporter.client.ExporterBaseActual.JsArrayObject;
-
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
 
-public class ValueListDescription extends JavaScriptObject 
+public class ValueListDescription extends JavaScriptObject
 {
-	protected ValueListDescription() {}
+	protected ValueListDescription()
+	{
+	}
 
 	public final native String getName() /*-{
 		return this.name;
@@ -17,10 +18,10 @@ public class ValueListDescription extends JavaScriptObject
 		return this.displayValues;
 	}-*/;
 
-	public final native JsArrayObject getRealValues() /*-{
+	public final native JsArrayMixed getRealValues() /*-{
 		return this.realValues;
 	}-*/;
-	
+
 	public final native boolean hasRealValues() /*-{
 		return (this.realValues && this.realValues.lenght == this.displayValues.lenght);
 	}-*/;

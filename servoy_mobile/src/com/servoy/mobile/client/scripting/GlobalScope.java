@@ -3,43 +3,57 @@ package com.servoy.mobile.client.scripting;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.servoy.mobile.client.MobileClient;
 
-public class GlobalScope extends Scope 
+
+public class GlobalScope extends Scope
 {
 	private final String name;
 	private final Map<String, Object> scopeVariables = new HashMap<String, Object>();
 	protected final Map<String, Object> servoyProperties = new HashMap<String, Object>();
-	protected final Map<String,Integer> variableTypes = new HashMap<String, Integer>();
+	protected final Map<String, Integer> variableTypes = new HashMap<String, Integer>();
+	private final MobileClient client;
 
-	public GlobalScope(String name) {
+	public GlobalScope(String name, MobileClient client)
+	{
 		this.name = name;
-		servoyProperties.put("currentcontroller", new Controller());
+		this.client = client;
 	}
-	
-	public String getName() {
+
+	public String getName()
+	{
 		return name;
 	}
-	
-	public void setVariableType(String variable, int type) {
+
+	@Override
+	public void setVariableType(String variable, int type)
+	{
 		variableTypes.put(variable, Integer.valueOf(type));
 	}
-	
-	public int getVariableType(String variable) {
+
+	@Override
+	public int getVariableType(String variable)
+	{
 		Integer type = variableTypes.get(variable);
 		if (type != null) return type.intValue();
 		return -4; // IColumnTypes.MEDIA;
 	}
-	
-	public Object getValue(String variable) {
+
+	@Override
+	public Object getValue(String variable)
+	{
 		Object servoyProperty = servoyProperties.get(variable);
 		if (servoyProperty != null) return servoyProperty;
-		
+		if ("currentcontroller".equals(variable)) return client.getFormManager().getCurrentPage().getFormScope().getController();
+
 		return scopeVariables.get(variable);
 	}
 
-	public void setValue(String variable, Object value) {
+	@Override
+	public void setValue(String variable, Object value)
+	{
 		if (servoyProperties.containsKey(variable)) return;
-		
+
 		scopeVariables.put(variable, value);
 		// fire property change
 	}

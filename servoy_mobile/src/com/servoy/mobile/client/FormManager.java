@@ -33,9 +33,24 @@ import com.sksamuel.jqm4gwt.JQMPage;
  */
 public class FormManager
 {
-	protected MobileClient application;
-	protected LinkedHashMap<String, FormPage> pageMap = new LinkedHashMap<String, FormPage>();
-	protected History history = new History();
+	private final MobileClient application;
+	private final LinkedHashMap<String, FormPage> pageMap = new LinkedHashMap<String, FormPage>()
+	{
+		@Override
+		protected boolean removeEldestEntry(Entry<String, FormPage> eldest)
+		{
+			if (size() > 16)
+			{
+				FormPage oldPage = eldest.getValue();
+				removePage(oldPage);
+				return true;
+			}
+			return false;
+		}
+	};
+	private final History history = new History();
+
+	private FormPage currentPage = null;
 
 	protected FormManager(MobileClient mc)
 	{
@@ -72,27 +87,26 @@ public class FormManager
 		if (formPage == null)
 		{
 			JSForm form = application.getSolutionModel().getForm(name);
-			formPage = new FormPage(application, form);
-			pageMap.put(name, formPage);
+			if (form != null)
+			{
+				formPage = new FormPage(application, form);
+				pageMap.put(name, formPage);
+
+			}
 		}
 		return formPage;
 	}
 
-	protected void showForm(String id, FormPage page)
+	protected void showForm(FormPage page)
 	{
-		if (!pageMap.containsKey(id))
-		{
-			pageMap.put(id, page);
-			if (pageMap.size() > 16)
-			{
-				Iterator<Entry<String, FormPage>> it = pageMap.entrySet().iterator();
-				Entry<String, FormPage> entry = it.next();
-				it.remove(); //remove first/oldest entry
-				FormPage oldPage = entry.getValue();
-				removePage(oldPage);
-			}
-		}
+		pageMap.put(page.getName(), page);
+		currentPage = page;
 		JQMContext.changePage(page);
+	}
+
+	public FormPage getCurrentPage()
+	{
+		return currentPage;
 	}
 
 	private void removePage(JQMPage oldPage)
@@ -108,7 +122,7 @@ public class FormManager
 	public class History
 	{
 		public final native void back()/*-{
-			return $wnd.history.back();
+			return $wnd.history.back(); // TODO this will not reset the current form...
 		}-*/;
 
 		public void clear()
@@ -125,17 +139,18 @@ public class FormManager
 			JQMPage oldPage = it.next();
 			removePage(oldPage);
 		}
-		pageMap = new LinkedHashMap<String, FormPage>();
+		pageMap.clear();
+		currentPage = null;
 	}
 
 	public void showFirstForm()
 	{
-		JQMContext.changePage(getFirstForm());
+		showForm(getFirstForm());
 	}
 
 	public void showLoginForm()
 	{
-		JQMContext.changePage(getFirstForm());
+		showForm(getFirstForm());
 	}
 
 	public FormScope getFormScope(String name)

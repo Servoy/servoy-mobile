@@ -192,7 +192,7 @@ public class FormPage extends JQMPage
 	{
 		if (formScope == null)
 		{
-			formScope = new FormScope(application, form);
+			formScope = new FormScope(application, this);
 		}
 		return formScope;
 	}
@@ -200,5 +200,13 @@ public class FormPage extends JQMPage
 	public String getName()
 	{
 		return form.getName();
+	}
+
+	/**
+	 * @return
+	 */
+	public String getDataSource()
+	{
+		return form.getDataSource();
 	}
 }
