@@ -70,15 +70,28 @@ public class MobileClient implements EntryPoint
 
 	protected String getServerURL()
 	{
-		// TODO hardcoded for host itself.
-		String hostPageBaseURL = GWT.getHostPageBaseURL();
-		return hostPageBaseURL.substring(0, hostPageBaseURL.length() - 1);
+		String serverURL = solutionModel.getServerUrl();
+		if (serverURL == null)
+		{
+			serverURL = "http://127.0.0.1:8080";
+		}
+		if (serverURL.endsWith("/"))
+		{
+			serverURL = serverURL.substring(0, serverURL.length() - 1);
+		}
+		return serverURL + "/servoy-service/rest_ws/" + getSolutionName() + "_service";
+//		String hostPageBaseURL = GWT.getHostPageBaseURL();
+//		return hostPageBaseURL.substring(0, hostPageBaseURL.length() - 1);
 	}
 
 	protected String getSolutionName()
 	{
-		// TODO hardcoded to "test"
-		return "test";
+		String solName = solutionModel.getSolutionName();
+		if (solName == null)
+		{
+			solName = "MobileClient";
+		}
+		return solName;
 	}
 
 	protected native JSSolutionModel createJSSolutionModel() /*-{
