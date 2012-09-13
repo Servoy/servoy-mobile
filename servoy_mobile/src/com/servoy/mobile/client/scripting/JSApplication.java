@@ -37,7 +37,15 @@ public class JSApplication
 	/*-{
 		$wnd.application = this;
 		$wnd.application.output = function(output) {
-			return $wnd.application.@com.servoy.mobile.client.scripting.JSApplication::output(Ljava/lang/Object;)(output);
+			if (typeof (output) == 'number') {
+				output = new Number(output);
+			} else if (typeof (output) == 'boolean') {
+				if (output)
+					output = "true";
+				else
+					output = "false";
+			}
+			$wnd.application.@com.servoy.mobile.client.scripting.JSApplication::output(Ljava/lang/Object;)(output);
 		}
 	}-*/;
 
