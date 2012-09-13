@@ -1,21 +1,21 @@
 package com.servoy.mobile.client.dataprocessing;
 
 /*
-This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
+ This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
 
-This program is free software; you can redistribute it and/or modify it under
-the terms of the GNU Affero General Public License as published by the Free
-Software Foundation; either version 3 of the License, or (at your option) any
-later version.
+ This program is free software; you can redistribute it and/or modify it under
+ the terms of the GNU Affero General Public License as published by the Free
+ Software Foundation; either version 3 of the License, or (at your option) any
+ later version.
 
-This program is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along
-with this program; if not, see http://www.gnu.org/licenses or write to the Free
-Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
-*/
+ You should have received a copy of the GNU Affero General Public License along
+ with this program; if not, see http://www.gnu.org/licenses or write to the Free
+ Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
+ */
 
 import java.util.ArrayList;
 
@@ -28,19 +28,20 @@ import com.servoy.mobile.client.util.Utils;
  * The mobile foundset
  * @author jblok
  */
-public class FoundSet 
+public class FoundSet //  extends Scope if we support aggregates on foundset
 {
-	private FoundSetManager foundSetManager;
-	private FoundSetDescription foundSetDescription;
-	private ArrayList<Record> records = new ArrayList<Record>();
+	private final FoundSetManager foundSetManager;
+	private final FoundSetDescription foundSetDescription;
+	private final ArrayList<Record> records = new ArrayList<Record>();
 	private boolean needToSaveFoundSetDescription;
 
-	public FoundSet(FoundSetManager fsm,FoundSetDescription fsd)
+	public FoundSet(FoundSetManager fsm, FoundSetDescription fsd)
 	{
 		foundSetManager = fsm;
 		foundSetDescription = fsd;
+		export();
 	}
-	
+
 	public Record getRecord(int index)
 	{
 		Record retval = null;
@@ -48,26 +49,30 @@ public class FoundSet
 		{
 			retval = records.get(index);
 		}
-		else		
+		else
 		{
 			RecordDescription rd = foundSetDescription.getRecords().get(index);
-			retval = new Record(this,rd);
-			if (index == records.size())
+			if (rd != null)
 			{
-				records.add(retval);
-			}
-			else
-			{
-				records.set(index,retval);
+				retval = new Record(this, rd);
+				if (index == records.size())
+				{
+					records.add(retval);
+				}
+				else
+				{
+					records.set(index, retval);
+				}
 			}
 		}
 		return retval;
 	}
-	
-	public FoundSetManager getFoundSetManager() {
+
+	public FoundSetManager getFoundSetManager()
+	{
 		return foundSetManager;
 	}
-	
+
 	public int getSize()
 	{
 		return foundSetDescription.getRecords().length();
@@ -77,24 +82,25 @@ public class FoundSet
 	{
 		return foundSetDescription.getEntityName();
 	}
-	
-	RowDescription getRowDescription(Object pk) 
+
+	RowDescription getRowDescription(Object pk)
 	{
-		return foundSetManager.getRowDescription(getEntityName(),pk);
+		return foundSetManager.getRowDescription(getEntityName(), pk);
 	}
 
-	FoundSet getRelatedFoundSet(Record rec, String name, String key) 
+	FoundSet getRelatedFoundSet(Record rec, String name, String key)
 	{
-		return foundSetManager.getRelatedFoundSet(rec, getEntityName(),name,key);
+		return foundSetManager.getRelatedFoundSet(rec, getEntityName(), name, key);
 	}
 
-	public boolean startEdit(Record record) 
+	public boolean startEdit(Record record)
 	{
 		return foundSetManager.getEditRecordList().startEditing(record);
 	}
-	
-	private int selectedRecord = 0;
-	public Object getSelectedRecordValue(String dataProviderID) 
+
+	private final int selectedRecord = 0;
+
+	public Object getSelectedRecordValue(String dataProviderID)
 	{
 		if (getSize() > 0)
 		{
@@ -102,17 +108,18 @@ public class FoundSet
 		}
 		return null;
 	}
-	public Record getSelectedRecord() 
+
+	public Record getSelectedRecord()
 	{
 		return getRecord(selectedRecord);
 	}
 
-	public Record newRecord() 
+	public Record newRecord()
 	{
 		Object pk = Utils.createStringUUID();
 		RecordDescription recd = RecordDescription.newInstance(pk);
-		RowDescription rowd = foundSetManager.createRowDescription(this,pk);
-		Record retval = new Record(this,recd,rowd);
+		RowDescription rowd = foundSetManager.createRowDescription(this, pk);
+		Record retval = new Record(this, recd, rowd);
 		foundSetDescription.getRecords().push(recd);
 		needToSaveFoundSetDescription = true;
 		records.add(retval);
@@ -130,18 +137,27 @@ public class FoundSet
 		return null;
 	}
 
-	FoundSet createRelatedFoundSet(String relationName, Record record) 
+	FoundSet createRelatedFoundSet(String relationName, Record record)
 	{
 		return foundSetManager.createRelatedFoundSet(relationName, record);
 	}
-	
+
 	public String getWhereArgsHash()
 	{
 		return foundSetDescription.getWhereArgsHash();
 	}
 
-	ArrayList<String> getAllPrimaryRelationNames() 
+	ArrayList<String> getAllPrimaryRelationNames()
 	{
 		return foundSetManager.getAllPrimaryRelationNames(getEntityName());
 	}
+
+	private native void export() /*-{
+		this.getSelectedRecord = function() {
+			return this.@com.servoy.mobile.client.dataprocessing.FoundSet::getSelectedRecord()();
+		}
+		this.getRecord = function(index) {
+			return this.@com.servoy.mobile.client.dataprocessing.FoundSet::getRecord(I)(index-1);
+		}
+	}-*/;
 }
