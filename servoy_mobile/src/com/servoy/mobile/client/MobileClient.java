@@ -29,6 +29,7 @@ import com.servoy.mobile.client.dataprocessing.OfflineDataProxy;
 import com.servoy.mobile.client.dto.ValueListDescription;
 import com.servoy.mobile.client.scripting.GlobalScope;
 import com.servoy.mobile.client.scripting.JSApplication;
+import com.servoy.mobile.client.scripting.JSDatabaseManager;
 import com.servoy.mobile.client.scripting.Scope;
 import com.servoy.mobile.client.solutionmodel.JSSolutionModel;
 import com.servoy.mobile.client.util.Failure;
@@ -51,11 +52,12 @@ public class MobileClient implements EntryPoint
 	@Override
 	public void onModuleLoad()
 	{
-		new JSApplication();
 		foundSetManager = new FoundSetManager(this);
 		offlineDataProxy = new OfflineDataProxy(foundSetManager, getServerURL());
 		formManager = new FormManager(this);
 		solutionModel = createJSSolutionModel();
+		new JSApplication();
+		new JSDatabaseManager(foundSetManager);
 		export();
 
 		if (!foundSetManager.hasContent() && isOnline())
