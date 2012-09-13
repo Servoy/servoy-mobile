@@ -28,7 +28,7 @@ public class JSApplication
 		export();
 	}
 
-	public native void output(String output)
+	public native void output(Object output)
 	/*-{
 		$wnd.alert(output);
 	}-*/;
@@ -37,7 +37,7 @@ public class JSApplication
 	/*-{
 		$wnd.application = this;
 		$wnd.application.output = function(output) {
-			return $wnd.application.@com.servoy.mobile.client.scripting.JSApplication::output(Ljava/lang/String;)(output);
+			return $wnd.application.@com.servoy.mobile.client.scripting.JSApplication::output(Ljava/lang/Object;)(output);
 		}
 	}-*/;
 
