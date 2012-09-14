@@ -121,6 +121,11 @@ public class FormManager
 
 	public class History
 	{
+		public History()
+		{
+			export();
+		}
+
 		public final native void back()/*-{
 			return $wnd.history.back(); // TODO this will not reset the current form...
 		}-*/;
@@ -129,6 +134,17 @@ public class FormManager
 		{
 			removeAllForms();
 		}
+
+		private final native void export()
+		/*-{
+			$wnd.history = this;
+			$wnd.history.back = function() {
+				$wnd.history.@com.servoy.mobile.client.FormManager$History::back()();
+			}
+			$wnd.history.clear = function() {
+				$wnd.history.@com.servoy.mobile.client.FormManager$History::clear()();
+			}
+		}-*/;
 	}
 
 	void removeAllForms()
