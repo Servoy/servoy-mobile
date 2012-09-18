@@ -30,6 +30,7 @@ import com.servoy.mobile.client.dto.ValueListDescription;
 import com.servoy.mobile.client.scripting.GlobalScope;
 import com.servoy.mobile.client.scripting.JSApplication;
 import com.servoy.mobile.client.scripting.JSDatabaseManager;
+import com.servoy.mobile.client.scripting.PluginsScope;
 import com.servoy.mobile.client.scripting.Scope;
 import com.servoy.mobile.client.solutionmodel.JSSolutionModel;
 import com.servoy.mobile.client.util.Failure;
@@ -57,6 +58,7 @@ public class MobileClient implements EntryPoint
 		formManager = new FormManager(this);
 		solutionModel = createJSSolutionModel();
 		new JSApplication();
+		new PluginsScope(this);
 		new JSDatabaseManager(foundSetManager);
 		export();
 
@@ -229,7 +231,7 @@ public class MobileClient implements EntryPoint
 	}
 
 	//check to see if currently connected to IP network
-	private final native boolean isOnline()/*-{
+	public final native boolean isOnline()/*-{
 		try {
 			return $wnd.navigator.onLine;
 		} catch (err) {
