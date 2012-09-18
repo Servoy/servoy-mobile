@@ -34,6 +34,8 @@ import com.sksamuel.jqm4gwt.JQMPage;
 public class FormManager
 {
 	private final MobileClient application;
+	private Login login;
+
 	private final LinkedHashMap<String, FormPage> pageMap = new LinkedHashMap<String, FormPage>()
 	{
 		@Override
@@ -64,10 +66,14 @@ public class FormManager
 		return getForm(jsForm.getName());
 	}
 
-	protected FormPage getLoginForm()
+
+	protected JQMPage getLoginForm()
 	{
-		// TODO impl
-		return null;
+		if (login == null)
+		{
+			login = new Login(application);
+		}
+		return login;
 	}
 
 	public void showForm(String formName, Object data)
@@ -166,7 +172,7 @@ public class FormManager
 
 	public void showLoginForm()
 	{
-		showForm(getFirstForm());
+		JQMContext.changePage(getLoginForm());
 	}
 
 	public FormScope getFormScope(String name)
