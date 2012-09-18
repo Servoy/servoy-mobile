@@ -53,10 +53,10 @@ public class MobileClient implements EntryPoint
 	@Override
 	public void onModuleLoad()
 	{
+		solutionModel = createJSSolutionModel();
 		foundSetManager = new FoundSetManager(this);
 		offlineDataProxy = new OfflineDataProxy(foundSetManager, getServerURL());
 		formManager = new FormManager(this);
-		solutionModel = createJSSolutionModel();
 		new JSApplication();
 		new PluginsScope(this);
 		new JSDatabaseManager(foundSetManager);
