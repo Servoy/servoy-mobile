@@ -26,7 +26,7 @@ public interface I18NMessages extends Messages
 	@DefaultMessage("Cannot work without a primary key")
 	String cannotWorkWithoutPK();
 
-	@DefaultMessage("Login")
+	@DefaultMessage("Authenticate")
 	String loginTitle();
 
 	@DefaultMessage("Authentication required, please login.")
