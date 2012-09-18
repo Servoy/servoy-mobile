@@ -6,7 +6,7 @@ import com.google.gwt.i18n.client.LocalizableResource.Generate;
 
 @Generate(format = "com.google.gwt.i18n.rebind.format.PropertiesFormat")
 @DefaultLocale("en_US")
-public interface I18NMessages extends Messages 
+public interface I18NMessages extends Messages
 {
 	@DefaultMessage("Syncing")
 	String syncing();
@@ -16,7 +16,7 @@ public interface I18NMessages extends Messages
 
 	@DefaultMessage("Discard local changes?")
 	String discardLocalChanges();
-	
+
 	@DefaultMessage("Couldn`t retrieve JSON")
 	String cannotLoadJSON();
 
@@ -25,4 +25,19 @@ public interface I18NMessages extends Messages
 
 	@DefaultMessage("Cannot work without a primary key")
 	String cannotWorkWithoutPK();
+
+	@DefaultMessage("Login")
+	String loginTitle();
+
+	@DefaultMessage("Authentication required, please login.")
+	String authenticationRequired();
+
+	@DefaultMessage("Email")
+	String userUid();
+
+	@DefaultMessage("Password")
+	String password();
+
+	@DefaultMessage("Login")
+	String login();
 }
