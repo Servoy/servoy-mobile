@@ -95,9 +95,11 @@ public class FormPage extends JQMPage
 
 		}
 
-		add(createHeader(headerLabel, headerLeftButton, headerRightButton));
+		JQMHeader componentHeader = createHeader(headerLabel, headerLeftButton, headerRightButton);
+		if (componentHeader != null) add(componentHeader);
 		createContent(contentComponents);
-		add(createFooter(footerComponents));
+		JQMFooter componentFooter = createFooter(footerComponents);
+		if (componentFooter != null) add(componentFooter);
 	}
 
 	public JQMHeader createHeader(JSComponent label, JSComponent leftButton, JSComponent rightButton)
@@ -124,32 +126,38 @@ public class FormPage extends JQMPage
 			if (gc != null) rightToolbarButton = new JQMToolBarButton(gc.getText());
 		}
 
-		if (text == null) text = "";
-		JQMHeader header = new JQMHeader(text);
+		JQMHeader headerComponent = null;
+		if (text != null || leftToolbarButton != null || rightToolbarButton != null)
+		{
+			if (text == null) text = ""; //$NON-NLS-1$
+			headerComponent = new JQMHeader(text);
 
-		if (leftToolbarButton != null)
-		{
-			header.setLeftButton(leftToolbarButton);
+			if (leftToolbarButton != null)
+			{
+				headerComponent.setLeftButton(leftToolbarButton);
+			}
+			if (rightToolbarButton != null)
+			{
+				headerComponent.setRightButton(rightToolbarButton);
+			}
 		}
-		if (rightToolbarButton != null)
-		{
-			header.setRightButton(rightToolbarButton);
-		}
-		return header;
+		return headerComponent;
 	}
 
 	public void createContent(ArrayList<JSComponent> contentComponents)
 	{
 		JSSolutionModel solutionModel = application.getSolutionModel();
 		Collections.sort(contentComponents, PositionComparator.YX_COMPARATOR);
-		HashMap<String, JQMFieldset> fieldsetMap = new HashMap<String, JQMFieldset>();
+		HashMap<String, ArrayList<JSComponent>> fieldsetComponentsMap = new HashMap<String, ArrayList<JSComponent>>();
 		JSGraphicalComponent gc;
 		JSField field;
 		String groupID;
-		JQMFieldset fieldset;
+		ArrayList<JSComponent> fieldsetComponents;
 		for (JSComponent c : contentComponents)
 		{
 			groupID = null;
+			gc = null;
+			field = null;
 			if ((gc = c.isGraphicalComponent()) != null)
 			{
 				groupID = gc.getGroupID();
@@ -161,15 +169,29 @@ public class FormPage extends JQMPage
 
 			if (groupID != null)
 			{
-				fieldset = fieldsetMap.get(groupID);
-				if (fieldset == null)
+				fieldsetComponents = fieldsetComponentsMap.get(groupID);
+				if (fieldsetComponents == null)
 				{
-					fieldset = new JQMFieldset();
-					fieldset.setHorizontal();
-					add(fieldset);
+					fieldsetComponents = new ArrayList<JSComponent>(2);
+					fieldsetComponentsMap.put(groupID, fieldsetComponents);
 				}
-				Widget widget = ComponentFactory.createComponent(solutionModel, c, executor);
-				if (widget != null) fieldset.add(widget);
+
+				if (gc != null) fieldsetComponents.add(0, gc);
+				else if (field != null) fieldsetComponents.add(field);
+
+				if (fieldsetComponents.size() == 2)
+				{
+					Widget labelWidget = ComponentFactory.createComponent(solutionModel, fieldsetComponents.get(0), executor);
+					Widget fieldWidget = ComponentFactory.createComponent(solutionModel, fieldsetComponents.get(1), executor);
+					if (labelWidget != null && fieldWidget != null)
+					{
+						JQMFieldset fieldset = new JQMFieldset();
+						fieldset.setHorizontal();
+						fieldset.add(labelWidget);
+						fieldset.add(fieldWidget);
+						add(fieldset);
+					}
+				}
 			}
 			else
 			{
@@ -181,11 +203,12 @@ public class FormPage extends JQMPage
 
 	public JQMFooter createFooter(ArrayList<JSComponent> footerComponents)
 	{
+		if (footerComponents.size() < 1) return null;
 		Collections.sort(footerComponents, PositionComparator.XY_COMPARATOR);
-		JQMFooter footer = new JQMFooter();
+		JQMFooter footerComponent = new JQMFooter();
 		for (JSComponent c : footerComponents)
-			footer.add(ComponentFactory.createComponent(application.getSolutionModel(), c, executor));
-		return footer;
+			footerComponent.add(ComponentFactory.createComponent(application.getSolutionModel(), c, executor));
+		return footerComponent;
 	}
 
 	public FormScope getFormScope()
