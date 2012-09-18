@@ -134,7 +134,7 @@ public class MobileClient implements EntryPoint
 
 					if (reason.getStatusCode() == Response.SC_UNAUTHORIZED)
 					{
-						showLoginForm();
+						formManager.showLogin();
 					}
 					else
 					{
@@ -189,7 +189,7 @@ public class MobileClient implements EntryPoint
 				Mobile.hideLoadingDialog();
 				if (reason.getStatusCode() == Response.SC_UNAUTHORIZED)
 				{
-					showLoginForm();
+					formManager.showLogin();
 				}
 				else
 				{
@@ -220,12 +220,7 @@ public class MobileClient implements EntryPoint
 		formManager.showFirstForm();
 	}
 
-	public void showLoginForm()
-	{
-		formManager.showLoginForm();
-	}
-
-	public void setLoginCredentials(String identifier, String password)
+	void setLoginCredentials(String identifier, String password)
 	{
 		offlineDataProxy.setLoginCredentials(identifier, password);
 	}

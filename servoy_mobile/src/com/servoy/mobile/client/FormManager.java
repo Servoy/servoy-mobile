@@ -67,7 +67,7 @@ public class FormManager
 	}
 
 
-	protected JQMPage getLoginForm()
+	private JQMPage getLogin()
 	{
 		if (login == null)
 		{
@@ -170,9 +170,9 @@ public class FormManager
 		showForm(getFirstForm());
 	}
 
-	public void showLoginForm()
+	public void showLogin()
 	{
-		JQMContext.changePage(getLoginForm());
+		JQMContext.changePage(getLogin());
 	}
 
 	public FormScope getFormScope(String name)
