@@ -131,9 +131,9 @@ public class FormPage extends JQMPage
 		{
 			header.setLeftButton(leftToolbarButton);
 		}
-		else if (rightToolbarButton != null)
+		if (rightToolbarButton != null)
 		{
-			header.setLeftButton(rightToolbarButton);
+			header.setRightButton(rightToolbarButton);
 		}
 		return header;
 	}
