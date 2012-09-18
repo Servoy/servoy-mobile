@@ -28,10 +28,10 @@
 			</classpath>
 			<!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
 			<jvmarg value="-Xmx256M"/>
-			<!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+			<!-- Additional arguments like -style PRETTY,DETAILED,OBFUSCATED, or -logLevel DEBUG -->
 			<arg value="com.servoy.mobile.MobileClient"/>
 			<arg value="-style"/>
-			<arg value="DETAILED"/>
+			<arg value="OBFUSCATED"/>
 		</java>
 	</target>
 
