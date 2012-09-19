@@ -25,6 +25,9 @@ import java.util.Iterator;
 
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.http.client.URL;
@@ -33,9 +36,7 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.servoy.mobile.client.dto.OfflineDataDescription;
 import com.servoy.mobile.client.dto.RowDescription;
-import com.servoy.mobile.client.request.Request;
-import com.servoy.mobile.client.request.RequestBuilder;
-import com.servoy.mobile.client.request.RequestCallback;
+import com.servoy.mobile.client.request.Base64Coder;
 import com.servoy.mobile.client.util.Failure;
 
 /**
@@ -296,6 +297,7 @@ public class OfflineDataProxy
 		{
 			builder.setUser(credentials[0]);
 			builder.setPassword(credentials[1]);
+			builder.setHeader("Authorization", "Basic " + Base64Coder.encodeString(credentials[0] + ":" + credentials[1]));
 		}
 	}
 }
