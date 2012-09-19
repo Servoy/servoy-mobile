@@ -36,6 +36,7 @@ import com.servoy.mobile.client.scripting.JSDatabaseManager;
 import com.servoy.mobile.client.scripting.JSHistory;
 import com.servoy.mobile.client.scripting.PluginsScope;
 import com.servoy.mobile.client.scripting.Scope;
+import com.servoy.mobile.client.solutionmodel.JSSolutionModel;
 import com.servoy.mobile.client.util.Failure;
 import com.sksamuel.jqm4gwt.Mobile;
 
@@ -60,6 +61,7 @@ public class MobileClient implements EntryPoint
 		GWT.create(JSApplication.class);
 		GWT.create(Controller.class);
 		GWT.create(JSHistory.class);
+		GWT.create(JSSolutionModel.class); // this will also export all referenced classes like JSForm
 		GWT.create(FoundSet.class); // foundset is not a scope yet, if it becomes a scope (aggregates) then this can't be done, or must he exported differently
 
 
@@ -70,6 +72,7 @@ public class MobileClient implements EntryPoint
 		new JSApplication();
 		new PluginsScope(this);
 		new JSDatabaseManager(foundSetManager);
+		new JSSolutionModel(solution);
 		export();
 
 		if (!foundSetManager.hasContent() && isOnline())
