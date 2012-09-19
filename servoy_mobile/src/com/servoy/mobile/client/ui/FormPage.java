@@ -20,6 +20,8 @@ package com.servoy.mobile.client.ui;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.user.client.ui.Widget;
@@ -32,7 +34,6 @@ import com.servoy.mobile.client.solutionmodel.JSGraphicalComponent;
 import com.servoy.mobile.client.solutionmodel.JSItem;
 import com.servoy.mobile.client.solutionmodel.JSSolutionModel;
 import com.sksamuel.jqm4gwt.JQMPage;
-import com.sksamuel.jqm4gwt.form.JQMFieldset;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.sksamuel.jqm4gwt.toolbar.JQMToolBarButton;
@@ -148,56 +149,47 @@ public class FormPage extends JQMPage
 	{
 		JSSolutionModel solutionModel = application.getSolutionModel();
 		Collections.sort(contentComponents, PositionComparator.YX_COMPARATOR);
-		HashMap<String, ArrayList<JSComponent>> fieldsetComponentsMap = new HashMap<String, ArrayList<JSComponent>>();
+		HashMap<String, String> fieldsetLabel = new HashMap<String, String>();
+		HashMap<String, DataTextField> fieldsetField = new HashMap<String, DataTextField>();
 		JSGraphicalComponent gc;
 		JSField field;
 		String groupID;
-		ArrayList<JSComponent> fieldsetComponents;
 		for (JSComponent c : contentComponents)
 		{
 			groupID = null;
-			gc = null;
-			field = null;
 			if ((gc = c.isGraphicalComponent()) != null)
 			{
 				groupID = gc.getGroupID();
+				if (groupID != null)
+				{
+					fieldsetLabel.put(groupID, gc.getText());
+					continue;
+				}
 			}
 			else if ((field = c.isField()) != null)
 			{
 				groupID = field.getGroupID();
 			}
 
-			if (groupID != null)
+			Widget widget = ComponentFactory.createComponent(solutionModel, c, executor);
+			if (widget != null)
 			{
-				fieldsetComponents = fieldsetComponentsMap.get(groupID);
-				if (fieldsetComponents == null)
+				if (groupID != null && widget instanceof DataTextField)
 				{
-					fieldsetComponents = new ArrayList<JSComponent>(2);
-					fieldsetComponentsMap.put(groupID, fieldsetComponents);
+					fieldsetField.put(groupID, (DataTextField)widget);
 				}
-
-				if (gc != null) fieldsetComponents.add(0, gc);
-				else if (field != null) fieldsetComponents.add(field);
-
-				if (fieldsetComponents.size() == 2)
-				{
-					Widget labelWidget = ComponentFactory.createComponent(solutionModel, fieldsetComponents.get(0), executor);
-					Widget fieldWidget = ComponentFactory.createComponent(solutionModel, fieldsetComponents.get(1), executor);
-					if (labelWidget != null && fieldWidget != null)
-					{
-						JQMFieldset fieldset = new JQMFieldset();
-						fieldset.setHorizontal();
-						fieldset.add(labelWidget);
-						fieldset.add(fieldWidget);
-						add(fieldset);
-					}
-				}
+				add(widget);
 			}
-			else
-			{
-				Widget widget = ComponentFactory.createComponent(solutionModel, c, executor);
-				if (widget != null) add(widget);
-			}
+		}
+
+		Iterator<Entry<String, DataTextField>> fieldsetFieldIte = fieldsetField.entrySet().iterator();
+		Entry<String, DataTextField> fieldsetFieldEntry;
+		String label;
+		while (fieldsetFieldIte.hasNext())
+		{
+			fieldsetFieldEntry = fieldsetFieldIte.next();
+			label = fieldsetLabel.get(fieldsetFieldEntry.getKey());
+			if (label != null) fieldsetFieldEntry.getValue().setText(label);
 		}
 	}
 
