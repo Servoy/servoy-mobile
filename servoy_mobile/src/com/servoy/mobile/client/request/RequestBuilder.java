@@ -389,10 +389,6 @@ public class RequestBuilder
 	private Request doSend(String requestData, final RequestCallback callback) throws RequestException
 	{
 		AuthenticatedXMLHttpRequest xmlHttpRequest = AuthenticatedXMLHttpRequest.create();
-		if (user != null)
-		{
-			xmlHttpRequest.addWithCredentials();
-		}
 		try
 		{
 			if (user != null && password != null)
@@ -414,7 +410,11 @@ public class RequestBuilder
 			requestPermissionException.initCause(new RequestException(e.getMessage()));
 			throw requestPermissionException;
 		}
-
+		if (user != null)
+		{
+			xmlHttpRequest.addWithCredentials();
+			headers.put("Authorization", "Basic " + Base64Coder.encodeString(user + ":" + password));
+		}
 		setHeaders(xmlHttpRequest);
 
 		final Request request = new Request(xmlHttpRequest, timeoutMillis, callback);
