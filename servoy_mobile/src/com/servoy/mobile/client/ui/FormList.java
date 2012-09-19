@@ -18,10 +18,10 @@ Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
 */
 
 import com.google.gwt.core.client.JsArray;
-import com.servoy.mobile.client.solutionmodel.JSComponent;
-import com.servoy.mobile.client.solutionmodel.JSForm;
-import com.servoy.mobile.client.solutionmodel.JSGraphicalComponent;
-import com.servoy.mobile.client.solutionmodel.JSItem;
+import com.servoy.mobile.client.persistence.Component;
+import com.servoy.mobile.client.persistence.Form;
+import com.servoy.mobile.client.persistence.GraphicalComponent;
+import com.servoy.mobile.client.persistence.BaseComponent;
 import com.sksamuel.jqm4gwt.list.JQMList;
 
 /**
@@ -33,12 +33,12 @@ public class FormList extends JQMList
 {
 	private String listItemButtonDP, listItemAsideDP, listItemCountDP, listItemImageDP;
 	
-	public FormList(JSForm form)
+	public FormList(Form form)
 	{
-		JsArray<JSComponent> formComponents = form.getComponents();
+		JsArray<Component> formComponents = form.getComponents();
 	
-		JSGraphicalComponent component;
-		JSItem.MobileProperties mobileProperties;
+		GraphicalComponent component;
+		BaseComponent.MobileProperties mobileProperties;
 
 		for(int i = 0; i < formComponents.length(); i++)
 		{

@@ -17,7 +17,7 @@ with this program; if not, see http://www.gnu.org/licenses or write to the Free
 Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
 */
 
-import com.servoy.mobile.client.solutionmodel.JSField;
+import com.servoy.mobile.client.persistence.Field;
 import com.sksamuel.jqm4gwt.form.elements.JQMRadioset;
 
 /**
@@ -27,7 +27,7 @@ import com.sksamuel.jqm4gwt.form.elements.JQMRadioset;
  */
 public class DataRadioSet extends JQMRadioset
 {
-	public DataRadioSet(JSField field)
+	public DataRadioSet(Field field)
 	{
 		
 	}

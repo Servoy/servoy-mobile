@@ -18,7 +18,7 @@ Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
 */
 
 import com.google.gwt.user.client.ui.Label;
-import com.servoy.mobile.client.solutionmodel.JSGraphicalComponent;
+import com.servoy.mobile.client.persistence.GraphicalComponent;
 
 /**
  * Label UI
@@ -27,7 +27,7 @@ import com.servoy.mobile.client.solutionmodel.JSGraphicalComponent;
  */
 public class DataLabel extends Label
 {
-	public DataLabel(JSGraphicalComponent gc)
+	public DataLabel(GraphicalComponent gc)
 	{
 		super(gc.getText());
 	}

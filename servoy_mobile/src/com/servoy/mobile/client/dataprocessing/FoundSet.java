@@ -19,6 +19,9 @@ package com.servoy.mobile.client.dataprocessing;
 
 import java.util.ArrayList;
 
+import org.timepedia.exporter.client.Export;
+import org.timepedia.exporter.client.Exportable;
+
 import com.servoy.mobile.client.dto.FoundSetDescription;
 import com.servoy.mobile.client.dto.RecordDescription;
 import com.servoy.mobile.client.dto.RowDescription;
@@ -28,7 +31,7 @@ import com.servoy.mobile.client.util.Utils;
  * The mobile foundset
  * @author jblok
  */
-public class FoundSet //  extends Scope if we support aggregates on foundset
+public class FoundSet implements Exportable //  extends Scope if we support aggregates on foundset, then we have to drop Exportable 
 {
 	private final FoundSetManager foundSetManager;
 	private final FoundSetDescription foundSetDescription;
@@ -39,7 +42,12 @@ public class FoundSet //  extends Scope if we support aggregates on foundset
 	{
 		foundSetManager = fsm;
 		foundSetDescription = fsd;
-		export();
+	}
+
+	@Export("getRecord")
+	public Record js_getRecord(int index)
+	{
+		return getRecord(index - 1);
 	}
 
 	public Record getRecord(int index)
@@ -73,6 +81,7 @@ public class FoundSet //  extends Scope if we support aggregates on foundset
 		return foundSetManager;
 	}
 
+	@Export
 	public int getSize()
 	{
 		return foundSetDescription.getRecords().length();
@@ -109,11 +118,13 @@ public class FoundSet //  extends Scope if we support aggregates on foundset
 		return null;
 	}
 
+	@Export
 	public Record getSelectedRecord()
 	{
 		return getRecord(selectedRecord);
 	}
 
+	@Export
 	public Record newRecord()
 	{
 		Object pk = Utils.createStringUUID();
@@ -142,7 +153,7 @@ public class FoundSet //  extends Scope if we support aggregates on foundset
 		return foundSetManager.createRelatedFoundSet(relationName, record);
 	}
 
-	public String getWhereArgsHash()
+	String getWhereArgsHash()
 	{
 		return foundSetDescription.getWhereArgsHash();
 	}
@@ -151,13 +162,4 @@ public class FoundSet //  extends Scope if we support aggregates on foundset
 	{
 		return foundSetManager.getAllPrimaryRelationNames(getEntityName());
 	}
-
-	private native void export() /*-{
-		this.getSelectedRecord = function() {
-			return this.@com.servoy.mobile.client.dataprocessing.FoundSet::getSelectedRecord()();
-		}
-		this.getRecord = function(index) {
-			return this.@com.servoy.mobile.client.dataprocessing.FoundSet::getRecord(I)(index-1);
-		}
-	}-*/;
 }

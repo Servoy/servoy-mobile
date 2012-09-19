@@ -1,4 +1,4 @@
-package com.servoy.mobile.client.solutionmodel;
+package com.servoy.mobile.client.persistence;
 
 /*
 This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
@@ -20,15 +20,23 @@ Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
 /**
  * @author gboros
  */
-public class JSGraphicalComponent extends JSComponent
+public class Field extends Component
 {
-	protected JSGraphicalComponent() {}
+	public static final int DISPLAY_TYPE_TEXT_FIELD = 0;
+	public static final int DISPLAY_TYPE_TEXT_AREA = 1;
+	public static final int DISPLAY_TYPE_COMBOBOX = 2;
+	public static final int DISPLAY_TYPE_RADIOS = 3;
+	public static final int DISPLAY_TYPE_CHECKS = 4;
+	public static final int DISPLAY_TYPE_CALENDAR = 5;
+	public static final int DISPLAY_TYPE_PASSWORD = 6;
+	public static final int DISPLAY_TYPE_LIST_BOX = 11;
+	public static final int DISPLAY_TYPE_MULTISELECT_LISTBOX = 12;
+	
+	protected Field() {}
 	
 	public final native String getDataProviderID() /*-{ return this.dataProviderID;	}-*/;
 	public final native String getSize() /*-{ return this.size;	}-*/;
 	public final native String getLocation() /*-{ return this.location;	}-*/;
-	public final native String getText() /*-{ return this.text;	}-*/;
-	public final native boolean isShowClick() /*-{ return this.showClick ? this.showClick : true;	}-*/;
-	public final native String getActionMethodID() /*-{ return this.onActionMethodID;	}-*/;
+	public final native int getDisplayType() /*-{ return this.displayType?this.displayType:0;	}-*/;
 	public final native String getGroupID() /*-{ return this.groupID;	}-*/;
 }

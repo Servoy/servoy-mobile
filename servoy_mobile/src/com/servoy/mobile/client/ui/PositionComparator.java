@@ -19,10 +19,10 @@ Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
 
 import java.util.Comparator;
 
-import com.servoy.mobile.client.solutionmodel.JSComponent;
-import com.servoy.mobile.client.solutionmodel.JSField;
-import com.servoy.mobile.client.solutionmodel.JSGraphicalComponent;
-import com.servoy.mobile.client.solutionmodel.JSTabPanel;
+import com.servoy.mobile.client.persistence.Component;
+import com.servoy.mobile.client.persistence.Field;
+import com.servoy.mobile.client.persistence.GraphicalComponent;
+import com.servoy.mobile.client.persistence.TabPanel;
 import com.servoy.mobile.client.util.Utils;
 
 /**
@@ -32,10 +32,10 @@ import com.servoy.mobile.client.util.Utils;
  */
 public class PositionComparator
 {
-	public static final Comparator<JSComponent> XY_COMPARATOR = new PositionJSComponentComparator(true);
-	public static final Comparator<JSComponent> YX_COMPARATOR = new PositionJSComponentComparator(false);
+	public static final Comparator<Component> XY_COMPARATOR = new PositionJSComponentComparator(true);
+	public static final Comparator<Component> YX_COMPARATOR = new PositionJSComponentComparator(false);
 	
-	public static class PositionJSComponentComparator implements Comparator<JSComponent>
+	public static class PositionJSComponentComparator implements Comparator<Component>
 	{
 		private final boolean xy;
 
@@ -44,7 +44,7 @@ public class PositionComparator
 			this.xy = xy;
 		}
 
-		public int compare(JSComponent o1, JSComponent o2)
+		public int compare(Component o1, Component o2)
 		{
 			return comparePoint(xy, getLocation(o1), getLocation(o2));
 		}
@@ -68,11 +68,11 @@ public class PositionComparator
 		return 1;
 	}
 	
-	public static int[] getLocation(JSComponent component)
+	public static int[] getLocation(Component component)
 	{
-		JSField field;
-		JSGraphicalComponent gc;
-		JSTabPanel tabPanel;
+		Field field;
+		GraphicalComponent gc;
+		TabPanel tabPanel;
 		
 		String location = null;
 		if((field = component.isField()) != null)

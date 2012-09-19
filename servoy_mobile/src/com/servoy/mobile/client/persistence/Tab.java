@@ -1,4 +1,4 @@
-package com.servoy.mobile.client.solutionmodel;
+package com.servoy.mobile.client.persistence;
 
 /*
 This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
@@ -17,20 +17,13 @@ with this program; if not, see http://www.gnu.org/licenses or write to the Free
 Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
 */
 
-import com.google.gwt.core.client.JsArray;
-
 /**
  * @author gboros
  */
-public class JSTabPanel extends JSComponent
+public class Tab extends BaseComponent
 {
-    public static final int ORIENTATION_TOP     = 1;
-    public static final int ORIENTATION_BOTTOM  = 3;
+	protected Tab() {}
 	
-	protected JSTabPanel() {}
-	
-	public final native String getSize() /*-{ return this.size;	}-*/;
 	public final native String getLocation() /*-{ return this.location;	}-*/;
-	public final native int getTabOrientation() /*-{ return this.tabOrientation;	}-*/;
-	public final native JsArray<JSTab> getTabs() /*-{ return this.items; }-*/;
+	public final native String getContainsFormID() /*-{ return this.containsFormID;	}-*/;
 }

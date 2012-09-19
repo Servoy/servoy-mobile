@@ -1,4 +1,4 @@
-package com.servoy.mobile.client.solutionmodel;
+package com.servoy.mobile.client.persistence;
 
 /*
 This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
@@ -17,13 +17,33 @@ with this program; if not, see http://www.gnu.org/licenses or write to the Free
 Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
 */
 
+
 /**
  * @author gboros
  */
-public class JSTab extends JSItem
+public class Component extends BaseComponent
 {
-	protected JSTab() {}
+	private static final int TYPE_ID_GRAPHICALCOMPONENT = 7;
+	private static final int TYPE_ID_FIELD = 4;
+	private static final int TYPE_ID_TABPANEL = 16;
 	
-	public final native String getLocation() /*-{ return this.location;	}-*/;
-	public final native String getContainsFormID() /*-{ return this.containsFormID;	}-*/;
+	protected Component() {}
+
+	public final native int getTypeID() /*-{ return this.typeid;	}-*/;
+	public final native String getUUID() /*-{ return this.uuid; }-*/;
+
+	public final GraphicalComponent isGraphicalComponent()
+	{
+		return getTypeID() == TYPE_ID_GRAPHICALCOMPONENT ? (GraphicalComponent)this.cast() : null;
+	}
+	
+	public final Field isField()
+	{
+		return getTypeID() == TYPE_ID_FIELD ? (Field)this.cast() : null;
+	}
+	
+	public final TabPanel isTabPanel()
+	{
+		return getTypeID() == TYPE_ID_TABPANEL ? (TabPanel)this.cast() : null;
+	}
 }

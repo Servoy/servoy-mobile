@@ -49,6 +49,8 @@ public class Record extends Scope
 		recordDescription = rd;
 		relatedFoundSets = new HashMap<String, FoundSet>();
 		exportColumns();
+		exportProperty("foundset");
+		export();
 	}
 
 	//new record
@@ -63,9 +65,15 @@ public class Record extends Scope
 		return recordDescription.getPK();
 	}
 
+	public String getDataSource()
+	{
+		return parent.getEntityName(); // TODO entity -> datasource??
+	}
+
 	@Override
 	public Object getValue(String dataProviderID)
 	{
+		if ("foundset".equals(dataProviderID)) return parent;
 		RowDescription rd = getRowDescription();
 		if (rd == null) return null;
 		int type = getVariableType(dataProviderID);
@@ -184,4 +192,10 @@ public class Record extends Scope
 			exportProperty(primaryRelations.get(i).getName());
 		}
 	}
+
+	public native void export() /*-{
+		this.getDataSource = function() {
+			return this.@com.servoy.mobile.client.dataprocessing.Record::getDataSource()();
+		}
+	}-*/;
 }

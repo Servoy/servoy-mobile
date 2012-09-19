@@ -24,15 +24,18 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.Window;
+import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.dataprocessing.FoundSetManager;
 import com.servoy.mobile.client.dataprocessing.OfflineDataProxy;
 import com.servoy.mobile.client.dto.ValueListDescription;
+import com.servoy.mobile.client.persistence.Solution;
+import com.servoy.mobile.client.scripting.Controller;
 import com.servoy.mobile.client.scripting.GlobalScope;
 import com.servoy.mobile.client.scripting.JSApplication;
 import com.servoy.mobile.client.scripting.JSDatabaseManager;
+import com.servoy.mobile.client.scripting.JSHistory;
 import com.servoy.mobile.client.scripting.PluginsScope;
 import com.servoy.mobile.client.scripting.Scope;
-import com.servoy.mobile.client.solutionmodel.JSSolutionModel;
 import com.servoy.mobile.client.util.Failure;
 import com.sksamuel.jqm4gwt.Mobile;
 
@@ -48,12 +51,19 @@ public class MobileClient implements EntryPoint
 	private FoundSetManager foundSetManager;
 	private OfflineDataProxy offlineDataProxy;
 	private FormManager formManager;
-	private JSSolutionModel solutionModel;
+	private Solution solution;
 
 	@Override
 	public void onModuleLoad()
 	{
-		solutionModel = createJSSolutionModel();
+		GWT.create(JSDatabaseManager.class);
+		GWT.create(JSApplication.class);
+		GWT.create(Controller.class);
+		GWT.create(JSHistory.class);
+		GWT.create(FoundSet.class); // foundset is not a scope yet, if it becomes a scope (aggregates) then this can't be done, or must he exported differently
+
+
+		solution = createSolution();
 		foundSetManager = new FoundSetManager(this);
 		offlineDataProxy = new OfflineDataProxy(foundSetManager, getServerURL());
 		formManager = new FormManager(this);
@@ -74,7 +84,7 @@ public class MobileClient implements EntryPoint
 
 	protected String getServerURL()
 	{
-		String serverURL = solutionModel.getServerUrl();
+		String serverURL = solution.getServerUrl();
 		if (serverURL == null)
 		{
 			serverURL = "http://127.0.0.1:8080";
@@ -90,7 +100,7 @@ public class MobileClient implements EntryPoint
 
 	protected String getSolutionName()
 	{
-		String solName = solutionModel.getSolutionName();
+		String solName = solution.getSolutionName();
 		if (solName == null)
 		{
 			solName = "MobileClient";
@@ -98,8 +108,8 @@ public class MobileClient implements EntryPoint
 		return solName;
 	}
 
-	protected native JSSolutionModel createJSSolutionModel() /*-{
-		// Get a reference to the first customer in the JSON array from earlier
+	protected native Solution createSolution()
+	/*-{
 		return $wnd._solutiondata_;
 	}-*/;
 
@@ -210,9 +220,9 @@ public class MobileClient implements EntryPoint
 		return foundSetManager;
 	}
 
-	public JSSolutionModel getSolutionModel()
+	public Solution getSolution()
 	{
-		return solutionModel;
+		return solution;
 	}
 
 	public void showFirstForm()
@@ -226,12 +236,13 @@ public class MobileClient implements EntryPoint
 	}
 
 	//check to see if currently connected to IP network
-	public final native boolean isOnline()/*-{
+	public final native boolean isOnline()
+	/*-{
 		try {
-			return $wnd.navigator.onLine;
+		return $wnd.navigator.onLine;
 		} catch (err) {
-			//browser does not support onLine yet
-			return true;
+		//browser does not support onLine yet
+		return true;
 		}
 	}-*/;
 
@@ -261,33 +272,34 @@ public class MobileClient implements EntryPoint
 		return scope;
 	}
 
-	private native void export()/*-{
+	private native void export()
+	/*-{
 		$wnd._ServoyUtils_.application = this;
 		$wnd._ServoyUtils_.getGlobalScope = function(name) {
-			return $wnd._ServoyUtils_.application.@com.servoy.mobile.client.MobileClient::getGlobalScope(Ljava/lang/String;)(name);
+		return $wnd._ServoyUtils_.application.@com.servoy.mobile.client.MobileClient::getGlobalScope(Ljava/lang/String;)(name);
 		}
 		$wnd._ServoyUtils_.setScopeVariableType = function(scope, name, type) {
-			return scope.@com.servoy.mobile.client.scripting.Scope::setVariableType(Ljava/lang/String;I)(name,type);
+		return scope.@com.servoy.mobile.client.scripting.Scope::setVariableType(Ljava/lang/String;I)(name,type);
 		}
 		$wnd._ServoyUtils_.getScopeVariable = function(scope, name) {
-			var type = scope.@com.servoy.mobile.client.scripting.Scope::getVariableType(Ljava/lang/String;)(name);
-			if (type == 8 || type == 4) {
-				var value = scope.@com.servoy.mobile.client.scripting.Scope::getVariableNumberValue(Ljava/lang/String;)(name);
-				return isNaN(value) ? null : value;
-			} else if (type == 93) {
-				return scope.@com.servoy.mobile.client.scripting.Scope::getVariableDateValue(Ljava/lang/String;)(name);
-			}
-			return scope.@com.servoy.mobile.client.scripting.Scope::getVariableValue(Ljava/lang/String;)(name);
+		var type = scope.@com.servoy.mobile.client.scripting.Scope::getVariableType(Ljava/lang/String;)(name);
+		if (type == 8 || type == 4) {
+		var value = scope.@com.servoy.mobile.client.scripting.Scope::getVariableNumberValue(Ljava/lang/String;)(name);
+		return isNaN(value) ? null : value;
+		} else if (type == 93) {
+		return scope.@com.servoy.mobile.client.scripting.Scope::getVariableDateValue(Ljava/lang/String;)(name);
+		}
+		return scope.@com.servoy.mobile.client.scripting.Scope::getVariableValue(Ljava/lang/String;)(name);
 		}
 		$wnd._ServoyUtils_.setScopeVariable = function(scope, name, value) {
-			var type = scope.@com.servoy.mobile.client.scripting.Scope::getVariableType(Ljava/lang/String;)(name);
-			if (typeof value == "number" || type == 8 || type == 4) {
-				scope.@com.servoy.mobile.client.scripting.Scope::setVariableNumberValue(Ljava/lang/String;D)(name,value);
-			} else if (type == 93) {
-				scope.@com.servoy.mobile.client.scripting.Scope::setVariableDateValue(Ljava/lang/String;Lcom/google/gwt/core/client/JsDate;)(name,value);
-			} else {
-				scope.@com.servoy.mobile.client.scripting.Scope::setVariableValue(Ljava/lang/String;Ljava/lang/Object;)(name,value);
-			}
+		var type = scope.@com.servoy.mobile.client.scripting.Scope::getVariableType(Ljava/lang/String;)(name);
+		if (typeof value == "number" || type == 8 || type == 4) {
+		scope.@com.servoy.mobile.client.scripting.Scope::setVariableNumberValue(Ljava/lang/String;D)(name,value);
+		} else if (type == 93) {
+		scope.@com.servoy.mobile.client.scripting.Scope::setVariableDateValue(Ljava/lang/String;Lcom/google/gwt/core/client/JsDate;)(name,value);
+		} else {
+		scope.@com.servoy.mobile.client.scripting.Scope::setVariableValue(Ljava/lang/String;Ljava/lang/Object;)(name,value);
+		}
 		}
 		$wnd._ServoyInit_.init();
 	}-*/;

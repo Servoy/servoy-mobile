@@ -20,14 +20,14 @@ package com.servoy.mobile.client.ui;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.user.client.ui.Widget;
 import com.servoy.mobile.client.MobileClient;
-import com.servoy.mobile.client.solutionmodel.JSComponent;
-import com.servoy.mobile.client.solutionmodel.JSField;
-import com.servoy.mobile.client.solutionmodel.JSForm;
-import com.servoy.mobile.client.solutionmodel.JSGraphicalComponent;
-import com.servoy.mobile.client.solutionmodel.JSItem;
-import com.servoy.mobile.client.solutionmodel.JSSolutionModel;
-import com.servoy.mobile.client.solutionmodel.JSTab;
-import com.servoy.mobile.client.solutionmodel.JSTabPanel;
+import com.servoy.mobile.client.persistence.Component;
+import com.servoy.mobile.client.persistence.Field;
+import com.servoy.mobile.client.persistence.Form;
+import com.servoy.mobile.client.persistence.GraphicalComponent;
+import com.servoy.mobile.client.persistence.BaseComponent;
+import com.servoy.mobile.client.persistence.Solution;
+import com.servoy.mobile.client.persistence.Tab;
+import com.servoy.mobile.client.persistence.TabPanel;
 import com.servoy.mobile.client.util.Utils;
 
 /**
@@ -44,18 +44,18 @@ public class ComponentFactory
 	 * 
 	 * @return form display
 	 */
-	public static IFormDisplay createFormDisplay(MobileClient application, JSForm form)
+	public static IFormDisplay createFormDisplay(MobileClient application, Form form)
 	{
 		int viewType = form.getView();
-		if (viewType == JSForm.VIEW_TYPE_LIST || viewType == JSForm.VIEW_TYPE_LIST_LOCKED)
+		if (viewType == Form.VIEW_TYPE_LIST || viewType == Form.VIEW_TYPE_LIST_LOCKED)
 		{
 			return new ListFormDisplay(application, form);
 		}
 
-		JsArray<JSComponent> formComponents = form.getComponents();
-		JSComponent component;
-		JSItem.MobileProperties mobileProperties;
-		JSTabPanel tabPanel = null;
+		JsArray<Component> formComponents = form.getComponents();
+		Component component;
+		BaseComponent.MobileProperties mobileProperties;
+		TabPanel tabPanel = null;
 		for (int i = 0; i < formComponents.length(); i++)
 		{
 			component = formComponents.get(i);
@@ -76,11 +76,11 @@ public class ComponentFactory
 	 * 
 	 * @return UI component
 	 */
-	public static Widget createComponent(JSSolutionModel solutionModel, JSComponent component, Executor executor)
+	public static Widget createComponent(Solution solutionModel, Component component, Executor executor)
 	{
 		Widget componentWidget = null;
 		String sizeProperty = null;
-		JSGraphicalComponent gc = component.isGraphicalComponent();
+		GraphicalComponent gc = component.isGraphicalComponent();
 		if (gc != null)
 		{
 			if (gc.isShowClick() && gc.getActionMethodID() != null)
@@ -98,33 +98,33 @@ public class ComponentFactory
 		}
 		else
 		{
-			JSField field = component.isField();
+			Field field = component.isField();
 			if (field != null)
 			{
 				switch (field.getDisplayType())
 				{
-					case JSField.DISPLAY_TYPE_TEXT_FIELD :
+					case Field.DISPLAY_TYPE_TEXT_FIELD :
 						componentWidget = new DataTextField(field);
 						break;
-					case JSField.DISPLAY_TYPE_TEXT_AREA :
+					case Field.DISPLAY_TYPE_TEXT_AREA :
 						componentWidget = new DataTextArea(field);
 						break;
-					case JSField.DISPLAY_TYPE_COMBOBOX :
+					case Field.DISPLAY_TYPE_COMBOBOX :
 						componentWidget = new DataSelect(field);
 						break;
-					case JSField.DISPLAY_TYPE_RADIOS :
+					case Field.DISPLAY_TYPE_RADIOS :
 						componentWidget = new DataRadioSet(field);
 						break;
-					case JSField.DISPLAY_TYPE_CHECKS :
+					case Field.DISPLAY_TYPE_CHECKS :
 						componentWidget = new DataCheckboxSet(field);
 						break;
-					case JSField.DISPLAY_TYPE_CALENDAR :
+					case Field.DISPLAY_TYPE_CALENDAR :
 						componentWidget = new DataTextField(field);
 						break;
-					case JSField.DISPLAY_TYPE_LIST_BOX :
+					case Field.DISPLAY_TYPE_LIST_BOX :
 						componentWidget = new DataList(field);
 						break;
-					case JSField.DISPLAY_TYPE_PASSWORD :
+					case Field.DISPLAY_TYPE_PASSWORD :
 						componentWidget = new DataPassword(field);
 						break;
 				}
@@ -133,11 +133,11 @@ public class ComponentFactory
 			}
 			else
 			{
-				JSTabPanel tabPanel = component.isTabPanel();
-				JSItem.MobileProperties mobileProperties = component.getMobileProperties();
+				TabPanel tabPanel = component.isTabPanel();
+				BaseComponent.MobileProperties mobileProperties = component.getMobileProperties();
 				if (tabPanel != null && mobileProperties != null && mobileProperties.isListTabPanel())
 				{
-					JsArray<JSTab> tabs = tabPanel.getTabs();
+					JsArray<Tab> tabs = tabPanel.getTabs();
 
 					if (tabs.length() > 0)
 					{

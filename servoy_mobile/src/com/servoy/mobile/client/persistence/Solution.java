@@ -1,4 +1,4 @@
-package com.servoy.mobile.client.solutionmodel;
+package com.servoy.mobile.client.persistence;
 
 /*
  This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
@@ -17,14 +17,16 @@ package com.servoy.mobile.client.solutionmodel;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
+import org.timepedia.exporter.client.Export;
+
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * @author gboros
  */
-public class JSSolutionModel extends JavaScriptObject
+public class Solution extends JavaScriptObject
 {
-	protected JSSolutionModel()
+	protected Solution()
 	{
 	}
 
@@ -32,7 +34,7 @@ public class JSSolutionModel extends JavaScriptObject
 		return this.forms.length;
 	}-*/;
 
-	public final native JSForm get(int i) /*-{
+	public final native Form get(int i) /*-{
 		return this.forms[i];
 	}-*/;
 
@@ -44,7 +46,8 @@ public class JSSolutionModel extends JavaScriptObject
 		return this.serverURL;
 	}-*/;
 
-	public final JSForm getForm(String name)
+	@Export
+	public final Form getForm(String name)
 	{
 		for (int i = 0; i < formCount(); i++)
 		{
@@ -53,7 +56,7 @@ public class JSSolutionModel extends JavaScriptObject
 		return null;
 	}
 
-	public final JSForm getFormByUUID(String uuid)
+	public final Form getFormByUUID(String uuid)
 	{
 		for (int i = 0; i < formCount(); i++)
 		{

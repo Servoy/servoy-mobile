@@ -26,13 +26,13 @@ import java.util.Map.Entry;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.user.client.ui.Widget;
 import com.servoy.mobile.client.MobileClient;
+import com.servoy.mobile.client.persistence.BaseComponent;
+import com.servoy.mobile.client.persistence.Component;
+import com.servoy.mobile.client.persistence.Field;
+import com.servoy.mobile.client.persistence.Form;
+import com.servoy.mobile.client.persistence.GraphicalComponent;
+import com.servoy.mobile.client.persistence.Solution;
 import com.servoy.mobile.client.scripting.FormScope;
-import com.servoy.mobile.client.solutionmodel.JSComponent;
-import com.servoy.mobile.client.solutionmodel.JSField;
-import com.servoy.mobile.client.solutionmodel.JSForm;
-import com.servoy.mobile.client.solutionmodel.JSGraphicalComponent;
-import com.servoy.mobile.client.solutionmodel.JSItem;
-import com.servoy.mobile.client.solutionmodel.JSSolutionModel;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
@@ -46,24 +46,24 @@ import com.sksamuel.jqm4gwt.toolbar.JQMToolBarButton;
 public class FormPage extends JQMPage
 {
 	protected final MobileClient application;
-	private final JSForm form;
+	private final Form form;
 	private final Executor executor;
 	private FormScope formScope;
 
-	public FormPage(MobileClient application, JSForm form)
+	public FormPage(MobileClient application, Form form)
 	{
 		this.application = application;
 		this.form = form;
 		this.executor = new Executor(this);
 
-		JsArray<JSComponent> formComponents = form.getComponents();
+		JsArray<Component> formComponents = form.getComponents();
 
-		JSComponent headerLabel = null, headerLeftButton = null, headerRightButton = null;
-		ArrayList<JSComponent> footerComponents = new ArrayList<JSComponent>();
-		ArrayList<JSComponent> contentComponents = new ArrayList<JSComponent>();
+		Component headerLabel = null, headerLeftButton = null, headerRightButton = null;
+		ArrayList<Component> footerComponents = new ArrayList<Component>();
+		ArrayList<Component> contentComponents = new ArrayList<Component>();
 
-		JSComponent component;
-		JSItem.MobileProperties mobileProperties;
+		Component component;
+		BaseComponent.MobileProperties mobileProperties;
 
 		for (int i = 0; i < formComponents.length(); i++)
 		{
@@ -103,7 +103,7 @@ public class FormPage extends JQMPage
 		if (componentFooter != null) add(componentFooter);
 	}
 
-	public JQMHeader createHeader(JSComponent label, JSComponent leftButton, JSComponent rightButton)
+	public JQMHeader createHeader(Component label, Component leftButton, Component rightButton)
 	{
 		String text = null;
 		JQMToolBarButton leftToolbarButton = null;
@@ -111,19 +111,19 @@ public class FormPage extends JQMPage
 
 		if (label != null)
 		{
-			JSGraphicalComponent gc = label.isGraphicalComponent();
+			GraphicalComponent gc = label.isGraphicalComponent();
 			if (gc != null) text = gc.getText();
 		}
 
 		if (leftButton != null)
 		{
-			JSGraphicalComponent gc = leftButton.isGraphicalComponent();
+			GraphicalComponent gc = leftButton.isGraphicalComponent();
 			if (gc != null) leftToolbarButton = new JQMToolBarButton(gc.getText());
 		}
 
 		if (rightButton != null)
 		{
-			JSGraphicalComponent gc = rightButton.isGraphicalComponent();
+			GraphicalComponent gc = rightButton.isGraphicalComponent();
 			if (gc != null) rightToolbarButton = new JQMToolBarButton(gc.getText());
 		}
 
@@ -145,16 +145,16 @@ public class FormPage extends JQMPage
 		return headerComponent;
 	}
 
-	public void createContent(ArrayList<JSComponent> contentComponents)
+	public void createContent(ArrayList<Component> contentComponents)
 	{
-		JSSolutionModel solutionModel = application.getSolutionModel();
+		Solution solutionModel = application.getSolution();
 		Collections.sort(contentComponents, PositionComparator.YX_COMPARATOR);
 		HashMap<String, String> fieldsetLabel = new HashMap<String, String>();
 		HashMap<String, DataTextField> fieldsetField = new HashMap<String, DataTextField>();
-		JSGraphicalComponent gc;
-		JSField field;
+		GraphicalComponent gc;
+		Field field;
 		String groupID;
-		for (JSComponent c : contentComponents)
+		for (Component c : contentComponents)
 		{
 			groupID = null;
 			if ((gc = c.isGraphicalComponent()) != null)
@@ -193,13 +193,13 @@ public class FormPage extends JQMPage
 		}
 	}
 
-	public JQMFooter createFooter(ArrayList<JSComponent> footerComponents)
+	public JQMFooter createFooter(ArrayList<Component> footerComponents)
 	{
 		if (footerComponents.size() < 1) return null;
 		Collections.sort(footerComponents, PositionComparator.XY_COMPARATOR);
 		JQMFooter footerComponent = new JQMFooter();
-		for (JSComponent c : footerComponents)
-			footerComponent.add(ComponentFactory.createComponent(application.getSolutionModel(), c, executor));
+		for (Component c : footerComponents)
+			footerComponent.add(ComponentFactory.createComponent(application.getSolution(), c, executor));
 		return footerComponent;
 	}
 

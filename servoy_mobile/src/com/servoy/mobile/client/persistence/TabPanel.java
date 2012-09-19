@@ -1,4 +1,4 @@
-package com.servoy.mobile.client.solutionmodel;
+package com.servoy.mobile.client.persistence;
 
 /*
 This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
@@ -17,33 +17,20 @@ with this program; if not, see http://www.gnu.org/licenses or write to the Free
 Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
 */
 
+import com.google.gwt.core.client.JsArray;
 
 /**
  * @author gboros
  */
-public class JSComponent extends JSItem
+public class TabPanel extends Component
 {
-	private static final int TYPE_ID_GRAPHICALCOMPONENT = 7;
-	private static final int TYPE_ID_FIELD = 4;
-	private static final int TYPE_ID_TABPANEL = 16;
+    public static final int ORIENTATION_TOP     = 1;
+    public static final int ORIENTATION_BOTTOM  = 3;
 	
-	protected JSComponent() {}
-
-	public final native int getTypeID() /*-{ return this.typeid;	}-*/;
-	public final native String getUUID() /*-{ return this.uuid; }-*/;
-
-	public final JSGraphicalComponent isGraphicalComponent()
-	{
-		return getTypeID() == TYPE_ID_GRAPHICALCOMPONENT ? (JSGraphicalComponent)this.cast() : null;
-	}
+	protected TabPanel() {}
 	
-	public final JSField isField()
-	{
-		return getTypeID() == TYPE_ID_FIELD ? (JSField)this.cast() : null;
-	}
-	
-	public final JSTabPanel isTabPanel()
-	{
-		return getTypeID() == TYPE_ID_TABPANEL ? (JSTabPanel)this.cast() : null;
-	}
+	public final native String getSize() /*-{ return this.size;	}-*/;
+	public final native String getLocation() /*-{ return this.location;	}-*/;
+	public final native int getTabOrientation() /*-{ return this.tabOrientation;	}-*/;
+	public final native JsArray<Tab> getTabs() /*-{ return this.items; }-*/;
 }

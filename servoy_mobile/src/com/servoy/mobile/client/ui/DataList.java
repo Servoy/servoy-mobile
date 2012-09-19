@@ -17,7 +17,7 @@ with this program; if not, see http://www.gnu.org/licenses or write to the Free
 Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
 */
 
-import com.servoy.mobile.client.solutionmodel.JSField;
+import com.servoy.mobile.client.persistence.Field;
 import com.sksamuel.jqm4gwt.list.JQMList;
 
 /**
@@ -27,7 +27,7 @@ import com.sksamuel.jqm4gwt.list.JQMList;
  */
 public class DataList extends JQMList
 {
-	public DataList(JSField field)
+	public DataList(Field field)
 	{
 		
 	}

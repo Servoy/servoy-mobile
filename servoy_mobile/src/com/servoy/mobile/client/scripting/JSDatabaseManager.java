@@ -17,34 +17,51 @@
 
 package com.servoy.mobile.client.scripting;
 
+import org.timepedia.exporter.client.Export;
+import org.timepedia.exporter.client.Exportable;
+import org.timepedia.exporter.client.ExporterUtil;
+
+import com.google.gwt.user.client.Window;
 import com.servoy.mobile.client.dataprocessing.FoundSetManager;
 
 /**
  * @author jcompagner
  *
  */
-public class JSDatabaseManager
+@Export
+public class JSDatabaseManager implements Exportable
 {
 	private final FoundSetManager manager;
-
 
 	public JSDatabaseManager(FoundSetManager manager)
 	{
 		this.manager = manager;
-		export();
+		export(ExporterUtil.wrap(this));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.scripting.IDatabaseManager#saveData(java.lang.Object)
+	 */
 	public void saveData(Object object)
 	{
 		manager.saveData();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.scripting.IDatabaseManager#test()
+	 */
+	public void test()
+	{
+		Window.alert("tst");
+	}
 
-	private native void export()
+
+	private native void export(Object object)
 	/*-{
-		$wnd.databaseManager = this;
-		$wnd.databaseManager.saveData = function(obj) {
-			return $wnd.databaseManager.@com.servoy.mobile.client.scripting.JSDatabaseManager::saveData(Ljava/lang/Object;)(obj);
-		}
+		$wnd.databaseManager = object;
 	}-*/;
 }

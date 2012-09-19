@@ -11,6 +11,7 @@
   <!-- Inherit the core Web Toolkit stuff.                        -->
   <inherits name='com.google.gwt.user.User'/>
   <inherits name='com.google.gwt.json.JSON'/>
+
   
   <!-- Inherit the default GWT style sheet.  You can change       -->
   <!-- the theme of your GWT application by uncommenting          -->
@@ -21,13 +22,14 @@
 
   <!-- Other module inherits                                      -->
   <inherits name='com.sksamuel.Jqm4gwt' />
+  <inherits name='org.timepedia.exporter.Exporter'/>
   <!-- <inherits name='com.google.gwt.modernizr.Gwtmodernizr' /> -->
-  <!-- <inherits name='org.timepedia.exporter.Exporter'/>  -->  
-  <!-- <set-property name="export" value="yes"/> -->
+
+  <set-property name="export" value="yes"/>
   
     <!-- Specify the app entry point class.                         -->
   <entry-point class='com.servoy.mobile.client.MobileClient'/>
-  
+
   <!-- Specify the paths for translatable code                    -->
   <source path='client'/>
 

@@ -20,9 +20,9 @@ Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
 import java.util.ArrayList;
 
 import com.servoy.mobile.client.MobileClient;
-import com.servoy.mobile.client.solutionmodel.JSComponent;
-import com.servoy.mobile.client.solutionmodel.JSForm;
-import com.servoy.mobile.client.solutionmodel.JSSolutionModel;
+import com.servoy.mobile.client.persistence.Component;
+import com.servoy.mobile.client.persistence.Form;
+import com.servoy.mobile.client.persistence.Solution;
 
 /**
  * Form display in list view mode
@@ -33,7 +33,7 @@ public class ListFormDisplay implements IFormDisplay
 {
 	private ListFormPage listFormPage;
 	
-	public ListFormDisplay(MobileClient application, JSForm form)
+	public ListFormDisplay(MobileClient application, Form form)
 	{
 		listFormPage = new ListFormPage(application, form);
 	}
@@ -46,15 +46,15 @@ public class ListFormDisplay implements IFormDisplay
 
 	class ListFormPage extends FormPage
 	{
-		private JSForm form;
-		public ListFormPage(MobileClient application, JSForm form)
+		private Form form;
+		public ListFormPage(MobileClient application, Form form)
 		{
 			super(application, form);
 			this.form = form;
 		}
 		
 		@Override
-		public void createContent(ArrayList<JSComponent> contentComponents)
+		public void createContent(ArrayList<Component> contentComponents)
 		{
 			add(new FormList(form));
 		}

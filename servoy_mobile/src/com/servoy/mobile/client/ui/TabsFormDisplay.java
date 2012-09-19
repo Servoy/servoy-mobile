@@ -24,11 +24,11 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.servoy.mobile.client.MobileClient;
-import com.servoy.mobile.client.solutionmodel.JSComponent;
-import com.servoy.mobile.client.solutionmodel.JSForm;
-import com.servoy.mobile.client.solutionmodel.JSSolutionModel;
-import com.servoy.mobile.client.solutionmodel.JSTab;
-import com.servoy.mobile.client.solutionmodel.JSTabPanel;
+import com.servoy.mobile.client.persistence.Component;
+import com.servoy.mobile.client.persistence.Form;
+import com.servoy.mobile.client.persistence.Solution;
+import com.servoy.mobile.client.persistence.Tab;
+import com.servoy.mobile.client.persistence.TabPanel;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
@@ -45,10 +45,10 @@ public class TabsFormDisplay implements IFormDisplay
 	private HashMap<String, TabFormPage> tabPages;
 	private String currentDisplayFormName;
 	private final MobileClient application;
-	private final JSTabPanel tabPanel;
+	private final TabPanel tabPanel;
 	private NavigationBar navigationBar;
 
-	public TabsFormDisplay(MobileClient application, JSForm form, JSTabPanel tabPanel)
+	public TabsFormDisplay(MobileClient application, Form form, TabPanel tabPanel)
 	{
 		this.application = application;
 		this.tabPanel = tabPanel;
@@ -80,11 +80,11 @@ public class TabsFormDisplay implements IFormDisplay
 		TabFormPage tabFormPage = tabPages.get(formID);
 		if (tabFormPage == null)
 		{
-			JsArray<JSTab> tabs = tabPanel.getTabs();
-			JSSolutionModel solutionModel = application.getSolutionModel();
+			JsArray<Tab> tabs = tabPanel.getTabs();
+			Solution solutionModel = application.getSolution();
 			for (int i = 0; i < tabs.length(); i++)
 			{
-				JSForm tabForm = solutionModel.getFormByUUID(tabs.get(i).getContainsFormID());
+				Form tabForm = solutionModel.getFormByUUID(tabs.get(i).getContainsFormID());
 				tabFormPage = new TabFormPage(application, tabForm);
 				tabPages.put(formID, tabFormPage);
 			}
@@ -94,16 +94,16 @@ public class TabsFormDisplay implements IFormDisplay
 
 	class TabFormPage extends FormPage
 	{
-		public TabFormPage(MobileClient application, JSForm form)
+		public TabFormPage(MobileClient application, Form form)
 		{
 			super(application, form);
 		}
 
 		@Override
-		public JQMHeader createHeader(JSComponent headerLabel, JSComponent headerLeftButton, JSComponent headerRightButton)
+		public JQMHeader createHeader(Component headerLabel, Component headerLeftButton, Component headerRightButton)
 		{
 			JQMHeader headerComponent = super.createHeader(headerLabel, headerLeftButton, headerRightButton);
-			if (tabPanel.getTabOrientation() == JSTabPanel.ORIENTATION_TOP)
+			if (tabPanel.getTabOrientation() == TabPanel.ORIENTATION_TOP)
 			{
 				if (headerComponent == null) headerComponent = new JQMHeader(""); //$NON-NLS-1$
 				headerComponent.add(getNavigatonBar());
@@ -112,10 +112,10 @@ public class TabsFormDisplay implements IFormDisplay
 		}
 
 		@Override
-		public JQMFooter createFooter(ArrayList<JSComponent> footerComponents)
+		public JQMFooter createFooter(ArrayList<Component> footerComponents)
 		{
 			JQMFooter footerComponent = super.createFooter(footerComponents);
-			if (tabPanel.getTabOrientation() == JSTabPanel.ORIENTATION_BOTTOM)
+			if (tabPanel.getTabOrientation() == TabPanel.ORIENTATION_BOTTOM)
 			{
 				if (footerComponent == null) footerComponent = new JQMFooter();
 				footerComponent.add(getNavigatonBar());
@@ -141,12 +141,12 @@ public class TabsFormDisplay implements IFormDisplay
 
 		NavigationBar()
 		{
-			JsArray<JSTab> tabs = tabPanel.getTabs();
-			JSSolutionModel solutionModel = application.getSolutionModel();
+			JsArray<Tab> tabs = tabPanel.getTabs();
+			Solution solutionModel = application.getSolution();
 			for (int i = 0; i < tabs.length(); i++)
 			{
 				String tabFormID = tabs.get(i).getContainsFormID();
-				JSForm tabForm = solutionModel.getFormByUUID(tabFormID);
+				Form tabForm = solutionModel.getFormByUUID(tabFormID);
 				NavigationButton navButton = new NavigationButton(tabForm.getName(), tabFormID);
 				navButton.addClickHandler(navigationClickHandler);
 				navButtons.put(tabFormID, navButton);

@@ -1,4 +1,4 @@
-package com.servoy.mobile.client.solutionmodel;
+package com.servoy.mobile.client.persistence;
 
 /*
  This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
@@ -22,7 +22,7 @@ import com.google.gwt.core.client.JsArray;
 /**
  * @author gboros
  */
-public class JSForm extends JSItem
+public class Form extends BaseComponent
 {
 	public static final int VIEW_TYPE_RECORD = 0;
 	public static final int VIEW_TYPE_LIST = 1;
@@ -31,7 +31,7 @@ public class JSForm extends JSItem
 	public static final int VIEW_TYPE_LIST_LOCKED = 4;
 	public static final int VIEW_TYPE_RECORD_LOCKED = 5;
 
-	protected JSForm()
+	protected Form()
 	{
 	}
 
@@ -55,7 +55,7 @@ public class JSForm extends JSItem
 		return this.view ? this.view : 0;
 	}-*/;
 
-	public final native JsArray<JSComponent> getComponents() /*-{
+	public final native JsArray<Component> getComponents() /*-{
 		return this.items;
 	}-*/;
 

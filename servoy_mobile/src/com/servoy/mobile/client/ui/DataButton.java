@@ -19,7 +19,7 @@ package com.servoy.mobile.client.ui;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.servoy.mobile.client.solutionmodel.JSGraphicalComponent;
+import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 
 /**
@@ -31,7 +31,7 @@ public class DataButton extends JQMButton
 {
 	private final Executor executor;
 
-	public DataButton(JSGraphicalComponent gc, Executor executor)
+	public DataButton(GraphicalComponent gc, Executor executor)
 	{
 		super(gc.getText());
 		this.executor = executor;

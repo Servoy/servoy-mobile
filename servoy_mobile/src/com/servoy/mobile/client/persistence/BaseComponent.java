@@ -1,4 +1,4 @@
-package com.servoy.mobile.client.solutionmodel;
+package com.servoy.mobile.client.persistence;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
@@ -8,9 +8,9 @@ import com.google.gwt.json.client.JSONParser;
  * 
  * @author gboros
  */
-public class JSItem extends JavaScriptObject
+public class BaseComponent extends JavaScriptObject
 {
-	protected JSItem() {}
+	protected BaseComponent() {}
 	
 	public final native String getCustomProperties() /*-{ return this.customProperties; }-*/;
 	
