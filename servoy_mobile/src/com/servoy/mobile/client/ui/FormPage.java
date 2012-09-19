@@ -24,6 +24,8 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Widget;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.persistence.BaseComponent;
@@ -106,25 +108,13 @@ public class FormPage extends JQMPage
 	public JQMHeader createHeader(Component label, Component leftButton, Component rightButton)
 	{
 		String text = null;
-		JQMToolBarButton leftToolbarButton = null;
-		JQMToolBarButton rightToolbarButton = null;
+		JQMToolBarButton leftToolbarButton = createHeaderButton(leftButton);
+		JQMToolBarButton rightToolbarButton = createHeaderButton(rightButton);
 
 		if (label != null)
 		{
 			GraphicalComponent gc = label.isGraphicalComponent();
 			if (gc != null) text = gc.getText();
-		}
-
-		if (leftButton != null)
-		{
-			GraphicalComponent gc = leftButton.isGraphicalComponent();
-			if (gc != null) leftToolbarButton = new JQMToolBarButton(gc.getText());
-		}
-
-		if (rightButton != null)
-		{
-			GraphicalComponent gc = rightButton.isGraphicalComponent();
-			if (gc != null) rightToolbarButton = new JQMToolBarButton(gc.getText());
 		}
 
 		JQMHeader headerComponent = null;
@@ -143,6 +133,34 @@ public class FormPage extends JQMPage
 			}
 		}
 		return headerComponent;
+	}
+
+	private JQMToolBarButton createHeaderButton(Component button)
+	{
+		JQMToolBarButton headerButton = null;
+
+		if (button != null)
+		{
+			GraphicalComponent gc = button.isGraphicalComponent();
+			if (gc != null)
+			{
+				headerButton = new JQMToolBarButton(gc.getText());
+				final String actionMethod = gc.getActionMethodID();
+				if (actionMethod != null)
+				{
+					headerButton.addClickHandler(new ClickHandler()
+					{
+						@Override
+						public void onClick(ClickEvent event)
+						{
+							executor.execute(actionMethod);
+						}
+					});
+				}
+			}
+		}
+
+		return headerButton;
 	}
 
 	public void createContent(ArrayList<Component> contentComponents)
