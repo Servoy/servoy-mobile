@@ -26,6 +26,8 @@
   <!-- <inherits name='com.google.gwt.modernizr.Gwtmodernizr' /> -->
 
   <set-property name="export" value="yes"/>
+  <set-configuration-property name="locale.useragent" value="Y"/>
+  <set-configuration-property name="locale.searchorder" value="queryparam,cookie,meta,useragent"/>
   
     <!-- Specify the app entry point class.                         -->
   <entry-point class='com.servoy.mobile.client.MobileClient'/>
