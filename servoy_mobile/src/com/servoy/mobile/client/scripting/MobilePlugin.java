@@ -38,10 +38,18 @@ public class MobilePlugin
 		return client.isOnline();
 	}
 
+	public void syncData()
+	{
+		client.sync();
+	}
+
 	private native void export()
 	/*-{
 		this.isOnline = function() {
 			return this.@com.servoy.mobile.client.scripting.MobilePlugin::isOnline()();
-		}
+		};
+		this.syncData = function() {
+			return this.@com.servoy.mobile.client.scripting.MobilePlugin::syncData()();
+		};
 	}-*/;
 }
