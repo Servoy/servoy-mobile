@@ -1,9 +1,13 @@
 package com.servoy.mobile.client;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.form.SubmissionHandler;
 import com.sksamuel.jqm4gwt.html.Paragraph;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
+import com.sksamuel.jqm4gwt.toolbar.JQMToolBarButton;
 
 public class Login extends JQMPage implements SubmissionHandler<LoginData>
 {
@@ -14,6 +18,19 @@ public class Login extends JQMPage implements SubmissionHandler<LoginData>
 		this.application = mc;
 
 		JQMHeader header = new JQMHeader(application.getMessages().loginTitle());
+
+		JQMToolBarButton skip = new JQMToolBarButton("Skip");
+		skip.setIcon(DataIcon.FORWARD);
+		skip.addClickHandler(new ClickHandler()
+		{
+			@Override
+			public void onClick(ClickEvent event)
+			{
+				application.showFirstForm();
+			}
+		});
+		header.setRightButton(skip);
+
 		header.setTheme("b");
 		add(header);
 
