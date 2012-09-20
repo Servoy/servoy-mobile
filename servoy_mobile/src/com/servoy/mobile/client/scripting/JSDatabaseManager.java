@@ -21,7 +21,6 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
 
-import com.google.gwt.user.client.Window;
 import com.servoy.mobile.client.dataprocessing.FoundSetManager;
 
 /**
@@ -49,14 +48,14 @@ public class JSDatabaseManager implements Exportable
 		manager.saveData();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.scripting.IDatabaseManager#test()
-	 */
-	public void test()
+	public boolean setAutoSave(boolean b)
 	{
-		Window.alert("tst");
+		return manager.setAutoSave(b);
+	}
+
+	public boolean getAutoSave()
+	{
+		return manager.getAutoSave();
 	}
 
 

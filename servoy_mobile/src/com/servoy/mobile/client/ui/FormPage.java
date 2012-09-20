@@ -51,6 +51,7 @@ public class FormPage extends JQMPage
 	private final Form form;
 	private final Executor executor;
 	private FormScope formScope;
+	private boolean enabled = true;
 
 	public FormPage(MobileClient application, Form form)
 	{
@@ -242,4 +243,21 @@ public class FormPage extends JQMPage
 	{
 		return form.getDataSource();
 	}
+
+	/**
+	 * @return
+	 */
+	public boolean isEnabled()
+	{
+		return enabled;
+	}
+
+	/**
+	 * @param enabled
+	 */
+	public void setEnabled(boolean enabled)
+	{
+		this.enabled = enabled;
+	}
+
 }

@@ -442,4 +442,23 @@ public class FoundSetManager
 		}
 		return retval;
 	}
+
+	/**
+	 * @param b
+	 * @return
+	 */
+	public boolean setAutoSave(boolean b)
+	{
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	/**
+	 * @return
+	 */
+	public boolean getAutoSave()
+	{
+		// TODO Auto-generated method stub
+		return true;
+	}
 }
