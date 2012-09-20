@@ -17,20 +17,23 @@
 
 package com.servoy.mobile.client.scripting;
 
+import org.timepedia.exporter.client.Export;
+import org.timepedia.exporter.client.Exportable;
+
 import com.servoy.mobile.client.MobileClient;
 
 /**
  * @author lvostinar
  *
  */
-public class MobilePlugin
+@Export
+public class MobilePlugin implements Exportable
 {
 	private final MobileClient client;
 
 	public MobilePlugin(MobileClient client)
 	{
 		this.client = client;
-		export();
 	}
 
 	public boolean isOnline()
@@ -42,14 +45,4 @@ public class MobilePlugin
 	{
 		client.sync();
 	}
-
-	private native void export()
-	/*-{
-		this.isOnline = function() {
-			return this.@com.servoy.mobile.client.scripting.MobilePlugin::isOnline()();
-		};
-		this.syncData = function() {
-			return this.@com.servoy.mobile.client.scripting.MobilePlugin::syncData()();
-		};
-	}-*/;
 }

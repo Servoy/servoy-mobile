@@ -20,6 +20,7 @@ package com.servoy.mobile.client.scripting;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.core.client.GWT;
 import com.servoy.mobile.client.MobileClient;
 
 /**
@@ -37,6 +38,7 @@ public class PluginsScope extends Scope
 
 	private void exportPlugins(MobileClient client)
 	{
+		GWT.create(MobilePlugin.class);
 		export();
 		plugins.put("mobile", new MobilePlugin(client));
 		exportProperty("mobile");
