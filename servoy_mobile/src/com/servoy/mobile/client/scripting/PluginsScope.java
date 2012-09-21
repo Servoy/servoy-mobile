@@ -42,6 +42,10 @@ public class PluginsScope extends Scope
 		export();
 		plugins.put("mobile", new MobilePlugin(client));
 		exportProperty("mobile");
+
+		GWT.create(DialogPlugin.class);
+		plugins.put("dialogs", new DialogPlugin());
+		exportProperty("dialogs");
 	}
 
 	private native void export()
