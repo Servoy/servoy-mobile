@@ -34,8 +34,14 @@ public class DialogPlugin implements Exportable
 
 	}
 
-	public void showWarningDialog(String dialogTitle, String dialogMessage)
+	public String showWarningDialog(String dialogTitle, String dialogMessage)
+	{
+		return showWarningDialog(dialogTitle, dialogMessage, (String[])null);
+	}
+
+	public String showWarningDialog(String dialogTitle, String dialogMessage, String... buttonsText)
 	{
 		Window.alert(dialogMessage == null ? "<null>" : dialogMessage.toString()); //$NON-NLS-1$
+		return (buttonsText != null && buttonsText.length > 0 ? buttonsText[0] : null);
 	}
 }

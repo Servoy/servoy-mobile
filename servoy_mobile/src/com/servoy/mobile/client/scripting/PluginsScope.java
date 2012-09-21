@@ -38,8 +38,9 @@ public class PluginsScope extends Scope
 
 	private void exportPlugins(MobileClient client)
 	{
-		GWT.create(MobilePlugin.class);
 		export();
+
+		GWT.create(MobilePlugin.class);
 		plugins.put("mobile", new MobilePlugin(client));
 		exportProperty("mobile");
 
@@ -56,7 +57,6 @@ public class PluginsScope extends Scope
 	@Override
 	public void setVariableType(String variable, int type)
 	{
-
 	}
 
 	@Override
@@ -74,7 +74,5 @@ public class PluginsScope extends Scope
 	@Override
 	public void setValue(String variable, Object vaue)
 	{
-
 	}
-
 }
