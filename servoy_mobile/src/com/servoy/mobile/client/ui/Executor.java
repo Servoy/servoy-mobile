@@ -1,6 +1,9 @@
 package com.servoy.mobile.client.ui;
 
+import org.timepedia.exporter.client.ExporterUtil;
+
 import com.google.gwt.core.client.JavaScriptObject;
+import com.servoy.mobile.client.scripting.JSEvent;
 
 public class Executor
 {
@@ -25,14 +28,14 @@ public class Executor
 			function = getFunction(methodStack[0], methodStack[1], methodStack[2]);
 		}
 
-		call(function, "test");
+		call(function, ExporterUtil.wrap(new JSEvent()));
 	}
 
 	/**
 	 * @param function
 	 * @param string
 	 */
-	private native void call(JavaScriptObject func, String param)
+	private native void call(JavaScriptObject func, Object param)
 	/*-{
 		func(param);
 	}-*/;
@@ -43,7 +46,7 @@ public class Executor
 	 */
 	private native JavaScriptObject getFunction(String topLevel, String scopeOrForm, String methodName)
 	/*-{
-	    return $wnd[topLevel][scopeOrForm][methodName]
+	    return $wnd[topLevel][scopeOrForm][methodName];
 	}-*/;
 
 
