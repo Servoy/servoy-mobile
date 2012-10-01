@@ -9,7 +9,7 @@
   
   <!-- Default page to serve -->
   <welcome-file-list>
-    <welcome-file>GWTExportTest.html</welcome-file>
+    <welcome-file>servoy_mobile.html</welcome-file>
   </welcome-file-list>
 
 </web-app>
