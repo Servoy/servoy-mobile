@@ -20,6 +20,7 @@ package com.servoy.mobile.client.ui;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
+import com.servoy.mobile.client.scripting.JSEvent;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 
 /**
@@ -46,7 +47,7 @@ public class DataButton extends JQMButton
 				@Override
 				public void onClick(ClickEvent event)
 				{
-					executor.execute(command);
+					executor.fireEventCommand(JSEvent.ACTION, command, DataButton.this, null);
 				}
 			});
 		}

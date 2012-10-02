@@ -17,6 +17,8 @@
 
 package com.servoy.mobile.client.scripting;
 
+import java.util.Date;
+
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
@@ -24,12 +26,38 @@ import org.timepedia.exporter.client.Exportable;
 /**
  * @author jcompagner
  *
+ * TODO should this one just extends the JSEvent from our self to have the same constants?
  */
 @ExportPackage("")
 @Export
 public class JSEvent implements Exportable
 {
-	public JSEvent()
+	public static final String ACTION = "onaction";
+
+
+	private final Object source;
+	private final String type;
+	private final Date timestamp;
+
+	public JSEvent(String type, Object source)
 	{
+		this.type = type;
+		this.source = source;
+		this.timestamp = new Date();
+	}
+
+	public Object getSource()
+	{
+		return source;
+	}
+
+	public String getType()
+	{
+		return type;
+	}
+
+	public Date getTimestamp()
+	{
+		return timestamp;
 	}
 }

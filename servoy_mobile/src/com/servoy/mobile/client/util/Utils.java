@@ -6,27 +6,27 @@ import java.util.Date;
 import com.google.gwt.core.client.GWT;
 
 /*
-This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
+ This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
 
-This program is free software; you can redistribute it and/or modify it under
-the terms of the GNU Affero General Public License as published by the Free
-Software Foundation; either version 3 of the License, or (at your option) any
-later version.
+ This program is free software; you can redistribute it and/or modify it under
+ the terms of the GNU Affero General Public License as published by the Free
+ Software Foundation; either version 3 of the License, or (at your option) any
+ later version.
 
-This program is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along
-with this program; if not, see http://www.gnu.org/licenses or write to the Free
-Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
-*/
+ You should have received a copy of the GNU Affero General Public License along
+ with this program; if not, see http://www.gnu.org/licenses or write to the Free
+ Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
+ */
 
 /**
  * Utils class for various helper functions
  * @author jblok
  */
-public class Utils 
+public class Utils
 {
 	/**
 	 * Try to parse the given string as an integer
@@ -46,7 +46,7 @@ public class Utils
 			return 0;
 		}
 	}
-	
+
 	/**
 	 * Try to parse the given object as an integer
 	 * 
@@ -66,7 +66,7 @@ public class Utils
 		}
 		return getAsInteger(o.toString());
 	}
-	
+
 	/**
 	 * Try to parse the given string as an double
 	 * 
@@ -92,7 +92,7 @@ public class Utils
 	 * @param o the object (Number, String, ...) to parse
 	 * @return the parsed integer - or 0 (zero) if the parse doesn't succeed
 	 */
-	public static double getAsDouble(Object o) 
+	public static double getAsDouble(Object o)
 	{
 		if (o == null) return 0;
 		if (o instanceof Number)
@@ -120,7 +120,7 @@ public class Utils
 			return 0;
 		}
 	}
-	
+
 	/**
 	 * Try to parse the given object as an long
 	 * 
@@ -140,7 +140,7 @@ public class Utils
 		}
 		return getAsLong(o.toString());
 	}
-	
+
 	public static int[] splitAsIntegers(String d)
 	{
 		if (d == null) return null;
@@ -148,10 +148,10 @@ public class Utils
 		try
 		{
 			String tk[] = d.split(",");
-			if(tk != null)
+			if (tk != null)
 			{
 				int[] splitIntegers = new int[tk.length];
-				for(int i = 0; i < tk.length; i++)
+				for (int i = 0; i < tk.length; i++)
 				{
 					splitIntegers[i] = Utils.getAsInteger(tk[i]);
 				}
@@ -162,12 +162,13 @@ public class Utils
 		{
 			GWT.log("Error during splitAsIntegers", ex);
 		}
-		
-		return null;
-	}	
 
-	private static final char[] CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray(); 
-	public static String createStringUUID() 
+		return null;
+	}
+
+	private static final char[] CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
+
+	public static String createStringUUID()
 	{
 		char[] uuid = new char[36];
 		int r;
@@ -177,17 +178,17 @@ public class Utils
 		uuid[14] = '4';
 
 		// Fill in random data.  At i==19 set the high bits of clock sequence as per rfc4122, sec. 4.1.5
-		for (int i = 0; i < 36; i++) 
+		for (int i = 0; i < 36; i++)
 		{
-			if (uuid[i] == 0) 
+			if (uuid[i] == 0)
 			{
-				r = (int) (Math.random()*16);
+				r = (int)(Math.random() * 16);
 				uuid[i] = CHARS[(i == 19) ? (r & 0x3) | 0x8 : r & 0xf];
 			}
 		}
 		return new String(uuid);
 	}
-	
+
 	public static String createPKHashKey(Object[] pk)
 	{
 		StringBuilder sb = new StringBuilder();
@@ -216,7 +217,7 @@ public class Utils
 		}
 		return sb.toString();
 	}
-	
+
 	/**
 	 * Convert to string representation, remove trailing '.0' for numbers.
 	 * 
@@ -244,7 +245,7 @@ public class Utils
 		}
 		return numberToString;
 	}
-	
+
 	public static final double DEFAULT_EQUALS_PRECISION = 1e-7d;
 
 	//null,null == true
@@ -343,5 +344,127 @@ public class Utils
 		}
 
 		return oldObj.equals(obj);
+	}
+
+	/**
+	 * Insert an array into another array at a certain position. Both arrays may be null, resulting array will be extended to fit. Element type will be
+	 * preserved.
+	 * 
+	 * @param src
+	 * @param toAdd
+	 * @param position
+	 * @param n
+	 * @return the resulting array
+	 */
+	public static Object[] arrayInsert(Object[] src, Object[] toAdd, int position, int n)
+	{
+		if (src == null && toAdd == null)
+		{
+			// nothing to add
+			return null;
+		}
+
+		Object[] res;
+		if (src == null)
+		{
+			res = new Object[position + n];
+			System.arraycopy(toAdd, 0, res, position, Math.min(toAdd.length, n));
+		}
+		else
+		{
+			res = new Object[Math.max(src.length, position) + n];
+			if (position > 0 && src.length > 0)
+			{
+				System.arraycopy(src, 0, res, 0, Math.min(src.length, position));
+			}
+			if (position < src.length)
+			{
+				System.arraycopy(src, position, res, position + n, src.length - position);
+			}
+			if (toAdd != null)
+			{
+				System.arraycopy(toAdd, 0, res, position, Math.min(toAdd.length, n));
+			}
+		}
+		return res;
+	}
+
+	/**
+	 * Join 2 arrays into 1. Element type will be preserved.
+	 * 
+	 * @param array1
+	 * @param array2
+	 * @return the resulting array
+	 */
+	public static Object[] arrayJoin(Object[] array1, Object[] array2)
+	{
+		if (array1 == null || (array1.length == 0 && array2 != null))
+		{
+			return array2;
+		}
+		if (array2 == null || array2.length == 0)
+		{
+			return array1;
+		}
+
+		return arrayInsert(array1, array2, array1.length, array2.length);
+	}
+
+	/**
+	 * Add an element to an array. Element type will be preserved.
+	 * 
+	 * @param array
+	 * @param element
+	 * @param append
+	 * @return the resulting array
+	 */
+	public static Object[] arrayAdd(Object[] array, Object element, boolean append)
+	{
+		Object[] res;
+		if (array == null)
+		{
+			res = new Object[1];
+		}
+		else
+		{
+			res = new Object[array.length + 1];
+			System.arraycopy(array, 0, res, append ? 0 : 1, array.length);
+		}
+		res[append ? res.length - 1 : 0] = element;
+		return res;
+	}
+
+	/**
+	 * Merge two arrays in 1, the upperArray will be overlaid onto the lowerArray.
+	 * 
+	 * <p>
+	 * For example:
+	 * 
+	 * <br>
+	 * upper = [x, y] lower = [a,b,c] => overlaid = [x, y, c]
+	 * 
+	 * <br>
+	 * upper = [a, b c] lower = [x, y] => overlaid = [a, b, c]
+	 * 
+	 * @param upperAarray
+	 * @param lowerAarray
+	 */
+	public static Object[] arrayMerge(Object[] upperAarray, Object[] lowerAarray)
+	{
+		if (upperAarray == null)
+		{
+			return lowerAarray;
+		}
+		if (lowerAarray == null || lowerAarray.length <= upperAarray.length)
+		{
+			return upperAarray;
+		}
+
+		// both arrays filled and lowerArray is longer than upperArray
+		Object[] mergedArgs = new Object[lowerAarray.length];
+
+		System.arraycopy(upperAarray, 0, mergedArgs, 0, upperAarray.length);
+		System.arraycopy(lowerAarray, upperAarray.length, mergedArgs, upperAarray.length, lowerAarray.length - upperAarray.length);
+		return mergedArgs;
 	}
 }

@@ -35,6 +35,7 @@ import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.servoy.mobile.client.persistence.Solution;
 import com.servoy.mobile.client.scripting.FormScope;
+import com.servoy.mobile.client.scripting.JSEvent;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
@@ -136,17 +137,18 @@ public class FormPage extends JQMPage
 		return headerComponent;
 	}
 
-	private JQMToolBarButton createHeaderButton(Component button)
+	private JQMToolBarButton createHeaderButton(Component component)
 	{
 		JQMToolBarButton headerButton = null;
 
-		if (button != null)
+		if (component != null)
 		{
-			GraphicalComponent gc = button.isGraphicalComponent();
+			GraphicalComponent gc = component.isGraphicalComponent();
 			if (gc != null)
 			{
 				headerButton = new JQMToolBarButton(gc.getText());
 				final String actionMethod = gc.getActionMethodID();
+				final JQMToolBarButton button = headerButton;
 				if (actionMethod != null)
 				{
 					headerButton.addClickHandler(new ClickHandler()
@@ -154,7 +156,7 @@ public class FormPage extends JQMPage
 						@Override
 						public void onClick(ClickEvent event)
 						{
-							executor.execute(actionMethod);
+							executor.fireEventCommand(JSEvent.ACTION, actionMethod, button, null);
 						}
 					});
 				}
