@@ -39,6 +39,8 @@ public class DataTextField extends JQMText implements IDisplayData
 	{
 		this.field = field;
 		this.executor = executor;
+
+		setActionCommand(field.getActionMethodID());
 	}
 
 	/*

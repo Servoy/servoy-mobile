@@ -1,5 +1,3 @@
-package com.servoy.mobile.client.ui;
-
 /*
  This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
 
@@ -17,24 +15,33 @@ package com.servoy.mobile.client.ui;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
+package com.servoy.mobile.client.ui;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.servoy.mobile.client.scripting.JSEvent;
-import com.sksamuel.jqm4gwt.button.JQMButton;
+import com.sksamuel.jqm4gwt.toolbar.JQMToolBarButton;
 
 /**
- * Button UI
- * 
  * @author gboros
+ *
  */
-public class DataButton extends JQMButton
+public class DataFormHeaderButton extends JQMToolBarButton implements IDisplayData
 {
+	public static int ORIENTATION_LEFT = 0;
+	public static int ORIENTATION_RIGHT = 1;
+
+	private final GraphicalComponent gc;
+	private final int orientation;
 	private final Executor executor;
 
-	public DataButton(GraphicalComponent gc, Executor executor)
+	public DataFormHeaderButton(GraphicalComponent gc, int orientation, Executor executor)
 	{
-		super(gc.getText());
+		super(gc.getText() != null ? gc.getText() : ""); //$NON-NLS-1$
+		this.gc = gc;
+		this.orientation = orientation;
 		this.executor = executor;
 
 		setActionCommand(gc.getActionMethodID());
@@ -49,9 +56,41 @@ public class DataButton extends JQMButton
 				@Override
 				public void onClick(ClickEvent event)
 				{
-					executor.fireEventCommand(JSEvent.ACTION, command, DataButton.this, null);
+					executor.fireEventCommand(JSEvent.ACTION, command, DataFormHeaderButton.this, null);
 				}
 			});
 		}
+	}
+
+	/*
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#getDataProviderID()
+	 */
+	@Override
+	public String getDataProviderID()
+	{
+		return gc.getDataProviderID();
+	}
+
+	/*
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#getValueObject()
+	 */
+	@Override
+	public Object getValueObject()
+	{
+		return getText();
+	}
+
+	/*
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#setValueObject(java.lang.Object)
+	 */
+	@Override
+	public void setValueObject(Object data)
+	{
+		setText(data != null ? data.toString() : ""); //$NON-NLS-1$
+	}
+
+	public int getOrientation()
+	{
+		return orientation;
 	}
 }

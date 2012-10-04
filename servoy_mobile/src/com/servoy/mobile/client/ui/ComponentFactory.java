@@ -82,20 +82,41 @@ public class ComponentFactory
 		Widget componentWidget = null;
 		String sizeProperty = null;
 		GraphicalComponent gc = component.isGraphicalComponent();
+		BaseComponent.MobileProperties mobileProperties;
 		if (gc != null)
 		{
-			if (gc.isShowClick() && gc.getActionMethodID() != null)
-			// button
+			mobileProperties = gc.getMobileProperties();
+
+			if (mobileProperties != null)
 			{
-				componentWidget = new DataButton(gc, executor);
-				((DataButton)componentWidget).setActionCommand(gc.getActionMethodID());
+				if (mobileProperties.isHeaderText())
+				{
+					componentWidget = new DataFormHeader(gc);
+				}
+				else if (mobileProperties.isHeaderLeftButton())
+				{
+					componentWidget = new DataFormHeaderButton(gc, DataFormHeaderButton.ORIENTATION_LEFT, executor);
+				}
+				else if (mobileProperties.isHeaderRightButton())
+				{
+					componentWidget = new DataFormHeaderButton(gc, DataFormHeaderButton.ORIENTATION_RIGHT, executor);
+				}
 			}
-			else
-			// label
+
+			if (componentWidget == null)
 			{
-				componentWidget = new DataLabel(gc);
+				if (gc.isShowClick() && gc.getActionMethodID() != null)
+				// button
+				{
+					componentWidget = new DataButton(gc, executor);
+				}
+				else
+				// label
+				{
+					componentWidget = new DataLabel(gc);
+				}
+				sizeProperty = gc.getSize();
 			}
-			sizeProperty = gc.getSize();
 		}
 		else
 		{
@@ -106,7 +127,6 @@ public class ComponentFactory
 				{
 					case Field.DISPLAY_TYPE_TEXT_FIELD :
 						componentWidget = new DataTextField(field, executor);
-						((DataTextField)componentWidget).setActionCommand(field.getActionMethodID());
 						break;
 					case Field.DISPLAY_TYPE_TEXT_AREA :
 						componentWidget = new DataTextArea(field);
@@ -136,7 +156,7 @@ public class ComponentFactory
 			else
 			{
 				TabPanel tabPanel = component.isTabPanel();
-				BaseComponent.MobileProperties mobileProperties = component.getMobileProperties();
+				mobileProperties = component.getMobileProperties();
 				if (tabPanel != null && mobileProperties != null && mobileProperties.isListTabPanel())
 				{
 					JsArray<Tab> tabs = tabPanel.getTabs();

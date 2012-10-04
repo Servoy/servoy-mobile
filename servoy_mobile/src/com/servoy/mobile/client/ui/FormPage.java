@@ -24,8 +24,6 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 import com.google.gwt.core.client.JsArray;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Widget;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
@@ -37,7 +35,6 @@ import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
-import com.servoy.mobile.client.scripting.JSEvent;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
@@ -116,21 +113,18 @@ public class FormPage extends JQMPage
 
 	public JQMHeader createHeader(Component label, Component leftButton, Component rightButton)
 	{
-		String text = null;
-		JQMToolBarButton leftToolbarButton = createHeaderButton(leftButton);
-		JQMToolBarButton rightToolbarButton = createHeaderButton(rightButton);
-
-		if (label != null)
-		{
-			GraphicalComponent gc = label.isGraphicalComponent();
-			if (gc != null) text = gc.getText();
-		}
+		JQMToolBarButton leftToolbarButton = (JQMToolBarButton)createWidget(leftButton);
+		JQMToolBarButton rightToolbarButton = (JQMToolBarButton)createWidget(rightButton);
 
 		JQMHeader headerComponent = null;
-		if (text != null || leftToolbarButton != null || rightToolbarButton != null)
+		if (label != null)
 		{
-			if (text == null) text = ""; //$NON-NLS-1$
-			headerComponent = new JQMHeader(text);
+			headerComponent = (JQMHeader)createWidget(label);
+		}
+
+		if (leftToolbarButton != null || rightToolbarButton != null)
+		{
+			if (headerComponent == null) headerComponent = new JQMHeader(""); //$NON-NLS-1$
 
 			if (leftToolbarButton != null)
 			{
@@ -145,35 +139,6 @@ public class FormPage extends JQMPage
 		if (headerDecorator != null) headerDecorator.decorateHeader(headerComponent);
 
 		return headerComponent;
-	}
-
-	private JQMToolBarButton createHeaderButton(Component component)
-	{
-		JQMToolBarButton headerButton = null;
-
-		if (component != null)
-		{
-			GraphicalComponent gc = component.isGraphicalComponent();
-			if (gc != null)
-			{
-				headerButton = new JQMToolBarButton(gc.getText());
-				final String actionMethod = gc.getActionMethodID();
-				final JQMToolBarButton button = headerButton;
-				if (actionMethod != null)
-				{
-					headerButton.addClickHandler(new ClickHandler()
-					{
-						@Override
-						public void onClick(ClickEvent event)
-						{
-							executor.fireEventCommand(JSEvent.ACTION, actionMethod, button, null);
-						}
-					});
-				}
-			}
-		}
-
-		return headerButton;
 	}
 
 	public void createContent(ArrayList<Component> contentComponents)
@@ -281,6 +246,7 @@ public class FormPage extends JQMPage
 
 	private Widget createWidget(Component component)
 	{
+		if (component == null) return null;
 		Widget w = ComponentFactory.createComponent(application.getSolution(), component, executor);
 		if (w != null) dal.addFormObject(w);
 		return w;
