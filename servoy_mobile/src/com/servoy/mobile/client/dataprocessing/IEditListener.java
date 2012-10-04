@@ -19,19 +19,12 @@ package com.servoy.mobile.client.dataprocessing;
 
 
 /**
- * Convenient interface to tie a implementing gwt component easily to a dataAdapter
- * 
+ * Listener to notify adapters about a change
  * @author gboros
  */
-public interface IDisplayData
+public interface IEditListener
 {
-	public String getDataProviderID();
+	public void startEdit(IDisplayData e);
 
-	public Object getValueObject();
-
-	public void setValueObject(Object data);
-
-	public boolean needEditListener();
-
-	public void addEditListener(IEditListener editListener);
+	public void commitEdit(IDisplayData e);
 }

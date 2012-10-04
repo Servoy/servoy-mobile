@@ -18,6 +18,7 @@
 package com.servoy.mobile.client.ui;
 
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
+import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 
@@ -63,6 +64,24 @@ public class DataFormHeader extends JQMHeader implements IDisplayData
 	public void setValueObject(Object data)
 	{
 		setText(data != null ? data.toString() : ""); //$NON-NLS-1$
+	}
+
+	/*
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#needEditListener()
+	 */
+	@Override
+	public boolean needEditListener()
+	{
+		return false;
+	}
+
+	/*
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#addEditListener(com.servoy.mobile.client.dataprocessing.IEditListener)
+	 */
+	@Override
+	public void addEditListener(IEditListener editListener)
+	{
+		// ignore
 	}
 
 }

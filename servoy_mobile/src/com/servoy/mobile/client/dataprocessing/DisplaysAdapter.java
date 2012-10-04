@@ -26,12 +26,13 @@ import com.servoy.mobile.client.MobileClient;
  * 
  * @author gboros
  */
-public class DisplaysAdapter implements IDataAdapter
+public class DisplaysAdapter implements IDataAdapter, IEditListener
 {
 	private final MobileClient application;
 	private final DataAdapterList dal;
 	private final String dataproviderID;
 	private final ArrayList<IDisplayData> displays = new ArrayList<IDisplayData>();
+	private Record record;
 
 	public DisplaysAdapter(MobileClient application, DataAdapterList dal, String dataproviderID)
 	{
@@ -51,6 +52,7 @@ public class DisplaysAdapter implements IDataAdapter
 	@Override
 	public void setRecord(Record record)
 	{
+		this.record = record;
 		Object value = application.getGlobalScope().getValue(dataproviderID);
 		if (value == null) value = dal.getFormScope().getValue(dataproviderID);
 		if (value == null && record != null) value = record.getValue(dataproviderID);
@@ -98,4 +100,29 @@ public class DisplaysAdapter implements IDataAdapter
 
 	}
 
+	/*
+	 * @see com.servoy.mobile.client.dataprocessing.IEditListener#startEdit(com.servoy.mobile.client.dataprocessing.IDisplayData)
+	 */
+	@Override
+	public void startEdit(IDisplayData e)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	/*
+	 * @see com.servoy.mobile.client.dataprocessing.IEditListener#commitEdit(com.servoy.mobile.client.dataprocessing.IDisplayData)
+	 */
+	@Override
+	public void commitEdit(IDisplayData e)
+	{
+		if (this.dataproviderID == null) return;
+
+		Object value = e.getValueObject();
+
+		if (record != null)
+		{
+			record.setValue(dataproviderID, value);
+		}
+	}
 }

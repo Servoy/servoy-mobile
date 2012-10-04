@@ -15,23 +15,38 @@
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
-package com.servoy.mobile.client.dataprocessing;
+package com.servoy.mobile.client.ui;
 
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
+import com.servoy.mobile.client.dataprocessing.IDisplayData;
+import com.servoy.mobile.client.dataprocessing.IEditListener;
 
 /**
- * Convenient interface to tie a implementing gwt component easily to a dataAdapter
- * 
+ * Listener object for various listeners influencing the edit state
  * @author gboros
  */
-public interface IDisplayData
+public class EditProvider implements BlurHandler
 {
-	public String getDataProviderID();
+	private final IDisplayData display;
+	private IEditListener listener;
 
-	public Object getValueObject();
+	public EditProvider(IDisplayData display)
+	{
+		this.display = display;
+	}
 
-	public void setValueObject(Object data);
+	public void addEditListener(IEditListener l)
+	{
+		listener = l;
+	}
 
-	public boolean needEditListener();
-
-	public void addEditListener(IEditListener editListener);
+	/*
+	 * @see com.google.gwt.event.dom.client.BlurHandler#onBlur(com.google.gwt.event.dom.client.BlurEvent)
+	 */
+	@Override
+	public void onBlur(BlurEvent event)
+	{
+		if (listener != null) listener.commitEdit(display);
+	}
 }

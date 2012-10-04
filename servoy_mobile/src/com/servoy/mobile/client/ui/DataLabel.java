@@ -19,6 +19,7 @@ package com.servoy.mobile.client.ui;
 
 import com.google.gwt.user.client.ui.Label;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
+import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 
 /**
@@ -61,5 +62,23 @@ public class DataLabel extends Label implements IDisplayData
 	public String getDataProviderID()
 	{
 		return gc.getDataProviderID();
+	}
+
+	/*
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#needEditListener()
+	 */
+	@Override
+	public boolean needEditListener()
+	{
+		return false;
+	}
+
+	/*
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#addEditListener(com.servoy.mobile.client.dataprocessing.IEditListener)
+	 */
+	@Override
+	public void addEditListener(IEditListener editListener)
+	{
+		// ignore
 	}
 }

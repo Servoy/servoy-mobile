@@ -20,6 +20,7 @@ package com.servoy.mobile.client.ui;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
+import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.servoy.mobile.client.scripting.JSEvent;
 import com.sksamuel.jqm4gwt.toolbar.JQMToolBarButton;
@@ -92,5 +93,24 @@ public class DataFormHeaderButton extends JQMToolBarButton implements IDisplayDa
 	public int getOrientation()
 	{
 		return orientation;
+	}
+
+	/*
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#needEditListener()
+	 */
+	@Override
+	public boolean needEditListener()
+	{
+		return false;
+	}
+
+	/*
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#addEditListener(com.servoy.mobile.client.dataprocessing.IEditListener)
+	 */
+	@Override
+	public void addEditListener(IEditListener editListener)
+	{
+		// ignore
+
 	}
 }

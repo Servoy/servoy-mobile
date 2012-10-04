@@ -57,6 +57,11 @@ public class DataAdapterList
 				}
 
 				if (dataAdapter instanceof DisplaysAdapter) ((DisplaysAdapter)dataAdapter).addDisplay(displayData);
+
+				if (displayData.needEditListener() && dataAdapter instanceof IEditListener)
+				{
+					displayData.addEditListener((IEditListener)dataAdapter);
+				}
 			}
 		}
 	}

@@ -19,6 +19,7 @@ package com.servoy.mobile.client.ui;
 
 import com.google.gwt.user.client.ui.HasText;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
+import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 
 /**
@@ -62,6 +63,24 @@ public class DataText implements IDisplayData
 	{
 		parentComponent.setText(data != null ? data.toString() : ""); //$NON-NLS-1$
 
+	}
+
+	/*
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#needEditListener()
+	 */
+	@Override
+	public boolean needEditListener()
+	{
+		return false;
+	}
+
+	/*
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#addEditListener(com.servoy.mobile.client.dataprocessing.IEditListener)
+	 */
+	@Override
+	public void addEditListener(IEditListener editListener)
+	{
+		// ignore
 	}
 
 }

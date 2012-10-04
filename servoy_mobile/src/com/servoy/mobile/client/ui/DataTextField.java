@@ -21,6 +21,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
+import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.servoy.mobile.client.scripting.JSEvent;
@@ -108,5 +109,30 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportData
 	public IDisplayData getDataTextDisplay()
 	{
 		return dataText;
+	}
+
+	/*
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#needEditListener()
+	 */
+	@Override
+	public boolean needEditListener()
+	{
+		return true;
+	}
+
+	private EditProvider editProvider;
+
+	/*
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#addEditListener(com.servoy.mobile.client.dataprocessing.IEditListener)
+	 */
+	@Override
+	public void addEditListener(IEditListener editListener)
+	{
+		if (editProvider == null)
+		{
+			editProvider = new EditProvider(this);
+			editProvider.addEditListener(editListener);
+			addBlurHandler(editProvider);
+		}
 	}
 }
