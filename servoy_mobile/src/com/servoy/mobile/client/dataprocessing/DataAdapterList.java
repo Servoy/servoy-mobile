@@ -20,6 +20,10 @@ package com.servoy.mobile.client.dataprocessing;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
+import com.servoy.mobile.client.FormController;
+import com.servoy.mobile.client.MobileClient;
+import com.servoy.mobile.client.scripting.FormScope;
+
 /**
  * This class encapsulates all the dataproviders for a form page, it does the creation and setup of dataAdapters.
  * 
@@ -27,7 +31,15 @@ import java.util.LinkedHashMap;
  */
 public class DataAdapterList
 {
+	private final MobileClient application;
+	private final FormController formController;
 	private final LinkedHashMap<String, IDataAdapter> dataAdapters = new LinkedHashMap<String, IDataAdapter>();
+
+	public DataAdapterList(MobileClient application, FormController formController)
+	{
+		this.application = application;
+		this.formController = formController;
+	}
 
 	public void addFormObject(Object obj)
 	{
@@ -40,13 +52,18 @@ public class DataAdapterList
 				IDataAdapter dataAdapter = dataAdapters.get(dataproviderID);
 				if (dataAdapter == null)
 				{
-					dataAdapter = new DisplaysAdapter(dataproviderID);
+					dataAdapter = new DisplaysAdapter(application, this, dataproviderID);
 					dataAdapters.put(dataproviderID, dataAdapter);
 				}
 
 				if (dataAdapter instanceof DisplaysAdapter) ((DisplaysAdapter)dataAdapter).addDisplay(displayData);
 			}
 		}
+	}
+
+	public FormScope getFormScope()
+	{
+		return formController.getFormScope();
 	}
 
 	public void setRecord(Record record)

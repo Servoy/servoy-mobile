@@ -49,7 +49,7 @@ public class FoundSet implements Exportable //  extends Scope if we support aggr
 	@Export
 	public void setSelectedIndex(int index)
 	{
-		if (index > 0)
+		if (index > 0 && index < getSize() + 1)
 		{
 			selectedIndex = index - 1;
 			fireValueChanged();

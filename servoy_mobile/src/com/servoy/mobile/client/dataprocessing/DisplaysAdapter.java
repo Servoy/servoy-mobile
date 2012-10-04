@@ -19,6 +19,8 @@ package com.servoy.mobile.client.dataprocessing;
 
 import java.util.ArrayList;
 
+import com.servoy.mobile.client.MobileClient;
+
 /**
  * This adapter is a kind of model between the display(s) and the state.
  * 
@@ -26,11 +28,15 @@ import java.util.ArrayList;
  */
 public class DisplaysAdapter implements IDataAdapter
 {
+	private final MobileClient application;
+	private final DataAdapterList dal;
 	private final String dataproviderID;
 	private final ArrayList<IDisplayData> displays = new ArrayList<IDisplayData>();
 
-	public DisplaysAdapter(String dataproviderID)
+	public DisplaysAdapter(MobileClient application, DataAdapterList dal, String dataproviderID)
 	{
+		this.application = application;
+		this.dal = dal;
 		this.dataproviderID = dataproviderID;
 	}
 
@@ -45,7 +51,10 @@ public class DisplaysAdapter implements IDataAdapter
 	@Override
 	public void setRecord(Record record)
 	{
-		Object value = record.getValue(dataproviderID);
+		Object value = application.getGlobalScope().getValue(dataproviderID);
+		if (value == null) value = dal.getFormScope().getValue(dataproviderID);
+		if (value == null && record != null) value = record.getValue(dataproviderID);
+
 		for (IDisplayData d : displays)
 			d.setValueObject(value);
 	}
