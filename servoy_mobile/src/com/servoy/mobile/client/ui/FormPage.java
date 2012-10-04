@@ -27,14 +27,16 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Widget;
+import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
+import com.servoy.mobile.client.dataprocessing.DataAdapterList;
+import com.servoy.mobile.client.dataprocessing.FoundSet;
+import com.servoy.mobile.client.dataprocessing.Record;
 import com.servoy.mobile.client.persistence.BaseComponent;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
-import com.servoy.mobile.client.persistence.Solution;
-import com.servoy.mobile.client.scripting.FormScope;
 import com.servoy.mobile.client.scripting.JSEvent;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
@@ -49,15 +51,20 @@ import com.sksamuel.jqm4gwt.toolbar.JQMToolBarButton;
 public class FormPage extends JQMPage
 {
 	protected final MobileClient application;
-	private final Form form;
+	protected final Form form;
+	private final FormController formController;
 	private final Executor executor;
-	private FormScope formScope;
 	private boolean enabled = true;
+	private final DataAdapterList dal = new DataAdapterList();
+	private IFormPageHeaderDecorator headerDecorator;
+	private IFormPageFooterDecorator footerDecorator;
 
-	public FormPage(MobileClient application, Form form)
+
+	public FormPage(MobileClient application, Form form, FormController formController)
 	{
 		this.application = application;
 		this.form = form;
+		this.formController = formController;
 		this.executor = new Executor(this);
 
 		JsArray<Component> formComponents = form.getComponents();
@@ -134,6 +141,9 @@ public class FormPage extends JQMPage
 				headerComponent.setRightButton(rightToolbarButton);
 			}
 		}
+
+		if (headerDecorator != null) headerDecorator.decorateHeader(headerComponent);
+
 		return headerComponent;
 	}
 
@@ -168,7 +178,6 @@ public class FormPage extends JQMPage
 
 	public void createContent(ArrayList<Component> contentComponents)
 	{
-		Solution solutionModel = application.getSolution();
 		Collections.sort(contentComponents, PositionComparator.YX_COMPARATOR);
 		HashMap<String, String> fieldsetLabel = new HashMap<String, String>();
 		HashMap<String, DataTextField> fieldsetField = new HashMap<String, DataTextField>();
@@ -192,7 +201,7 @@ public class FormPage extends JQMPage
 				groupID = field.getGroupID();
 			}
 
-			Widget widget = ComponentFactory.createComponent(solutionModel, c, executor);
+			Widget widget = createWidget(c);
 			if (widget != null)
 			{
 				if (groupID != null && widget instanceof DataTextField)
@@ -220,17 +229,11 @@ public class FormPage extends JQMPage
 		Collections.sort(footerComponents, PositionComparator.XY_COMPARATOR);
 		JQMFooter footerComponent = new JQMFooter();
 		for (Component c : footerComponents)
-			footerComponent.add(ComponentFactory.createComponent(application.getSolution(), c, executor));
-		return footerComponent;
-	}
+			footerComponent.add(createWidget(c));
 
-	public FormScope getFormScope()
-	{
-		if (formScope == null)
-		{
-			formScope = new FormScope(application, this);
-		}
-		return formScope;
+		if (footerDecorator != null) footerDecorator.decorateFooter(footerComponent);
+
+		return footerComponent;
 	}
 
 	public String getName()
@@ -262,4 +265,34 @@ public class FormPage extends JQMPage
 		this.enabled = enabled;
 	}
 
+	public void refreshRecord(Record r)
+	{
+		if (r != null) dal.setRecord(r);
+	}
+
+
+	@Override
+	protected void onPageBeforeShow()
+	{
+		FoundSet foundSet = formController.getFormModel();
+		if (foundSet != null) refreshRecord(foundSet.getSelectedRecord());
+
+	}
+
+	private Widget createWidget(Component component)
+	{
+		Widget w = ComponentFactory.createComponent(application.getSolution(), component, executor);
+		if (w != null) dal.addFormObject(w);
+		return w;
+	}
+
+	public void setHeaderDecorator(IFormPageHeaderDecorator headerDecorator)
+	{
+		this.headerDecorator = headerDecorator;
+	}
+
+	public void setFooterDecorator(IFormPageFooterDecorator footerDecorator)
+	{
+		this.footerDecorator = footerDecorator;
+	}
 }

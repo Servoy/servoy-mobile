@@ -38,10 +38,28 @@ public class FoundSet implements Exportable //  extends Scope if we support aggr
 	private final ArrayList<Record> records = new ArrayList<Record>();
 	private boolean needToSaveFoundSetDescription;
 
+	private int selectedIndex = 0;
+
 	public FoundSet(FoundSetManager fsm, FoundSetDescription fsd)
 	{
 		foundSetManager = fsm;
 		foundSetDescription = fsd;
+	}
+
+	@Export
+	public void setSelectedIndex(int index)
+	{
+		if (index > 0)
+		{
+			selectedIndex = index - 1;
+			fireValueChanged();
+		}
+	}
+
+	@Export
+	public int getSelectedIndex()
+	{
+		return selectedIndex + 1;
 	}
 
 	@Export("getRecord")
@@ -107,8 +125,6 @@ public class FoundSet implements Exportable //  extends Scope if we support aggr
 		return foundSetManager.getEditRecordList().startEditing(record);
 	}
 
-	private final int selectedRecord = 0;
-
 	public Object getSelectedRecordValue(String dataProviderID)
 	{
 		if (getSize() > 0)
@@ -121,7 +137,7 @@ public class FoundSet implements Exportable //  extends Scope if we support aggr
 	@Export
 	public Record getSelectedRecord()
 	{
-		return getRecord(selectedRecord);
+		return getRecord(selectedIndex);
 	}
 
 	@Export
@@ -161,5 +177,23 @@ public class FoundSet implements Exportable //  extends Scope if we support aggr
 	ArrayList<String> getAllPrimaryRelationNames()
 	{
 		return foundSetManager.getAllPrimaryRelationNames(getEntityName());
+	}
+
+	private final ArrayList<IFoundSetSelectionListener> selectionListeners = new ArrayList<IFoundSetSelectionListener>();
+
+	public void addSelectionListener(IFoundSetSelectionListener listener)
+	{
+		if (selectionListeners.indexOf(listener) == -1) selectionListeners.add(listener);
+	}
+
+	public void removeSelectionListener(IFoundSetSelectionListener listener)
+	{
+		selectionListeners.remove(listener);
+	}
+
+	protected void fireValueChanged()
+	{
+		for (IFoundSetSelectionListener l : selectionListeners)
+			l.valueChanged();
 	}
 }

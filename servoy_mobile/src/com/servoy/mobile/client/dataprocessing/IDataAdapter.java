@@ -1,7 +1,3 @@
-package com.servoy.mobile.client.ui;
-
-import com.servoy.mobile.client.dataprocessing.Record;
-
 /*
  This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
 
@@ -19,13 +15,22 @@ import com.servoy.mobile.client.dataprocessing.Record;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
-/**
- * Form display interface 
- * @author gboros
- */
-public interface IFormDisplay
-{
-	FormPage getDisplayPage();
+package com.servoy.mobile.client.dataprocessing;
 
-	void refreshRecord(Record record);
+/**
+ * This interface defines the adapter definition
+ * @author gboros
+ *
+ */
+public interface IDataAdapter
+{
+	public void setRecord(Record state);
+
+	public String getDataProviderID();
+
+	public void addDataListener(IDataAdapter listner);
+
+	public void removeDataListener(IDataAdapter listner);
+
+	public void displayValueChanged();
 }

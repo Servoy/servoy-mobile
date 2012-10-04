@@ -44,7 +44,7 @@ public class GlobalScope extends Scope
 	{
 		Object servoyProperty = servoyProperties.get(variable);
 		if (servoyProperty != null) return servoyProperty;
-		if ("currentcontroller".equals(variable)) return client.getFormManager().getCurrentPage().getFormScope().getController();
+		if ("currentcontroller".equals(variable)) return client.getFormManager().getCurrentForm();
 
 		return scopeVariables.get(variable);
 	}

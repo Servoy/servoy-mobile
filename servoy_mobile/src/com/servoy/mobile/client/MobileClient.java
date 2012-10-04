@@ -29,7 +29,6 @@ import com.servoy.mobile.client.dataprocessing.FoundSetManager;
 import com.servoy.mobile.client.dataprocessing.OfflineDataProxy;
 import com.servoy.mobile.client.dto.ValueListDescription;
 import com.servoy.mobile.client.persistence.Solution;
-import com.servoy.mobile.client.scripting.Controller;
 import com.servoy.mobile.client.scripting.GlobalScope;
 import com.servoy.mobile.client.scripting.JSApplication;
 import com.servoy.mobile.client.scripting.JSDatabaseManager;
@@ -63,7 +62,7 @@ public class MobileClient implements EntryPoint
 	{
 		GWT.create(JSDatabaseManager.class);
 		GWT.create(JSApplication.class);
-		GWT.create(Controller.class);
+		GWT.create(FormController.class);
 		GWT.create(JSHistory.class);
 		GWT.create(JSUtils.class);
 		GWT.create(JSSecurity.class);

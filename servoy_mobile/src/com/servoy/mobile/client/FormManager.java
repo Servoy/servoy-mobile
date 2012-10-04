@@ -24,7 +24,6 @@ import java.util.Map.Entry;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.scripting.FormScope;
 import com.servoy.mobile.client.scripting.JSHistory;
-import com.servoy.mobile.client.ui.FormPage;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.JQMPage;
 
@@ -38,22 +37,22 @@ public class FormManager
 	private final MobileClient application;
 	private Login login;
 
-	private final LinkedHashMap<String, FormPage> pageMap = new LinkedHashMap<String, FormPage>()
+	private final LinkedHashMap<String, FormController> formControllerMap = new LinkedHashMap<String, FormController>()
 	{
 		@Override
-		protected boolean removeEldestEntry(Entry<String, FormPage> eldest)
+		protected boolean removeEldestEntry(Entry<String, FormController> eldest)
 		{
 			if (size() > 16)
 			{
-				FormPage oldPage = eldest.getValue();
-				removePage(oldPage);
+				FormController oldController = eldest.getValue();
+				oldController.cleanup();
 				return true;
 			}
 			return false;
 		}
 	};
 
-	private FormPage currentPage = null;
+	private FormController currentForm;
 
 	protected FormManager(MobileClient mc)
 	{
@@ -61,7 +60,7 @@ public class FormManager
 		export();
 	}
 
-	protected FormPage getFirstForm()
+	protected FormController getFirstForm()
 	{
 		Form jsForm = application.getSolution().get(0);
 		return getForm(jsForm.getName());
@@ -77,10 +76,9 @@ public class FormManager
 		return login;
 	}
 
-	public void showForm(String formName, Object data)
+	public void showForm(String formName)
 	{
-
-		FormPage form = getForm(formName);
+		FormController form = getForm(formName);
 		if (form != null)
 		{
 			showForm(form);
@@ -88,38 +86,33 @@ public class FormManager
 
 	}
 
-	protected FormPage getForm(String name)
+	public FormController getForm(String name)
 	{
-		FormPage formPage = pageMap.get(name);
-		if (formPage == null)
+		FormController formController = formControllerMap.get(name);
+		if (formController == null)
 		{
 			Form form = application.getSolution().getForm(name);
 			if (form != null)
 			{
-				formPage = new FormPage(application, form);
-				pageMap.put(name, formPage);
+				formController = new FormController(application, form);
+				formControllerMap.put(name, formController);
 
 			}
 		}
-		return formPage;
+		return formController;
 	}
 
-	public void showForm(FormPage page)
+	public void showForm(FormController formController)
 	{
-		pageMap.put(page.getName(), page);
-		currentPage = page;
-		JQMContext.changePage(page);
-		history.add(page);
+		formControllerMap.put(formController.getName(), formController);
+		currentForm = formController;
+		history.add(formController);
+		JQMContext.changePage(formController.getPage());
 	}
 
-	public FormPage getCurrentPage()
+	public FormController getCurrentForm()
 	{
-		return currentPage;
-	}
-
-	private void removePage(JQMPage oldPage)
-	{
-		oldPage.removeFromParent();//keep dom small
+		return currentForm;
 	}
 
 	public JSHistory getHistory()
@@ -129,14 +122,13 @@ public class FormManager
 
 	public void removeAllForms()
 	{
-		Iterator<FormPage> it = pageMap.values().iterator();
+		Iterator<FormController> it = formControllerMap.values().iterator();
 		while (it.hasNext())
 		{
-			JQMPage oldPage = it.next();
-			removePage(oldPage);
+			it.next().cleanup();
 		}
-		pageMap.clear();
-		currentPage = null;
+		formControllerMap.clear();
+		currentForm = null;
 	}
 
 	public void showFirstForm()
@@ -151,7 +143,7 @@ public class FormManager
 
 	public FormScope getFormScope(String name)
 	{
-		FormPage form = getForm(name);
+		FormController form = getForm(name);
 		if (form != null)
 		{
 			return form.getFormScope();

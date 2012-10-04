@@ -19,12 +19,13 @@ package com.servoy.mobile.client.ui;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.user.client.ui.Widget;
+import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
+import com.servoy.mobile.client.persistence.BaseComponent;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
-import com.servoy.mobile.client.persistence.BaseComponent;
 import com.servoy.mobile.client.persistence.Solution;
 import com.servoy.mobile.client.persistence.Tab;
 import com.servoy.mobile.client.persistence.TabPanel;
@@ -44,12 +45,12 @@ public class ComponentFactory
 	 * 
 	 * @return form display
 	 */
-	public static IFormDisplay createFormDisplay(MobileClient application, Form form)
+	public static IFormDisplay createFormDisplay(MobileClient application, Form form, FormController formController)
 	{
 		int viewType = form.getView();
 		if (viewType == Form.VIEW_TYPE_LIST || viewType == Form.VIEW_TYPE_LIST_LOCKED)
 		{
-			return new ListFormDisplay(application, form);
+			return new ListFormDisplay(application, form, formController);
 		}
 
 		JsArray<Component> formComponents = form.getComponents();
@@ -66,7 +67,7 @@ public class ComponentFactory
 			}
 		}
 
-		return new SimpleFormDisplay(application, form);
+		return new SimpleFormDisplay(application, form, formController);
 	}
 
 	/**
@@ -104,7 +105,8 @@ public class ComponentFactory
 				switch (field.getDisplayType())
 				{
 					case Field.DISPLAY_TYPE_TEXT_FIELD :
-						componentWidget = new DataTextField(field);
+						componentWidget = new DataTextField(field, executor);
+						((DataTextField)componentWidget).setActionCommand(field.getActionMethodID());
 						break;
 					case Field.DISPLAY_TYPE_TEXT_AREA :
 						componentWidget = new DataTextArea(field);
@@ -119,7 +121,7 @@ public class ComponentFactory
 						componentWidget = new DataCheckboxSet(field);
 						break;
 					case Field.DISPLAY_TYPE_CALENDAR :
-						componentWidget = new DataTextField(field);
+						componentWidget = new DataTextField(field, executor);
 						break;
 					case Field.DISPLAY_TYPE_LIST_BOX :
 						componentWidget = new DataList(field);

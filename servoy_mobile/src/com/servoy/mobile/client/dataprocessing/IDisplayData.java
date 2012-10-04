@@ -1,7 +1,3 @@
-package com.servoy.mobile.client.ui;
-
-import com.servoy.mobile.client.dataprocessing.Record;
-
 /*
  This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
 
@@ -19,13 +15,18 @@ import com.servoy.mobile.client.dataprocessing.Record;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
+package com.servoy.mobile.client.dataprocessing;
+
 /**
- * Form display interface 
+ * Convenient interface to tie a implementing gwt component easily to a dataAdapter
+ * 
  * @author gboros
  */
-public interface IFormDisplay
+public interface IDisplayData
 {
-	FormPage getDisplayPage();
+	public String getDataProviderID();
 
-	void refreshRecord(Record record);
+	public Object getValueObject();
+
+	public void setValueObject(Object data);
 }

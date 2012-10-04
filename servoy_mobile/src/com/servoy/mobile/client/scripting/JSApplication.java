@@ -22,6 +22,7 @@ import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window;
 
 /**
  * @author jcompagner
@@ -38,7 +39,7 @@ public class JSApplication implements Exportable
 
 	public void output(Object output)
 	{
-		GWT.log(output == null ? "<null>" : output.toString()); //$NON-NLS-1$
+		Window.alert(output == null ? "<null>" : output.toString()); //$NON-NLS-1$
 	}
 
 	private native void export(Object object)

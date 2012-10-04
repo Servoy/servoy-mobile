@@ -19,6 +19,7 @@ package com.servoy.mobile.client.ui;
 
 import java.util.ArrayList;
 
+import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Form;
@@ -28,13 +29,13 @@ import com.servoy.mobile.client.persistence.Form;
  * @author gboros
  *
  */
-public class ListFormDisplay implements IFormDisplay
+public class ListFormDisplay extends FormDisplay
 {
 	private final ListFormPage listFormPage;
 
-	public ListFormDisplay(MobileClient application, Form form)
+	public ListFormDisplay(MobileClient application, Form form, FormController formController)
 	{
-		listFormPage = new ListFormPage(application, form);
+		listFormPage = new ListFormPage(application, form, formController);
 	}
 
 	@Override
@@ -45,12 +46,9 @@ public class ListFormDisplay implements IFormDisplay
 
 	class ListFormPage extends FormPage
 	{
-		private final Form form;
-
-		public ListFormPage(MobileClient application, Form form)
+		public ListFormPage(MobileClient application, Form form, FormController formController)
 		{
-			super(application, form);
-			this.form = form;
+			super(application, form, formController);
 		}
 
 		@Override

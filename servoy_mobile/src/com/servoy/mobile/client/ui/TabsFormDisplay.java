@@ -17,14 +17,13 @@ package com.servoy.mobile.client.ui;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
-import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.Solution;
 import com.servoy.mobile.client.persistence.Tab;
@@ -40,17 +39,19 @@ import com.sksamuel.jqm4gwt.toolbar.JQMNavBar;
  * 
  * @author gboros
  */
-public class TabsFormDisplay implements IFormDisplay
+public class TabsFormDisplay extends FormDisplay implements IFormPageHeaderDecorator, IFormPageFooterDecorator
 {
-	private HashMap<String, TabFormPage> tabPages;
+	private HashMap<String, FormController> tabForms;
 	private String currentDisplayFormName;
 	private final MobileClient application;
+	private final Form form;
 	private final TabPanel tabPanel;
 	private NavigationBar navigationBar;
 
 	public TabsFormDisplay(MobileClient application, Form form, TabPanel tabPanel)
 	{
 		this.application = application;
+		this.form = form;
 		this.tabPanel = tabPanel;
 	}
 
@@ -62,7 +63,7 @@ public class TabsFormDisplay implements IFormDisplay
 	@Override
 	public FormPage getDisplayPage()
 	{
-		return tabPages.get(currentDisplayFormName);
+		return tabForms.get(currentDisplayFormName).getPage();
 	}
 
 	private NavigationBar getNavigatonBar()
@@ -75,53 +76,23 @@ public class TabsFormDisplay implements IFormDisplay
 		return navigationBar;
 	}
 
-	private TabFormPage getTabPage(String formID)
+	private FormPage getTabPage(String formID)
 	{
-		TabFormPage tabFormPage = tabPages.get(formID);
-		if (tabFormPage == null)
+		FormController tabFormController = tabForms.get(formID);
+		if (tabFormController == null)
 		{
 			JsArray<Tab> tabs = tabPanel.getTabs();
 			Solution solutionModel = application.getSolution();
 			for (int i = 0; i < tabs.length(); i++)
 			{
 				Form tabForm = solutionModel.getFormByUUID(tabs.get(i).getContainsFormID());
-				tabFormPage = new TabFormPage(application, tabForm);
-				tabPages.put(formID, tabFormPage);
+				tabFormController = application.getFormManager().getForm(form.getName() + " " + tabForm.getName()); //$NON-NLS-1$
+				tabFormController.getPage().setHeaderDecorator(this);
+				tabFormController.getPage().setFooterDecorator(this);
+				tabForms.put(formID, tabFormController);
 			}
 		}
-		return tabFormPage;
-	}
-
-	class TabFormPage extends FormPage
-	{
-		public TabFormPage(MobileClient application, Form form)
-		{
-			super(application, form);
-		}
-
-		@Override
-		public JQMHeader createHeader(Component headerLabel, Component headerLeftButton, Component headerRightButton)
-		{
-			JQMHeader headerComponent = super.createHeader(headerLabel, headerLeftButton, headerRightButton);
-			if (tabPanel.getTabOrientation() == TabPanel.ORIENTATION_TOP)
-			{
-				if (headerComponent == null) headerComponent = new JQMHeader(""); //$NON-NLS-1$
-				headerComponent.add(getNavigatonBar());
-			}
-			return headerComponent;
-		}
-
-		@Override
-		public JQMFooter createFooter(ArrayList<Component> footerComponents)
-		{
-			JQMFooter footerComponent = super.createFooter(footerComponents);
-			if (tabPanel.getTabOrientation() == TabPanel.ORIENTATION_BOTTOM)
-			{
-				if (footerComponent == null) footerComponent = new JQMFooter();
-				footerComponent.add(getNavigatonBar());
-			}
-			return footerComponent;
-		}
+		return tabFormController.getPage();
 	}
 
 	class NavigationBar extends JQMNavBar
@@ -174,5 +145,39 @@ public class TabsFormDisplay implements IFormDisplay
 		{
 			return formID;
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.ui.IFooterDecorator#decorateFooter(com.sksamuel.jqm4gwt.toolbar.JQMFooter)
+	 */
+	@Override
+	public JQMFooter decorateFooter(JQMFooter footer)
+	{
+		JQMFooter footerComponent = footer;
+		if (tabPanel.getTabOrientation() == TabPanel.ORIENTATION_BOTTOM)
+		{
+			if (footerComponent == null) footerComponent = new JQMFooter();
+			footerComponent.add(getNavigatonBar());
+		}
+		return footerComponent;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.ui.IHeaderDecorator#decorateHeader(com.sksamuel.jqm4gwt.toolbar.JQMHeader)
+	 */
+	@Override
+	public JQMHeader decorateHeader(JQMHeader header)
+	{
+		JQMHeader headerComponent = header;
+		if (tabPanel.getTabOrientation() == TabPanel.ORIENTATION_TOP)
+		{
+			if (headerComponent == null) headerComponent = new JQMHeader(""); //$NON-NLS-1$
+			headerComponent.add(getNavigatonBar());
+		}
+		return headerComponent;
 	}
 }

@@ -17,6 +17,7 @@ package com.servoy.mobile.client.ui;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
+import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.persistence.Form;
 
@@ -25,13 +26,13 @@ import com.servoy.mobile.client.persistence.Form;
  * 
  * @author gboros
  */
-public class SimpleFormDisplay implements IFormDisplay
+public class SimpleFormDisplay extends FormDisplay
 {
 	private final FormPage formPage;
 
-	public SimpleFormDisplay(MobileClient application, Form form)
+	public SimpleFormDisplay(MobileClient application, Form form, FormController formController)
 	{
-		formPage = new FormPage(application, form);
+		formPage = new FormPage(application, form, formController);
 	}
 
 	@Override

@@ -1,7 +1,3 @@
-package com.servoy.mobile.client.ui;
-
-import com.servoy.mobile.client.dataprocessing.Record;
-
 /*
  This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
 
@@ -19,13 +15,18 @@ import com.servoy.mobile.client.dataprocessing.Record;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
-/**
- * Form display interface 
- * @author gboros
- */
-public interface IFormDisplay
-{
-	FormPage getDisplayPage();
+package com.servoy.mobile.client.ui;
 
-	void refreshRecord(Record record);
+import com.servoy.mobile.client.dataprocessing.Record;
+
+/**
+ * @author gboros
+ *
+ */
+public abstract class FormDisplay implements IFormDisplay
+{
+	public void refreshRecord(Record record)
+	{
+		getDisplayPage().refreshRecord(record);
+	}
 }

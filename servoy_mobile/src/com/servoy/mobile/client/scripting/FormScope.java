@@ -1,27 +1,24 @@
 package com.servoy.mobile.client.scripting;
 
+import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
-import com.servoy.mobile.client.dataprocessing.FoundSetManager;
-import com.servoy.mobile.client.ui.FormPage;
 
 
 public class FormScope extends GlobalScope
 {
-	public FormScope(MobileClient application, FormPage form)
+	public FormScope(MobileClient application, FormController formController)
 	{
-		super(form.getName(), application);
-		if (form.getDataSource() != null)
-		{
-			FoundSet fs = application.getFoundSetManager().getFoundSet(FoundSetManager.getEntityFromDataSource(form.getDataSource()));
-			servoyProperties.put("foundset", fs);
-		}
+		super(formController.getName(), application);
+
+		FoundSet fs = formController.getFormModel();
+		if (fs != null) servoyProperties.put("foundset", fs);
 		servoyProperties.put("elements", new ElementScope());
-		servoyProperties.put("controller", new Controller(form));
+		servoyProperties.put("controller", formController);
 	}
 
-	public Controller getController()
+	public FormController getController()
 	{
-		return (Controller)servoyProperties.get("controller");
+		return (FormController)servoyProperties.get("controller");
 	}
 }

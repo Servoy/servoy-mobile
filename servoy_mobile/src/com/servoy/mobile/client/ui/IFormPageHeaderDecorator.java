@@ -1,7 +1,3 @@
-package com.servoy.mobile.client.ui;
-
-import com.servoy.mobile.client.dataprocessing.Record;
-
 /*
  This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
 
@@ -19,13 +15,16 @@ import com.servoy.mobile.client.dataprocessing.Record;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
+package com.servoy.mobile.client.ui;
+
+import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
+
 /**
- * Form display interface 
+ * Interface for form page header decorating
+ * 
  * @author gboros
  */
-public interface IFormDisplay
+public interface IFormPageHeaderDecorator
 {
-	FormPage getDisplayPage();
-
-	void refreshRecord(Record record);
+	public JQMHeader decorateHeader(JQMHeader header);
 }
