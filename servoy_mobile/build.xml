@@ -35,7 +35,7 @@
 		<jar	destfile="servoy_mobile.war"
 				basedir="war"
 				duplicate="fail"
-				excludes="**/*.jar,**/*.war,**/WEB-INF/deploy/**,**/WEB-INF/classes/**"
+				excludes="**/*.jar,**/*.war,**/WEB-INF/deploy/**,**/WEB-INF/classes/**,**/solution.json,**/solution.js"
 		/>
 	</target>
 
