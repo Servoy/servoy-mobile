@@ -52,7 +52,7 @@ public class FormPage extends JQMPage
 	private final FormController formController;
 	private final Executor executor;
 	private boolean enabled = true;
-	private final DataAdapterList dal = new DataAdapterList();
+	private final DataAdapterList dal;
 	private IFormPageHeaderDecorator headerDecorator;
 	private IFormPageFooterDecorator footerDecorator;
 
@@ -64,6 +64,7 @@ public class FormPage extends JQMPage
 		this.formController = formController;
 		this.executor = new Executor(this);
 
+		dal = new DataAdapterList(application, formController);
 		JsArray<Component> formComponents = form.getComponents();
 
 		Component headerLabel = null, headerLeftButton = null, headerRightButton = null;
