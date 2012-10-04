@@ -22,6 +22,7 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.persistence.Field;
+import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.servoy.mobile.client.scripting.JSEvent;
 import com.sksamuel.jqm4gwt.form.elements.JQMText;
 
@@ -30,10 +31,10 @@ import com.sksamuel.jqm4gwt.form.elements.JQMText;
  * 
  * @author gboros
  */
-public class DataTextField extends JQMText implements IDisplayData
+public class DataTextField extends JQMText implements IDisplayData, ISupportDataText
 {
-	private final Field field;
-	private final Executor executor;
+	protected final Field field;
+	protected final Executor executor;
 
 	public DataTextField(Field field, Executor executor)
 	{
@@ -87,5 +88,25 @@ public class DataTextField extends JQMText implements IDisplayData
 	public String getDataProviderID()
 	{
 		return field.getDataProviderID();
+	}
+
+	private DataText dataText;
+
+	/*
+	 * @see com.servoy.mobile.client.ui.ISupportDataText#setDataTextComponent(com.servoy.mobile.client.persistence.GraphicalComponent)
+	 */
+	@Override
+	public void setDataTextComponent(GraphicalComponent component)
+	{
+		if (component != null) dataText = new DataText(this, component);
+	}
+
+	/*
+	 * @see com.servoy.mobile.client.ui.ISupportDataText#getDataTextDisplay()
+	 */
+	@Override
+	public IDisplayData getDataTextDisplay()
+	{
+		return dataText;
 	}
 }

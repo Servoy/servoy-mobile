@@ -1,5 +1,3 @@
-package com.servoy.mobile.client.ui;
-
 /*
  This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
 
@@ -17,41 +15,25 @@ package com.servoy.mobile.client.ui;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
-import com.google.gwt.user.client.ui.Label;
+package com.servoy.mobile.client.ui;
+
+import com.google.gwt.user.client.ui.HasText;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 
 /**
- * Label UI
- * 
  * @author gboros
+ *
  */
-public class DataLabel extends Label implements IDisplayData
+public class DataText implements IDisplayData
 {
-	private final GraphicalComponent gc;
+	private final GraphicalComponent textComponent;
+	private final HasText parentComponent;
 
-	public DataLabel(GraphicalComponent gc)
+	public DataText(HasText parentComponent, GraphicalComponent textComponent)
 	{
-		super(gc.getText() != null ? gc.getText() : ""); //$NON-NLS-1$
-		this.gc = gc;
-	}
-
-	/*
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#getValueObject()
-	 */
-	@Override
-	public Object getValueObject()
-	{
-		return getText();
-	}
-
-	/*
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#setValueObject(java.lang.Object)
-	 */
-	@Override
-	public void setValueObject(Object data)
-	{
-		setText(data != null ? data.toString() : ""); //$NON-NLS-1$
+		this.parentComponent = parentComponent;
+		this.textComponent = textComponent;
 	}
 
 	/*
@@ -60,6 +42,26 @@ public class DataLabel extends Label implements IDisplayData
 	@Override
 	public String getDataProviderID()
 	{
-		return gc.getDataProviderID();
+		return textComponent.getDataProviderID();
 	}
+
+	/*
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#getValueObject()
+	 */
+	@Override
+	public Object getValueObject()
+	{
+		return textComponent.getText();
+	}
+
+	/*
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#setValueObject(java.lang.Object)
+	 */
+	@Override
+	public void setValueObject(Object data)
+	{
+		parentComponent.setText(data != null ? data.toString() : ""); //$NON-NLS-1$
+
+	}
+
 }

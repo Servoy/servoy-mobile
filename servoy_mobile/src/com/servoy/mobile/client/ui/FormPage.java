@@ -144,8 +144,8 @@ public class FormPage extends JQMPage
 	public void createContent(ArrayList<Component> contentComponents)
 	{
 		Collections.sort(contentComponents, PositionComparator.YX_COMPARATOR);
-		HashMap<String, String> fieldsetLabel = new HashMap<String, String>();
-		HashMap<String, DataTextField> fieldsetField = new HashMap<String, DataTextField>();
+		HashMap<String, GraphicalComponent> fieldsetLabel = new HashMap<String, GraphicalComponent>();
+		HashMap<String, ISupportDataText> fieldsetField = new HashMap<String, ISupportDataText>();
 		GraphicalComponent gc;
 		Field field;
 		String groupID;
@@ -157,7 +157,7 @@ public class FormPage extends JQMPage
 				groupID = gc.getGroupID();
 				if (groupID != null)
 				{
-					fieldsetLabel.put(groupID, gc.getText());
+					fieldsetLabel.put(groupID, gc);
 					continue;
 				}
 			}
@@ -169,22 +169,25 @@ public class FormPage extends JQMPage
 			Widget widget = createWidget(c);
 			if (widget != null)
 			{
-				if (groupID != null && widget instanceof DataTextField)
+				if (groupID != null && widget instanceof ISupportDataText)
 				{
-					fieldsetField.put(groupID, (DataTextField)widget);
+					fieldsetField.put(groupID, (ISupportDataText)widget);
 				}
 				add(widget);
 			}
 		}
 
-		Iterator<Entry<String, DataTextField>> fieldsetFieldIte = fieldsetField.entrySet().iterator();
-		Entry<String, DataTextField> fieldsetFieldEntry;
-		String label;
+		Iterator<Entry<String, ISupportDataText>> fieldsetFieldIte = fieldsetField.entrySet().iterator();
+		Entry<String, ISupportDataText> fieldsetFieldEntry;
 		while (fieldsetFieldIte.hasNext())
 		{
 			fieldsetFieldEntry = fieldsetFieldIte.next();
-			label = fieldsetLabel.get(fieldsetFieldEntry.getKey());
-			if (label != null) fieldsetFieldEntry.getValue().setText(label);
+			gc = fieldsetLabel.get(fieldsetFieldEntry.getKey());
+			if (gc != null)
+			{
+				fieldsetFieldEntry.getValue().setDataTextComponent(gc);
+				dal.addFormObject(fieldsetFieldEntry.getValue().getDataTextDisplay());
+			}
 		}
 	}
 
