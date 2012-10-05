@@ -15,6 +15,9 @@
 		<fileset dir="lib" includes="**/*.jar"/>
 	</path>
 
+	<target name="clean">
+	</target>
+	
 	<target name="gwtc" description="GWT compile to JavaScript">
 		<java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
 			<classpath>
