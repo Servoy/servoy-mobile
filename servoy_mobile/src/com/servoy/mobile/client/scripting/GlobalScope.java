@@ -8,6 +8,11 @@ import com.servoy.mobile.client.MobileClient;
 
 public class GlobalScope extends Scope
 {
+	public static final String GLOBAL_SCOPE = "globals"; //$NON-NLS-1$
+	public static final String GLOBALS_DOT_PREFIX = GLOBAL_SCOPE + '.';
+	public static final String SCOPES = "scopes"; //$NON-NLS-1$
+	public static final String SCOPES_DOT_PREFIX = SCOPES + '.';
+
 	private final String name;
 	private final Map<String, Object> scopeVariables = new HashMap<String, Object>();
 	protected final Map<String, Object> servoyProperties = new HashMap<String, Object>();
@@ -58,4 +63,51 @@ public class GlobalScope extends Scope
 		// fire property change
 	}
 
+	public boolean hasVariable(String variable)
+	{
+		return scopeVariables.containsKey(variable);
+	}
+
+	/**
+	 * Get the scope of a variable.
+	 * <br> globals.x -> [globals, x]
+	 * <br> scopes.s.x -> [s, x]
+	 * <br> x -> [null, x]
+	 */
+	public static String[] getVariableScope(String idParam)
+	{
+		if (idParam == null) return null;
+		String id = idParam;
+
+		int firstDotIdx = id.indexOf('.');
+		if (firstDotIdx != -1 && firstDotIdx < id.length() - 1)
+		{
+			String idWithoutPrefix = id.substring(firstDotIdx + 1);
+			if (idWithoutPrefix.startsWith(GLOBALS_DOT_PREFIX) || idWithoutPrefix.startsWith(SCOPES_DOT_PREFIX))
+			{
+				// this is a variable from a module, remove the module name from the id
+				id = idWithoutPrefix;
+			}
+		}
+
+		String scopeName = null;
+		String dpName = id;
+
+		if (id.startsWith(GLOBALS_DOT_PREFIX))
+		{
+			scopeName = GLOBAL_SCOPE;
+			dpName = id.substring(GLOBALS_DOT_PREFIX.length());
+		}
+		else if (id.startsWith(SCOPES_DOT_PREFIX))
+		{
+			int dot = id.indexOf('.', SCOPES_DOT_PREFIX.length() + 1);
+			if (dot >= 0)
+			{
+				scopeName = id.substring(SCOPES_DOT_PREFIX.length(), dot);
+				dpName = id.substring(SCOPES_DOT_PREFIX.length() + scopeName.length() + 1);
+			}
+		}
+
+		return new String[] { scopeName, dpName };
+	}
 }

@@ -29,7 +29,6 @@ import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.servoy.mobile.client.persistence.Solution;
 import com.servoy.mobile.client.persistence.Tab;
 import com.servoy.mobile.client.persistence.TabPanel;
-import com.servoy.mobile.client.util.Utils;
 
 /**
  * Create UI objects based on solution model objects
@@ -170,11 +169,11 @@ public class ComponentFactory
 			}
 		}
 
-		if (sizeProperty != null)
-		{
-			int[] wh = Utils.splitAsIntegers(sizeProperty);
-			if (wh != null && wh.length == 2) componentWidget.setPixelSize(wh[0], wh[1]);
-		}
+//		if (sizeProperty != null)
+//		{
+//			int[] wh = Utils.splitAsIntegers(sizeProperty);
+//			if (wh != null && wh.length == 2) componentWidget.setPixelSize(wh[0], wh[1]);
+//		}
 
 		return componentWidget;
 	}

@@ -20,6 +20,7 @@ package com.servoy.mobile.client.dataprocessing;
 import java.util.ArrayList;
 
 import com.servoy.mobile.client.MobileClient;
+import com.servoy.mobile.client.scripting.GlobalScope;
 
 /**
  * This adapter is a kind of model between the display(s) and the state.
@@ -53,9 +54,22 @@ public class DisplaysAdapter implements IDataAdapter, IEditListener
 	public void setRecord(Record record)
 	{
 		this.record = record;
-		Object value = application.getGlobalScope().getValue(dataproviderID);
-		if (value == null) value = dal.getFormScope().getValue(dataproviderID);
-		if (value == null && record != null) value = record.getValue(dataproviderID);
+
+		Object value = null;
+		String[] globalVariableScope = GlobalScope.getVariableScope(dataproviderID);
+
+		if (globalVariableScope[0] != null)
+		{
+			value = application.getGlobalScope().getValue(globalVariableScope[1]);
+		}
+		else if (dal.getFormScope().hasVariable(dataproviderID))
+		{
+			value = dal.getFormScope().getVariableValue(dataproviderID);
+		}
+		else if (record != null)
+		{
+			value = record.getValue(dataproviderID);
+		}
 
 		for (IDisplayData d : displays)
 			d.setValueObject(value);
@@ -119,8 +133,17 @@ public class DisplaysAdapter implements IDataAdapter, IEditListener
 		if (this.dataproviderID == null) return;
 
 		Object value = e.getValueObject();
+		String[] globalVariableScope = GlobalScope.getVariableScope(dataproviderID);
 
-		if (record != null)
+		if (globalVariableScope[0] != null)
+		{
+			application.getGlobalScope().setValue(globalVariableScope[1], value);
+		}
+		else if (dal.getFormScope().hasVariable(dataproviderID))
+		{
+			dal.getFormScope().setVariableValue(dataproviderID, value);
+		}
+		else if (record != null)
 		{
 			record.setValue(dataproviderID, value);
 		}
