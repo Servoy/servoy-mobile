@@ -20,11 +20,11 @@ package com.servoy.mobile.client.ui;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.servoy.j2db.scripting.api.IJSEvent;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
-import com.servoy.mobile.client.scripting.JSEvent;
 import com.sksamuel.jqm4gwt.form.elements.JQMText;
 
 /**
@@ -75,7 +75,7 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportData
 				{
 					if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
 					{
-						executor.fireEventCommand(JSEvent.ACTION, command, DataTextField.this, null);
+						executor.fireEventCommand(IJSEvent.ACTION, command, DataTextField.this, null);
 					}
 				}
 			});

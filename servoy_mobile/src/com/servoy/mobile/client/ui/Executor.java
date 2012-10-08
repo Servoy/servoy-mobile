@@ -24,7 +24,7 @@ public class Executor
 		String argumentsString = command.substring(index + 1, command.length() - 1);
 		Object[] persistArgs = argumentsString.split(",");
 
-		JSEvent event = new JSEvent(type, source);
+		JSEvent event = new JSEvent(type, source, formPage.getName(), null);
 
 		Object[] functionArgs = Utils.arrayMerge(Utils.arrayJoin(args, new Object[] { ExporterUtil.wrap(event) }), persistArgs);
 

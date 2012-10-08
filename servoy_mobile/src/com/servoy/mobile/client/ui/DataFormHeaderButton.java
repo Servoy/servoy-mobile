@@ -19,10 +19,10 @@ package com.servoy.mobile.client.ui;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.servoy.j2db.scripting.api.IJSEvent;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
-import com.servoy.mobile.client.scripting.JSEvent;
 import com.sksamuel.jqm4gwt.toolbar.JQMToolBarButton;
 
 /**
@@ -57,7 +57,7 @@ public class DataFormHeaderButton extends JQMToolBarButton implements IDisplayDa
 				@Override
 				public void onClick(ClickEvent event)
 				{
-					executor.fireEventCommand(JSEvent.ACTION, command, DataFormHeaderButton.this, null);
+					executor.fireEventCommand(IJSEvent.ACTION, command, DataFormHeaderButton.this, null);
 				}
 			});
 		}

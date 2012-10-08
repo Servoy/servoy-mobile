@@ -12,6 +12,7 @@
   <inherits name='com.google.gwt.user.User'/>
   <inherits name='com.google.gwt.json.JSON'/>
 
+  <inherits name="com.servoy.j2db.scripting.ServoyBase" />
   
   <!-- Inherit the default GWT style sheet.  You can change       -->
   <!-- the theme of your GWT application by uncommenting          -->
@@ -20,7 +21,7 @@
   <!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
   <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
 
-  <!-- Other module inherits                                      -->
+  <!-- Other module inherits                      -->
   <inherits name='com.sksamuel.Jqm4gwt' />
   <inherits name='org.timepedia.exporter.Exporter'/>
   <!-- <inherits name='com.google.gwt.modernizr.Gwtmodernizr' /> -->

@@ -21,28 +21,39 @@ import java.util.Date;
 
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
-import org.timepedia.exporter.client.Exportable;
+import org.timepedia.exporter.client.Getter;
+import org.timepedia.exporter.client.Setter;
 
 /**
  * @author jcompagner
  *
- * TODO should this one just extends the JSEvent from our self to have the same constants?
  */
 @ExportPackage("")
 @Export
-public class JSEvent implements Exportable
+public class JSEvent implements IMobileJSEvent
 {
-	public static final String ACTION = "onaction";
-
+	public static final String MYTEST = "MYTEST";
 
 	private final Object source;
 	private final String type;
 	private final Date timestamp;
+	private final int y;
+	private final int x;
+	private final int modifiers;
+	private final String formName;
+	private final String elementName;
 
-	public JSEvent(String type, Object source)
+	private Object data;
+
+	public JSEvent(String type, Object source, String formName, String elementName)
 	{
 		this.type = type;
 		this.source = source;
+		this.formName = formName;
+		this.elementName = elementName;
+		this.y = -1;
+		this.x = -1;
+		this.modifiers = -1;
 		this.timestamp = new Date();
 	}
 
@@ -59,5 +70,84 @@ public class JSEvent implements Exportable
 	public Date getTimestamp()
 	{
 		return timestamp;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.j2db.scripting.api.IJSEvent#getFormName()
+	 */
+	@Override
+	public String getFormName()
+	{
+		return formName;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.j2db.scripting.api.IJSEvent#getElementName()
+	 */
+	@Override
+	public String getElementName()
+	{
+		return elementName;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.j2db.scripting.api.IJSEvent#getModifiers()
+	 */
+	@Override
+	public int getModifiers()
+	{
+		return modifiers;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.j2db.scripting.api.IJSEvent#getX()
+	 */
+	@Override
+	public int getX()
+	{
+		return x;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.j2db.scripting.api.IJSEvent#getY()
+	 */
+	@Override
+	public int getY()
+	{
+		return y;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.j2db.scripting.api.IJSEvent#getData()
+	 */
+	@Override
+	@Getter
+	public Object getData()
+	{
+		return data;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.j2db.scripting.api.IJSEvent#setData(java.lang.Object)
+	 */
+	@Override
+	@Setter
+	public void setData(Object object)
+	{
+		this.data = object;
 	}
 }
