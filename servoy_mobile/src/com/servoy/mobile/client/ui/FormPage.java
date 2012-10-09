@@ -49,19 +49,19 @@ public class FormPage extends JQMPage
 {
 	protected final MobileClient application;
 	protected final Form form;
-	private final FormController formController;
-	private final Executor executor;
+	protected final FormController formController;
+	protected final Executor executor;
 	private boolean enabled = true;
-	private final DataAdapterList dal;
+	protected final DataAdapterList dal;
 	private IFormPageHeaderDecorator headerDecorator;
 	private IFormPageFooterDecorator footerDecorator;
 
 
-	public FormPage(MobileClient application, Form form, FormController formController)
+	public FormPage(MobileClient application, FormController formController)
 	{
 		this.application = application;
-		this.form = form;
 		this.formController = formController;
+		this.form = formController.getForm();
 		this.executor = new Executor(this);
 
 		dal = new DataAdapterList(application, formController);
@@ -251,7 +251,7 @@ public class FormPage extends JQMPage
 	private Widget createWidget(Component component)
 	{
 		if (component == null) return null;
-		Widget w = ComponentFactory.createComponent(application.getSolution(), component, executor);
+		Widget w = ComponentFactory.createComponent(application, component, executor, dal);
 		if (w != null) dal.addFormObject(w);
 		return w;
 	}
@@ -264,5 +264,10 @@ public class FormPage extends JQMPage
 	public void setFooterDecorator(IFormPageFooterDecorator footerDecorator)
 	{
 		this.footerDecorator = footerDecorator;
+	}
+
+	public DataAdapterList getDataAdapterList()
+	{
+		return dal;
 	}
 }

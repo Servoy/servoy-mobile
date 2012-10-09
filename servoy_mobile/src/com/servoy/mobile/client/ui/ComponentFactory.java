@@ -21,12 +21,12 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.user.client.ui.Widget;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
+import com.servoy.mobile.client.dataprocessing.DataAdapterList;
 import com.servoy.mobile.client.persistence.BaseComponent;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
-import com.servoy.mobile.client.persistence.Solution;
 import com.servoy.mobile.client.persistence.Tab;
 import com.servoy.mobile.client.persistence.TabPanel;
 
@@ -44,12 +44,13 @@ public class ComponentFactory
 	 * 
 	 * @return form display
 	 */
-	public static IFormDisplay createFormDisplay(MobileClient application, Form form, FormController formController)
+	public static IFormDisplay createFormDisplay(MobileClient application, FormController formController)
 	{
+		Form form = formController.getForm();
 		int viewType = form.getView();
-		if (viewType == Form.VIEW_TYPE_LIST || viewType == Form.VIEW_TYPE_LIST_LOCKED)
+		if (viewType == Form.VIEW_TYPE_TABLE || viewType == Form.VIEW_TYPE_TABLE_LOCKED)
 		{
-			return new ListFormDisplay(application, form, formController);
+			return new ListFormDisplay(application, formController);
 		}
 
 		JsArray<Component> formComponents = form.getComponents();
@@ -66,7 +67,7 @@ public class ComponentFactory
 			}
 		}
 
-		return new SimpleFormDisplay(application, form, formController);
+		return new SimpleFormDisplay(application, formController);
 	}
 
 	/**
@@ -76,7 +77,7 @@ public class ComponentFactory
 	 * 
 	 * @return UI component
 	 */
-	public static Widget createComponent(Solution solutionModel, Component component, Executor executor)
+	public static Widget createComponent(MobileClient application, Component component, Executor executor, DataAdapterList dal)
 	{
 		Widget componentWidget = null;
 		String sizeProperty = null;
@@ -162,7 +163,12 @@ public class ComponentFactory
 
 					if (tabs.length() > 0)
 					{
-						componentWidget = new FormList(solutionModel.getFormByUUID(tabs.get(0).getContainsFormID()));
+						Tab tab = tabs.get(0);
+						Form form = application.getSolution().getFormByUUID(tab.getContainsFormID());
+						FormController formController = application.getFormManager().getForm(form.getName());
+						String relationName = tab.getRelationName();
+
+						componentWidget = new FormList(formController, dal, executor, relationName);
 						sizeProperty = tabPanel.getSize();
 					}
 				}

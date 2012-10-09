@@ -59,4 +59,8 @@ public class Field extends Component
 	public final native String getGroupID() /*-{
 		return this.groupID;
 	}-*/;
+
+	public final native String getText() /*-{
+		return this.text;
+	}-*/;
 }

@@ -54,22 +54,7 @@ public class DisplaysAdapter implements IDataAdapter, IEditListener
 	public void setRecord(Record record)
 	{
 		this.record = record;
-
-		Object value = null;
-		String[] globalVariableScope = GlobalScope.getVariableScope(dataproviderID);
-
-		if (globalVariableScope[0] != null)
-		{
-			value = application.getGlobalScope().getValue(globalVariableScope[1]);
-		}
-		else if (dal.getFormScope().hasVariable(dataproviderID))
-		{
-			value = dal.getFormScope().getVariableValue(dataproviderID);
-		}
-		else if (record != null)
-		{
-			value = record.getValue(dataproviderID);
-		}
+		Object value = dal.getRecordValue(record, dataproviderID);
 
 		for (IDisplayData d : displays)
 			d.setValueObject(value);

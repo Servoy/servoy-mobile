@@ -18,23 +18,47 @@ package com.servoy.mobile.client.ui;
  */
 
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.servoy.j2db.scripting.api.IJSEvent;
+import com.servoy.mobile.client.FormController;
+import com.servoy.mobile.client.dataprocessing.DataAdapterList;
+import com.servoy.mobile.client.dataprocessing.FoundSet;
+import com.servoy.mobile.client.dataprocessing.IDisplayRelatedData;
+import com.servoy.mobile.client.dataprocessing.Record;
 import com.servoy.mobile.client.persistence.BaseComponent;
 import com.servoy.mobile.client.persistence.Component;
-import com.servoy.mobile.client.persistence.Form;
 import com.sksamuel.jqm4gwt.list.JQMList;
+import com.sksamuel.jqm4gwt.list.JQMListItem;
 
 /**
  * List based on form UI
  * 
  * @author gboros
  */
-public class FormList extends JQMList
+public class FormList extends JQMList implements IDisplayRelatedData
 {
-	private String listItemButtonDP, listItemAsideDP, listItemCountDP, listItemImageDP;
+	private final FormController formController;
+	private final DataAdapterList dal;
+	private final Executor executor;
+	private final String relationName;
+	private String listItemTextDP, listItemAsideDP, listItemCountDP, listItemImageDP;
+	private String listItemStaticText, listItemStaticAside;
+	private String listItemOnAction;
 
-	public FormList(Form form)
+	public FormList(FormController formController, DataAdapterList dal, Executor executor)
 	{
-		JsArray<Component> formComponents = form.getComponents();
+		this(formController, dal, executor, null);
+	}
+
+	public FormList(FormController formController, DataAdapterList dal, Executor executor, String relationName)
+	{
+		this.formController = formController;
+		this.dal = dal;
+		this.executor = executor;
+		this.relationName = relationName;
+
+		JsArray<Component> formComponents = formController.getForm().getComponents();
 
 		Component component;
 		BaseComponent.MobileProperties mobileProperties;
@@ -49,12 +73,14 @@ public class FormList extends JQMList
 				{
 					if (mobileProperties.isListItemButton())
 					{
-						listItemButtonDP = component.isGraphicalComponent().getDataProviderID();
-						//component.getActionMethodID()
+						listItemTextDP = component.isGraphicalComponent().getDataProviderID();
+						listItemOnAction = component.isGraphicalComponent().getActionMethodID();
+						listItemStaticText = component.isGraphicalComponent().getText();
 					}
 					else if (mobileProperties.isListItemAside())
 					{
 						listItemAsideDP = component.isField().getDataProviderID();
+						listItemStaticAside = component.isField().getText();
 					}
 					else if (mobileProperties.isListItemCount())
 					{
@@ -65,6 +91,68 @@ public class FormList extends JQMList
 						listItemImageDP = component.isField().getDataProviderID();
 					}
 				}
+			}
+		}
+
+		setInset(true);
+	}
+
+	private FoundSet relatedFoundset;
+
+	/*
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayRelatedData#setRecord(com.servoy.mobile.client.dataprocessing.Record)
+	 */
+	@Override
+	public void setRecord(Record parentRecord)
+	{
+		if (relationName != null)
+		{
+			relatedFoundset = parentRecord.getRelatedFoundSet(relationName);
+			refreshList();
+		}
+	}
+
+	public void refreshList()
+	{
+		createList(relatedFoundset != null ? relatedFoundset : formController.getFormModel());
+		refresh();
+	}
+
+	private void createList(FoundSet foundset)
+	{
+		clear();
+		int foundsetSize = foundset.getSize();
+		JQMListItem listItem;
+		Record listItemRecord;
+		Object dpValue;
+		for (int i = 0; i < foundsetSize; i++)
+		{
+			listItemRecord = foundset.getRecord(i);
+			dpValue = listItemStaticText;
+			dpValue = dal.getRecordValue(listItemRecord, listItemTextDP);
+			listItem = addItem(dpValue != null ? dpValue.toString() : ""); //$NON-NLS-1$
+
+			dpValue = listItemStaticAside;
+			dpValue = dal.getRecordValue(listItemRecord, listItemAsideDP);
+			if (dpValue != null) listItem.setAside(dpValue.toString());
+
+			dpValue = dal.getRecordValue(listItemRecord, listItemCountDP);
+			if (dpValue instanceof Integer) listItem.setCount((Integer)dpValue);
+			else if (dpValue instanceof Double) listItem.setCount(Integer.valueOf(((Double)dpValue).intValue()));
+
+			dpValue = dal.getRecordValue(listItemRecord, listItemImageDP);
+			if (dpValue != null) listItem.setImage(dpValue.toString(), false);
+
+			if (listItemOnAction != null)
+			{
+				listItem.addClickHandler(new ClickHandler()
+				{
+					@Override
+					public void onClick(ClickEvent event)
+					{
+						executor.fireEventCommand(IJSEvent.ACTION, listItemOnAction, null, null);
+					}
+				});
 			}
 		}
 	}

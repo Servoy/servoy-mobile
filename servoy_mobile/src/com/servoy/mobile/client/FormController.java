@@ -29,14 +29,19 @@ public class FormController implements Exportable, IFoundSetSelectionListener
 	public FormController(MobileClient mc, Form form)
 	{
 		this.form = form;
-		formDisplay = ComponentFactory.createFormDisplay(mc, form, this);
+		formDisplay = ComponentFactory.createFormDisplay(mc, this);
 		String dataSource = form.getDataSource();
 		if (dataSource != null)
 		{
 			foundSet = mc.getFoundSetManager().getFoundSet(FoundSetManager.getEntityFromDataSource(dataSource));
-			foundSet.addSelectionListener(this);
+			if (foundSet != null) foundSet.addSelectionListener(this);
 		}
 		scope = new FormScope(mc, this);
+	}
+
+	public Form getForm()
+	{
+		return form;
 	}
 
 	public String getName()

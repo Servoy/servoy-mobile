@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.persistence.Component;
-import com.servoy.mobile.client.persistence.Form;
 
 /**
  * Form display in list view mode
@@ -33,9 +32,9 @@ public class ListFormDisplay extends FormDisplay
 {
 	private final ListFormPage listFormPage;
 
-	public ListFormDisplay(MobileClient application, Form form, FormController formController)
+	public ListFormDisplay(MobileClient application, FormController formController)
 	{
-		listFormPage = new ListFormPage(application, form, formController);
+		listFormPage = new ListFormPage(application, formController);
 	}
 
 	@Override
@@ -46,15 +45,25 @@ public class ListFormDisplay extends FormDisplay
 
 	class ListFormPage extends FormPage
 	{
-		public ListFormPage(MobileClient application, Form form, FormController formController)
+		private FormList formList;
+
+		public ListFormPage(MobileClient application, FormController formController)
 		{
-			super(application, form, formController);
+			super(application, formController);
 		}
 
 		@Override
 		public void createContent(ArrayList<Component> contentComponents)
 		{
-			add(new FormList(form));
+			formList = new FormList(formController, dal, executor);
+			add(formList);
+		}
+
+		@Override
+		protected void onPageBeforeShow()
+		{
+			super.onPageBeforeShow();
+			formList.refreshList();
 		}
 	}
 }

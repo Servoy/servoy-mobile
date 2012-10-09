@@ -19,7 +19,6 @@ package com.servoy.mobile.client.ui;
 
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
-import com.servoy.mobile.client.persistence.Form;
 
 /**
  * Basic form display
@@ -30,9 +29,9 @@ public class SimpleFormDisplay extends FormDisplay
 {
 	private final FormPage formPage;
 
-	public SimpleFormDisplay(MobileClient application, Form form, FormController formController)
+	public SimpleFormDisplay(MobileClient application, FormController formController)
 	{
-		formPage = new FormPage(application, form, formController);
+		formPage = new FormPage(application, formController);
 	}
 
 	@Override

@@ -1,5 +1,3 @@
-package com.servoy.mobile.client.persistence;
-
 /*
  This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
 
@@ -17,24 +15,14 @@ package com.servoy.mobile.client.persistence;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
+package com.servoy.mobile.client.dataprocessing;
+
+
 /**
+ * Convenient interface to tie a implementing gwt component easily to a dataAdapter
  * @author gboros
  */
-public class Tab extends BaseComponent
+public interface IDisplayRelatedData
 {
-	protected Tab()
-	{
-	}
-
-	public final native String getLocation() /*-{
-		return this.location;
-	}-*/;
-
-	public final native String getContainsFormID() /*-{
-		return this.containsFormID;
-	}-*/;
-
-	public final native String getRelationName() /*-{
-		return this.relationName;
-	}-*/;
+	public void setRecord(Record parentRecord);
 }

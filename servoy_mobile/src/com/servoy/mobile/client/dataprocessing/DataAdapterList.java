@@ -17,12 +17,14 @@
 
 package com.servoy.mobile.client.dataprocessing;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.scripting.FormScope;
+import com.servoy.mobile.client.scripting.GlobalScope;
 
 /**
  * This class encapsulates all the dataproviders for a form page, it does the creation and setup of dataAdapters.
@@ -34,6 +36,7 @@ public class DataAdapterList
 	private final MobileClient application;
 	private final FormController formController;
 	private final LinkedHashMap<String, IDataAdapter> dataAdapters = new LinkedHashMap<String, IDataAdapter>();
+	private final ArrayList<IDisplayRelatedData> relatedDataAdapters = new ArrayList<IDisplayRelatedData>();
 
 	public DataAdapterList(MobileClient application, FormController formController)
 	{
@@ -64,6 +67,10 @@ public class DataAdapterList
 				}
 			}
 		}
+		else if (obj instanceof IDisplayRelatedData)
+		{
+			relatedDataAdapters.add((IDisplayRelatedData)obj);
+		}
 	}
 
 	public FormScope getFormScope()
@@ -79,5 +86,31 @@ public class DataAdapterList
 			IDataAdapter da = it.next();
 			da.setRecord(record);
 		}
+
+		for (IDisplayRelatedData relatedDataAdapter : relatedDataAdapters)
+			relatedDataAdapter.setRecord(record);
+	}
+
+	public Object getRecordValue(Record record, String dataproviderID)
+	{
+		Object recordValue = null;
+		if (dataproviderID != null)
+		{
+			String[] globalVariableScope = GlobalScope.getVariableScope(dataproviderID);
+
+			if (globalVariableScope[0] != null)
+			{
+				recordValue = application.getGlobalScope().getValue(globalVariableScope[1]);
+			}
+			else if (getFormScope().hasVariable(dataproviderID))
+			{
+				recordValue = getFormScope().getVariableValue(dataproviderID);
+			}
+			else if (record != null)
+			{
+				recordValue = record.getValue(dataproviderID);
+			}
+		}
+		return recordValue;
 	}
 }
