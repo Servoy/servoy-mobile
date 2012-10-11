@@ -96,6 +96,7 @@ public class FormManager
 			{
 				formController = new FormController(application, form);
 				formControllerMap.put(name, formController);
+				initFormScope(name, formController.getFormScope());
 
 			}
 		}
@@ -150,6 +151,12 @@ public class FormManager
 		}
 		return null;
 	}
+
+	private native void initFormScope(String formName, FormScope formScope)
+	/*-{
+		$wnd._ServoyInit_.forms["_$" + formName + "$"](formScope);
+	}-*/;
+
 
 	public native void export() /*-{
 		var formManager = this;

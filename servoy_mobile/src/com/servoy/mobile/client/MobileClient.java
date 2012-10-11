@@ -281,9 +281,15 @@ public class MobileClient implements EntryPoint
 		{
 			scope = new GlobalScope(name, this);
 			scopes.put(name, scope);
+			initGlobalScope(name, scope);
 		}
 		return scope;
 	}
+
+	private native void initGlobalScope(String scopeName, GlobalScope formScope)
+	/*-{
+		$wnd._ServoyInit_.scopes["_$" + scopeName + "$"](formScope);
+	}-*/;
 
 	private native void export()
 	/*-{
