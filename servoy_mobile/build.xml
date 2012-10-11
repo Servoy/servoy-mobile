@@ -11,6 +11,7 @@
 
 	<path id="project.class.path">
 		<pathelement location="war/WEB-INF/classes"/>
+		<pathelement location="../servoy_base/bin"/>
 			<!-- Add any additional non-server libs (such as JUnit) -->
 		<fileset dir="lib" includes="**/*.jar"/>
 	</path>
@@ -22,6 +23,7 @@
 		<java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
 			<classpath>
 				<pathelement location="src"/>
+				<pathelement location="../servoy_base/src"/>
 				<path refid="project.class.path"/>
 			</classpath>
 			<!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
