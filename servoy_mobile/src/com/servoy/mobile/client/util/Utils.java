@@ -467,4 +467,21 @@ public class Utils
 		System.arraycopy(lowerAarray, upperAarray.length, mergedArgs, upperAarray.length, lowerAarray.length - upperAarray.length);
 		return mergedArgs;
 	}
+
+	/**
+	 * Find item in an array of objects
+	 * 
+	 * @param array of objects to search
+	 * @param item to find
+	 * @return index of the item in the array or -1 if not found
+	 */
+	public static int findInArray(Object[] array, Object item)
+	{
+		if (array == null || array.length < 1) return -1;
+		for (int i = 0; i < array.length; i++)
+		{
+			if (Utils.equalObjects(array[i], item)) return i;
+		}
+		return -1;
+	}
 }

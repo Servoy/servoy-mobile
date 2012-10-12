@@ -10,8 +10,8 @@ public class ValueListDescription extends JavaScriptObject
 	{
 	}
 
-	public final native String getName() /*-{
-		return this.name;
+	public final native String getUUID() /*-{
+		return this.uuid;
 	}-*/;
 
 	public final native JsArrayString getDiplayValues() /*-{

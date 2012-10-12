@@ -301,14 +301,14 @@ public class FoundSetManager
 		return (fs != null && fs.getSize() > 0);
 	}
 
-	public ValueListDescription getValueListItems(String valueListName)
+	public ValueListDescription getValueListItems(String valueListUUID)
 	{
 		if (valueLists != null)
 		{
 			for (int i = 0; i < valueLists.length(); i++)
 			{
 				ValueListDescription vld = valueLists.get(i);
-				if (vld.getName().equals(valueListName))
+				if (vld.getUUID().equals(valueListUUID))
 				{
 					return vld;
 				}

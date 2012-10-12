@@ -22,6 +22,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.DataAdapterList;
+import com.servoy.mobile.client.dto.ValueListDescription;
 import com.servoy.mobile.client.persistence.BaseComponent;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Field;
@@ -123,6 +124,12 @@ public class ComponentFactory
 			Field field = component.isField();
 			if (field != null)
 			{
+				ValueListDescription valuelist = null;
+				String valuelistID = field.getValuelistID();
+				if (valuelistID != null)
+				{
+					valuelist = application.getFoundSetManager().getValueListItems(valuelistID);
+				}
 				switch (field.getDisplayType())
 				{
 					case Field.DISPLAY_TYPE_TEXT_FIELD :
@@ -138,7 +145,7 @@ public class ComponentFactory
 						componentWidget = new DataRadioSet(field);
 						break;
 					case Field.DISPLAY_TYPE_CHECKS :
-						componentWidget = new DataCheckboxSet(field);
+						componentWidget = new DataCheckboxSet(field, valuelist, executor);
 						break;
 					case Field.DISPLAY_TYPE_CALENDAR :
 						componentWidget = new DataTextField(field, executor);
