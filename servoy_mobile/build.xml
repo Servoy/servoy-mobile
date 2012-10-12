@@ -7,7 +7,7 @@
   -		Jan Blok
   -->
 
-<project name="servoy_mobile" basedir="." default="build_mobile">
+<project name="servoy_mobile" basedir="." default="gwtc">
 
 	<path id="project.class.path">
 		<pathelement location="war/WEB-INF/classes"/>
@@ -19,7 +19,7 @@
 	<target name="clean">
 	</target>
 	
-	<target name="gwtc" description="GWT compile to JavaScript">
+	<target name="gwtc" description="GWT compile for Eclipse Project run">
 		<java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
 			<classpath>
 				<pathelement location="src"/>
@@ -35,13 +35,30 @@
 		</java>
 	</target>
 
-	<target name="build_mobile" depends="gwtc">
+	<target name="gwtCompileForDeployment" description="GWT compile to JavaScript for deployed application">
+		<java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
+			<classpath>
+				<pathelement location="src"/>
+				<pathelement location="../servoy_base/src"/>
+				<path refid="project.class.path"/>
+			</classpath>
+			<!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
+			<jvmarg value="-Xmx256M"/>
+			<!-- Additional arguments like -style PRETTY,DETAILED,OBFUSCATED, or -logLevel DEBUG -->
+			<arg value="com.servoy.mobile.MobileClientDeploy"/>
+			<arg value="-style"/>
+			<arg value="OBFUSCATED"/>
+		</java>
+	</target>
+	
+	<target name="build_mobile" depends="gwtCompileForDeployment">
 		<delete file="servoy_mobile.war"/>
 		<jar	destfile="servoy_mobile.war"
 				basedir="war"
 				duplicate="fail"
 				excludes="**/*.jar,**/*.war,**/WEB-INF/deploy/**,**/WEB-INF/classes/**,**/solution.json,**/solution.js"
 		/>
+		<ant antfile="build.xml" target="gwtc"/>
 	</target>
 
 	<target name="deploy" depends="build_mobile">
