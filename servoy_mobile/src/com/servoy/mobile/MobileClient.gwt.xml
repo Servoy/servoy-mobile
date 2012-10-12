@@ -35,5 +35,7 @@
 
   <!-- Specify the paths for translatable code                    -->
   <source path='client'/>
+  
+  <add-linker name="xs"/>
 
 </module>
