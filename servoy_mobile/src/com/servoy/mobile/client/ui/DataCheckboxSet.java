@@ -59,12 +59,13 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData
 			for (int i = 0; i < displayValues.length(); i++)
 			{
 				displayValue = displayValues.get(i);
-				items.add(new DataCheckboxSetItem(addCheck(Integer.toString(i), displayValue), realValues != null ? realValues.getString(i) : displayValue));
+				items.add(new DataCheckboxSetItem(addCheck(field.getUUID() + Integer.toString(i), displayValue), realValues != null ? realValues.getString(i)
+					: displayValue));
 			}
 		}
 		else
 		{
-			items.add(new DataCheckboxSetItem(addCheck("0", field.getText()), null)); //$NON-NLS-1$
+			items.add(new DataCheckboxSetItem(addCheck(field.getUUID(), field.getText()), null));
 		}
 
 		setActionCommand(field.getActionMethodID());
