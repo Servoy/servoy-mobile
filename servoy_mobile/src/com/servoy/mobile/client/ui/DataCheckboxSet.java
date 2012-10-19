@@ -38,7 +38,7 @@ import com.sksamuel.jqm4gwt.form.elements.JQMCheckset;
  * 
  * @author gboros
  */
-public class DataCheckboxSet extends JQMCheckset implements IDisplayData
+public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IFieldComponent
 {
 	private final Field field;
 	private final ValueListDescription valuelist;
@@ -67,8 +67,6 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData
 		{
 			items.add(new DataCheckboxSetItem(addCheck(field.getUUID(), field.getText()), null));
 		}
-
-		setActionCommand(field.getActionMethodID());
 	}
 
 	/*
@@ -177,6 +175,13 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData
 		}
 	}
 
+	private String changeCommand;
+
+	public void setChangeCommand(final String command)
+	{
+		this.changeCommand = command;
+	}
+
 	private class DataCheckboxSetItem
 	{
 		final JQMCheckbox checkbox;
@@ -187,5 +192,14 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData
 			this.checkbox = checkbox;
 			this.realValue = realValue;
 		}
+	}
+
+	/*
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#notifyLastNewValueWasChange(java.lang.Object, java.lang.Object)
+	 */
+	@Override
+	public void notifyLastNewValueWasChange(Object oldVal, Object newVal)
+	{
+		if (changeCommand != null) executor.fireEventCommand(IJSEvent.DATACHANGE, changeCommand, DataCheckboxSet.this, null);
 	}
 }

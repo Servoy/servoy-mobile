@@ -3,7 +3,11 @@ package com.servoy.mobile.client.util;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import org.timepedia.exporter.client.ExporterBaseActual.JsArrayObject;
+
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JsArrayMixed;
+import com.google.gwt.core.client.JsArrayString;
 
 /*
  This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
@@ -475,8 +479,31 @@ public class Utils
 	 * @param item to find
 	 * @return index of the item in the array or -1 if not found
 	 */
-	public static int findInArray(Object[] array, Object item)
+	public static int findInArray(Object arrayObj, Object item)
 	{
+		Object[] array = null;
+		JsArrayObject jsArray = null;
+
+		if (arrayObj instanceof Object[])
+		{
+			array = (Object[])arrayObj;
+		}
+		else if (arrayObj instanceof JsArrayMixed)
+		{
+			jsArray = ((JsArrayMixed)arrayObj).cast();
+		}
+		else if (arrayObj instanceof JsArrayString)
+		{
+			jsArray = ((JsArrayString)arrayObj).cast();
+		}
+
+		if (jsArray != null)
+		{
+			array = new Object[jsArray.length()];
+			for (int i = 0; i < jsArray.length(); i++)
+				array[i] = jsArray.getObject(i);
+		}
+
 		if (array == null || array.length < 1) return -1;
 		for (int i = 0; i < array.length; i++)
 		{

@@ -28,7 +28,7 @@ import com.sksamuel.jqm4gwt.button.JQMButton;
  * 
  * @author gboros
  */
-public class DataButton extends JQMButton
+public class DataButton extends JQMButton implements IGraphicalComponent
 {
 	private final Executor executor;
 
@@ -36,8 +36,6 @@ public class DataButton extends JQMButton
 	{
 		super(gc.getText());
 		this.executor = executor;
-
-		setActionCommand(gc.getActionMethodID());
 	}
 
 	public void setActionCommand(final String command)

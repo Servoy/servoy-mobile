@@ -17,6 +17,7 @@ package com.servoy.mobile.client.scripting;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.timepedia.exporter.client.Exportable;
@@ -24,8 +25,11 @@ import org.timepedia.exporter.client.ExporterUtil;
 
 import com.google.gwt.core.client.JsDate;
 
+
 public abstract class Scope
 {
+	private final ArrayList<IModificationListener> modificationListeners = new ArrayList<IModificationListener>();
+
 	public Scope()
 	{
 		super();
@@ -89,4 +93,19 @@ public abstract class Scope
 
 	public abstract void setValue(String variable, Object vaue);
 
+	public void addModificationListener(IModificationListener listener)
+	{
+		modificationListeners.add(listener);
+	}
+
+	public void removeModificationListener(IModificationListener listener)
+	{
+		modificationListeners.remove(listener);
+	}
+
+	public void fireModificationEvent(String name, Object value)
+	{
+		for (IModificationListener listener : modificationListeners)
+			listener.valueChanged(new ModificationEvent(name, value, this));
+	}
 }

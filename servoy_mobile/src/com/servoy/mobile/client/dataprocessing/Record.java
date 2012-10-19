@@ -30,6 +30,7 @@ import com.servoy.mobile.client.dto.RecordDescription;
 import com.servoy.mobile.client.dto.RelationDescription;
 import com.servoy.mobile.client.dto.RowDescription;
 import com.servoy.mobile.client.scripting.Scope;
+import com.servoy.mobile.client.util.Utils;
 
 /**
  * The mobile record
@@ -96,7 +97,11 @@ public class Record extends Scope
 		RowDescription rd = getRowDescription();
 		if (rd == null) return;
 		parent.startEdit(this);
+
+		Object oldObj = rd.getValue(dataProviderID);
 		rd.setValue(dataProviderID, obj);
+
+		if (!Utils.equalObjects(oldObj, obj)) fireModificationEvent(dataProviderID, obj);
 	}
 
 	private RowDescription getRowDescription()

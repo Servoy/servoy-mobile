@@ -29,7 +29,6 @@ public class FormController implements Exportable, IFoundSetSelectionListener
 	public FormController(MobileClient mc, Form form)
 	{
 		this.form = form;
-		formDisplay = ComponentFactory.createFormDisplay(mc, this);
 		String dataSource = form.getDataSource();
 		if (dataSource != null)
 		{
@@ -37,6 +36,7 @@ public class FormController implements Exportable, IFoundSetSelectionListener
 			if (foundSet != null) foundSet.addSelectionListener(this);
 		}
 		scope = new FormScope(mc, this);
+		formDisplay = ComponentFactory.createFormDisplay(mc, this);
 	}
 
 	public Form getForm()
@@ -81,6 +81,8 @@ public class FormController implements Exportable, IFoundSetSelectionListener
 	public void cleanup()
 	{
 		formDisplay.getDisplayPage().removeFromParent();
+		formDisplay.getDisplayPage().getDataAdapterList().destroy();
+
 	}
 
 	/*

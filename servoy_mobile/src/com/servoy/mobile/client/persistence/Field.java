@@ -56,6 +56,10 @@ public class Field extends Component
 		return this.onActionMethodID;
 	}-*/;
 
+	public final native String getDataChangeMethodID() /*-{
+		return this.onDataChangeMethodID;
+	}-*/;
+
 	public final native String getGroupID() /*-{
 		return this.groupID;
 	}-*/;

@@ -83,4 +83,13 @@ public class DataText implements IDisplayData
 		// ignore
 	}
 
+	/*
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#notifyLastNewValueWasChange(java.lang.Object, java.lang.Object)
+	 */
+	@Override
+	public void notifyLastNewValueWasChange(Object oldVal, Object newVal)
+	{
+		// ignore
+	}
+
 }

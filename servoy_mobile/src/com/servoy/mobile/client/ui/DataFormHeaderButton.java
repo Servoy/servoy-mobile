@@ -29,7 +29,7 @@ import com.sksamuel.jqm4gwt.toolbar.JQMToolBarButton;
  * @author gboros
  *
  */
-public class DataFormHeaderButton extends JQMToolBarButton implements IDisplayData
+public class DataFormHeaderButton extends JQMToolBarButton implements IDisplayData, IGraphicalComponent
 {
 	public static int ORIENTATION_LEFT = 0;
 	public static int ORIENTATION_RIGHT = 1;
@@ -44,8 +44,6 @@ public class DataFormHeaderButton extends JQMToolBarButton implements IDisplayDa
 		this.gc = gc;
 		this.orientation = orientation;
 		this.executor = executor;
-
-		setActionCommand(gc.getActionMethodID());
 	}
 
 	public void setActionCommand(final String command)
@@ -112,5 +110,14 @@ public class DataFormHeaderButton extends JQMToolBarButton implements IDisplayDa
 	{
 		// ignore
 
+	}
+
+	/*
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#notifyLastNewValueWasChange(java.lang.Object, java.lang.Object)
+	 */
+	@Override
+	public void notifyLastNewValueWasChange(Object oldVal, Object newVal)
+	{
+		// ignore
 	}
 }

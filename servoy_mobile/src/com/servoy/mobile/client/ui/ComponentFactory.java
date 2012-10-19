@@ -118,6 +118,8 @@ public class ComponentFactory
 				}
 				sizeProperty = gc.getSize();
 			}
+
+			if (componentWidget instanceof IGraphicalComponent) ((IGraphicalComponent)componentWidget).setActionCommand(gc.getActionMethodID());
 		}
 		else
 		{
@@ -139,10 +141,10 @@ public class ComponentFactory
 						componentWidget = new DataTextArea(field);
 						break;
 					case Field.DISPLAY_TYPE_COMBOBOX :
-						componentWidget = new DataSelect(field);
+						componentWidget = new DataSelect(field, valuelist, executor);
 						break;
 					case Field.DISPLAY_TYPE_RADIOS :
-						componentWidget = new DataRadioSet(field);
+						componentWidget = new DataRadioSet(field, valuelist, executor);
 						break;
 					case Field.DISPLAY_TYPE_CHECKS :
 						componentWidget = new DataCheckboxSet(field, valuelist, executor);
@@ -156,6 +158,13 @@ public class ComponentFactory
 					case Field.DISPLAY_TYPE_PASSWORD :
 						componentWidget = new DataPassword(field);
 						break;
+				}
+
+				if (componentWidget instanceof IFieldComponent)
+				{
+					IFieldComponent fieldComponent = (IFieldComponent)componentWidget;
+					fieldComponent.setActionCommand(field.getActionMethodID());
+					fieldComponent.setChangeCommand(field.getDataChangeMethodID());
 				}
 
 				sizeProperty = field.getSize();

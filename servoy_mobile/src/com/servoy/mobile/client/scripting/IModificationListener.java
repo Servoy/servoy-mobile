@@ -15,19 +15,14 @@
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
-package com.servoy.mobile.client.dataprocessing;
-
-import com.servoy.mobile.client.scripting.IModificationListener;
+package com.servoy.mobile.client.scripting;
 
 
 /**
- * This interface defines the adapter definition
  * @author gboros
  *
  */
-public interface IDataAdapter extends IModificationListener
+public interface IModificationListener
 {
-	public void setRecord(Record state);
-
-	public String getDataProviderID();
+	public void valueChanged(ModificationEvent e);
 }

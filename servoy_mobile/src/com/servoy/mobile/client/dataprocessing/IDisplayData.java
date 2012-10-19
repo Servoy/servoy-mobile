@@ -34,4 +34,6 @@ public interface IDisplayData
 	public boolean needEditListener();
 
 	public void addEditListener(IEditListener editListener);
+
+	public void notifyLastNewValueWasChange(Object oldVal, Object newVal);
 }

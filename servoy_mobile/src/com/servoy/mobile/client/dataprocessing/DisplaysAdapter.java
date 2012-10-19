@@ -21,6 +21,8 @@ import java.util.ArrayList;
 
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.scripting.GlobalScope;
+import com.servoy.mobile.client.scripting.ModificationEvent;
+import com.servoy.mobile.client.util.Utils;
 
 /**
  * This adapter is a kind of model between the display(s) and the state.
@@ -55,7 +57,6 @@ public class DisplaysAdapter implements IDataAdapter, IEditListener
 	{
 		this.record = record;
 		Object value = dal.getRecordValue(record, dataproviderID);
-
 		for (IDisplayData d : displays)
 			d.setValueObject(value);
 	}
@@ -70,43 +71,12 @@ public class DisplaysAdapter implements IDataAdapter, IEditListener
 	}
 
 	/*
-	 * @see com.servoy.mobile.client.dataprocessing.IDataAdapter#addDataListener(com.servoy.mobile.client.dataprocessing.IDataAdapter)
-	 */
-	@Override
-	public void addDataListener(IDataAdapter listner)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * @see com.servoy.mobile.client.dataprocessing.IDataAdapter#removeDataListener(com.servoy.mobile.client.dataprocessing.IDataAdapter)
-	 */
-	@Override
-	public void removeDataListener(IDataAdapter listner)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * @see com.servoy.mobile.client.dataprocessing.IDataAdapter#displayValueChanged()
-	 */
-	@Override
-	public void displayValueChanged()
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
 	 * @see com.servoy.mobile.client.dataprocessing.IEditListener#startEdit(com.servoy.mobile.client.dataprocessing.IDisplayData)
 	 */
 	@Override
 	public void startEdit(IDisplayData e)
 	{
 		// TODO Auto-generated method stub
-
 	}
 
 	/*
@@ -120,17 +90,61 @@ public class DisplaysAdapter implements IDataAdapter, IEditListener
 		Object value = e.getValueObject();
 		String[] globalVariableScope = GlobalScope.getVariableScope(dataproviderID);
 
+		Object oldValue = null;
 		if (globalVariableScope[0] != null)
 		{
+			oldValue = application.getGlobalScope().getValue(globalVariableScope[1]);
 			application.getGlobalScope().setValue(globalVariableScope[1], value);
 		}
 		else if (dal.getFormScope().hasVariable(dataproviderID))
 		{
+			oldValue = dal.getFormScope().getVariableValue(dataproviderID);
 			dal.getFormScope().setVariableValue(dataproviderID, value);
 		}
 		else if (record != null)
 		{
+			oldValue = record.getValue(dataproviderID);
 			record.setValue(dataproviderID, value);
+		}
+
+		if (!Utils.equalObjects(oldValue, value)) e.notifyLastNewValueWasChange(oldValue, value);
+	}
+
+	private String dataproviderSimpleName;
+
+	private String getDataproviderSimpleName()
+	{
+		if (dataproviderSimpleName == null && dataproviderID != null)
+		{
+			String[] globalVariableScope = GlobalScope.getVariableScope(dataproviderID);
+
+			if (globalVariableScope[0] != null)
+			{
+				dataproviderSimpleName = globalVariableScope[1];
+			}
+			else
+			{
+				dataproviderSimpleName = dataproviderID;
+			}
+		}
+
+		return dataproviderSimpleName;
+	}
+
+	/*
+	 * @see com.servoy.mobile.client.scripting.IModificationListener#valueChanged(com.servoy.mobile.client.scripting.ModificationEvent)
+	 */
+	@Override
+	public void valueChanged(ModificationEvent e)
+	{
+		if (Utils.equalObjects(getDataproviderSimpleName(), e.getName()))
+		{
+			Object value = e.getValue();
+			for (IDisplayData d : displays)
+			{
+				Object oldValue = d.getValueObject();
+				if (!Utils.equalObjects(oldValue, value)) d.setValueObject(value);
+			}
 		}
 	}
 }

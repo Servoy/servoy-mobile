@@ -25,23 +25,30 @@ import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.scripting.FormScope;
 import com.servoy.mobile.client.scripting.GlobalScope;
+import com.servoy.mobile.client.scripting.IModificationListener;
+import com.servoy.mobile.client.scripting.ModificationEvent;
 
 /**
  * This class encapsulates all the dataproviders for a form page, it does the creation and setup of dataAdapters.
  * 
  * @author gboros
  */
-public class DataAdapterList
+public class DataAdapterList implements IModificationListener
 {
 	private final MobileClient application;
 	private final FormController formController;
 	private final LinkedHashMap<String, IDataAdapter> dataAdapters = new LinkedHashMap<String, IDataAdapter>();
 	private final ArrayList<IDisplayRelatedData> relatedDataAdapters = new ArrayList<IDisplayRelatedData>();
 
+	private Record record;
+
 	public DataAdapterList(MobileClient application, FormController formController)
 	{
 		this.application = application;
 		this.formController = formController;
+
+		application.getGlobalScope().addModificationListener(this);
+		formController.getFormScope().addModificationListener(this);
 	}
 
 	public void addFormObject(Object obj)
@@ -80,6 +87,10 @@ public class DataAdapterList
 
 	public void setRecord(Record record)
 	{
+		if (this.record != null) record.removeModificationListener(this);
+		this.record = record;
+		if (this.record != null) this.record.addModificationListener(this);
+
 		Iterator<IDataAdapter> it = dataAdapters.values().iterator();
 		while (it.hasNext())
 		{
@@ -112,5 +123,26 @@ public class DataAdapterList
 			}
 		}
 		return recordValue;
+	}
+
+	/*
+	 * @see com.servoy.mobile.client.scripting.IModificationListener#valueChanged(com.servoy.mobile.client.scripting.ModificationEvent)
+	 */
+	@Override
+	public void valueChanged(ModificationEvent e)
+	{
+		Iterator<IDataAdapter> it = dataAdapters.values().iterator();
+		while (it.hasNext())
+		{
+			IDataAdapter da = it.next();
+			da.valueChanged(e);
+		}
+	}
+
+	public void destroy()
+	{
+		if (this.record != null) this.record.removeModificationListener(this);
+		application.getGlobalScope().removeModificationListener(this);
+		formController.getFormScope().removeModificationListener(this);
 	}
 }

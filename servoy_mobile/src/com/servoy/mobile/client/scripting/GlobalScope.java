@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.servoy.mobile.client.MobileClient;
+import com.servoy.mobile.client.util.Utils;
 
 
 public class GlobalScope extends Scope
@@ -59,8 +60,10 @@ public class GlobalScope extends Scope
 	{
 		if (servoyProperties.containsKey(variable)) return;
 
+		Object oldValue = scopeVariables.get(variable);
 		scopeVariables.put(variable, value);
-		// fire property change
+
+		if (!Utils.equalObjects(oldValue, value)) fireModificationEvent(variable, value);
 	}
 
 	public boolean hasVariable(String variable)

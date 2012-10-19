@@ -32,7 +32,7 @@ import com.sksamuel.jqm4gwt.form.elements.JQMText;
  * 
  * @author gboros
  */
-public class DataTextField extends JQMText implements IDisplayData, ISupportDataText
+public class DataTextField extends JQMText implements IDisplayData, ISupportDataText, IFieldComponent
 {
 	protected final Field field;
 	protected final Executor executor;
@@ -41,8 +41,6 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportData
 	{
 		this.field = field;
 		this.executor = executor;
-
-		setActionCommand(field.getActionMethodID());
 	}
 
 	/*
@@ -134,5 +132,21 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportData
 			editProvider.addEditListener(editListener);
 			addBlurHandler(editProvider);
 		}
+	}
+
+	private String changeCommand;
+
+	public void setChangeCommand(final String command)
+	{
+		this.changeCommand = command;
+	}
+
+	/*
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#notifyLastNewValueWasChange(java.lang.Object, java.lang.Object)
+	 */
+	@Override
+	public void notifyLastNewValueWasChange(Object oldVal, Object newVal)
+	{
+		if (changeCommand != null) executor.fireEventCommand(IJSEvent.DATACHANGE, changeCommand, DataTextField.this, null);
 	}
 }
