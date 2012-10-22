@@ -175,7 +175,11 @@ public class TabsFormDisplay extends FormDisplay implements IFormPageHeaderDecor
 		JQMHeader headerComponent = header;
 		if (tabPanel.getTabOrientation() == TabPanel.ORIENTATION_TOP)
 		{
-			if (headerComponent == null) headerComponent = new JQMHeader(""); //$NON-NLS-1$
+			if (headerComponent == null)
+			{
+				headerComponent = new JQMHeader(""); //$NON-NLS-1$
+				headerComponent.setTheme("b"); //$NON-NLS-1$
+			}
 			headerComponent.add(getNavigatonBar());
 		}
 		return headerComponent;

@@ -125,7 +125,11 @@ public class FormPage extends JQMPage
 
 		if (leftToolbarButton != null || rightToolbarButton != null)
 		{
-			if (headerComponent == null) headerComponent = new JQMHeader(""); //$NON-NLS-1$
+			if (headerComponent == null)
+			{
+				headerComponent = new JQMHeader(""); //$NON-NLS-1$
+				headerComponent.setTheme("b"); //$NON-NLS-1$
+			}
 
 			if (leftToolbarButton != null)
 			{

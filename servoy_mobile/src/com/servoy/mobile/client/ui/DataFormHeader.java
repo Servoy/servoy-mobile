@@ -36,6 +36,7 @@ public class DataFormHeader extends JQMHeader implements IDisplayData
 	public DataFormHeader(GraphicalComponent gc)
 	{
 		super(gc.getText() != null ? gc.getText() : ""); //$NON-NLS-1$
+		setTheme("b"); //$NON-NLS-1$
 		this.gc = gc;
 	}
 

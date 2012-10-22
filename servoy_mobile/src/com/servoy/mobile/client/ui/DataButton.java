@@ -35,6 +35,7 @@ public class DataButton extends JQMButton implements IGraphicalComponent
 	public DataButton(GraphicalComponent gc, Executor executor)
 	{
 		super(gc.getText());
+		setTheme("b"); //$NON-NLS-1$
 		this.executor = executor;
 	}
 
