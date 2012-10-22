@@ -20,6 +20,7 @@ package com.servoy.mobile.client.scripting;
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.servoy.mobile.client.MobileClient;
 
 /**
@@ -46,12 +47,11 @@ public class MobilePlugin implements Exportable
 		client.sync();
 	}
 
-	public native void getCurrentPosition(String successCallback, String errorHandler, String options)
+	public native void getCurrentPosition(JavaScriptObject successCallback, JavaScriptObject errorHandler, String options)
 	/*-{
 		if (navigator.geolocation) {
-			navigator.geolocation.getCurrentPosition(eval('$wnd.'
-					+ successCallback), errorHandler != null ? eval('$wnd.'
-					+ errorHandler) : null, options);
+			navigator.geolocation.getCurrentPosition(successCallback,
+					errorHandler, options);
 		} else {
 			alert("Sorry, browser does not support geolocation!");
 		}
