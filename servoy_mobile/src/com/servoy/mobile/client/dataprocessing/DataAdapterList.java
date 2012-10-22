@@ -47,7 +47,7 @@ public class DataAdapterList implements IModificationListener
 		this.application = application;
 		this.formController = formController;
 
-		application.getGlobalScope().addModificationListener(this);
+		application.getGlobalScopeModificationDelegate().addModificationListener(this);
 		formController.getFormScope().addModificationListener(this);
 	}
 
@@ -142,7 +142,7 @@ public class DataAdapterList implements IModificationListener
 	public void destroy()
 	{
 		if (this.record != null) this.record.removeModificationListener(this);
-		application.getGlobalScope().removeModificationListener(this);
+		application.getGlobalScopeModificationDelegate().removeModificationListener(this);
 		formController.getFormScope().removeModificationListener(this);
 	}
 }

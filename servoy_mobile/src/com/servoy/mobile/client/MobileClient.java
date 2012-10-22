@@ -30,6 +30,7 @@ import com.servoy.mobile.client.dataprocessing.OfflineDataProxy;
 import com.servoy.mobile.client.dto.ValueListDescription;
 import com.servoy.mobile.client.persistence.Solution;
 import com.servoy.mobile.client.scripting.GlobalScope;
+import com.servoy.mobile.client.scripting.GlobalScopeModificationDelegate;
 import com.servoy.mobile.client.scripting.JSApplication;
 import com.servoy.mobile.client.scripting.JSDatabaseManager;
 import com.servoy.mobile.client.scripting.JSEvent;
@@ -56,6 +57,8 @@ public class MobileClient implements EntryPoint
 	private OfflineDataProxy offlineDataProxy;
 	private FormManager formManager;
 	private Solution solution;
+
+	private final GlobalScopeModificationDelegate globalScopeModificationDelegate = new GlobalScopeModificationDelegate();
 
 	@Override
 	public void onModuleLoad()
@@ -252,10 +255,10 @@ public class MobileClient implements EntryPoint
 	public final native boolean isOnline()
 	/*-{
 		try {
-		return $wnd.navigator.onLine;
+			return $wnd.navigator.onLine;
 		} catch (err) {
-		//browser does not support onLine yet
-		return true;
+			//browser does not support onLine yet
+			return true;
 		}
 	}-*/;
 
@@ -282,8 +285,14 @@ public class MobileClient implements EntryPoint
 			scope = new GlobalScope(name, this);
 			scopes.put(name, scope);
 			initGlobalScope(name, scope);
+			scope.addModificationListener(globalScopeModificationDelegate);
 		}
 		return scope;
+	}
+
+	public GlobalScopeModificationDelegate getGlobalScopeModificationDelegate()
+	{
+		return globalScopeModificationDelegate;
 	}
 
 	private native void initGlobalScope(String scopeName, GlobalScope formScope)
@@ -295,30 +304,30 @@ public class MobileClient implements EntryPoint
 	/*-{
 		$wnd._ServoyUtils_.application = this;
 		$wnd._ServoyUtils_.getGlobalScope = function(name) {
-		return $wnd._ServoyUtils_.application.@com.servoy.mobile.client.MobileClient::getGlobalScope(Ljava/lang/String;)(name);
+			return $wnd._ServoyUtils_.application.@com.servoy.mobile.client.MobileClient::getGlobalScope(Ljava/lang/String;)(name);
 		}
 		$wnd._ServoyUtils_.setScopeVariableType = function(scope, name, type) {
-		return scope.@com.servoy.mobile.client.scripting.Scope::setVariableType(Ljava/lang/String;I)(name,type);
+			return scope.@com.servoy.mobile.client.scripting.Scope::setVariableType(Ljava/lang/String;I)(name,type);
 		}
 		$wnd._ServoyUtils_.getScopeVariable = function(scope, name) {
-		var type = scope.@com.servoy.mobile.client.scripting.Scope::getVariableType(Ljava/lang/String;)(name);
-		if (type == 8 || type == 4) {
-		var value = scope.@com.servoy.mobile.client.scripting.Scope::getVariableNumberValue(Ljava/lang/String;)(name);
-		return isNaN(value) ? null : value;
-		} else if (type == 93) {
-		return scope.@com.servoy.mobile.client.scripting.Scope::getVariableDateValue(Ljava/lang/String;)(name);
-		}
-		return scope.@com.servoy.mobile.client.scripting.Scope::getVariableValue(Ljava/lang/String;)(name);
+			var type = scope.@com.servoy.mobile.client.scripting.Scope::getVariableType(Ljava/lang/String;)(name);
+			if (type == 8 || type == 4) {
+				var value = scope.@com.servoy.mobile.client.scripting.Scope::getVariableNumberValue(Ljava/lang/String;)(name);
+				return isNaN(value) ? null : value;
+			} else if (type == 93) {
+				return scope.@com.servoy.mobile.client.scripting.Scope::getVariableDateValue(Ljava/lang/String;)(name);
+			}
+			return scope.@com.servoy.mobile.client.scripting.Scope::getVariableValue(Ljava/lang/String;)(name);
 		}
 		$wnd._ServoyUtils_.setScopeVariable = function(scope, name, value) {
-		var type = scope.@com.servoy.mobile.client.scripting.Scope::getVariableType(Ljava/lang/String;)(name);
-		if (typeof value == "number" || type == 8 || type == 4) {
-		scope.@com.servoy.mobile.client.scripting.Scope::setVariableNumberValue(Ljava/lang/String;D)(name,value);
-		} else if (type == 93) {
-		scope.@com.servoy.mobile.client.scripting.Scope::setVariableDateValue(Ljava/lang/String;Lcom/google/gwt/core/client/JsDate;)(name,value);
-		} else {
-		scope.@com.servoy.mobile.client.scripting.Scope::setVariableValue(Ljava/lang/String;Ljava/lang/Object;)(name,value);
-		}
+			var type = scope.@com.servoy.mobile.client.scripting.Scope::getVariableType(Ljava/lang/String;)(name);
+			if (typeof value == "number" || type == 8 || type == 4) {
+				scope.@com.servoy.mobile.client.scripting.Scope::setVariableNumberValue(Ljava/lang/String;D)(name,value);
+			} else if (type == 93) {
+				scope.@com.servoy.mobile.client.scripting.Scope::setVariableDateValue(Ljava/lang/String;Lcom/google/gwt/core/client/JsDate;)(name,value);
+			} else {
+				scope.@com.servoy.mobile.client.scripting.Scope::setVariableValue(Ljava/lang/String;Ljava/lang/Object;)(name,value);
+			}
 		}
 		$wnd._ServoyInit_.init();
 	}-*/;
