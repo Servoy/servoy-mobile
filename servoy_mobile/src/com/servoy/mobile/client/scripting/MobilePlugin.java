@@ -45,4 +45,15 @@ public class MobilePlugin implements Exportable
 	{
 		client.sync();
 	}
+
+	public native void getCurrentPosition(String successCallback, String errorHandler, String options)
+	/*-{
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(eval('$wnd.'
+					+ successCallback), errorHandler != null ? eval('$wnd.'
+					+ errorHandler) : null, options);
+		} else {
+			alert("Sorry, browser does not support geolocation!");
+		}
+	}-*/;
 }
