@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 
+import com.servoy.j2db.scripting.api.IJSFoundSet;
 import com.servoy.mobile.client.dto.FoundSetDescription;
 import com.servoy.mobile.client.dto.RecordDescription;
 import com.servoy.mobile.client.dto.RowDescription;
@@ -31,7 +32,7 @@ import com.servoy.mobile.client.util.Utils;
  * The mobile foundset
  * @author jblok
  */
-public class FoundSet implements Exportable //  extends Scope if we support aggregates on foundset, then we have to drop Exportable 
+public class FoundSet implements Exportable, IJSFoundSet //  extends Scope if we support aggregates on foundset, then we have to drop Exportable 
 {
 	private final FoundSetManager foundSetManager;
 	private final FoundSetDescription foundSetDescription;
@@ -46,8 +47,8 @@ public class FoundSet implements Exportable //  extends Scope if we support aggr
 		foundSetDescription = fsd;
 	}
 
-	@Export
-	public void setSelectedIndex(int index)
+	@Export("setSelectedIndex")
+	public void jsFunction_setSelectedIndex(int index)
 	{
 		if (index > 0 && index < getSize() + 1)
 		{
@@ -56,8 +57,8 @@ public class FoundSet implements Exportable //  extends Scope if we support aggr
 		}
 	}
 
-	@Export
-	public int getSelectedIndex()
+	@Export("getSelectedIndex")
+	public int jsFunction_getSelectedIndex()
 	{
 		return selectedIndex + 1;
 	}
@@ -66,6 +67,46 @@ public class FoundSet implements Exportable //  extends Scope if we support aggr
 	public Record js_getRecord(int index)
 	{
 		return getRecord(index - 1);
+	}
+
+	@Export("getSize")
+	public int js_getSize()
+	{
+		return getSize() + 1;
+	}
+
+	public int getSize()
+	{
+		return foundSetDescription.getRecords().length();
+	}
+
+	@Export
+	public Record getSelectedRecord()
+	{
+		return getRecord(selectedIndex);
+	}
+
+	@Export("newRecord")
+	public int js_newRecord()
+	{
+		if (newRecord() != null)
+		{
+			return records.size();
+		}
+		return -1;
+	}
+
+	public Record newRecord()
+	{
+		Object pk = Utils.createStringUUID();
+		RecordDescription recd = RecordDescription.newInstance(pk);
+		RowDescription rowd = foundSetManager.createRowDescription(this, pk);
+		Record retval = new Record(this, recd, rowd);
+		foundSetDescription.getRecords().push(recd);
+		needToSaveFoundSetDescription = true;
+		records.add(retval);
+		startEdit(retval);
+		return retval;
 	}
 
 	public Record getRecord(int index)
@@ -99,12 +140,6 @@ public class FoundSet implements Exportable //  extends Scope if we support aggr
 		return foundSetManager;
 	}
 
-	@Export
-	public int getSize()
-	{
-		return foundSetDescription.getRecords().length();
-	}
-
 	public String getEntityName()
 	{
 		return foundSetDescription.getEntityName();
@@ -132,26 +167,6 @@ public class FoundSet implements Exportable //  extends Scope if we support aggr
 			return getSelectedRecord().getValue(dataProviderID);
 		}
 		return null;
-	}
-
-	@Export
-	public Record getSelectedRecord()
-	{
-		return getRecord(selectedIndex);
-	}
-
-	@Export
-	public Record newRecord()
-	{
-		Object pk = Utils.createStringUUID();
-		RecordDescription recd = RecordDescription.newInstance(pk);
-		RowDescription rowd = foundSetManager.createRowDescription(this, pk);
-		Record retval = new Record(this, recd, rowd);
-		foundSetDescription.getRecords().push(recd);
-		needToSaveFoundSetDescription = true;
-		records.add(retval);
-		startEdit(retval);
-		return retval;
 	}
 
 	FoundSetDescription needToSaveFoundSetDescription()

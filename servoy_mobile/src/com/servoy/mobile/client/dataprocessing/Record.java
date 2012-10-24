@@ -24,6 +24,9 @@ import java.util.Map;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
+import com.servoy.j2db.scripting.api.IJSDataSet;
+import com.servoy.j2db.scripting.api.IJSFoundSet;
+import com.servoy.j2db.scripting.api.IJSRecord;
 import com.servoy.mobile.client.dto.DataProviderDescription;
 import com.servoy.mobile.client.dto.EntityDescription;
 import com.servoy.mobile.client.dto.RecordDescription;
@@ -36,7 +39,7 @@ import com.servoy.mobile.client.util.Utils;
  * The mobile record
  * @author jblok
  */
-public class Record extends Scope
+public class Record extends Scope implements IJSRecord
 {
 	protected FoundSet parent;
 	protected RecordDescription recordDescription;
@@ -64,11 +67,6 @@ public class Record extends Scope
 	public Object getPK()
 	{
 		return recordDescription.getPK();
-	}
-
-	public String getDataSource()
-	{
-		return parent.getEntityName(); // TODO entity -> datasource??
 	}
 
 	@Override
@@ -198,9 +196,130 @@ public class Record extends Scope
 		}
 	}
 
-	public native void export() /*-{
+	public native void export()
+	/*-{
 		this.getDataSource = function() {
 			return this.@com.servoy.mobile.client.dataprocessing.Record::getDataSource()();
 		}
+		this.getChangedData = function() {
+			return this.@com.servoy.mobile.client.dataprocessing.Record::getChangedData()();
+		}
+		this.getPKs = function() {
+			return this.@com.servoy.mobile.client.dataprocessing.Record::getPKs()();
+		}
+		this.hasChangedData = function() {
+			return this.@com.servoy.mobile.client.dataprocessing.Record::hasChangedData()();
+		}
+		this.isEditing = function() {
+			return this.@com.servoy.mobile.client.dataprocessing.Record::isEditing()();
+		}
+		this.isNew = function() {
+			return this.@com.servoy.mobile.client.dataprocessing.Record::isNew()();
+		}
+		this.revertChanges = function() {
+			return this.@com.servoy.mobile.client.dataprocessing.Record::revertChanges()();
+		}
 	}-*/;
+
+	@Override
+	public String getDataSource()
+	{
+		return parent.getEntityName(); // TODO entity -> datasource??
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.j2db.scripting.api.IJSRecord#getChangedData()
+	 */
+	@Override
+	public IJSDataSet getChangedData()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.j2db.scripting.api.IJSRecord#getException()
+	 */
+	@Override
+	public Exception getException()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.j2db.scripting.api.IJSRecord#getFoundset()
+	 */
+	@Override
+	public IJSFoundSet getFoundset()
+	{
+		return parent;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.j2db.scripting.api.IJSRecord#getPKs()
+	 */
+	@Override
+	public Object[] getPKs()
+	{
+		Object object = getPK();
+		if (object instanceof Object[]) return (Object[])object;
+		return new Object[] { object };
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.j2db.scripting.api.IJSRecord#hasChangedData()
+	 */
+	@Override
+	public boolean hasChangedData()
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.j2db.scripting.api.IJSRecord#isEditing()
+	 */
+	@Override
+	public boolean isEditing()
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.j2db.scripting.api.IJSRecord#isNew()
+	 */
+	@Override
+	public boolean isNew()
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.j2db.scripting.api.IJSRecord#revertChanges()
+	 */
+	@Override
+	public void revertChanges()
+	{
+		// TODO Auto-generated method stub
+
+	}
 }
