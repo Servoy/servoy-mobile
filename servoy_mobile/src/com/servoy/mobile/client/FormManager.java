@@ -134,7 +134,14 @@ public class FormManager
 
 	public void showFirstForm()
 	{
-		showForm(getFirstForm());
+		if (application.getSolution().getSkipConnect())
+		{
+			showForm(getFirstForm());
+		}
+		else
+		{
+			JQMContext.changePage(new TrialModePage(this));
+		}
 	}
 
 	public void showLogin()

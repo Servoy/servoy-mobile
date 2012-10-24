@@ -46,6 +46,10 @@ public class Solution extends JavaScriptObject
 		return this.serverURL;
 	}-*/;
 
+	public final native boolean getSkipConnect() /*-{
+		return this.skipConnect;
+	}-*/;
+
 	@Export
 	public final Form getForm(String name)
 	{
