@@ -42,8 +42,8 @@ public class FormList extends JQMList implements IDisplayRelatedData
 	private final DataAdapterList dal;
 	private final Executor executor;
 	private final String relationName;
-	private String listItemTextDP, listItemAsideDP, listItemCountDP, listItemImageDP;
-	private String listItemStaticText, listItemStaticAside;
+	private String listItemTextDP, listItemSubtextDP, listItemCountDP, listItemImageDP, listItemHeaderDP;
+	private String listItemStaticText, listItemStaticSubtext, listItemStaticHeader;
 	private String listItemOnAction;
 
 	public FormList(FormController formController, DataAdapterList dal, Executor executor)
@@ -77,10 +77,10 @@ public class FormList extends JQMList implements IDisplayRelatedData
 						listItemOnAction = component.isGraphicalComponent().getActionMethodID();
 						listItemStaticText = component.isGraphicalComponent().getText();
 					}
-					else if (mobileProperties.isListItemAside())
+					else if (mobileProperties.isListItemSubtext())
 					{
-						listItemAsideDP = component.isField().getDataProviderID();
-						listItemStaticAside = component.isField().getText();
+						listItemSubtextDP = component.isGraphicalComponent().getDataProviderID();
+						listItemStaticSubtext = component.isGraphicalComponent().getText();
 					}
 					else if (mobileProperties.isListItemCount())
 					{
@@ -90,12 +90,18 @@ public class FormList extends JQMList implements IDisplayRelatedData
 					{
 						listItemImageDP = component.isField().getDataProviderID();
 					}
+					else if (mobileProperties.isListItemHeader())
+					{
+						listItemHeaderDP = component.isGraphicalComponent().getDataProviderID();
+						listItemStaticHeader = component.isGraphicalComponent().getText();
+					}
 				}
 			}
 		}
 
 		setInset(true);
 	}
+
 
 	private FoundSet relatedFoundset;
 
@@ -125,16 +131,29 @@ public class FormList extends JQMList implements IDisplayRelatedData
 		JQMListItem listItem;
 		Record listItemRecord;
 		Object dpValue;
+
+		int listWidgetCount = 0;
+
+		dpValue = dal.getRecordValue(null, listItemHeaderDP);
+		if (dpValue == null) dpValue = listItemStaticHeader;
+		if (dpValue != null)
+		{
+			addDivider(dpValue.toString());
+			listWidgetCount = 1;
+		}
+
 		for (int i = 0; i < foundsetSize; i++)
 		{
 			listItemRecord = foundset.getRecord(i);
-			dpValue = listItemStaticText;
-			dpValue = dal.getRecordValue(listItemRecord, listItemTextDP);
-			listItem = addItem(dpValue != null ? dpValue.toString() : ""); //$NON-NLS-1$
 
-			dpValue = listItemStaticAside;
-			dpValue = dal.getRecordValue(listItemRecord, listItemAsideDP);
-			if (dpValue != null) listItem.setAside(dpValue.toString());
+			dpValue = dal.getRecordValue(listItemRecord, listItemTextDP);
+			if (dpValue == null) dpValue = listItemStaticText;
+			listItem = addItem(listWidgetCount, dpValue != null ? dpValue.toString() : ""); //$NON-NLS-1$
+			listWidgetCount++;
+
+			dpValue = dal.getRecordValue(listItemRecord, listItemSubtextDP);
+			if (dpValue == null) dpValue = listItemStaticSubtext;
+			if (dpValue != null) listItem.addText(dpValue.toString());
 
 			dpValue = dal.getRecordValue(listItemRecord, listItemCountDP);
 			if (dpValue instanceof Integer) listItem.setCount((Integer)dpValue);

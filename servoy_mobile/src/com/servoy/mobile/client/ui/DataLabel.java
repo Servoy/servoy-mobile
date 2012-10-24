@@ -17,23 +17,23 @@ package com.servoy.mobile.client.ui;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
-import com.google.gwt.user.client.ui.Label;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
+import com.sksamuel.jqm4gwt.html.Heading;
 
 /**
  * Label UI
  * 
  * @author gboros
  */
-public class DataLabel extends Label implements IDisplayData
+public class DataLabel extends Heading implements IDisplayData
 {
 	private final GraphicalComponent gc;
 
 	public DataLabel(GraphicalComponent gc)
 	{
-		super(gc.getText() != null ? gc.getText() : ""); //$NON-NLS-1$
+		super(gc.getMobileProperties().getHeaderSize(), gc.getText() != null ? gc.getText() : ""); //$NON-NLS-1$
 		this.gc = gc;
 	}
 
