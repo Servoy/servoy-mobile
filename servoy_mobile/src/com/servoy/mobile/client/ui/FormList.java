@@ -121,8 +121,12 @@ public class FormList extends JQMList implements IDisplayRelatedData
 	public void refreshList()
 	{
 		createList(relatedFoundset != null ? relatedFoundset : formController.getFormModel());
-		refresh();
+		forceRefresh(getId());
 	}
+
+	protected native void forceRefresh(String id) /*-{
+		$wnd.$("#" + id).listview('refresh', true);
+	}-*/;
 
 	private void createList(FoundSet foundset)
 	{
