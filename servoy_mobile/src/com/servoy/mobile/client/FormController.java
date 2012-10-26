@@ -13,6 +13,7 @@ import com.servoy.mobile.client.dataprocessing.IFoundSetSelectionListener;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.scripting.FormScope;
 import com.servoy.mobile.client.ui.ComponentFactory;
+import com.servoy.mobile.client.ui.Executor;
 import com.servoy.mobile.client.ui.FormPage;
 import com.servoy.mobile.client.ui.IFormDisplay;
 
@@ -28,11 +29,13 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 	private final FormScope scope;
 	private final Form form;
 	private final MobileClient mc;
+	private final Executor executor;
 
 	public FormController(MobileClient mc, Form form)
 	{
 		this.mc = mc;
 		this.form = form;
+		this.executor = new Executor(this);
 		String dataSource = form.getDataSource();
 		if (dataSource != null)
 		{
@@ -41,6 +44,14 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 		}
 		scope = new FormScope(mc, this);
 		formDisplay = ComponentFactory.createFormDisplay(mc, this);
+	}
+
+	/**
+	 * @return the executor
+	 */
+	public Executor getExecutor()
+	{
+		return executor;
 	}
 
 	public Form getForm()

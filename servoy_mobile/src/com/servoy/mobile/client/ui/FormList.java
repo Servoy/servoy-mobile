@@ -40,22 +40,20 @@ public class FormList extends JQMList implements IDisplayRelatedData
 {
 	private final FormController formController;
 	private final DataAdapterList dal;
-	private final Executor executor;
 	private final String relationName;
 	private String listItemTextDP, listItemSubtextDP, listItemCountDP, listItemImageDP, listItemHeaderDP;
 	private String listItemStaticText, listItemStaticSubtext, listItemStaticHeader;
 	private String listItemOnAction;
 
-	public FormList(FormController formController, DataAdapterList dal, Executor executor)
+	public FormList(FormController formController, DataAdapterList dal)
 	{
-		this(formController, dal, executor, null);
+		this(formController, dal, null);
 	}
 
-	public FormList(FormController formController, DataAdapterList dal, Executor executor, String relationName)
+	public FormList(FormController formController, DataAdapterList dal, String relationName)
 	{
 		this.formController = formController;
 		this.dal = dal;
-		this.executor = executor;
 		this.relationName = relationName;
 
 		JsArray<Component> formComponents = formController.getForm().getComponents();
@@ -125,8 +123,8 @@ public class FormList extends JQMList implements IDisplayRelatedData
 	}
 
 	protected native void forceRefresh(String id) /*-{
-		$wnd.$("#" + id).listview('refresh', true);
-	}-*/;
+													$wnd.$("#" + id).listview('refresh', true);
+													}-*/;
 
 	private void createList(FoundSet foundset)
 	{
@@ -173,7 +171,7 @@ public class FormList extends JQMList implements IDisplayRelatedData
 					@Override
 					public void onClick(ClickEvent event)
 					{
-						executor.fireEventCommand(IJSEvent.ACTION, listItemOnAction, null, null);
+						formController.getExecutor().fireEventCommand(IJSEvent.ACTION, listItemOnAction, null, null);
 					}
 				});
 			}

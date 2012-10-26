@@ -78,7 +78,7 @@ public class ComponentFactory
 	 * 
 	 * @return UI component
 	 */
-	public static Widget createComponent(MobileClient application, Component component, Executor executor, DataAdapterList dal)
+	public static Widget createComponent(MobileClient application, Component component, DataAdapterList dal, Executor executor)
 	{
 		Widget componentWidget = null;
 		String sizeProperty = null;
@@ -184,7 +184,7 @@ public class ComponentFactory
 						FormController formController = application.getFormManager().getForm(form.getName());
 						String relationName = tab.getRelationName();
 
-						componentWidget = new FormList(formController, dal, executor, relationName);
+						componentWidget = new FormList(formController, dal, relationName);
 						sizeProperty = tabPanel.getSize();
 					}
 				}

@@ -50,7 +50,6 @@ public class FormPage extends JQMPage
 	protected final MobileClient application;
 	protected final Form form;
 	protected final FormController formController;
-	protected final Executor executor;
 	private boolean enabled = true;
 	protected final DataAdapterList dal;
 	private IFormPageHeaderDecorator headerDecorator;
@@ -62,7 +61,6 @@ public class FormPage extends JQMPage
 		this.application = application;
 		this.formController = formController;
 		this.form = formController.getForm();
-		this.executor = new Executor(this);
 
 		dal = new DataAdapterList(application, formController);
 		JsArray<Component> formComponents = form.getComponents();
@@ -255,7 +253,7 @@ public class FormPage extends JQMPage
 	private Widget createWidget(Component component)
 	{
 		if (component == null) return null;
-		Widget w = ComponentFactory.createComponent(application, component, executor, dal);
+		Widget w = ComponentFactory.createComponent(application, component, dal, formController.getExecutor());
 		if (w != null) dal.addFormObject(w);
 		return w;
 	}

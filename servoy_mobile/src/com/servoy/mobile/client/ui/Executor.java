@@ -4,17 +4,18 @@ import org.timepedia.exporter.client.ExporterUtil;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
+import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.scripting.JSEvent;
 import com.servoy.mobile.client.util.Utils;
 
 public class Executor
 {
 
-	private final FormPage formPage;
+	private final FormController formController;
 
-	public Executor(FormPage formPage)
+	public Executor(FormController formController)
 	{
-		this.formPage = formPage;
+		this.formController = formController;
 	}
 
 	public void fireEventCommand(String type, String command, Object source, Object[] args)
@@ -24,14 +25,14 @@ public class Executor
 		String argumentsString = command.substring(index + 1, command.length() - 1);
 		Object[] persistArgs = argumentsString.split(",");
 
-		JSEvent event = new JSEvent(type, source, formPage.getName(), null);
+		JSEvent event = new JSEvent(type, source, formController.getName(), null);
 
 		Object[] functionArgs = Utils.arrayMerge(Utils.arrayJoin(args, new Object[] { ExporterUtil.wrap(event) }), persistArgs);
 
 		JavaScriptObject function = null;
 		if (!functionLookup.startsWith("scopes."))
 		{
-			function = getFunction("forms", formPage.getName(), functionLookup);
+			function = getFunction("forms", formController.getName(), functionLookup);
 		}
 		else
 		{
