@@ -22,13 +22,14 @@ import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
 
 import com.google.gwt.core.client.GWT;
+import com.servoy.j2db.scripting.api.IJSApplication;
 
 /**
  * @author jcompagner
  *
  */
 @Export
-public class JSApplication implements Exportable
+public class JSApplication implements Exportable, IJSApplication
 {
 	public JSApplication()
 	{
