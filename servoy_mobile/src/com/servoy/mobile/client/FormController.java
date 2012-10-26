@@ -6,6 +6,7 @@ import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.Setter;
 
 import com.servoy.j2db.scripting.api.IJSController;
+import com.servoy.j2db.scripting.api.IJSFoundSet;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.dataprocessing.FoundSetManager;
 import com.servoy.mobile.client.dataprocessing.IFoundSetSelectionListener;
@@ -26,9 +27,11 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 	private FoundSet foundSet;
 	private final FormScope scope;
 	private final Form form;
+	private final MobileClient mc;
 
 	public FormController(MobileClient mc, Form form)
 	{
+		this.mc = mc;
 		this.form = form;
 		String dataSource = form.getDataSource();
 		if (dataSource != null)
@@ -91,6 +94,20 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 	public void setEnabled(boolean enabled)
 	{
 		formDisplay.getDisplayPage().setEnabled(enabled);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.j2db.scripting.api.IJSController#showRecords(com.servoy.j2db.scripting.api.IJSFoundSet)
+	 */
+	@Override
+	@Export
+	public void showRecords(IJSFoundSet foundset) throws Exception
+	{
+		this.foundSet = (FoundSet)foundset;
+		valueChanged();
+		mc.getFormManager().showForm(this);
 	}
 
 	/*
