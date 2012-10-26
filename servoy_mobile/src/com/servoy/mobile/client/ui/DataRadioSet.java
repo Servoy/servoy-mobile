@@ -37,6 +37,8 @@ import com.sksamuel.jqm4gwt.form.elements.JQMRadioset;
  */
 public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldComponent
 {
+	private static final int HORIZONTAL = 1;
+
 	private final Field field;
 	private final ValueListDescription valuelist;
 	private final Executor executor;
@@ -46,6 +48,8 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 		this.field = field;
 		this.valuelist = valuelist;
 		this.executor = executor;
+
+		if (field.getMobileProperties().getRadioStyle() == HORIZONTAL) setHorizontal();
 
 		setText(field.getText());
 		if (valuelist != null)

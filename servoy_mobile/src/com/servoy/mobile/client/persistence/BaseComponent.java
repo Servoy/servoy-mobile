@@ -98,5 +98,9 @@ public class BaseComponent extends JavaScriptObject
 		public final native int getHeaderSize() /*-{
 			return this.headerSize ? this.headerSize : 4;
 		}-*/;
+
+		public final native int getRadioStyle() /*-{
+			return this.radioStyle ? this.radioStyle : 0;
+		}-*/;
 	}
 }
