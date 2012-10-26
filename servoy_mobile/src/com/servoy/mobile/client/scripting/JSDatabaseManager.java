@@ -21,6 +21,10 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
 
+import com.servoy.j2db.scripting.api.IJSDatabaseManager;
+import com.servoy.j2db.scripting.api.IJSFoundSet;
+import com.servoy.j2db.scripting.api.IJSRecord;
+import com.servoy.mobile.client.dataprocessing.EditRecordList;
 import com.servoy.mobile.client.dataprocessing.FoundSetManager;
 
 /**
@@ -28,7 +32,7 @@ import com.servoy.mobile.client.dataprocessing.FoundSetManager;
  *
  */
 @Export
-public class JSDatabaseManager implements Exportable
+public class JSDatabaseManager implements Exportable, IJSDatabaseManager
 {
 	private final FoundSetManager manager;
 
@@ -41,11 +45,36 @@ public class JSDatabaseManager implements Exportable
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.servoy.mobile.client.scripting.IDatabaseManager#saveData(java.lang.Object)
+	 * @see com.servoy.j2db.scripting.api.IJSDatabaseManager#saveData()
 	 */
-	public void saveData(Object object)
+	@Override
+	public boolean saveData() throws Exception
 	{
-		manager.saveData();
+		return manager.saveData() == EditRecordList.STOPPED;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.j2db.scripting.api.IJSDatabaseManager#saveData(com.servoy.j2db.scripting.api.IJSFoundSet)
+	 */
+	@Override
+	public boolean saveData(IJSFoundSet foundset) throws Exception
+	{
+		// TODO just save all record from only that foundset
+		return manager.saveData() == EditRecordList.STOPPED;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.j2db.scripting.api.IJSDatabaseManager#saveData(com.servoy.j2db.scripting.api.IJSRecord)
+	 */
+	@Override
+	public boolean saveData(IJSRecord record) throws Exception
+	{
+		// TODO just save that record
+		return manager.saveData() == EditRecordList.STOPPED;
 	}
 
 	public boolean setAutoSave(boolean b)
@@ -63,4 +92,6 @@ public class JSDatabaseManager implements Exportable
 	/*-{
 		$wnd.databaseManager = object;
 	}-*/;
+
+
 }
