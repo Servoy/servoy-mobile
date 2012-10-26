@@ -5,6 +5,7 @@ import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.Setter;
 
+import com.servoy.j2db.scripting.api.IJSController;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.dataprocessing.FoundSetManager;
 import com.servoy.mobile.client.dataprocessing.IFoundSetSelectionListener;
@@ -19,7 +20,7 @@ import com.servoy.mobile.client.ui.IFormDisplay;
  * 
  * @author gboros
  */
-public class FormController implements Exportable, IFoundSetSelectionListener
+public class FormController implements Exportable, IFoundSetSelectionListener, IJSController
 {
 	private final IFormDisplay formDisplay;
 	private FoundSet foundSet;
@@ -47,20 +48,6 @@ public class FormController implements Exportable, IFoundSetSelectionListener
 	public String getName()
 	{
 		return form.getName();
-	}
-
-	@Export
-	@Getter
-	public boolean isEnabled()
-	{
-		return formDisplay.getDisplayPage().isEnabled();
-	}
-
-	@Export
-	@Setter
-	public void setEnabled(boolean enabled)
-	{
-		formDisplay.getDisplayPage().setEnabled(enabled);
 	}
 
 	public FormPage getPage()
@@ -92,5 +79,43 @@ public class FormController implements Exportable, IFoundSetSelectionListener
 	public void valueChanged()
 	{
 		formDisplay.refreshRecord(foundSet.getSelectedRecord());
+	}
+
+	@Getter
+	public boolean getEnabled()
+	{
+		return formDisplay.getDisplayPage().isEnabled();
+	}
+
+	@Setter
+	public void setEnabled(boolean enabled)
+	{
+		formDisplay.getDisplayPage().setEnabled(enabled);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.j2db.scripting.api.IJSController#getSelectedIndex()
+	 */
+	@Override
+	@Export
+	public int getSelectedIndex()
+	{
+		// call +1 method of foundset
+		return 1;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.j2db.scripting.api.IJSController#setSelectedIndex(int)
+	 */
+	@Override
+	@Export
+	public void setSelectedIndex(int index)
+	{
+		// call +1 method of foundset
+		foundSet.jsFunction_setSelectedIndex(index);
 	}
 }
