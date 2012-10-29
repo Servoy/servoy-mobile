@@ -59,6 +59,7 @@
 				excludes="**/*.jar,**/*.war,**/WEB-INF/deploy/**,**/WEB-INF/classes/**,**/solution.json,**/solution.js"
 		/>
 		<ant antfile="build.xml" target="gwtc"/>
+		<copy tofile="../com.servoy.eclipse.exporter.mobile/src/com/servoy/eclipse/mobileexporter/export/resources/servoy_mobile.war" file="servoy_mobile.war"/>
 	</target>
 
 	<target name="deploy" depends="build_mobile">
