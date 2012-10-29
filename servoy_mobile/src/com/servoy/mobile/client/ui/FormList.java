@@ -123,8 +123,8 @@ public class FormList extends JQMList implements IDisplayRelatedData
 	}
 
 	protected native void forceRefresh(String id) /*-{
-													$wnd.$("#" + id).listview('refresh', true);
-													}-*/;
+		$wnd.$("#" + id).listview('refresh', true);
+	}-*/;
 
 	private void createList(FoundSet foundset)
 	{
@@ -153,10 +153,6 @@ public class FormList extends JQMList implements IDisplayRelatedData
 			listItem = addItem(listWidgetCount, dpValue != null ? dpValue.toString() : ""); //$NON-NLS-1$
 			listWidgetCount++;
 
-			dpValue = dal.getRecordValue(listItemRecord, listItemSubtextDP);
-			if (dpValue == null) dpValue = listItemStaticSubtext;
-			if (dpValue != null) listItem.addText(dpValue.toString());
-
 			dpValue = dal.getRecordValue(listItemRecord, listItemCountDP);
 			if (dpValue instanceof Integer) listItem.setCount((Integer)dpValue);
 			else if (dpValue instanceof Double) listItem.setCount(Integer.valueOf(((Double)dpValue).intValue()));
@@ -175,6 +171,10 @@ public class FormList extends JQMList implements IDisplayRelatedData
 					}
 				});
 			}
+
+			dpValue = dal.getRecordValue(listItemRecord, listItemSubtextDP);
+			if (dpValue == null) dpValue = listItemStaticSubtext;
+			if (dpValue != null) listItem.addText(dpValue.toString());
 		}
 	}
 }
