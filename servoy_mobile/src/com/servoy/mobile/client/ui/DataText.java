@@ -35,6 +35,7 @@ public class DataText implements IDisplayData
 	{
 		this.parentComponent = parentComponent;
 		this.textComponent = textComponent;
+		parentComponent.setText(textComponent.getText());
 	}
 
 	/*

@@ -27,6 +27,7 @@ import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.dto.ValueListDescription;
 import com.servoy.mobile.client.persistence.Field;
+import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.servoy.mobile.client.util.Utils;
 import com.sksamuel.jqm4gwt.form.elements.JQMRadioset;
 
@@ -35,7 +36,7 @@ import com.sksamuel.jqm4gwt.form.elements.JQMRadioset;
  * 
  * @author gboros
  */
-public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldComponent
+public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldComponent, ISupportDataText
 {
 	private static final int HORIZONTAL = 1;
 
@@ -180,5 +181,25 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 	public void notifyLastNewValueWasChange(Object oldVal, Object newVal)
 	{
 		if (changeCommand != null) executor.fireEventCommand(IJSEvent.DATACHANGE, changeCommand, DataRadioSet.this, null);
+	}
+
+	private DataText dataText;
+
+	/*
+	 * @see com.servoy.mobile.client.ui.ISupportDataText#setDataTextComponent(com.servoy.mobile.client.persistence.GraphicalComponent)
+	 */
+	@Override
+	public void setDataTextComponent(GraphicalComponent component)
+	{
+		if (component != null) dataText = new DataText(this, component);
+	}
+
+	/*
+	 * @see com.servoy.mobile.client.ui.ISupportDataText#getDataTextDisplay()
+	 */
+	@Override
+	public IDisplayData getDataTextDisplay()
+	{
+		return dataText;
 	}
 }
