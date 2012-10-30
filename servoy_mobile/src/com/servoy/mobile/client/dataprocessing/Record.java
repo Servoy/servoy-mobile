@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
 import com.servoy.j2db.scripting.api.IJSDataSet;
@@ -219,7 +220,25 @@ public class Record extends Scope implements IJSRecord
 		this.revertChanges = function() {
 			return this.@com.servoy.mobile.client.dataprocessing.Record::revertChanges()();
 		}
+		
+		this.getSelectedIndex = function() {
+			return this.@com.servoy.mobile.client.dataprocessing.Record::getSelectedIndex()();
+		}
+		this.setSelectedIndex = function(index) {
+			return this.@com.servoy.mobile.client.dataprocessing.Record::setSelectedIndex(I)(index);
+		}
+
 	}-*/;
+
+	public int getSelectedIndex()
+	{
+		return 1;
+	}
+
+	public void setSelectedIndex(int index)
+	{
+		GWT.log("index: " + index);
+	}
 
 	@Override
 	public String getDataSource()

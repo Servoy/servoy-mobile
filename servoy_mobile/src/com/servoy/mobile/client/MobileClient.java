@@ -243,6 +243,10 @@ public class MobileClient implements EntryPoint
 
 	public void showFirstForm()
 	{
+		// first export all relations and dataproviders.
+		foundSetManager.exportDataproviders();
+
+		// now show the first form.
 		formManager.showFirstForm();
 	}
 

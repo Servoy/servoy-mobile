@@ -20,6 +20,7 @@ package com.servoy.mobile.client.dataprocessing;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
@@ -28,6 +29,7 @@ import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.storage.client.Storage;
 import com.servoy.mobile.client.MobileClient;
+import com.servoy.mobile.client.dto.DataProviderDescription;
 import com.servoy.mobile.client.dto.EntityDescription;
 import com.servoy.mobile.client.dto.FoundSetDescription;
 import com.servoy.mobile.client.dto.OfflineDataDescription;
@@ -92,6 +94,35 @@ public class FoundSetManager
 	{
 		return (localStorage.getItem("entities") != null);
 	}
+
+	/**
+	 * 
+	 */
+	public void exportDataproviders()
+	{
+		Set<String> exported = new HashSet<String>();
+		for (int i = 0; i < entities.length(); i++)
+		{
+			EntityDescription ed = entities.get(i);
+			JsArray<DataProviderDescription> dataProviders = ed.getDataProviders();
+			for (int k = 0; k < dataProviders.length(); k++)
+			{
+				String name = dataProviders.get(k).getName();
+				if (exported.add(name)) export(name);
+			}
+			JsArray<RelationDescription> primaryRelations = ed.getPrimaryRelations();
+			for (int k = 0; k < primaryRelations.length(); k++)
+			{
+				String name = primaryRelations.get(k).getName();
+				if (exported.add(name)) export(name);
+			}
+		}
+	}
+
+	private native void export(String name)
+	/*-{
+		$wnd._ServoyUtils_.defineWindowVariable(name);
+	}-*/;
 
 	RowDescription getRowDescription(String entityName, Object pk)
 	{
@@ -225,7 +256,7 @@ public class FoundSetManager
 		return null;
 	}
 
-	EntityDescription getEntityDescription(String entityName)
+	public EntityDescription getEntityDescription(String entityName)
 	{
 		if (entities == null) return null;
 		for (int i = 0; i < entities.length(); i++)

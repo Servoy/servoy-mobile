@@ -113,10 +113,20 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 	 * @see com.servoy.j2db.scripting.api.IJSController#showRecords(com.servoy.j2db.scripting.api.IJSFoundSet)
 	 */
 	@Override
-	@Export
 	public void showRecords(IJSFoundSet foundset) throws Exception
 	{
-		this.foundSet = (FoundSet)foundset;
+		showRecords(foundSet);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.j2db.scripting.api.IJSController#showRecords(com.servoy.j2db.scripting.api.IJSFoundSet)
+	 */
+	@Export
+	public void showRecords(FoundSet foundset) throws Exception
+	{
+		this.foundSet = foundset;
 		valueChanged();
 		mc.getFormManager().showForm(this);
 	}
@@ -145,5 +155,13 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 	{
 		// call +1 method of foundset
 		foundSet.jsFunction_setSelectedIndex(index);
+	}
+
+	/**
+	 * @param relatedFoundset
+	 */
+	public void setModel(FoundSet relatedFoundset)
+	{
+		this.foundSet = relatedFoundset;
 	}
 }

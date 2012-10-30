@@ -112,6 +112,7 @@ public class FormList extends JQMList implements IDisplayRelatedData
 		if (relationName != null)
 		{
 			relatedFoundset = parentRecord.getRelatedFoundSet(relationName);
+			formController.setModel(relatedFoundset);
 			refreshList();
 		}
 	}
