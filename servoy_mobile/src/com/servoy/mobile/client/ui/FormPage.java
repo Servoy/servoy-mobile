@@ -36,9 +36,9 @@ import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.sksamuel.jqm4gwt.JQMPage;
+import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
-import com.sksamuel.jqm4gwt.toolbar.JQMToolBarButton;
 
 /**
  * Form UI
@@ -112,8 +112,8 @@ public class FormPage extends JQMPage
 
 	public JQMHeader createHeader(Component label, Component leftButton, Component rightButton)
 	{
-		JQMToolBarButton leftToolbarButton = (JQMToolBarButton)createWidget(leftButton);
-		JQMToolBarButton rightToolbarButton = (JQMToolBarButton)createWidget(rightButton);
+		JQMButton leftToolbarButton = (JQMButton)createWidget(leftButton);
+		JQMButton rightToolbarButton = (JQMButton)createWidget(rightButton);
 
 		JQMHeader headerComponent = null;
 		if (label != null)

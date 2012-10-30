@@ -23,13 +23,13 @@ import com.servoy.j2db.scripting.api.IJSEvent;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
-import com.sksamuel.jqm4gwt.toolbar.JQMToolBarButton;
+import com.sksamuel.jqm4gwt.button.JQMButton;
 
 /**
  * @author gboros
  *
  */
-public class DataFormHeaderButton extends JQMToolBarButton implements IDisplayData, IGraphicalComponent
+public class DataFormHeaderButton extends JQMButton implements IDisplayData, IGraphicalComponent
 {
 	public static int ORIENTATION_LEFT = 0;
 	public static int ORIENTATION_RIGHT = 1;
