@@ -182,7 +182,7 @@ public class ComponentFactory
 						FormController formController = application.getFormManager().getForm(form.getName());
 						String relationName = tab.getRelationName();
 
-						componentWidget = new FormList(formController, dal, relationName);
+						componentWidget = new FormList(formController, dal, application.getSolution().getRelation(relationName));
 						sizeProperty = tabPanel.getSize();
 					}
 				}

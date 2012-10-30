@@ -127,8 +127,8 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 	public void showRecords(FoundSet foundset) throws Exception
 	{
 		this.foundSet = foundset;
-		valueChanged();
 		mc.getFormManager().showForm(this);
+		valueChanged();
 	}
 
 	/*

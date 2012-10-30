@@ -28,6 +28,7 @@ import com.servoy.mobile.client.dataprocessing.IDisplayRelatedData;
 import com.servoy.mobile.client.dataprocessing.Record;
 import com.servoy.mobile.client.persistence.BaseComponent;
 import com.servoy.mobile.client.persistence.Component;
+import com.servoy.mobile.client.persistence.Relation;
 import com.sksamuel.jqm4gwt.list.JQMList;
 import com.sksamuel.jqm4gwt.list.JQMListItem;
 
@@ -40,7 +41,7 @@ public class FormList extends JQMList implements IDisplayRelatedData
 {
 	private final FormController formController;
 	private final DataAdapterList dal;
-	private final String relationName;
+	private final Relation relation;
 	private String listItemTextDP, listItemSubtextDP, listItemCountDP, listItemImageDP, listItemHeaderDP;
 	private String listItemStaticText, listItemStaticSubtext, listItemStaticHeader;
 	private String listItemOnAction;
@@ -50,11 +51,11 @@ public class FormList extends JQMList implements IDisplayRelatedData
 		this(formController, dal, null);
 	}
 
-	public FormList(FormController formController, DataAdapterList dal, String relationName)
+	public FormList(FormController formController, DataAdapterList dal, Relation relation)
 	{
 		this.formController = formController;
 		this.dal = dal;
-		this.relationName = relationName;
+		this.relation = relation;
 
 		JsArray<Component> formComponents = formController.getForm().getComponents();
 
@@ -109,9 +110,9 @@ public class FormList extends JQMList implements IDisplayRelatedData
 	@Override
 	public void setRecord(Record parentRecord)
 	{
-		if (relationName != null)
+		if (relation != null)
 		{
-			relatedFoundset = parentRecord.getRelatedFoundSet(relationName);
+			relatedFoundset = relation.isSelfRef() ? parentRecord.getParent() : parentRecord.getRelatedFoundSet(relation.getName());
 			formController.setModel(relatedFoundset);
 			refreshList();
 		}
