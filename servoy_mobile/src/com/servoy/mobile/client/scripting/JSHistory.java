@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
+import org.timepedia.exporter.client.ExporterUtil;
 
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.FormManager;
@@ -36,8 +37,7 @@ public class JSHistory implements Exportable
 	public JSHistory(FormManager formManager)
 	{
 		this.formManager = formManager;
-		// this breaks gwt application, have to see how to fix it
-		//export(ExporterUtil.wrap(this));
+		export(ExporterUtil.wrap(this));
 	}
 
 
@@ -70,11 +70,11 @@ public class JSHistory implements Exportable
 		historyList.clear();
 	}
 
-	// This export does overwrite the default window history object!
-//	private final native void export(Object object)
-//	/*-{
-//		$wnd.history = object;
-//	}-*/;
+	// cannot use window.history, breaks javascript object
+	private final native void export(Object object)
+	/*-{
+		$wnd._ServoyUtils_.history = object;
+	}-*/;
 
 
 	/**

@@ -134,6 +134,18 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see com.servoy.j2db.scripting.api.IJSController#show()
+	 */
+	@Override
+	@Export
+	public void show() throws Exception
+	{
+		mc.getFormManager().showForm(this);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.j2db.scripting.api.IJSController#getSelectedIndex()
 	 */
 	@Override
