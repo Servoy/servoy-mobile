@@ -106,13 +106,11 @@ public class ComponentFactory
 
 			if (componentWidget == null)
 			{
-				if (gc.isShowClick() && gc.getActionMethodID() != null)
-				// button
+				if (gc.isButton())
 				{
 					componentWidget = new DataButton(gc, executor);
 				}
 				else
-				// label
 				{
 					componentWidget = new DataLabel(gc);
 				}
