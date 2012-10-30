@@ -10,7 +10,12 @@ import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.dto.DataProviderDescription;
 import com.servoy.mobile.client.dto.EntityDescription;
 
-
+/**
+ * 
+ * @author jcompagner
+ * @since 7.0
+ */
+@SuppressWarnings("nls")
 public class FormScope extends GlobalScope
 {
 	protected final Map<String, Integer> recordTypes = new HashMap<String, Integer>();
@@ -24,7 +29,6 @@ public class FormScope extends GlobalScope
 		FoundSet fs = formController.getFormModel();
 		if (fs != null)
 		{
-			servoyProperties.put("foundset", fs);
 			EntityDescription ed = fs.getFoundSetManager().getEntityDescription(fs.getEntityName());
 			JsArray<DataProviderDescription> dataProviders = ed.getDataProviders();
 
@@ -68,6 +72,7 @@ public class FormScope extends GlobalScope
 	@Override
 	public Object getValue(String variable)
 	{
+		if ("foundset".equals(variable)) return formController.getFormModel();
 		if (recordTypes.containsKey(variable))
 		{
 			return formController.getFormModel().getSelectedRecord().getValue(variable);
