@@ -62,7 +62,7 @@ public class FormManager
 
 	protected FormController getFirstForm()
 	{
-		Form jsForm = application.getSolution().get(0);
+		Form jsForm = application.getSolution().getForm(0);
 		return getForm(jsForm.getName());
 	}
 

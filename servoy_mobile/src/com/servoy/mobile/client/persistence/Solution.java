@@ -34,8 +34,16 @@ public class Solution extends JavaScriptObject
 		return this.forms.length;
 	}-*/;
 
-	public final native Form get(int i) /*-{
+	public final native int relationCount() /*-{
+		return this.relations.length;
+	}-*/;
+
+	public final native Form getForm(int i) /*-{
 		return this.forms[i];
+	}-*/;
+
+	public final native Relation getRelation(int i) /*-{
+		return this.relations[i];
 	}-*/;
 
 	public final native String getSolutionName() /*-{
@@ -55,7 +63,17 @@ public class Solution extends JavaScriptObject
 	{
 		for (int i = 0; i < formCount(); i++)
 		{
-			if (get(i).getName().equals(name)) return get(i);
+			if (getForm(i).getName().equals(name)) return getForm(i);
+		}
+		return null;
+	}
+
+	@Export
+	public final Relation getRelation(String name)
+	{
+		for (int i = 0; i < relationCount(); i++)
+		{
+			if (getRelation(i).getName().equals(name)) return getRelation(i);
 		}
 		return null;
 	}
@@ -64,7 +82,7 @@ public class Solution extends JavaScriptObject
 	{
 		for (int i = 0; i < formCount(); i++)
 		{
-			if (get(i).getUUID().equals(uuid)) return get(i);
+			if (getForm(i).getUUID().equals(uuid)) return getForm(i);
 		}
 		return null;
 	}
