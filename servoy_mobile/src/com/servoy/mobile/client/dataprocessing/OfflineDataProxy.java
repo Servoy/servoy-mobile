@@ -245,6 +245,7 @@ public class OfflineDataProxy
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.PUT, serverURL + "/" + foundSetManager.getEntityPrefix() + entityName + "/" + version + "/" +
 			URL.encode(pk));
 		setRequestCredentials(builder);
+		builder.setHeader("Access-Control-Request-Method", "PUT");
 
 		builder.setHeader("Content-Type", "application/json");
 		try
