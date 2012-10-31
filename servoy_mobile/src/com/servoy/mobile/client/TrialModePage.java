@@ -19,9 +19,9 @@ package com.servoy.mobile.client;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.HTML;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.button.JQMButton;
-import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 
 /**
  * @author lvostinar
@@ -32,12 +32,15 @@ public class TrialModePage extends JQMPage
 
 	public TrialModePage(final FormManager formManager)
 	{
-		JQMHeader header = new JQMHeader("Servoy mobile trial version");
-
-		header.setTheme("b");
-		add(header);
-
-		JQMButton next = new JQMButton("Skip");
+		HTML htmlText = new HTML();
+		htmlText.setHTML("<p><i>Welcome to</i></p><center><h1><span><b>Servoy</b></span> Mobile</h1></center>"
+			+ "<p>Thank you for evaluating our product!</p>"
+			+ "<p>We hope you enjoy the experience of creating great Mobile Business Applications in no-time</p>"
+			+ "<p>Contact your Servoy sales representative for available licensing options or email Servoy at <a href=\"mailto:sales@servoy.com\">sales@servoy.com</a></p>"
+			+ "<p>If you have any other question, check out our <a href=\"http://forum.servoy.com\">Servoy Talk forum</a> or contact us at <a href=\"mailto:support@servoy.com\">support@servoy.com</a></p>");
+		htmlText.setWordWrap(true);
+		add(htmlText);
+		JQMButton next = new JQMButton("Launch App");
 		next.addClickHandler(new ClickHandler()
 		{
 			@Override
