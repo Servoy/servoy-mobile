@@ -84,6 +84,19 @@ public class RowDescription extends JavaScriptObject
 		this[dataProviderID] = obj;
 	}-*/;
 
+	public final native void setCreatedOnDevice(boolean createdOnDevice)/*-{
+		this['createdOnDevice'] = createdOnDevice;
+	}-*/;
+
+	public final native boolean isCreatedOnDevice()
+/*-{
+		if (this['createdOnDevice'] == null
+				|| this['createdOnDevice'] == undefined)
+			return false;
+		return this['createdOnDevice'];
+	}-*/;
+
+
 	public final String toJSON()
 	{
 		return new JSONObject(this).toString();
@@ -91,6 +104,8 @@ public class RowDescription extends JavaScriptObject
 
 	public static RowDescription newInstance()
 	{
-		return JSONParser.parseStrict("{}").isObject().getJavaScriptObject().cast();
+		RowDescription desc = JSONParser.parseStrict("{}").isObject().getJavaScriptObject().cast();
+		desc.setCreatedOnDevice(true);
+		return desc;
 	}
 }

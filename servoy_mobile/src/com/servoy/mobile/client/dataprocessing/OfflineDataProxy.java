@@ -241,18 +241,19 @@ public class OfflineDataProxy
 		final String entityName = key.substring(0, idx);
 		String pk = key.substring(idx + 1, key.length());
 
+		RowDescription row = foundSetManager.getRowDescription(entityName, pk);
+		String json = row.toJSON();
+		totalLength += json.length();
+
 		//serverURL/entityName/12 POST (for update)
-		RequestBuilder builder = new RequestBuilder(RequestBuilder.PUT, serverURL + "/" + foundSetManager.getEntityPrefix() + entityName + "/" + version + "/" +
-			URL.encode(pk));
+		RequestBuilder builder = new RequestBuilder(row.isCreatedOnDevice() ? RequestBuilder.POST : RequestBuilder.PUT, serverURL + "/" +
+			foundSetManager.getEntityPrefix() + entityName + "/" + version + "/" + URL.encode(pk));
 		setRequestCredentials(builder);
-		builder.setHeader("Access-Control-Request-Method", "PUT");
+		builder.setHeader("Access-Control-Request-Method", row.isCreatedOnDevice() ? "POST" : "PUT");
 
 		builder.setHeader("Content-Type", "application/json");
 		try
 		{
-			RowDescription row = foundSetManager.getRowDescription(entityName, pk);
-			String json = row.toJSON();
-			totalLength += json.length();
 			builder.sendRequest(json, new RequestCallback()
 			{
 				public void onError(Request request, Throwable exception)
