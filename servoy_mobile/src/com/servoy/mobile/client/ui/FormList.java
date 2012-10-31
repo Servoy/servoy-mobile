@@ -162,17 +162,16 @@ public class FormList extends JQMList implements IDisplayRelatedData
 			dpValue = dal.getRecordValue(listItemRecord, listItemImageDP);
 			if (dpValue != null) listItem.setImage(dpValue.toString(), false);
 
-			if (listItemOnAction != null)
+			final int selIndex = i + 1;
+			listItem.addClickHandler(new ClickHandler()
 			{
-				listItem.addClickHandler(new ClickHandler()
+				@Override
+				public void onClick(ClickEvent event)
 				{
-					@Override
-					public void onClick(ClickEvent event)
-					{
-						formController.getExecutor().fireEventCommand(IJSEvent.ACTION, listItemOnAction, null, null);
-					}
-				});
-			}
+					formController.setSelectedIndex(selIndex);
+					if (listItemOnAction != null) formController.getExecutor().fireEventCommand(IJSEvent.ACTION, listItemOnAction, null, null);
+				}
+			});
 
 			dpValue = dal.getRecordValue(listItemRecord, listItemSubtextDP);
 			if (dpValue == null) dpValue = listItemStaticSubtext;
