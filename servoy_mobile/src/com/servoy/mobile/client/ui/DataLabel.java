@@ -33,7 +33,7 @@ public class DataLabel extends Heading implements IDisplayData
 
 	public DataLabel(GraphicalComponent gc)
 	{
-		super(gc.getMobileProperties().getHeaderSize(), gc.getText() != null ? gc.getText() : ""); //$NON-NLS-1$
+		super(gc.getMobileProperties() != null ? gc.getMobileProperties().getHeaderSize() : 4, gc.getText() != null ? gc.getText() : ""); //$NON-NLS-1$
 		this.gc = gc;
 	}
 

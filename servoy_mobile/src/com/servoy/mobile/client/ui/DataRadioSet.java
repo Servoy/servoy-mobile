@@ -50,7 +50,7 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 		this.valuelist = valuelist;
 		this.executor = executor;
 
-		if (field.getMobileProperties().getRadioStyle() == HORIZONTAL) setHorizontal();
+		if (field.getMobileProperties() != null && field.getMobileProperties().getRadioStyle() == HORIZONTAL) setHorizontal();
 
 		setText(field.getText());
 		if (valuelist != null)
