@@ -20,7 +20,10 @@ package com.servoy.mobile.client.ui;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.servoy.j2db.scripting.api.IJSEvent;
+import com.servoy.mobile.client.persistence.BaseComponent.MobileProperties;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
+import com.servoy.mobile.client.util.Utils;
+import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 
 /**
@@ -36,6 +39,12 @@ public class DataButton extends JQMButton implements IGraphicalComponent
 	{
 		super(gc.getText());
 		setTheme("b"); //$NON-NLS-1$
+		MobileProperties mp = gc.getMobileProperties();
+		if (mp != null)
+		{
+			DataIcon dataIcon = Utils.stringToDataIcon(mp.getDataIcon());
+			if (dataIcon != null) setIcon(dataIcon);
+		}
 		this.executor = executor;
 	}
 

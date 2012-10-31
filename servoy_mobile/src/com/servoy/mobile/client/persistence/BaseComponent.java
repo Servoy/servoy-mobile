@@ -102,5 +102,9 @@ public class BaseComponent extends JavaScriptObject
 		public final native int getRadioStyle() /*-{
 			return this.radioStyle ? this.radioStyle : 0;
 		}-*/;
+
+		public final native String getDataIcon() /*-{
+			return this.dataIcon;
+		}-*/;
 	}
 }

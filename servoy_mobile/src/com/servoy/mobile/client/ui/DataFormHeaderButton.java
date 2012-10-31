@@ -22,7 +22,10 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.servoy.j2db.scripting.api.IJSEvent;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
+import com.servoy.mobile.client.persistence.BaseComponent.MobileProperties;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
+import com.servoy.mobile.client.util.Utils;
+import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 
 /**
@@ -41,6 +44,12 @@ public class DataFormHeaderButton extends JQMButton implements IDisplayData, IGr
 	public DataFormHeaderButton(GraphicalComponent gc, int orientation, Executor executor)
 	{
 		super(gc.getText() != null ? gc.getText() : ""); //$NON-NLS-1$
+		MobileProperties mp = gc.getMobileProperties();
+		if (mp != null)
+		{
+			DataIcon dataIcon = Utils.stringToDataIcon(mp.getDataIcon());
+			if (dataIcon != null) setIcon(dataIcon);
+		}
 		this.gc = gc;
 		this.orientation = orientation;
 		this.executor = executor;

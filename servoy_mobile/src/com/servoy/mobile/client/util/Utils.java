@@ -8,6 +8,7 @@ import org.timepedia.exporter.client.ExporterBaseActual.JsArrayObject;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
+import com.sksamuel.jqm4gwt.DataIcon;
 
 /*
  This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
@@ -510,5 +511,50 @@ public class Utils
 			if (Utils.equalObjects(array[i], item)) return i;
 		}
 		return -1;
+	}
+
+	public static DataIcon stringToDataIcon(String dataIcon)
+	{
+		if (dataIcon != null)
+		{
+			if (dataIcon.equals("gear")) //$NON-NLS-1$
+			return DataIcon.GEAR;
+			if (dataIcon.equals("arrow-l")) //$NON-NLS-1$
+			return DataIcon.LEFT;
+			if (dataIcon.equals("arrow-r")) //$NON-NLS-1$
+			return DataIcon.RIGHT;
+			if (dataIcon.equals("arrow-u")) //$NON-NLS-1$
+			return DataIcon.UP;
+			if (dataIcon.equals("arrow-d")) //$NON-NLS-1$
+			return DataIcon.DOWN;
+			if (dataIcon.equals("delete")) //$NON-NLS-1$
+			return DataIcon.DELETE;
+			if (dataIcon.equals("plus")) //$NON-NLS-1$
+			return DataIcon.PLUS;
+			if (dataIcon.equals("minus")) //$NON-NLS-1$
+			return DataIcon.MINUS;
+			if (dataIcon.equals("check")) //$NON-NLS-1$
+			return DataIcon.CHECK;
+			if (dataIcon.equals("refresh")) //$NON-NLS-1$
+			return DataIcon.REFRESH;
+			if (dataIcon.equals("forward")) //$NON-NLS-1$
+			return DataIcon.FORWARD;
+			if (dataIcon.equals("back")) //$NON-NLS-1$
+			return DataIcon.BACK;
+			if (dataIcon.equals("grid")) //$NON-NLS-1$
+			return DataIcon.GRID;
+			if (dataIcon.equals("star")) //$NON-NLS-1$
+			return DataIcon.STAR;
+			if (dataIcon.equals("alert")) //$NON-NLS-1$
+			return DataIcon.ALERT;
+			if (dataIcon.equals("info")) //$NON-NLS-1$
+			return DataIcon.INFO;
+			if (dataIcon.equals("home")) //$NON-NLS-1$
+			return DataIcon.HOME;
+			if (dataIcon.equals("search")) //$NON-NLS-1$
+			return DataIcon.SEARCH;
+		}
+
+		return null;
 	}
 }
