@@ -34,7 +34,7 @@ import com.sksamuel.jqm4gwt.list.JQMListItem;
 
 /**
  * List based on form UI
- * 
+ *
  * @author gboros
  */
 public class FormList extends JQMList implements IDisplayRelatedData
@@ -45,6 +45,7 @@ public class FormList extends JQMList implements IDisplayRelatedData
 	private String listItemTextDP, listItemSubtextDP, listItemCountDP, listItemImageDP, listItemHeaderDP;
 	private String listItemStaticText, listItemStaticSubtext, listItemStaticHeader;
 	private String listItemOnAction;
+	private String listItemDataIcon;
 
 	public FormList(FormController formController, DataAdapterList dal)
 	{
@@ -75,6 +76,7 @@ public class FormList extends JQMList implements IDisplayRelatedData
 						listItemTextDP = component.isGraphicalComponent().getDataProviderID();
 						listItemOnAction = component.isGraphicalComponent().getActionMethodID();
 						listItemStaticText = component.isGraphicalComponent().getText();
+						listItemDataIcon = mobileProperties.getDataIcon();
 					}
 					else if (mobileProperties.isListItemSubtext())
 					{
@@ -176,6 +178,8 @@ public class FormList extends JQMList implements IDisplayRelatedData
 			dpValue = dal.getRecordValue(listItemRecord, listItemSubtextDP);
 			if (dpValue == null) dpValue = listItemStaticSubtext;
 			if (dpValue != null) listItem.addText(dpValue.toString());
+
+			if(listItemDataIcon != null) listItem.getElement().setAttribute("data-icon", listItemDataIcon); //$NON-NLS-1$
 		}
 	}
 }
