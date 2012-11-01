@@ -88,7 +88,11 @@ public class MobileClient implements EntryPoint
 		new JSI18N();
 		export();
 
-		if (!foundSetManager.hasContent() && isOnline())
+		if (solution.getMustAuthenticate())
+		{
+			formManager.showLogin();
+		}
+		else if (!foundSetManager.hasContent() && isOnline())
 		{
 			sync();
 		}
@@ -158,22 +162,15 @@ public class MobileClient implements EntryPoint
 				{
 					Mobile.hideLoadingDialog();
 
-					if (reason.getStatusCode() == Response.SC_UNAUTHORIZED)
+					error(reason.getMessage());
+					boolean ok = Window.confirm(messages.discardLocalChanges());
+					if (ok)
 					{
-						formManager.showLogin();
+						load();
 					}
 					else
 					{
-						error(reason.getMessage());
-						boolean ok = Window.confirm(messages.discardLocalChanges());
-						if (ok)
-						{
-							load();
-						}
-						else
-						{
-							showFirstForm();
-						}
+						showFirstForm();
 					}
 				}
 			});
@@ -213,13 +210,10 @@ public class MobileClient implements EntryPoint
 			public void onFailure(Failure reason)
 			{
 				Mobile.hideLoadingDialog();
-				if (reason.getStatusCode() == Response.SC_UNAUTHORIZED)
+				error(reason.getMessage());
+				if (reason.getStatusCode() != Response.SC_UNAUTHORIZED && reason.getStatusCode() != 0)
 				{
-					formManager.showLogin();
-				}
-				else
-				{
-					error(reason.getMessage());
+					// if authentication failed don't show first form
 					showFirstForm();
 				}
 			}

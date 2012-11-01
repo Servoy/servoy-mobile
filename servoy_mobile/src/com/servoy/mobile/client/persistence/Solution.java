@@ -58,6 +58,10 @@ public class Solution extends JavaScriptObject
 		return this.skipConnect;
 	}-*/;
 
+	public final native boolean getMustAuthenticate() /*-{
+		return this.mustAuthenticate;
+	}-*/;
+
 	@Export
 	public final Form getForm(String name)
 	{
