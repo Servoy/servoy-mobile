@@ -88,6 +88,11 @@ public class MobileClient implements EntryPoint
 		new JSI18N();
 		export();
 
+		addStartPageShowCallback();
+	}
+
+	protected void onStartPageShown()
+	{
 		if (solution.getMustAuthenticate())
 		{
 			formManager.showLogin();
@@ -101,6 +106,17 @@ public class MobileClient implements EntryPoint
 			showFirstForm();
 		}
 	}
+
+	private native void addStartPageShowCallback()/*-{
+		var mobileClient = this;
+		if ($wnd.$.mobile.activePage && $wnd.$.mobile.activePage.attr("id") == 'start') {
+			mobileClient.@com.servoy.mobile.client.MobileClient::onStartPageShown()();
+		} else {
+			$wnd.$('#start').live('pageshow', function(event) {
+				mobileClient.@com.servoy.mobile.client.MobileClient::onStartPageShown()();
+				});
+		}
+	}-*/;
 
 	protected String getServerURL()
 	{
