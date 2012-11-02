@@ -74,7 +74,7 @@ public class MobilePlugin implements Exportable
 				$wnd.$.mobile.activePage.append("<a id='servoyanchor'></a>");
 			}
 			$wnd.$("#servoyanchor").attr('href',link);
-			$wnd.$("#servoyanchor").get(0).click();
+			$wnd._ServoyUtils_.simulateClick($wnd.$("#servoyanchor").get(0));
 		}
 	}-*/;
 }
