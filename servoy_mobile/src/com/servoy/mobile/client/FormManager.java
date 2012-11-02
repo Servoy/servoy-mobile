@@ -134,6 +134,9 @@ public class FormManager
 
 	public void showFirstForm()
 	{
+		// if showing the first for (when startup or after a sync)
+		// first just clear all existing forms to be fully refreshed.
+		removeAllForms();
 		showForm(getFirstForm());
 	}
 
