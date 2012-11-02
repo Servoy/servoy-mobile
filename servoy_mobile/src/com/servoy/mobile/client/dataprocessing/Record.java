@@ -20,7 +20,9 @@ package com.servoy.mobile.client.dataprocessing;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
@@ -182,18 +184,21 @@ public class Record extends Scope implements IJSRecord
 	{
 		EntityDescription entityDescription = parent.getFoundSetManager().getEntityDescription(parent.getEntityName());
 		// export all dataproviders
+
+		Set<String> exported = new HashSet<String>();
 		JsArray<DataProviderDescription> dataProviders = entityDescription.getDataProviders();
 		for (int i = 0; i < dataProviders.length(); i++)
 		{
 			DataProviderDescription dp = dataProviders.get(i);
 			variableTypes.put(dp.getName(), dp.getType());
-			exportProperty(dp.getName());
+			if (exported.add(dp.getName())) exportProperty(dp.getName());
 		}
 		JsArray<RelationDescription> primaryRelations = entityDescription.getPrimaryRelations();
 		// export all relations
 		for (int i = 0; i < primaryRelations.length(); i++)
 		{
-			exportProperty(primaryRelations.get(i).getName());
+			String name = primaryRelations.get(i).getName();
+			if (exported.add(name)) exportProperty(name);
 		}
 	}
 
@@ -220,7 +225,7 @@ public class Record extends Scope implements IJSRecord
 		this.revertChanges = function() {
 			return this.@com.servoy.mobile.client.dataprocessing.Record::revertChanges()();
 		}
-		
+
 		this.getSelectedIndex = function() {
 			return this.@com.servoy.mobile.client.dataprocessing.Record::getSelectedIndex()();
 		}
