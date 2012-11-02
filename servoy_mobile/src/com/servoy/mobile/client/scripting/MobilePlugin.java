@@ -56,4 +56,25 @@ public class MobilePlugin implements Exportable
 			alert("Sorry, browser does not support geolocation!");
 		}
 	}-*/;
+
+
+	public void call(String telNumber)
+	{
+		simulateClick("tel:" + telNumber); //$NON-NLS-1$
+	}
+
+	public void email(String emailAddress)
+	{
+		simulateClick("mailto:" + emailAddress); //$NON-NLS-1$
+	}
+
+	private native void simulateClick(String link)/*-{
+		if ($wnd.$.mobile.activePage) {
+			if($wnd.$("#servoyanchor").length < 1) {
+				$wnd.$.mobile.activePage.append("<a id='servoyanchor'></a>");
+			}
+			$wnd.$("#servoyanchor").attr('href',link);
+			$wnd.$("#servoyanchor").get(0).click();
+		}
+	}-*/;
 }
