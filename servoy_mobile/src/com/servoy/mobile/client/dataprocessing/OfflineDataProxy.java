@@ -293,6 +293,11 @@ public class OfflineDataProxy
 		}
 	}
 
+	public boolean hasCredentials()
+	{
+		return credentials != null;
+	}
+
 	private void setRequestCredentials(RequestBuilder builder)
 	{
 		if (credentials != null)

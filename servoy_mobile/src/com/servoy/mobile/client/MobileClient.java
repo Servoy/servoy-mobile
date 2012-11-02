@@ -42,6 +42,7 @@ import com.servoy.mobile.client.scripting.PluginsScope;
 import com.servoy.mobile.client.scripting.Scope;
 import com.servoy.mobile.client.solutionmodel.JSSolutionModel;
 import com.servoy.mobile.client.util.Failure;
+import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.Mobile;
 
 /**
@@ -93,9 +94,9 @@ public class MobileClient implements EntryPoint
 
 	protected void onStartPageShown()
 	{
-		if (solution.getMustAuthenticate())
+		if (!getSolution().getSkipConnect())
 		{
-			formManager.showLogin();
+			JQMContext.changePage(new TrialModePage(this));
 		}
 		else if (!foundSetManager.hasContent() && isOnline())
 		{
@@ -109,12 +110,17 @@ public class MobileClient implements EntryPoint
 
 	private native void addStartPageShowCallback()/*-{
 		var mobileClient = this;
-		if ($wnd.$.mobile.activePage && $wnd.$.mobile.activePage.attr("id") == 'start') {
+		if ($wnd.$.mobile.activePage
+				&& $wnd.$.mobile.activePage.attr("id") == 'start') {
 			mobileClient.@com.servoy.mobile.client.MobileClient::onStartPageShown()();
 		} else {
-			$wnd.$('#start').live('pageshow', function(event) {
-				mobileClient.@com.servoy.mobile.client.MobileClient::onStartPageShown()();
-				});
+			$wnd
+					.$('#start')
+					.live(
+							'pageshow',
+							function(event) {
+								mobileClient.@com.servoy.mobile.client.MobileClient::onStartPageShown()();
+							});
 		}
 	}-*/;
 
@@ -157,43 +163,50 @@ public class MobileClient implements EntryPoint
 			return;
 		}
 
-
-		Mobile.showLoadingDialog(messages.syncing());
-
-		if (foundSetManager.hasChanges())
+		if (solution.getMustAuthenticate() && !offlineDataProxy.hasCredentials())
 		{
-			//save and clear, when successful do load
-			offlineDataProxy.saveOfflineData(getServerURL(), new Callback<Integer, Failure>()
-			{
-				@Override
-				public void onSuccess(Integer result)
-				{
-					log("Done, submitted size: " + result);
-
-					load();
-				}
-
-				@Override
-				public void onFailure(Failure reason)
-				{
-					Mobile.hideLoadingDialog();
-
-					error(reason.getMessage());
-					boolean ok = Window.confirm(messages.discardLocalChanges());
-					if (ok)
-					{
-						load();
-					}
-					else
-					{
-						showFirstForm();
-					}
-				}
-			});
+			formManager.showLogin();
 		}
 		else
 		{
-			load();
+
+			Mobile.showLoadingDialog(messages.syncing());
+
+			if (foundSetManager.hasChanges())
+			{
+				//save and clear, when successful do load
+				offlineDataProxy.saveOfflineData(getServerURL(), new Callback<Integer, Failure>()
+				{
+					@Override
+					public void onSuccess(Integer result)
+					{
+						log("Done, submitted size: " + result);
+
+						load();
+					}
+
+					@Override
+					public void onFailure(Failure reason)
+					{
+						Mobile.hideLoadingDialog();
+
+						error(reason.getMessage());
+						boolean ok = Window.confirm(messages.discardLocalChanges());
+						if (ok)
+						{
+							load();
+						}
+						else
+						{
+							showFirstForm();
+						}
+					}
+				});
+			}
+			else
+			{
+				load();
+			}
 		}
 	}
 

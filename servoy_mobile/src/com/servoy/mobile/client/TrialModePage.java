@@ -30,7 +30,7 @@ import com.sksamuel.jqm4gwt.button.JQMButton;
 public class TrialModePage extends JQMPage
 {
 
-	public TrialModePage(final FormManager formManager)
+	public TrialModePage(final MobileClient application)
 	{
 		HTML htmlText = new HTML();
 		htmlText.setHTML("<p><i>Welcome to</i></p><center><h1><span><b>Servoy</b></span> Mobile</h1></center>"
@@ -46,7 +46,14 @@ public class TrialModePage extends JQMPage
 			@Override
 			public void onClick(ClickEvent event)
 			{
-				formManager.showForm(formManager.getFirstForm());
+				if (!application.getFoundSetManager().hasContent() && application.isOnline())
+				{
+					application.sync();
+				}
+				else
+				{
+					application.showFirstForm();
+				}
 			}
 		});
 		add(next);
