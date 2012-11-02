@@ -33,13 +33,15 @@ if (typeof(_ServoyUtils_) == "undefined")
    
    _ServoyUtils_.defineVariable = function(object, name, defaultValue, type) {
 		Object.defineProperty(object, name, {get: function() { return _ServoyUtils_.getScopeVariable(object,name);},
-			                                 set: function(val) { _ServoyUtils_.setScopeVariable(object,name,val);} });
+			                                 set: function(val) { _ServoyUtils_.setScopeVariable(object,name,val);},
+			                                 configurable : true });
 		if (type != undefined) _ServoyUtils_.setScopeVariableType(object,name,type);
 		if (defaultValue != undefined) _ServoyUtils_.setScopeVariable(object,name,defaultValue); // set default value
    }
    
     _ServoyUtils_.defineWindowVariable = function(name) {
    			Object.defineProperty(window, name, {get: function() { return _ServoyUtils_.getValue(name);},
-		   		                                 set: function(val) { _ServoyUtils_.setValue(name,val);} });
+		   		                                 set: function(val) { _ServoyUtils_.setValue(name,val);},
+		   		                                 configurable : true });
 	}
  }
