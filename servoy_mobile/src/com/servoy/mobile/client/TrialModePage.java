@@ -36,8 +36,8 @@ public class TrialModePage extends JQMPage
 		htmlText.setHTML("<p><i>Welcome to</i></p><center><h1><span><b>Servoy</b></span> Mobile</h1></center>"
 			+ "<p>Thank you for evaluating our product!</p>"
 			+ "<p>We hope you enjoy the experience of creating great Mobile Business Applications in no-time</p>"
-			+ "<p>Contact your Servoy sales representative for available licensing options or email Servoy at <a href=\"mailto:sales@servoy.com\">sales@servoy.com</a></p>"
-			+ "<p>If you have any other question, check out our <a href=\"http://forum.servoy.com\">Servoy Talk forum</a> or contact us at <a href=\"mailto:support@servoy.com\">support@servoy.com</a></p>");
+			+ "<p>Contact your Servoy sales representative for available licensing options or email Servoy at <a href=\"mailto:sales@servoy.com\" target=\"_blank\">sales@servoy.com</a></p>"
+			+ "<p>If you have any other question, check out our <a href=\"http://forum.servoy.com\" target=\"_blank\">Servoy Talk forum</a> or contact us at <a href=\"mailto:support@servoy.com\" target=\"_blank\">support@servoy.com</a></p>");
 		htmlText.setWordWrap(true);
 		add(htmlText);
 		JQMButton next = new JQMButton("Launch App");
