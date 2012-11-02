@@ -41,14 +41,25 @@ public class Utils
 	 */
 	public static int getAsInteger(String s)
 	{
-		if (s == null) return 0;
+		return getAsInteger(s, 0);
+	}
+
+	/**
+	 * Try to parse the given string as an integer
+	 * 
+	 * @param s the string to parse
+	 * @return the parsed integer - or 0 (zero) if the parse doesn't succeed
+	 */
+	public static int getAsInteger(String s, int defaultValue)
+	{
+		if (s == null) return defaultValue;
 		try
 		{
 			return new Double(s.replace(',', '.')).intValue();
 		}
 		catch (Exception ex)
 		{
-			return 0;
+			return defaultValue;
 		}
 	}
 
@@ -60,7 +71,18 @@ public class Utils
 	 */
 	public static int getAsInteger(Object o)
 	{
-		if (o == null) return 0;
+		return getAsInteger(o, 0);
+	}
+
+	/**
+	 * Try to parse the given object as an integer
+	 * 
+	 * @param o the object (Number, String, ...) to parse
+	 * @return the parsed integer or the defaultValue if the parse doesn't succeed
+	 */
+	public static int getAsInteger(Object o, int defaultValue)
+	{
+		if (o == null) return defaultValue;
 		if (o instanceof Number)
 		{
 			return ((Number)o).intValue();
@@ -70,6 +92,25 @@ public class Utils
 			return ((Boolean)o).booleanValue() ? 1 : 0;
 		}
 		return getAsInteger(o.toString());
+	}
+
+	/**
+	 * helper function to get boolean value of java.lang.Boolean object or default value in case of null
+	 * @param booleanObject
+	 * @param defaultValue 
+	 * @return 
+	 */
+	public static boolean getAsBoolean(Object object, boolean defaultValue)
+	{
+		if (object instanceof Boolean)
+		{
+			return ((Boolean)object).booleanValue();
+		}
+		else if (object instanceof Number)
+		{
+			return ((Number)object).intValue() != 0;
+		}
+		return defaultValue;
 	}
 
 	/**

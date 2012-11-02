@@ -89,14 +89,22 @@ public class FoundSet implements Exportable, IJSFoundSet //  extends Scope if we
 	@Export("newRecord")
 	public int js_newRecord()
 	{
-		if (newRecord() != null)
+		return js_newRecord(Integer.valueOf(1), Boolean.TRUE);
+
+	}
+
+	@Export("newRecord")
+	public int js_newRecord(Number index, Boolean changeSelection)
+	{
+		int integer = Utils.getAsInteger(index, 1);
+		if (newRecord(integer - 1, Utils.getAsBoolean(changeSelection, true)) != null)
 		{
-			return records.size();
+			return integer;
 		}
 		return -1;
 	}
 
-	public Record newRecord()
+	public Record newRecord(int index, boolean changeSelection)
 	{
 		Object pk = Utils.createStringUUID();
 		RecordDescription recd = RecordDescription.newInstance(pk);
@@ -104,7 +112,12 @@ public class FoundSet implements Exportable, IJSFoundSet //  extends Scope if we
 		Record retval = new Record(this, recd, rowd);
 		foundSetDescription.getRecords().push(recd);
 		needToSaveFoundSetDescription = true;
-		records.add(retval);
+		records.add(index, retval);
+		if (changeSelection)
+		{
+			selectedIndex = index;
+			fireValueChanged();
+		}
 		startEdit(retval);
 		return retval;
 	}
