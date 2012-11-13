@@ -34,18 +34,93 @@ public class FoundSetDescription extends JavaScriptObject
 	public final native String getEntityName() /*-{
 		return this.entityName;
 	}-*/;
-	
+	private final native void deleteEntityName() /*-{
+		delete this.entityName;
+	}-*/;
+	private final native void setEntityName(String ename) /*-{
+		this.entityName = ename;
+	}-*/;
+
 	public final native String getRelationName() /*-{
 		return this.relationName;
+	}-*/;
+	private final native void deleteRelationName() /*-{
+		delete this.relationName;
+	}-*/;
+	private final native String setRelationName(String rname) /*-{
+		this.relationName = rname;
 	}-*/;
 
 	public final native String getWhereArgsHash() /*-{
 		return this.hash;
 	}-*/;
+	private final native void deleteWhereArgsHash() /*-{
+		delete this.hash;
+	}-*/;
+	private final native String setWhereArgsHash(String ahash) /*-{
+		this.hash = ahash;
+	}-*/;
+	
+	private final native void deleteEmptyAttributes() /*-{
+		if (this.records && this.records.length == 0) 
+		{
+			delete this.records;
+		}
+		else
+		{
+			for (var i = 0 ; i < this.records.length ; i++)
+			{ 
+				var rec = this.records[i];
+				if (rec.rfs && rec.rfs.length == 0) 
+				{
+					delete rec.rfs;
+				}
+			}
+		}
+	}-*/;
 	
 	public final String toJSON()
 	{
-		return new JSONObject(this).toString();
+		return toJSON(false);
+	}
+	public final String toJSON(boolean omitForKeyInfo)
+	{
+		String relationName = getRelationName();
+		String hash = getWhereArgsHash();
+		String entityName = getEntityName();
+		try
+		{
+			if (omitForKeyInfo) 
+			{
+				deleteRelationName();
+				deleteWhereArgsHash();
+				deleteEntityName();
+			}
+			deleteEmptyAttributes();
+			return new JSONObject(this).toString();
+		}
+		finally
+		{
+			if (omitForKeyInfo) 
+			{
+				setRelationName(relationName);
+				setWhereArgsHash(hash);
+				setEntityName(entityName);
+			}
+		}
+	}
+
+	public final boolean needsInfoFromKey() 
+	{
+		return (getRelationName() == null && getWhereArgsHash() == null);
+	}
+
+	public final void setInfoFromKey(String key,String entityName) 
+	{
+		String[] parts = key.split("|");
+		setRelationName(parts[0]);
+		setWhereArgsHash(parts[1]);
+		setEntityName(entityName);
 	}
 	
 	public final native JsArray<RecordDescription> getRecords() /*-{

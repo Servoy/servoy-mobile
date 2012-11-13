@@ -129,6 +129,7 @@ public class FoundSetManager
 		//load data from offline db
 		String json = localStorage.getItem(entityName + '|' + pk);
 		if (json == null) return null;
+
 		return JSONParser.parseStrict(json).isObject().getJavaScriptObject().cast();
 	}
 
@@ -137,9 +138,16 @@ public class FoundSetManager
 		//load data from offline db
 		String json = localStorage.getItem(key);
 		if (json == null) return null;
+
 		FoundSetDescription fsd = JSONParser.parseStrict(json).isObject().getJavaScriptObject().cast();
+		if (fsd.needsInfoFromKey())
+		{
+			RelationDescription rd = getPrimaryRelation(relationName, entityName);
+			fsd.setInfoFromKey(key, rd.getForeignEntityName());
+		}
 		return new RelatedFoundSet(this, rec, fsd, relationName);
 	}
+
 
 	String getEntityPrefix()
 	{
@@ -192,16 +200,18 @@ public class FoundSetManager
 
 	private void storeFoundSetDescription(FoundSetDescription fd)
 	{
+		boolean omitForKeyinfo = false;
 		String key = fd.getEntityName();
 		if (fd.getRelationName() != null)
 		{
 			key = fd.getRelationName();
 			if (fd.getWhereArgsHash() != null) //if global/constant relation at server we did omit the argshash
 			{
+				omitForKeyinfo = true;
 				key += '|' + fd.getWhereArgsHash();
 			}
 		}
-		localStorage.setItem(key, fd.toJSON());
+		localStorage.setItem(key, fd.toJSON(omitForKeyinfo));
 	}
 
 	void storeRowData(String entityName, JsArray<RowDescription> rowData)
