@@ -19,6 +19,7 @@ package com.servoy.mobile.client.ui;
 
 import com.google.gwt.user.client.ui.HasText;
 import com.servoy.j2db.util.ITagResolver;
+import com.servoy.j2db.util.TagParser;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
@@ -31,6 +32,7 @@ public class DataText implements IDisplayData
 {
 	private final GraphicalComponent textComponent;
 	private final HasText parentComponent;
+	private ITagResolver tagResolver;
 
 	public DataText(HasText parentComponent, GraphicalComponent textComponent)
 	{
@@ -63,8 +65,17 @@ public class DataText implements IDisplayData
 	@Override
 	public void setValueObject(Object data)
 	{
-		parentComponent.setText(data != null ? data.toString() : ""); //$NON-NLS-1$
+		String txt;
+		if(textComponent.isDisplaysTags() && textComponent.getDataProviderID() == null)
+		{
+			txt = TagParser.processTags(textComponent.getText(), tagResolver, null);
+		}
+		else
+		{
+			txt = data != null ? data.toString() : ""; //$NON-NLS-1$
+		}
 
+		parentComponent.setText(txt);
 	}
 
 	/*
@@ -100,7 +111,7 @@ public class DataText implements IDisplayData
 	@Override
 	public boolean needEntireState()
 	{
-		return false;
+		return textComponent.isDisplaysTags();
 	}
 
 	/* (non-Javadoc)
@@ -109,6 +120,6 @@ public class DataText implements IDisplayData
 	@Override
 	public void setTagResolver(ITagResolver resolver)
 	{
-		// TODO Auto-generated method stub
+		tagResolver = resolver;
 	}
 }
