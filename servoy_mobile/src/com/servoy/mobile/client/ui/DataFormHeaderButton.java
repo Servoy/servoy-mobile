@@ -20,6 +20,8 @@ package com.servoy.mobile.client.ui;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.servoy.j2db.scripting.api.IJSEvent;
+import com.servoy.j2db.util.ITagResolver;
+import com.servoy.j2db.util.TagParser;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.persistence.BaseComponent.MobileProperties;
@@ -40,6 +42,7 @@ public class DataFormHeaderButton extends JQMButton implements IDisplayData, IGr
 	private final GraphicalComponent gc;
 	private final int orientation;
 	private final Executor executor;
+	private ITagResolver tagResolver;
 
 	public DataFormHeaderButton(GraphicalComponent gc, int orientation, Executor executor)
 	{
@@ -94,7 +97,17 @@ public class DataFormHeaderButton extends JQMButton implements IDisplayData, IGr
 	@Override
 	public void setValueObject(Object data)
 	{
-		setText(data != null ? data.toString() : ""); //$NON-NLS-1$
+		String txt;
+		if(gc.isDisplaysTags() && gc.getDataProviderID() == null)
+		{
+			txt = TagParser.processTags(gc.getText(), tagResolver, null);
+		}
+		else
+		{
+			txt = data != null ? data.toString() : ""; //$NON-NLS-1$
+		}
+
+		setText(txt);
 	}
 
 	public int getOrientation()
@@ -128,5 +141,23 @@ public class DataFormHeaderButton extends JQMButton implements IDisplayData, IGr
 	public void notifyLastNewValueWasChange(Object oldVal, Object newVal)
 	{
 		// ignore
+	}
+
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#needEntireState()
+	 */
+	@Override
+	public boolean needEntireState()
+	{
+		return gc.isDisplaysTags();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#setTagResolver(com.servoy.j2db.util.ITagResolver)
+	 */
+	@Override
+	public void setTagResolver(ITagResolver resolver)
+	{
+		tagResolver = resolver;
 	}
 }

@@ -54,8 +54,12 @@ public class GraphicalComponent extends Component
 		return this.groupID;
 	}-*/;
 
+	public final native boolean isDisplaysTags() /*-{
+		return this.displaysTags ? this.displaysTags : false;
+	}-*/;
+
 	public final boolean isButton()
 	{
-		return "button".equals(getViewType());
+		return "button".equals(getViewType()); //$NON-NLS-1$
 	}
 }

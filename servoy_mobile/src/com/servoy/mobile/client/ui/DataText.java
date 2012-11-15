@@ -18,6 +18,7 @@
 package com.servoy.mobile.client.ui;
 
 import com.google.gwt.user.client.ui.HasText;
+import com.servoy.j2db.util.ITagResolver;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
@@ -93,4 +94,21 @@ public class DataText implements IDisplayData
 		// ignore
 	}
 
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#needEntireState()
+	 */
+	@Override
+	public boolean needEntireState()
+	{
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#setTagResolver(com.servoy.j2db.util.ITagResolver)
+	 */
+	@Override
+	public void setTagResolver(ITagResolver resolver)
+	{
+		// TODO Auto-generated method stub
+	}
 }

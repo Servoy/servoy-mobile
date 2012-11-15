@@ -26,7 +26,7 @@ import com.servoy.mobile.client.util.Utils;
 
 /**
  * This adapter is a kind of model between the display(s) and the state.
- * 
+ *
  * @author gboros
  */
 public class DisplaysAdapter implements IDataAdapter, IEditListener
@@ -47,6 +47,7 @@ public class DisplaysAdapter implements IDataAdapter, IEditListener
 	public void addDisplay(IDisplayData display)
 	{
 		displays.add(display);
+		if(display.needEntireState()) display.setTagResolver(dal);
 	}
 
 	/*
@@ -58,7 +59,10 @@ public class DisplaysAdapter implements IDataAdapter, IEditListener
 		this.record = record;
 		Object value = dal.getRecordValue(record, dataproviderID);
 		for (IDisplayData d : displays)
-			d.setValueObject(value);
+		{
+			if(d.getDataProviderID() != null || d.needEntireState())
+				d.setValueObject(value);
+		}
 	}
 
 	/*

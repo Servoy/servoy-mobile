@@ -17,6 +17,8 @@
 
 package com.servoy.mobile.client.ui;
 
+import com.servoy.j2db.util.ITagResolver;
+import com.servoy.j2db.util.TagParser;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
@@ -29,6 +31,7 @@ import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 public class DataFormHeader extends JQMHeader implements IDisplayData
 {
 	private final GraphicalComponent gc;
+	private ITagResolver tagResolver;
 
 	/**
 	 * @param text
@@ -64,7 +67,17 @@ public class DataFormHeader extends JQMHeader implements IDisplayData
 	@Override
 	public void setValueObject(Object data)
 	{
-		setText(data != null ? data.toString() : ""); //$NON-NLS-1$
+		String txt;
+		if(gc.isDisplaysTags() && gc.getDataProviderID() == null)
+		{
+			txt = TagParser.processTags(gc.getText(), tagResolver, null);
+		}
+		else
+		{
+			txt = data != null ? data.toString() : ""; //$NON-NLS-1$
+		}
+
+		setText(txt);
 	}
 
 	/*
@@ -94,4 +107,21 @@ public class DataFormHeader extends JQMHeader implements IDisplayData
 		// ignore
 	}
 
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#needEntireState()
+	 */
+	@Override
+	public boolean needEntireState()
+	{
+		return gc.isDisplaysTags();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#setTagResolver(com.servoy.j2db.util.ITagResolver)
+	 */
+	@Override
+	public void setTagResolver(ITagResolver resolver)
+	{
+		tagResolver = resolver;
+	}
 }

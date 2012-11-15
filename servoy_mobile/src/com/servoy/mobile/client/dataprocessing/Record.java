@@ -75,7 +75,12 @@ public class Record extends Scope implements IJSRecord
 	@Override
 	public Object getValue(String dataProviderID)
 	{
-		if ("foundset".equals(dataProviderID)) return parent;
+		if(dataProviderID == null || parent == null) return null;
+		if ("foundset".equals(dataProviderID)) return parent; //$NON-NLS-1$
+		if ("selectedIndex".equals(dataProviderID)) return Integer.valueOf(parent.getSelectedIndex() + 1); //$NON-NLS-1$
+		if ("maxRecordIndex".equals(dataProviderID) || "lazyMaxRecordIndex".equals(dataProviderID)) return Integer.valueOf(parent.getSize()); //$NON-NLS-1$ //$NON-NLS-2$
+		if ("currentRecordIndex".equals(dataProviderID)) return new Integer(parent.getRecordIndex(this) + 1); //$NON-NLS-1$
+
 		RowDescription rd = getRowDescription();
 		if (rd == null) return null;
 		int type = getVariableType(dataProviderID);
@@ -253,7 +258,7 @@ public class Record extends Scope implements IJSRecord
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.j2db.scripting.api.IJSRecord#getChangedData()
 	 */
 	@Override
@@ -265,7 +270,7 @@ public class Record extends Scope implements IJSRecord
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.j2db.scripting.api.IJSRecord#getException()
 	 */
 	@Override
@@ -277,7 +282,7 @@ public class Record extends Scope implements IJSRecord
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.j2db.scripting.api.IJSRecord#getFoundset()
 	 */
 	@Override
@@ -288,7 +293,7 @@ public class Record extends Scope implements IJSRecord
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.j2db.scripting.api.IJSRecord#getPKs()
 	 */
 	@Override
@@ -301,7 +306,7 @@ public class Record extends Scope implements IJSRecord
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.j2db.scripting.api.IJSRecord#hasChangedData()
 	 */
 	@Override
@@ -313,7 +318,7 @@ public class Record extends Scope implements IJSRecord
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.j2db.scripting.api.IJSRecord#isEditing()
 	 */
 	@Override
@@ -325,7 +330,7 @@ public class Record extends Scope implements IJSRecord
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.j2db.scripting.api.IJSRecord#isNew()
 	 */
 	@Override
@@ -337,7 +342,7 @@ public class Record extends Scope implements IJSRecord
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.j2db.scripting.api.IJSRecord#revertChanges()
 	 */
 	@Override

@@ -21,6 +21,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.servoy.j2db.scripting.api.IJSEvent;
+import com.servoy.j2db.util.ITagResolver;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.persistence.Field;
@@ -29,7 +30,7 @@ import com.sksamuel.jqm4gwt.form.elements.JQMText;
 
 /**
  * Text field UI
- * 
+ *
  * @author gboros
  */
 public class DataTextField extends JQMText implements IDisplayData, ISupportDataText, IFieldComponent
@@ -148,5 +149,23 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportData
 	public void notifyLastNewValueWasChange(Object oldVal, Object newVal)
 	{
 		if (changeCommand != null) executor.fireEventCommand(IJSEvent.DATACHANGE, changeCommand, DataTextField.this, null);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#needEntireState()
+	 */
+	@Override
+	public boolean needEntireState()
+	{
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#setTagResolver(com.servoy.j2db.util.ITagResolver)
+	 */
+	@Override
+	public void setTagResolver(ITagResolver resolver)
+	{
+		// TODO Auto-generated method stub
 	}
 }

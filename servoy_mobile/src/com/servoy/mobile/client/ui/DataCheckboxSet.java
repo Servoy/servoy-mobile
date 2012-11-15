@@ -25,6 +25,7 @@ import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.servoy.j2db.scripting.api.IJSEvent;
+import com.servoy.j2db.util.ITagResolver;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.dto.ValueListDescription;
@@ -36,7 +37,7 @@ import com.sksamuel.jqm4gwt.form.elements.JQMCheckset;
 
 /**
  * Checkbox set UI
- * 
+ *
  * @author gboros
  */
 public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IFieldComponent, ISupportDataText
@@ -222,5 +223,23 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 	public IDisplayData getDataTextDisplay()
 	{
 		return dataText;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#needEntireState()
+	 */
+	@Override
+	public boolean needEntireState()
+	{
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#setTagResolver(com.servoy.j2db.util.ITagResolver)
+	 */
+	@Override
+	public void setTagResolver(ITagResolver resolver)
+	{
+		// TODO Auto-generated method stub
 	}
 }

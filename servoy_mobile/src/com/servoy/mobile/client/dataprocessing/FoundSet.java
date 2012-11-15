@@ -32,7 +32,7 @@ import com.servoy.mobile.client.util.Utils;
  * The mobile foundset
  * @author jblok
  */
-public class FoundSet implements Exportable, IJSFoundSet //  extends Scope if we support aggregates on foundset, then we have to drop Exportable 
+public class FoundSet implements Exportable, IJSFoundSet //  extends Scope if we support aggregates on foundset, then we have to drop Exportable
 {
 	private final FoundSetManager foundSetManager;
 	private final FoundSetDescription foundSetDescription;
@@ -78,6 +78,11 @@ public class FoundSet implements Exportable, IJSFoundSet //  extends Scope if we
 	public int getSize()
 	{
 		return foundSetDescription.getRecords().length();
+	}
+
+	public int getSelectedIndex()
+	{
+		return selectedIndex;
 	}
 
 	@Export
@@ -146,6 +151,11 @@ public class FoundSet implements Exportable, IJSFoundSet //  extends Scope if we
 			}
 		}
 		return retval;
+	}
+
+	public int getRecordIndex(Record record)
+	{
+		return records.indexOf(record);
 	}
 
 	public FoundSetManager getFoundSetManager()

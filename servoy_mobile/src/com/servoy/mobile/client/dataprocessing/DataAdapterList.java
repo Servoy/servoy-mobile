@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
+import com.servoy.j2db.util.ITagResolver;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.scripting.FormScope;
@@ -30,10 +31,10 @@ import com.servoy.mobile.client.scripting.ModificationEvent;
 
 /**
  * This class encapsulates all the dataproviders for a form page, it does the creation and setup of dataAdapters.
- * 
+ *
  * @author gboros
  */
-public class DataAdapterList implements IModificationListener
+public class DataAdapterList implements IModificationListener, ITagResolver
 {
 	private final MobileClient application;
 	private final FormController formController;
@@ -57,21 +58,19 @@ public class DataAdapterList implements IModificationListener
 		{
 			IDisplayData displayData = (IDisplayData)obj;
 			String dataproviderID = displayData.getDataProviderID();
-			if (dataproviderID != null)
+
+			IDataAdapter dataAdapter = dataAdapters.get(dataproviderID);
+			if (dataAdapter == null)
 			{
-				IDataAdapter dataAdapter = dataAdapters.get(dataproviderID);
-				if (dataAdapter == null)
-				{
-					dataAdapter = new DisplaysAdapter(application, this, dataproviderID);
-					dataAdapters.put(dataproviderID, dataAdapter);
-				}
+				dataAdapter = new DisplaysAdapter(application, this, dataproviderID);
+				dataAdapters.put(dataproviderID, dataAdapter);
+			}
 
-				if (dataAdapter instanceof DisplaysAdapter) ((DisplaysAdapter)dataAdapter).addDisplay(displayData);
+			if (dataAdapter instanceof DisplaysAdapter) ((DisplaysAdapter)dataAdapter).addDisplay(displayData);
 
-				if (displayData.needEditListener() && dataAdapter instanceof IEditListener)
-				{
-					displayData.addEditListener((IEditListener)dataAdapter);
-				}
+			if (displayData.needEditListener() && dataAdapter instanceof IEditListener)
+			{
+				displayData.addEditListener((IEditListener)dataAdapter);
 			}
 		}
 		else if (obj instanceof IDisplayRelatedData)
@@ -144,5 +143,15 @@ public class DataAdapterList implements IModificationListener
 		if (this.record != null) this.record.removeModificationListener(this);
 		application.getGlobalScopeModificationDelegate().removeModificationListener(this);
 		formController.getFormScope().removeModificationListener(this);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.servoy.j2db.util.ITagResolver#getStringValue(java.lang.String)
+	 */
+	@Override
+	public String getStringValue(String name)
+	{
+		Object valueObj = getRecordValue(record, name);
+		return valueObj != null ? valueObj.toString() : null;
 	}
 }

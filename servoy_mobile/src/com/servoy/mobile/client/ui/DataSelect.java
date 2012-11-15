@@ -23,6 +23,7 @@ import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.servoy.j2db.scripting.api.IJSEvent;
+import com.servoy.j2db.util.ITagResolver;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.dto.ValueListDescription;
@@ -34,7 +35,7 @@ import com.sksamuel.jqm4gwt.form.elements.JQMSelect;
 
 /**
  * Combobox/select UI
- * 
+ *
  * @author gboros
  */
 public class DataSelect extends JQMSelect implements IDisplayData, IFieldComponent, ISupportDataText
@@ -179,5 +180,23 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 	public IDisplayData getDataTextDisplay()
 	{
 		return dataText;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#needEntireState()
+	 */
+	@Override
+	public boolean needEntireState()
+	{
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#setTagResolver(com.servoy.j2db.util.ITagResolver)
+	 */
+	@Override
+	public void setTagResolver(ITagResolver resolver)
+	{
+		// TODO Auto-generated method stub
 	}
 }

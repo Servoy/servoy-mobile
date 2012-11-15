@@ -20,6 +20,10 @@ package com.servoy.mobile.client.ui;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.servoy.j2db.scripting.api.IJSEvent;
+import com.servoy.j2db.util.ITagResolver;
+import com.servoy.j2db.util.TagParser;
+import com.servoy.mobile.client.dataprocessing.IDisplayData;
+import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.persistence.BaseComponent.MobileProperties;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.servoy.mobile.client.util.Utils;
@@ -28,16 +32,19 @@ import com.sksamuel.jqm4gwt.button.JQMButton;
 
 /**
  * Button UI
- * 
+ *
  * @author gboros
  */
-public class DataButton extends JQMButton implements IGraphicalComponent
+public class DataButton extends JQMButton implements IDisplayData, IGraphicalComponent
 {
+	private final GraphicalComponent gc;
+	private ITagResolver tagResolver;
 	private final Executor executor;
 
 	public DataButton(GraphicalComponent gc, Executor executor)
 	{
 		super(gc.getText());
+		this.gc = gc;
 		setTheme("b"); //$NON-NLS-1$
 		MobileProperties mp = gc.getMobileProperties();
 		if (mp != null)
@@ -61,5 +68,87 @@ public class DataButton extends JQMButton implements IGraphicalComponent
 				}
 			});
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#getDataProviderID()
+	 */
+	@Override
+	public String getDataProviderID()
+	{
+		return gc.getDataProviderID();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#getValueObject()
+	 */
+	@Override
+	public Object getValueObject()
+	{
+		return getText();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#setValueObject(java.lang.Object)
+	 */
+	@Override
+	public void setValueObject(Object data)
+	{
+		String txt;
+		if(gc.isDisplaysTags() && gc.getDataProviderID() == null)
+		{
+			txt = TagParser.processTags(gc.getText(), tagResolver, null);
+		}
+		else
+		{
+			txt = data != null ? data.toString() : ""; //$NON-NLS-1$
+		}
+
+		setText(txt);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#needEntireState()
+	 */
+	@Override
+	public boolean needEntireState()
+	{
+		return gc.isDisplaysTags();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#needEditListener()
+	 */
+	@Override
+	public boolean needEditListener()
+	{
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#addEditListener(com.servoy.mobile.client.dataprocessing.IEditListener)
+	 */
+	@Override
+	public void addEditListener(IEditListener editListener)
+	{
+		// ignore
+	}
+
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#notifyLastNewValueWasChange(java.lang.Object, java.lang.Object)
+	 */
+	@Override
+	public void notifyLastNewValueWasChange(Object oldVal, Object newVal)
+	{
+		// ignore
+	}
+
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#setTagResolver(com.servoy.j2db.util.ITagResolver)
+	 */
+	@Override
+	public void setTagResolver(ITagResolver resolver)
+	{
+		tagResolver = resolver;
 	}
 }

@@ -17,10 +17,12 @@
 
 package com.servoy.mobile.client.dataprocessing;
 
+import com.servoy.j2db.util.ITagResolver;
+
 
 /**
  * Convenient interface to tie a implementing gwt component easily to a dataAdapter
- * 
+ *
  * @author gboros
  */
 public interface IDisplayData
@@ -31,9 +33,13 @@ public interface IDisplayData
 
 	public void setValueObject(Object data);
 
+	public boolean needEntireState();
+
 	public boolean needEditListener();
 
 	public void addEditListener(IEditListener editListener);
 
 	public void notifyLastNewValueWasChange(Object oldVal, Object newVal);
+
+	public void setTagResolver(ITagResolver resolver);
 }
