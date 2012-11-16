@@ -77,7 +77,7 @@ public class Record extends Scope implements IJSRecord
 	{
 		if(dataProviderID == null || parent == null) return null;
 		if ("foundset".equals(dataProviderID)) return parent; //$NON-NLS-1$
-		if ("selectedIndex".equals(dataProviderID)) return Integer.valueOf(parent.getSelectedIndex() + 1); //$NON-NLS-1$
+		if ("selectedIndex".equals(dataProviderID)) return Integer.valueOf(parent.jsFunction_getSelectedIndex()); //$NON-NLS-1$
 		if ("maxRecordIndex".equals(dataProviderID) || "lazyMaxRecordIndex".equals(dataProviderID)) return Integer.valueOf(parent.getSize()); //$NON-NLS-1$ //$NON-NLS-2$
 		if ("currentRecordIndex".equals(dataProviderID)) return new Integer(parent.getRecordIndex(this) + 1); //$NON-NLS-1$
 
