@@ -21,6 +21,8 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.servoy.j2db.scripting.api.IJSEvent;
+import com.servoy.j2db.util.ITagResolver;
+import com.servoy.j2db.util.TagParser;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.dataprocessing.DataAdapterList;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
@@ -141,7 +143,7 @@ public class FormList extends JQMList implements IDisplayRelatedData
 		int listWidgetCount = 0;
 
 		dpValue = dal.getRecordValue(null, listItemHeaderDP);
-		if (dpValue == null) dpValue = listItemStaticHeader;
+		if (dpValue == null) dpValue = TagParser.processTags(listItemStaticHeader, dal, null);
 		if (dpValue != null)
 		{
 			addDivider(dpValue.toString());
@@ -151,9 +153,10 @@ public class FormList extends JQMList implements IDisplayRelatedData
 		for (int i = 0; i < foundsetSize; i++)
 		{
 			listItemRecord = foundset.getRecord(i);
+			listItemTagResolver.setRecord(listItemRecord);
 
 			dpValue = dal.getRecordValue(listItemRecord, listItemTextDP);
-			if (dpValue == null) dpValue = listItemStaticText;
+			if (dpValue == null) dpValue = TagParser.processTags(listItemStaticText, listItemTagResolver, null);
 			listItem = addItem(listWidgetCount, dpValue != null ? dpValue.toString() : ""); //$NON-NLS-1$
 			listWidgetCount++;
 
@@ -176,10 +179,33 @@ public class FormList extends JQMList implements IDisplayRelatedData
 			});
 
 			dpValue = dal.getRecordValue(listItemRecord, listItemSubtextDP);
-			if (dpValue == null) dpValue = listItemStaticSubtext;
+			if (dpValue == null) dpValue = TagParser.processTags(listItemStaticSubtext, listItemTagResolver, null);
 			if (dpValue != null) listItem.addText(dpValue.toString());
 
 			if(listItemDataIcon != null) listItem.getElement().setAttribute("data-icon", listItemDataIcon); //$NON-NLS-1$
 		}
 	}
+
+	class ListItemTagResolver implements ITagResolver
+	{
+
+		Record record;
+
+		void setRecord(Record rec)
+		{
+			record = rec;
+		}
+
+		/* (non-Javadoc)
+		 * @see com.servoy.j2db.util.ITagResolver#getStringValue(java.lang.String)
+		 */
+		@Override
+		public String getStringValue(String name)
+		{
+			Object valueObj = dal.getRecordValue(record, name);
+			return valueObj != null ? valueObj.toString() : null;
+		}
+	}
+
+	private final ListItemTagResolver listItemTagResolver = new ListItemTagResolver();
 }
