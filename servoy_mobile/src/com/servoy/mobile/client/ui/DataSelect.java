@@ -27,6 +27,7 @@ import com.servoy.j2db.util.ITagResolver;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
+import com.servoy.mobile.client.dataprocessing.IEditListenerSubject;
 import com.servoy.mobile.client.dto.ValueListDescription;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
@@ -39,7 +40,7 @@ import com.sksamuel.jqm4gwt.form.elements.JQMSelect;
  *
  * @author gboros
  */
-public class DataSelect extends JQMSelect implements IDisplayData, IFieldComponent, ISupportDataText
+public class DataSelect extends JQMSelect implements IDisplayData, IFieldComponent, ISupportDataText, IEditListenerSubject
 {
 	private final Field field;
 	private final ValueListDescription valuelist;
@@ -109,19 +110,10 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 		}
 	}
 
-	/*
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#needEditListener()
-	 */
-	@Override
-	public boolean needEditListener()
-	{
-		return true;
-	}
-
 	private EditProvider editProvider;
 
 	/*
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#addEditListener(com.servoy.mobile.client.dataprocessing.IEditListener)
+	 * @see com.servoy.mobile.client.dataprocessing.IEditListenerSubject#addEditListener(com.servoy.mobile.client.dataprocessing.IEditListener)
 	 */
 	@Override
 	public void addEditListener(IEditListener editListener)

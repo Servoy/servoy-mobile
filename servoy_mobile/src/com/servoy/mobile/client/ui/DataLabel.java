@@ -21,7 +21,6 @@ import com.servoy.j2db.util.ITagResolver;
 import com.servoy.j2db.util.TagParser;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
-import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.sksamuel.jqm4gwt.html.Heading;
 
@@ -79,24 +78,6 @@ public class DataLabel extends Heading implements IDisplayData
 	public String getDataProviderID()
 	{
 		return gc.getDataProviderID();
-	}
-
-	/*
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#needEditListener()
-	 */
-	@Override
-	public boolean needEditListener()
-	{
-		return false;
-	}
-
-	/*
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#addEditListener(com.servoy.mobile.client.dataprocessing.IEditListener)
-	 */
-	@Override
-	public void addEditListener(IEditListener editListener)
-	{
-		// ignore
 	}
 
 	/*

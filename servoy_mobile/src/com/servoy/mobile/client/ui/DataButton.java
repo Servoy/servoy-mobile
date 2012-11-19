@@ -24,7 +24,6 @@ import com.servoy.j2db.util.ITagResolver;
 import com.servoy.j2db.util.TagParser;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
-import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.persistence.BaseComponent.MobileProperties;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.servoy.mobile.client.util.Utils;
@@ -125,28 +124,6 @@ public class DataButton extends JQMButton implements IDisplayData, IGraphicalCom
 	public boolean needEntireState()
 	{
 		return gc.isDisplaysTags();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#needEditListener()
-	 */
-	@Override
-	public boolean needEditListener()
-	{
-		return false;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#addEditListener(com.servoy.mobile.client.dataprocessing.IEditListener)
-	 */
-	@Override
-	public void addEditListener(IEditListener editListener)
-	{
-		// ignore
 	}
 
 	/*

@@ -17,25 +17,14 @@
 
 package com.servoy.mobile.client.dataprocessing;
 
-import com.servoy.j2db.util.ITagResolver;
 
 
 /**
- * Convenient interface to tie a implementing gwt component easily to a dataAdapter
+ * Interface for mobile UI elements that support edit listeners
  *
- * @author gboros
+ * @author rgansevles
  */
-public interface IDisplayData
+public interface IEditListenerSubject
 {
-	public String getDataProviderID();
-
-	public Object getValueObject();
-
-	public void setValueObject(Object data);
-
-	public boolean needEntireState();
-
-	public void notifyLastNewValueWasChange(Object oldVal, Object newVal);
-
-	public void setTagResolver(ITagResolver resolver);
+	public void addEditListener(IEditListener editListener);
 }

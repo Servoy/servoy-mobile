@@ -68,9 +68,9 @@ public class DataAdapterList implements IModificationListener, ITagResolver
 
 			if (dataAdapter instanceof DisplaysAdapter) ((DisplaysAdapter)dataAdapter).addDisplay(displayData);
 
-			if (displayData.needEditListener() && dataAdapter instanceof IEditListener)
+			if (displayData instanceof IEditListenerSubject && dataAdapter instanceof IEditListener)
 			{
-				displayData.addEditListener((IEditListener)dataAdapter);
+				((IEditListenerSubject)displayData).addEditListener((IEditListener)dataAdapter);
 			}
 		}
 		else if (obj instanceof IDisplayRelatedData)
@@ -145,7 +145,9 @@ public class DataAdapterList implements IModificationListener, ITagResolver
 		formController.getFormScope().removeModificationListener(this);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.j2db.util.ITagResolver#getStringValue(java.lang.String)
 	 */
 	@Override
