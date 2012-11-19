@@ -19,6 +19,7 @@ package com.servoy.mobile.client.ui;
 
 import com.servoy.j2db.util.ITagResolver;
 import com.servoy.j2db.util.TagParser;
+import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
@@ -33,11 +34,14 @@ public class DataLabel extends Heading implements IDisplayData
 {
 	private final GraphicalComponent gc;
 	private ITagResolver tagResolver;
+	private final MobileClient application;
 
-	public DataLabel(GraphicalComponent gc)
+	public DataLabel(GraphicalComponent gc, MobileClient application)
 	{
-		super(gc.getMobileProperties() != null ? gc.getMobileProperties().getHeaderSize() : 4, gc.getText() != null ? gc.getText() : ""); //$NON-NLS-1$
+		super(gc.getMobileProperties() != null ? gc.getMobileProperties().getHeaderSize() : 4, application.getI18nProvider().getI18NMessageIfPrefixed(
+			gc.getText() != null ? gc.getText() : "")); //$NON-NLS-1$
 		this.gc = gc;
+		this.application = application;
 	}
 
 	/*
@@ -56,9 +60,9 @@ public class DataLabel extends Heading implements IDisplayData
 	public void setValueObject(Object data)
 	{
 		String txt;
-		if(gc.isDisplaysTags() && gc.getDataProviderID() == null)
+		if (gc.getDataProviderID() == null)
 		{
-			txt = TagParser.processTags(gc.getText(), tagResolver, null);
+			txt = TagParser.processTags(gc.getText(), tagResolver, application.getI18nProvider());
 		}
 		else
 		{
@@ -104,7 +108,9 @@ public class DataLabel extends Heading implements IDisplayData
 		// ignore
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#needEntireState()
 	 */
 	@Override
@@ -113,7 +119,9 @@ public class DataLabel extends Heading implements IDisplayData
 		return gc.isDisplaysTags();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#setTagResolver(com.servoy.j2db.util.ITagResolver)
 	 */
 	@Override

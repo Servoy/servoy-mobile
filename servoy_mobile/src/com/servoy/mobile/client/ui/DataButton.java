@@ -22,6 +22,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.servoy.j2db.scripting.api.IJSEvent;
 import com.servoy.j2db.util.ITagResolver;
 import com.servoy.j2db.util.TagParser;
+import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.persistence.BaseComponent.MobileProperties;
@@ -40,10 +41,11 @@ public class DataButton extends JQMButton implements IDisplayData, IGraphicalCom
 	private final GraphicalComponent gc;
 	private ITagResolver tagResolver;
 	private final Executor executor;
+	private final MobileClient application;
 
-	public DataButton(GraphicalComponent gc, Executor executor)
+	public DataButton(GraphicalComponent gc, Executor executor, MobileClient application)
 	{
-		super(gc.getText());
+		super(application.getI18nProvider().getI18NMessageIfPrefixed(gc.getText() != null ? gc.getText() : ""));
 		this.gc = gc;
 		setTheme("b"); //$NON-NLS-1$
 		MobileProperties mp = gc.getMobileProperties();
@@ -53,6 +55,7 @@ public class DataButton extends JQMButton implements IDisplayData, IGraphicalCom
 			if (dataIcon != null) setIcon(dataIcon);
 		}
 		this.executor = executor;
+		this.application = application;
 	}
 
 	public void setActionCommand(final String command)
@@ -70,7 +73,9 @@ public class DataButton extends JQMButton implements IDisplayData, IGraphicalCom
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#getDataProviderID()
 	 */
 	@Override
@@ -79,7 +84,9 @@ public class DataButton extends JQMButton implements IDisplayData, IGraphicalCom
 		return gc.getDataProviderID();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#getValueObject()
 	 */
 	@Override
@@ -88,16 +95,18 @@ public class DataButton extends JQMButton implements IDisplayData, IGraphicalCom
 		return getText();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#setValueObject(java.lang.Object)
 	 */
 	@Override
 	public void setValueObject(Object data)
 	{
 		String txt;
-		if(gc.isDisplaysTags() && gc.getDataProviderID() == null)
+		if (gc.getDataProviderID() == null)
 		{
-			txt = TagParser.processTags(gc.getText(), tagResolver, null);
+			txt = TagParser.processTags(gc.getText(), tagResolver, application.getI18nProvider());
 		}
 		else
 		{
@@ -107,7 +116,9 @@ public class DataButton extends JQMButton implements IDisplayData, IGraphicalCom
 		setText(txt);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#needEntireState()
 	 */
 	@Override
@@ -116,7 +127,9 @@ public class DataButton extends JQMButton implements IDisplayData, IGraphicalCom
 		return gc.isDisplaysTags();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#needEditListener()
 	 */
 	@Override
@@ -125,7 +138,9 @@ public class DataButton extends JQMButton implements IDisplayData, IGraphicalCom
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#addEditListener(com.servoy.mobile.client.dataprocessing.IEditListener)
 	 */
 	@Override
@@ -134,7 +149,9 @@ public class DataButton extends JQMButton implements IDisplayData, IGraphicalCom
 		// ignore
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#notifyLastNewValueWasChange(java.lang.Object, java.lang.Object)
 	 */
 	@Override
@@ -143,7 +160,9 @@ public class DataButton extends JQMButton implements IDisplayData, IGraphicalCom
 		// ignore
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#setTagResolver(com.servoy.j2db.util.ITagResolver)
 	 */
 	@Override

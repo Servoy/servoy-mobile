@@ -24,6 +24,7 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.Window;
+import com.servoy.j2db.util.I18NProvider;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.dataprocessing.FoundSetManager;
 import com.servoy.mobile.client.dataprocessing.OfflineDataProxy;
@@ -58,6 +59,7 @@ public class MobileClient implements EntryPoint
 	private OfflineDataProxy offlineDataProxy;
 	private FormManager formManager;
 	private Solution solution;
+	private I18NProvider i18nProvider;
 
 	private final GlobalScopeModificationDelegate globalScopeModificationDelegate = new GlobalScopeModificationDelegate();
 
@@ -77,6 +79,7 @@ public class MobileClient implements EntryPoint
 
 
 		solution = createSolution();
+		i18nProvider = new SolutionI18nProvider(solution, getLocale());
 		foundSetManager = new FoundSetManager(this);
 		offlineDataProxy = new OfflineDataProxy(foundSetManager, getServerURL());
 		formManager = new FormManager(this);
@@ -289,6 +292,11 @@ public class MobileClient implements EntryPoint
 		}
 	}-*/;
 
+	public final native String getLocale()
+	/*-{
+		return $wnd.navigator.language;
+	}-*/;
+
 	public I18NMessages getMessages()
 	{
 		return messages;
@@ -320,6 +328,11 @@ public class MobileClient implements EntryPoint
 	public GlobalScopeModificationDelegate getGlobalScopeModificationDelegate()
 	{
 		return globalScopeModificationDelegate;
+	}
+
+	public I18NProvider getI18nProvider()
+	{
+		return i18nProvider;
 	}
 
 	private native void initGlobalScope(String scopeName, GlobalScope formScope)

@@ -79,6 +79,11 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 		return scope;
 	}
 
+	public MobileClient getApplication()
+	{
+		return mc;
+	}
+
 	public void cleanup()
 	{
 		formDisplay.getDisplayPage().removeFromParent();

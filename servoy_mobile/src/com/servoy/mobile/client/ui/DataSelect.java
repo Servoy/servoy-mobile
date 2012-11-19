@@ -24,6 +24,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.servoy.j2db.scripting.api.IJSEvent;
 import com.servoy.j2db.util.ITagResolver;
+import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.dto.ValueListDescription;
@@ -43,12 +44,14 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 	private final Field field;
 	private final ValueListDescription valuelist;
 	private final Executor executor;
+	private final MobileClient application;
 
-	public DataSelect(Field field, ValueListDescription valuelist, Executor executor)
+	public DataSelect(Field field, ValueListDescription valuelist, Executor executor, MobileClient application)
 	{
 		this.field = field;
 		this.valuelist = valuelist;
 		this.executor = executor;
+		this.application = application;
 
 		setText(field.getText());
 		if (valuelist != null)
@@ -170,7 +173,7 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 	@Override
 	public void setDataTextComponent(GraphicalComponent component)
 	{
-		if (component != null) dataText = new DataText(this, component);
+		if (component != null) dataText = new DataText(this, component, application);
 	}
 
 	/*
@@ -182,7 +185,9 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 		return dataText;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#needEntireState()
 	 */
 	@Override
@@ -191,7 +196,9 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#setTagResolver(com.servoy.j2db.util.ITagResolver)
 	 */
 	@Override

@@ -22,6 +22,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.servoy.j2db.scripting.api.IJSEvent;
 import com.servoy.j2db.util.ITagResolver;
 import com.servoy.j2db.util.TagParser;
+import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.persistence.BaseComponent.MobileProperties;
@@ -43,10 +44,11 @@ public class DataFormHeaderButton extends JQMButton implements IDisplayData, IGr
 	private final int orientation;
 	private final Executor executor;
 	private ITagResolver tagResolver;
+	private final MobileClient application;
 
-	public DataFormHeaderButton(GraphicalComponent gc, int orientation, Executor executor)
+	public DataFormHeaderButton(GraphicalComponent gc, int orientation, Executor executor, MobileClient application)
 	{
-		super(gc.getText() != null ? gc.getText() : ""); //$NON-NLS-1$
+		super(application.getI18nProvider().getI18NMessageIfPrefixed(gc.getText() != null ? gc.getText() : "")); //$NON-NLS-1$
 		MobileProperties mp = gc.getMobileProperties();
 		if (mp != null)
 		{
@@ -56,6 +58,7 @@ public class DataFormHeaderButton extends JQMButton implements IDisplayData, IGr
 		this.gc = gc;
 		this.orientation = orientation;
 		this.executor = executor;
+		this.application = application;
 	}
 
 	public void setActionCommand(final String command)
@@ -98,9 +101,9 @@ public class DataFormHeaderButton extends JQMButton implements IDisplayData, IGr
 	public void setValueObject(Object data)
 	{
 		String txt;
-		if(gc.isDisplaysTags() && gc.getDataProviderID() == null)
+		if (gc.getDataProviderID() == null)
 		{
-			txt = TagParser.processTags(gc.getText(), tagResolver, null);
+			txt = TagParser.processTags(gc.getText(), tagResolver, application.getI18nProvider());
 		}
 		else
 		{
@@ -143,7 +146,9 @@ public class DataFormHeaderButton extends JQMButton implements IDisplayData, IGr
 		// ignore
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#needEntireState()
 	 */
 	@Override
@@ -152,7 +157,9 @@ public class DataFormHeaderButton extends JQMButton implements IDisplayData, IGr
 		return gc.isDisplaysTags();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#setTagResolver(com.servoy.j2db.util.ITagResolver)
 	 */
 	@Override

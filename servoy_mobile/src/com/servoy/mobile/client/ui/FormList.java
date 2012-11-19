@@ -129,8 +129,8 @@ public class FormList extends JQMList implements IDisplayRelatedData
 	}
 
 	protected native void forceRefresh(String id) /*-{
-		$wnd.$("#" + id).listview('refresh', true);
-	}-*/;
+													$wnd.$("#" + id).listview('refresh', true);
+													}-*/;
 
 	private void createList(FoundSet foundset)
 	{
@@ -143,7 +143,14 @@ public class FormList extends JQMList implements IDisplayRelatedData
 		int listWidgetCount = 0;
 
 		dpValue = dal.getRecordValue(null, listItemHeaderDP);
-		if (dpValue == null) dpValue = TagParser.processTags(listItemStaticHeader, dal, null);
+		if (dpValue == null)
+		{
+			dpValue = TagParser.processTags(listItemStaticHeader, dal, formController.getApplication().getI18nProvider());
+			if (dpValue != null && dpValue.toString().startsWith("i18n:"))
+			{
+				dpValue = formController.getApplication().getI18nProvider().getI18NMessageIfPrefixed(listItemStaticHeader);
+			}
+		}
 		if (dpValue != null)
 		{
 			addDivider(dpValue.toString());
@@ -156,7 +163,14 @@ public class FormList extends JQMList implements IDisplayRelatedData
 			listItemTagResolver.setRecord(listItemRecord);
 
 			dpValue = dal.getRecordValue(listItemRecord, listItemTextDP);
-			if (dpValue == null) dpValue = TagParser.processTags(listItemStaticText, listItemTagResolver, null);
+			if (dpValue == null)
+			{
+				dpValue = TagParser.processTags(listItemStaticText, listItemTagResolver, formController.getApplication().getI18nProvider());
+				if (dpValue != null && dpValue.toString().startsWith("i18n:"))
+				{
+					dpValue = formController.getApplication().getI18nProvider().getI18NMessageIfPrefixed(listItemStaticText);
+				}
+			}
 			listItem = addItem(listWidgetCount, dpValue != null ? dpValue.toString() : ""); //$NON-NLS-1$
 			listWidgetCount++;
 
@@ -179,10 +193,17 @@ public class FormList extends JQMList implements IDisplayRelatedData
 			});
 
 			dpValue = dal.getRecordValue(listItemRecord, listItemSubtextDP);
-			if (dpValue == null) dpValue = TagParser.processTags(listItemStaticSubtext, listItemTagResolver, null);
+			if (dpValue == null)
+			{
+				dpValue = TagParser.processTags(listItemStaticSubtext, listItemTagResolver, formController.getApplication().getI18nProvider());
+				if (dpValue != null && dpValue.toString().startsWith("i18n:"))
+				{
+					dpValue = formController.getApplication().getI18nProvider().getI18NMessageIfPrefixed(listItemStaticSubtext);
+				}
+			}
 			if (dpValue != null) listItem.addText(dpValue.toString());
 
-			if(listItemDataIcon != null) listItem.getElement().setAttribute("data-icon", listItemDataIcon); //$NON-NLS-1$
+			if (listItemDataIcon != null) listItem.getElement().setAttribute("data-icon", listItemDataIcon); //$NON-NLS-1$
 		}
 	}
 
@@ -196,7 +217,9 @@ public class FormList extends JQMList implements IDisplayRelatedData
 			record = rec;
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see com.servoy.j2db.util.ITagResolver#getStringValue(java.lang.String)
 		 */
 		@Override

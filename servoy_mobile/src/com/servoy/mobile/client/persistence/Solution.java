@@ -62,6 +62,10 @@ public class Solution extends JavaScriptObject
 		return this.mustAuthenticate;
 	}-*/;
 
+	public final native String getI18nValue(String key) /*-{
+		return this.i18n[key];
+	}-*/;
+
 	@Export
 	public final Form getForm(String name)
 	{

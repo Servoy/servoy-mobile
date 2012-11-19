@@ -22,6 +22,7 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.servoy.j2db.scripting.api.IJSEvent;
 import com.servoy.j2db.util.ITagResolver;
+import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.persistence.Field;
@@ -37,11 +38,13 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportData
 {
 	protected final Field field;
 	protected final Executor executor;
+	private final MobileClient application;
 
-	public DataTextField(Field field, Executor executor)
+	public DataTextField(Field field, Executor executor, MobileClient application)
 	{
 		this.field = field;
 		this.executor = executor;
+		this.application = application;
 	}
 
 	/*
@@ -98,7 +101,7 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportData
 	@Override
 	public void setDataTextComponent(GraphicalComponent component)
 	{
-		if (component != null) dataText = new DataText(this, component);
+		if (component != null) dataText = new DataText(this, component, application);
 	}
 
 	/*
@@ -151,7 +154,9 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportData
 		if (changeCommand != null) executor.fireEventCommand(IJSEvent.DATACHANGE, changeCommand, DataTextField.this, null);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#needEntireState()
 	 */
 	@Override
@@ -160,7 +165,9 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportData
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#setTagResolver(com.servoy.j2db.util.ITagResolver)
 	 */
 	@Override

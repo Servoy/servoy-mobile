@@ -20,6 +20,7 @@ package com.servoy.mobile.client.ui;
 import com.google.gwt.user.client.ui.HasText;
 import com.servoy.j2db.util.ITagResolver;
 import com.servoy.j2db.util.TagParser;
+import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
@@ -33,12 +34,14 @@ public class DataText implements IDisplayData
 	private final GraphicalComponent textComponent;
 	private final HasText parentComponent;
 	private ITagResolver tagResolver;
+	private final MobileClient application;
 
-	public DataText(HasText parentComponent, GraphicalComponent textComponent)
+	public DataText(HasText parentComponent, GraphicalComponent textComponent, MobileClient application)
 	{
 		this.parentComponent = parentComponent;
 		this.textComponent = textComponent;
-		parentComponent.setText(textComponent.getText());
+		this.application = application;
+		parentComponent.setText(application.getI18nProvider().getI18NMessageIfPrefixed(textComponent.getText() != null ? textComponent.getText() : ""));
 	}
 
 	/*
@@ -66,9 +69,9 @@ public class DataText implements IDisplayData
 	public void setValueObject(Object data)
 	{
 		String txt;
-		if(textComponent.isDisplaysTags() && textComponent.getDataProviderID() == null)
+		if (textComponent.getDataProviderID() == null)
 		{
-			txt = TagParser.processTags(textComponent.getText(), tagResolver, null);
+			txt = TagParser.processTags(textComponent.getText(), tagResolver, application.getI18nProvider());
 		}
 		else
 		{
@@ -105,7 +108,9 @@ public class DataText implements IDisplayData
 		// ignore
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#needEntireState()
 	 */
 	@Override
@@ -114,7 +119,9 @@ public class DataText implements IDisplayData
 		return textComponent.isDisplaysTags();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#setTagResolver(com.servoy.j2db.util.ITagResolver)
 	 */
 	@Override
