@@ -21,8 +21,6 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
 
-import com.google.gwt.i18n.client.LocaleInfo;
-
 @Export
 public class JSI18N implements Exportable
 {
@@ -31,10 +29,10 @@ public class JSI18N implements Exportable
 		export(ExporterUtil.wrap(this));
 	}
 
-	public String getCurrentLanguage()
-	{
-		return LocaleInfo.getCurrentLocale().getLocaleName();
-	}
+	public native String getCurrentLanguage()
+	/*-{
+		return $wnd.navigator.language;
+	}-*/;
 
 	private native void export(Object object)
 	/*-{
