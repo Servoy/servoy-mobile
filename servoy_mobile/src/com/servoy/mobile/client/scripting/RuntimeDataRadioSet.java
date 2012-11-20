@@ -13,20 +13,23 @@
  You should have received a copy of the GNU Affero General Public License along
  with this program; if not, see http://www.gnu.org/licenses or write to the Free
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
- */
+*/
 
-package com.servoy.mobile.client.dataprocessing;
+package com.servoy.mobile.client.scripting;
 
-
+import com.servoy.mobile.client.MobileClient;
+import com.servoy.mobile.client.persistence.Field;
+import com.servoy.mobile.client.ui.DataRadioSet;
+import com.servoy.mobile.client.ui.Executor;
 
 /**
- * Convenient interface to tie a implementing gwt component easily to a dataAdapter
- *
  * @author gboros
+ *
  */
-public interface IDisplayData
+public class RuntimeDataRadioSet extends AbstractRuntimeFieldComponent
 {
-	public Object getValueObject();
-
-	public void setValueObject(Object data);
+	public RuntimeDataRadioSet(MobileClient application, Executor executor, DataRadioSet component, Field componentPersist)
+	{
+		super(application, executor, component, componentPersist);
+	}
 }

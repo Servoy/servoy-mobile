@@ -17,15 +17,12 @@
 
 package com.servoy.mobile.client.ui;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.servoy.j2db.scripting.api.IJSEvent;
-import com.servoy.j2db.util.ITagResolver;
-import com.servoy.j2db.util.TagParser;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.persistence.BaseComponent.MobileProperties;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
+import com.servoy.mobile.client.scripting.IRuntimeComponent;
+import com.servoy.mobile.client.scripting.RuntimeDataFormHeaderButton;
 import com.servoy.mobile.client.util.Utils;
 import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.button.JQMButton;
@@ -39,11 +36,8 @@ public class DataFormHeaderButton extends JQMButton implements IDisplayData, IGr
 	public static int ORIENTATION_LEFT = 0;
 	public static int ORIENTATION_RIGHT = 1;
 
-	private final GraphicalComponent gc;
 	private final int orientation;
-	private final Executor executor;
-	private ITagResolver tagResolver;
-	private final MobileClient application;
+	private final RuntimeDataFormHeaderButton scriptable;
 
 	public DataFormHeaderButton(GraphicalComponent gc, int orientation, Executor executor, MobileClient application)
 	{
@@ -54,34 +48,8 @@ public class DataFormHeaderButton extends JQMButton implements IDisplayData, IGr
 			DataIcon dataIcon = Utils.stringToDataIcon(mp.getDataIcon());
 			if (dataIcon != null) setIcon(dataIcon);
 		}
-		this.gc = gc;
 		this.orientation = orientation;
-		this.executor = executor;
-		this.application = application;
-	}
-
-	public void setActionCommand(final String command)
-	{
-		if (command != null)
-		{
-			addClickHandler(new ClickHandler()
-			{
-				@Override
-				public void onClick(ClickEvent event)
-				{
-					executor.fireEventCommand(IJSEvent.ACTION, command, DataFormHeaderButton.this, null);
-				}
-			});
-		}
-	}
-
-	/*
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#getDataProviderID()
-	 */
-	@Override
-	public String getDataProviderID()
-	{
-		return gc.getDataProviderID();
+		this.scriptable = new RuntimeDataFormHeaderButton(application, executor, this, gc);
 	}
 
 	/*
@@ -99,17 +67,7 @@ public class DataFormHeaderButton extends JQMButton implements IDisplayData, IGr
 	@Override
 	public void setValueObject(Object data)
 	{
-		String txt;
-		if (gc.getDataProviderID() == null)
-		{
-			txt = TagParser.processTags(gc.getText(), tagResolver, application.getI18nProvider());
-		}
-		else
-		{
-			txt = data != null ? data.toString() : ""; //$NON-NLS-1$
-		}
-
-		setText(txt);
+		scriptable.setText(data);
 	}
 
 	public int getOrientation()
@@ -117,34 +75,12 @@ public class DataFormHeaderButton extends JQMButton implements IDisplayData, IGr
 		return orientation;
 	}
 
-	/*
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#notifyLastNewValueWasChange(java.lang.Object, java.lang.Object)
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.scripting.IScriptableProvider#getScriptObject()
 	 */
 	@Override
-	public void notifyLastNewValueWasChange(Object oldVal, Object newVal)
+	public IRuntimeComponent getRuntimeComponent()
 	{
-		// ignore
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#needEntireState()
-	 */
-	@Override
-	public boolean needEntireState()
-	{
-		return gc.isDisplaysTags();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#setTagResolver(com.servoy.j2db.util.ITagResolver)
-	 */
-	@Override
-	public void setTagResolver(ITagResolver resolver)
-	{
-		tagResolver = resolver;
+		return scriptable;
 	}
 }

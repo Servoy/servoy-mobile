@@ -20,10 +20,6 @@ package com.servoy.mobile.client.ui;
 import org.timepedia.exporter.client.ExporterBaseActual.JsArrayObject;
 
 import com.google.gwt.core.client.JsArrayString;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.servoy.j2db.scripting.api.IJSEvent;
-import com.servoy.j2db.util.ITagResolver;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
@@ -31,6 +27,8 @@ import com.servoy.mobile.client.dataprocessing.IEditListenerSubject;
 import com.servoy.mobile.client.dto.ValueListDescription;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
+import com.servoy.mobile.client.scripting.IRuntimeComponent;
+import com.servoy.mobile.client.scripting.RuntimeDataRadioSet;
 import com.servoy.mobile.client.util.Utils;
 import com.sksamuel.jqm4gwt.form.elements.JQMRadioset;
 
@@ -43,17 +41,17 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 {
 	private static final int HORIZONTAL = 1;
 
-	private final Field field;
 	private final ValueListDescription valuelist;
 	private final Executor executor;
 	private final MobileClient application;
+	private final RuntimeDataRadioSet scriptable;
 
 	public DataRadioSet(Field field, ValueListDescription valuelist, Executor executor, MobileClient application)
 	{
-		this.field = field;
 		this.valuelist = valuelist;
 		this.executor = executor;
 		this.application = application;
+		this.scriptable = new RuntimeDataRadioSet(application, executor, this, field);
 
 		if (field.getMobileProperties() != null && field.getMobileProperties().getRadioStyle() == HORIZONTAL) setHorizontal();
 
@@ -64,15 +62,6 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 			for (int i = 0; i < displayValues.length(); i++)
 				addRadio(displayValues.get(i));
 		}
-	}
-
-	/*
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#getDataProviderID()
-	 */
-	@Override
-	public String getDataProviderID()
-	{
-		return field.getDataProviderID();
 	}
 
 	/*
@@ -148,37 +137,6 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 		}
 	}
 
-	public void setActionCommand(final String command)
-	{
-		if (command != null)
-		{
-			addClickHandler(new ClickHandler()
-			{
-				@Override
-				public void onClick(ClickEvent event)
-				{
-					executor.fireEventCommand(IJSEvent.ACTION, command, DataRadioSet.this, null);
-				}
-			});
-		}
-	}
-
-	private String changeCommand;
-
-	public void setChangeCommand(final String command)
-	{
-		this.changeCommand = command;
-	}
-
-	/*
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#notifyLastNewValueWasChange(java.lang.Object, java.lang.Object)
-	 */
-	@Override
-	public void notifyLastNewValueWasChange(Object oldVal, Object newVal)
-	{
-		if (changeCommand != null) executor.fireEventCommand(IJSEvent.DATACHANGE, changeCommand, DataRadioSet.this, null);
-	}
-
 	private DataText dataText;
 
 	/*
@@ -187,7 +145,7 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 	@Override
 	public void setDataTextComponent(GraphicalComponent component)
 	{
-		if (component != null) dataText = new DataText(this, component, application);
+		if (component != null) dataText = new DataText(this, component, executor, application);
 	}
 
 	/*
@@ -199,25 +157,12 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 		return dataText;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#needEntireState()
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.scripting.IScriptableProvider#getScriptObject()
 	 */
 	@Override
-	public boolean needEntireState()
+	public IRuntimeComponent getRuntimeComponent()
 	{
-		return false;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#setTagResolver(com.servoy.j2db.util.ITagResolver)
-	 */
-	@Override
-	public void setTagResolver(ITagResolver resolver)
-	{
-		// TODO Auto-generated method stub
+		return scriptable;
 	}
 }

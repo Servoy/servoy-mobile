@@ -17,11 +17,13 @@ package com.servoy.mobile.client.ui;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
-import com.servoy.j2db.util.ITagResolver;
-import com.servoy.j2db.util.TagParser;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
+import com.servoy.mobile.client.scripting.IRuntimeComponent;
+import com.servoy.mobile.client.scripting.RuntimeDataLabel;
 import com.sksamuel.jqm4gwt.html.Heading;
 
 /**
@@ -29,18 +31,15 @@ import com.sksamuel.jqm4gwt.html.Heading;
  *
  * @author gboros
  */
-public class DataLabel extends Heading implements IDisplayData
+public class DataLabel extends Heading implements IDisplayData, IGraphicalComponent
 {
-	private final GraphicalComponent gc;
-	private ITagResolver tagResolver;
-	private final MobileClient application;
+	private final RuntimeDataLabel scriptable;
 
-	public DataLabel(GraphicalComponent gc, MobileClient application)
+	public DataLabel(GraphicalComponent gc, Executor executor, MobileClient application)
 	{
 		super(gc.getMobileProperties() != null ? gc.getMobileProperties().getHeaderSize() : 4, application.getI18nProvider().getI18NMessageIfPrefixed(
 			gc.getText() != null ? gc.getText() : "")); //$NON-NLS-1$
-		this.gc = gc;
-		this.application = application;
+		this.scriptable = new RuntimeDataLabel(application, executor, this, gc);
 	}
 
 	/*
@@ -58,56 +57,25 @@ public class DataLabel extends Heading implements IDisplayData
 	@Override
 	public void setValueObject(Object data)
 	{
-		String txt;
-		if (gc.getDataProviderID() == null)
-		{
-			txt = TagParser.processTags(gc.getText(), tagResolver, application.getI18nProvider());
-		}
-		else
-		{
-			txt = data != null ? data.toString() : ""; //$NON-NLS-1$
-		}
-
-		setText(txt);
+		scriptable.setText(data);
 	}
 
-	/*
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#getDataProviderID()
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.scripting.IScriptableProvider#getScriptObject()
 	 */
 	@Override
-	public String getDataProviderID()
+	public IRuntimeComponent getRuntimeComponent()
 	{
-		return gc.getDataProviderID();
+		return scriptable;
 	}
 
-	/*
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#notifyLastNewValueWasChange(java.lang.Object, java.lang.Object)
+	/* (non-Javadoc)
+	 * @see com.google.gwt.event.dom.client.HasClickHandlers#addClickHandler(com.google.gwt.event.dom.client.ClickHandler)
 	 */
 	@Override
-	public void notifyLastNewValueWasChange(Object oldVal, Object newVal)
+	public HandlerRegistration addClickHandler(ClickHandler handler)
 	{
-		// ignore
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#needEntireState()
-	 */
-	@Override
-	public boolean needEntireState()
-	{
-		return gc.isDisplaysTags();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#setTagResolver(com.servoy.j2db.util.ITagResolver)
-	 */
-	@Override
-	public void setTagResolver(ITagResolver resolver)
-	{
-		tagResolver = resolver;
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

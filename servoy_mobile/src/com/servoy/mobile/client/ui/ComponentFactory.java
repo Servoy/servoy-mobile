@@ -30,10 +30,13 @@ import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.servoy.mobile.client.persistence.Tab;
 import com.servoy.mobile.client.persistence.TabPanel;
+import com.servoy.mobile.client.scripting.IRuntimeField;
+import com.servoy.mobile.client.scripting.IRuntimeComponent;
+import com.servoy.mobile.client.scripting.IRuntimeComponentProvider;
 
 /**
  * Create UI objects based on solution model objects
- * 
+ *
  * @author gboros
  */
 public class ComponentFactory
@@ -42,7 +45,7 @@ public class ComponentFactory
 	 * Create form display
 	 * @param solutionModel the solution model
 	 * @param form the solution model form to create the display for
-	 * 
+	 *
 	 * @return form display
 	 */
 	public static IFormDisplay createFormDisplay(MobileClient application, FormController formController)
@@ -75,13 +78,12 @@ public class ComponentFactory
 	 * Create component
 	 * @param solutionModel the solution model
 	 * @param component the solution model component to create UI for
-	 * 
+	 *
 	 * @return UI component
 	 */
 	public static Widget createComponent(MobileClient application, Component component, DataAdapterList dal, Executor executor)
 	{
 		Widget componentWidget = null;
-		String sizeProperty = null;
 		GraphicalComponent gc = component.isGraphicalComponent();
 		BaseComponent.MobileProperties mobileProperties;
 		if (gc != null)
@@ -92,7 +94,7 @@ public class ComponentFactory
 			{
 				if (mobileProperties.isHeaderText())
 				{
-					componentWidget = new DataFormHeader(gc, application);
+					componentWidget = new DataFormHeader(gc, executor, application);
 				}
 				else if (mobileProperties.isHeaderLeftButton())
 				{
@@ -112,12 +114,11 @@ public class ComponentFactory
 				}
 				else
 				{
-					componentWidget = new DataLabel(gc, application);
+					componentWidget = new DataLabel(gc, executor, application);
 				}
-				sizeProperty = gc.getSize();
 			}
 
-			if (componentWidget instanceof IGraphicalComponent) ((IGraphicalComponent)componentWidget).setActionCommand(gc.getActionMethodID());
+			if (componentWidget instanceof IRuntimeComponentProvider) ((IRuntimeComponentProvider)componentWidget).getRuntimeComponent().setActionCommand(gc.getActionMethodID());
 		}
 		else
 		{
@@ -158,14 +159,12 @@ public class ComponentFactory
 						break;
 				}
 
-				if (componentWidget instanceof IFieldComponent)
+				if (componentWidget instanceof IRuntimeComponentProvider)
 				{
-					IFieldComponent fieldComponent = (IFieldComponent)componentWidget;
-					fieldComponent.setActionCommand(field.getActionMethodID());
-					fieldComponent.setChangeCommand(field.getDataChangeMethodID());
+					IRuntimeComponent scriptable = ((IRuntimeComponentProvider)componentWidget).getRuntimeComponent();
+					scriptable.setActionCommand(field.getActionMethodID());
+					if(scriptable instanceof IRuntimeField) ((IRuntimeField)scriptable).setChangeCommand(field.getDataChangeMethodID());
 				}
-
-				sizeProperty = field.getSize();
 			}
 			else
 			{
@@ -183,17 +182,10 @@ public class ComponentFactory
 						String relationName = tab.getRelationName();
 
 						componentWidget = new FormList(formController, dal, application.getSolution().getRelation(relationName));
-						sizeProperty = tabPanel.getSize();
 					}
 				}
 			}
 		}
-
-//		if (sizeProperty != null)
-//		{
-//			int[] wh = Utils.splitAsIntegers(sizeProperty);
-//			if (wh != null && wh.length == 2) componentWidget.setPixelSize(wh[0], wh[1]);
-//		}
 
 		return componentWidget;
 	}

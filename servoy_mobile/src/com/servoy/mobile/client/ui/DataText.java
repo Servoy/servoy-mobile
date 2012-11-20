@@ -17,39 +17,32 @@
 
 package com.servoy.mobile.client.ui;
 
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.HasText;
-import com.servoy.j2db.util.ITagResolver;
-import com.servoy.j2db.util.TagParser;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
+import com.servoy.mobile.client.scripting.IRuntimeComponent;
+import com.servoy.mobile.client.scripting.RuntimeDataText;
 
 /**
  * @author gboros
  *
  */
-public class DataText implements IDisplayData
+public class DataText implements IDisplayData, IGraphicalComponent
 {
 	private final GraphicalComponent textComponent;
 	private final HasText parentComponent;
-	private ITagResolver tagResolver;
-	private final MobileClient application;
+	private final RuntimeDataText scriptable;
 
-	public DataText(HasText parentComponent, GraphicalComponent textComponent, MobileClient application)
+	public DataText(HasText parentComponent, GraphicalComponent textComponent, Executor executor, MobileClient application)
 	{
 		this.parentComponent = parentComponent;
 		this.textComponent = textComponent;
-		this.application = application;
 		parentComponent.setText(application.getI18nProvider().getI18NMessageIfPrefixed(textComponent.getText() != null ? textComponent.getText() : ""));
-	}
-
-	/*
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#getDataProviderID()
-	 */
-	@Override
-	public String getDataProviderID()
-	{
-		return textComponent.getDataProviderID();
+		this.scriptable = new RuntimeDataText(application, executor, this, textComponent);
 	}
 
 	/*
@@ -67,47 +60,51 @@ public class DataText implements IDisplayData
 	@Override
 	public void setValueObject(Object data)
 	{
-		String txt;
-		if (textComponent.getDataProviderID() == null)
-		{
-			txt = TagParser.processTags(textComponent.getText(), tagResolver, application.getI18nProvider());
-		}
-		else
-		{
-			txt = data != null ? data.toString() : ""; //$NON-NLS-1$
-		}
-
-		parentComponent.setText(txt);
+		scriptable.setText(data);
 	}
 
-	/*
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#notifyLastNewValueWasChange(java.lang.Object, java.lang.Object)
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.scripting.IScriptableProvider#getScriptObject()
 	 */
 	@Override
-	public void notifyLastNewValueWasChange(Object oldVal, Object newVal)
+	public IRuntimeComponent getRuntimeComponent()
+	{
+		return scriptable;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.ui.IGraphicalComponent#setText(java.lang.String)
+	 */
+	@Override
+	public void setText(String text)
+	{
+		parentComponent.setText(text);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.google.gwt.user.client.ui.HasText#getText()
+	 */
+	@Override
+	public String getText()
+	{
+		return parentComponent.getText();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.google.gwt.event.dom.client.HasClickHandlers#addClickHandler(com.google.gwt.event.dom.client.ClickHandler)
+	 */
+	@Override
+	public HandlerRegistration addClickHandler(ClickHandler handler)
+	{
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.google.gwt.event.shared.HasHandlers#fireEvent(com.google.gwt.event.shared.GwtEvent)
+	 */
+	@Override
+	public void fireEvent(GwtEvent<?> event)
 	{
 		// ignore
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#needEntireState()
-	 */
-	@Override
-	public boolean needEntireState()
-	{
-		return textComponent.isDisplaysTags();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#setTagResolver(com.servoy.j2db.util.ITagResolver)
-	 */
-	@Override
-	public void setTagResolver(ITagResolver resolver)
-	{
-		tagResolver = resolver;
 	}
 }

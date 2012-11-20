@@ -22,10 +22,6 @@ import java.util.List;
 
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.servoy.j2db.scripting.api.IJSEvent;
-import com.servoy.j2db.util.ITagResolver;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
@@ -33,6 +29,8 @@ import com.servoy.mobile.client.dataprocessing.IEditListenerSubject;
 import com.servoy.mobile.client.dto.ValueListDescription;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
+import com.servoy.mobile.client.scripting.IRuntimeComponent;
+import com.servoy.mobile.client.scripting.RuntimeDataCheckboxSet;
 import com.servoy.mobile.client.util.Utils;
 import com.sksamuel.jqm4gwt.form.elements.JQMCheckbox;
 import com.sksamuel.jqm4gwt.form.elements.JQMCheckset;
@@ -50,6 +48,7 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 	private final MobileClient application;
 
 	private final List<DataCheckboxSetItem> items = new ArrayList<DataCheckboxSetItem>();
+	private final RuntimeDataCheckboxSet scriptable;
 
 	public DataCheckboxSet(Field field, ValueListDescription valuelist, Executor executor, MobileClient application)
 	{
@@ -57,6 +56,8 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 		this.valuelist = valuelist;
 		this.executor = executor;
 		this.application = application;
+		this.scriptable = new RuntimeDataCheckboxSet(application, executor, this, field);
+
 		if (valuelist != null)
 		{
 			JsArrayString displayValues = valuelist.getDiplayValues();
@@ -73,15 +74,6 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 		{
 			items.add(new DataCheckboxSetItem(addCheck(field.getUUID(), field.getText()), null));
 		}
-	}
-
-	/*
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#getDataProviderID()
-	 */
-	@Override
-	public String getDataProviderID()
-	{
-		return field.getDataProviderID();
 	}
 
 	/*
@@ -157,28 +149,6 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 		}
 	}
 
-	public void setActionCommand(final String command)
-	{
-		if (command != null)
-		{
-			addClickHandler(new ClickHandler()
-			{
-				@Override
-				public void onClick(ClickEvent event)
-				{
-					executor.fireEventCommand(IJSEvent.ACTION, command, DataCheckboxSet.this, null);
-				}
-			});
-		}
-	}
-
-	private String changeCommand;
-
-	public void setChangeCommand(final String command)
-	{
-		this.changeCommand = command;
-	}
-
 	private class DataCheckboxSetItem
 	{
 		final JQMCheckbox checkbox;
@@ -191,15 +161,6 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 		}
 	}
 
-	/*
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#notifyLastNewValueWasChange(java.lang.Object, java.lang.Object)
-	 */
-	@Override
-	public void notifyLastNewValueWasChange(Object oldVal, Object newVal)
-	{
-		if (changeCommand != null) executor.fireEventCommand(IJSEvent.DATACHANGE, changeCommand, DataCheckboxSet.this, null);
-	}
-
 	private DataText dataText;
 
 	/*
@@ -208,7 +169,7 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 	@Override
 	public void setDataTextComponent(GraphicalComponent component)
 	{
-		if (component != null) dataText = new DataText(this, component, application);
+		if (component != null) dataText = new DataText(this, component, executor, application);
 	}
 
 	/*
@@ -220,25 +181,12 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 		return dataText;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#needEntireState()
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.scripting.IScriptableProvider#getScriptObject()
 	 */
 	@Override
-	public boolean needEntireState()
+	public IRuntimeComponent getRuntimeComponent()
 	{
-		return false;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#setTagResolver(com.servoy.j2db.util.ITagResolver)
-	 */
-	@Override
-	public void setTagResolver(ITagResolver resolver)
-	{
-		// TODO Auto-generated method stub
+		return scriptable;
 	}
 }

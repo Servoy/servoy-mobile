@@ -17,41 +17,31 @@
 
 package com.servoy.mobile.client.ui;
 
-import com.servoy.j2db.util.ITagResolver;
-import com.servoy.j2db.util.TagParser;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
+import com.servoy.mobile.client.scripting.IRuntimeComponent;
+import com.servoy.mobile.client.scripting.RuntimeDataFormHeader;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 
 /**
  * @author gboros
  *
  */
-public class DataFormHeader extends JQMHeader implements IDisplayData
+public class DataFormHeader extends JQMHeader implements IDisplayData, IGraphicalComponent
 {
-	private final GraphicalComponent gc;
-	private ITagResolver tagResolver;
-	private final MobileClient application;
+	private final RuntimeDataFormHeader scriptable;
 
 	/**
 	 * @param text
 	 */
-	public DataFormHeader(GraphicalComponent gc, MobileClient application)
+	public DataFormHeader(GraphicalComponent gc, Executor executor, MobileClient application)
 	{
 		super(application.getI18nProvider().getI18NMessageIfPrefixed(gc.getText() != null ? gc.getText() : "")); //$NON-NLS-1$
 		setTheme("b"); //$NON-NLS-1$
-		this.gc = gc;
-		this.application = application;
-	}
-
-	/*
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#getDataProviderID()
-	 */
-	@Override
-	public String getDataProviderID()
-	{
-		return gc.getDataProviderID();
+		this.scriptable = new RuntimeDataFormHeader(application, executor, this, gc);
 	}
 
 	/*
@@ -69,47 +59,24 @@ public class DataFormHeader extends JQMHeader implements IDisplayData
 	@Override
 	public void setValueObject(Object data)
 	{
-		String txt;
-		if (gc.getDataProviderID() == null)
-		{
-			txt = TagParser.processTags(gc.getText(), tagResolver, application.getI18nProvider());
-		}
-		else
-		{
-			txt = data != null ? data.toString() : ""; //$NON-NLS-1$
-		}
-
-		setText(txt);
+		scriptable.setText(data);
 	}
 
-	/*
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#notifyLastNewValueWasChange(java.lang.Object, java.lang.Object)
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.scripting.IScriptableProvider#getScriptObject()
 	 */
 	@Override
-	public void notifyLastNewValueWasChange(Object oldVal, Object newVal)
+	public IRuntimeComponent getRuntimeComponent()
 	{
-		// ignore
+		return scriptable;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#needEntireState()
+	/* (non-Javadoc)
+	 * @see com.google.gwt.event.dom.client.HasClickHandlers#addClickHandler(com.google.gwt.event.dom.client.ClickHandler)
 	 */
 	@Override
-	public boolean needEntireState()
+	public HandlerRegistration addClickHandler(ClickHandler handler)
 	{
-		return gc.isDisplaysTags();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#setTagResolver(com.servoy.j2db.util.ITagResolver)
-	 */
-	@Override
-	public void setTagResolver(ITagResolver resolver)
-	{
-		tagResolver = resolver;
+		return null;
 	}
 }

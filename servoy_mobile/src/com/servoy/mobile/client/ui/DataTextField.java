@@ -17,17 +17,14 @@ package com.servoy.mobile.client.ui;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.servoy.j2db.scripting.api.IJSEvent;
-import com.servoy.j2db.util.ITagResolver;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.dataprocessing.IEditListenerSubject;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
+import com.servoy.mobile.client.scripting.IRuntimeComponent;
+import com.servoy.mobile.client.scripting.RuntimeDataTextField;
 import com.sksamuel.jqm4gwt.form.elements.JQMText;
 
 /**
@@ -40,12 +37,14 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportData
 	protected final Field field;
 	protected final Executor executor;
 	private final MobileClient application;
+	private final RuntimeDataTextField scriptable;
 
 	public DataTextField(Field field, Executor executor, MobileClient application)
 	{
 		this.field = field;
 		this.executor = executor;
 		this.application = application;
+		this.scriptable = new RuntimeDataTextField(application, executor, this, field);
 	}
 
 	/*
@@ -66,34 +65,6 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportData
 		setValue(data != null ? data.toString() : ""); //$NON-NLS-1$
 	}
 
-	public void setActionCommand(final String command)
-	{
-		if (command != null)
-		{
-			addKeyUpHandler(new KeyUpHandler()
-			{
-
-				@Override
-				public void onKeyUp(KeyUpEvent event)
-				{
-					if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
-					{
-						executor.fireEventCommand(IJSEvent.ACTION, command, DataTextField.this, null);
-					}
-				}
-			});
-		}
-	}
-
-	/*
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#getDataProviderID()
-	 */
-	@Override
-	public String getDataProviderID()
-	{
-		return field.getDataProviderID();
-	}
-
 	private DataText dataText;
 
 	/*
@@ -102,7 +73,7 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportData
 	@Override
 	public void setDataTextComponent(GraphicalComponent component)
 	{
-		if (component != null) dataText = new DataText(this, component, application);
+		if (component != null) dataText = new DataText(this, component, executor, application);
 	}
 
 	/*
@@ -130,41 +101,12 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportData
 		}
 	}
 
-	private String changeCommand;
-
-	public void setChangeCommand(final String command)
-	{
-		this.changeCommand = command;
-	}
-
-	/*
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#notifyLastNewValueWasChange(java.lang.Object, java.lang.Object)
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.scripting.IScriptableProvider#getScriptObject()
 	 */
 	@Override
-	public void notifyLastNewValueWasChange(Object oldVal, Object newVal)
+	public IRuntimeComponent getRuntimeComponent()
 	{
-		if (changeCommand != null) executor.fireEventCommand(IJSEvent.DATACHANGE, changeCommand, DataTextField.this, null);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#needEntireState()
-	 */
-	@Override
-	public boolean needEntireState()
-	{
-		return false;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#setTagResolver(com.servoy.j2db.util.ITagResolver)
-	 */
-	@Override
-	public void setTagResolver(ITagResolver resolver)
-	{
-		// TODO Auto-generated method stub
+		return scriptable;
 	}
 }

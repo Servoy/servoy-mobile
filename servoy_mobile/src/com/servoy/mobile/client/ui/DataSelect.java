@@ -20,10 +20,6 @@ package com.servoy.mobile.client.ui;
 import org.timepedia.exporter.client.ExporterBaseActual.JsArrayObject;
 
 import com.google.gwt.core.client.JsArrayString;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.servoy.j2db.scripting.api.IJSEvent;
-import com.servoy.j2db.util.ITagResolver;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
@@ -31,6 +27,8 @@ import com.servoy.mobile.client.dataprocessing.IEditListenerSubject;
 import com.servoy.mobile.client.dto.ValueListDescription;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
+import com.servoy.mobile.client.scripting.IRuntimeComponent;
+import com.servoy.mobile.client.scripting.RuntimeDataSelect;
 import com.servoy.mobile.client.util.Utils;
 import com.sksamuel.jqm4gwt.form.elements.JQMSelect;
 
@@ -42,17 +40,17 @@ import com.sksamuel.jqm4gwt.form.elements.JQMSelect;
  */
 public class DataSelect extends JQMSelect implements IDisplayData, IFieldComponent, ISupportDataText, IEditListenerSubject
 {
-	private final Field field;
 	private final ValueListDescription valuelist;
 	private final Executor executor;
 	private final MobileClient application;
+	private final RuntimeDataSelect scriptable;
 
 	public DataSelect(Field field, ValueListDescription valuelist, Executor executor, MobileClient application)
 	{
-		this.field = field;
 		this.valuelist = valuelist;
 		this.executor = executor;
 		this.application = application;
+		this.scriptable = new RuntimeDataSelect(application, executor, this, field);
 
 		setText(field.getText());
 		if (valuelist != null)
@@ -61,15 +59,6 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 			for (int i = 0; i < displayValues.length(); i++)
 				addOption(displayValues.get(i));
 		}
-	}
-
-	/*
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#getDataProviderID()
-	 */
-	@Override
-	public String getDataProviderID()
-	{
-		return field.getDataProviderID();
 	}
 
 	/*
@@ -126,37 +115,6 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 		}
 	}
 
-	public void setActionCommand(final String command)
-	{
-		if (command != null)
-		{
-			addChangeHandler(new ChangeHandler()
-			{
-				@Override
-				public void onChange(ChangeEvent event)
-				{
-					executor.fireEventCommand(IJSEvent.ACTION, command, DataSelect.this, null);
-				}
-			});
-		}
-	}
-
-	private String changeCommand;
-
-	public void setChangeCommand(final String command)
-	{
-		this.changeCommand = command;
-	}
-
-	/*
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#notifyLastNewValueWasChange(java.lang.Object, java.lang.Object)
-	 */
-	@Override
-	public void notifyLastNewValueWasChange(Object oldVal, Object newVal)
-	{
-		if (changeCommand != null) executor.fireEventCommand(IJSEvent.DATACHANGE, changeCommand, DataSelect.this, null);
-	}
-
 	private DataText dataText;
 
 	/*
@@ -165,7 +123,7 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 	@Override
 	public void setDataTextComponent(GraphicalComponent component)
 	{
-		if (component != null) dataText = new DataText(this, component, application);
+		if (component != null) dataText = new DataText(this, component, executor, application);
 	}
 
 	/*
@@ -177,25 +135,12 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 		return dataText;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#needEntireState()
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.scripting.IScriptableProvider#getScriptObject()
 	 */
 	@Override
-	public boolean needEntireState()
+	public IRuntimeComponent getRuntimeComponent()
 	{
-		return false;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#setTagResolver(com.servoy.j2db.util.ITagResolver)
-	 */
-	@Override
-	public void setTagResolver(ITagResolver resolver)
-	{
-		// TODO Auto-generated method stub
+		return scriptable;
 	}
 }

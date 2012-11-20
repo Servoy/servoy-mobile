@@ -27,6 +27,7 @@ import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.scripting.FormScope;
 import com.servoy.mobile.client.scripting.GlobalScope;
 import com.servoy.mobile.client.scripting.IModificationListener;
+import com.servoy.mobile.client.scripting.IRuntimeComponentProvider;
 import com.servoy.mobile.client.scripting.ModificationEvent;
 
 /**
@@ -57,7 +58,7 @@ public class DataAdapterList implements IModificationListener, ITagResolver
 		if (obj instanceof IDisplayData)
 		{
 			IDisplayData displayData = (IDisplayData)obj;
-			String dataproviderID = displayData.getDataProviderID();
+			String dataproviderID = displayData instanceof IRuntimeComponentProvider ? ((IRuntimeComponentProvider)displayData).getRuntimeComponent().getDataProviderID() : null;
 
 			IDataAdapter dataAdapter = dataAdapters.get(dataproviderID);
 			if (dataAdapter == null)
@@ -147,7 +148,7 @@ public class DataAdapterList implements IModificationListener, ITagResolver
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.j2db.util.ITagResolver#getStringValue(java.lang.String)
 	 */
 	@Override

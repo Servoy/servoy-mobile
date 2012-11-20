@@ -17,13 +17,13 @@
 
 package com.servoy.mobile.client.ui;
 
+import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.servoy.mobile.client.scripting.IRuntimeComponentProvider;
+
 /**
  * @author gboros
  *
  */
-public interface IFieldComponent
+public interface IFieldComponent extends IComponent, IRuntimeComponentProvider, HasClickHandlers
 {
-	public void setActionCommand(final String command);
-
-	public void setChangeCommand(final String command);
 }

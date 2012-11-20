@@ -219,7 +219,7 @@ public class FormList extends JQMList implements IDisplayRelatedData
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see com.servoy.j2db.util.ITagResolver#getStringValue(java.lang.String)
 		 */
 		@Override

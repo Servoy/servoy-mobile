@@ -17,15 +17,12 @@ package com.servoy.mobile.client.ui;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.servoy.j2db.scripting.api.IJSEvent;
-import com.servoy.j2db.util.ITagResolver;
-import com.servoy.j2db.util.TagParser;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.persistence.BaseComponent.MobileProperties;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
+import com.servoy.mobile.client.scripting.IRuntimeComponent;
+import com.servoy.mobile.client.scripting.RuntimeDataButton;
 import com.servoy.mobile.client.util.Utils;
 import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.button.JQMButton;
@@ -37,15 +34,12 @@ import com.sksamuel.jqm4gwt.button.JQMButton;
  */
 public class DataButton extends JQMButton implements IDisplayData, IGraphicalComponent
 {
-	private final GraphicalComponent gc;
-	private ITagResolver tagResolver;
-	private final Executor executor;
-	private final MobileClient application;
+	private final RuntimeDataButton scriptable;
 
 	public DataButton(GraphicalComponent gc, Executor executor, MobileClient application)
 	{
 		super(application.getI18nProvider().getI18NMessageIfPrefixed(gc.getText() != null ? gc.getText() : ""));
-		this.gc = gc;
+		this.scriptable = new RuntimeDataButton(application, executor, this, gc);
 		setTheme("b"); //$NON-NLS-1$
 		MobileProperties mp = gc.getMobileProperties();
 		if (mp != null)
@@ -53,39 +47,11 @@ public class DataButton extends JQMButton implements IDisplayData, IGraphicalCom
 			DataIcon dataIcon = Utils.stringToDataIcon(mp.getDataIcon());
 			if (dataIcon != null) setIcon(dataIcon);
 		}
-		this.executor = executor;
-		this.application = application;
-	}
-
-	public void setActionCommand(final String command)
-	{
-		if (command != null)
-		{
-			addClickHandler(new ClickHandler()
-			{
-				@Override
-				public void onClick(ClickEvent event)
-				{
-					executor.fireEventCommand(IJSEvent.ACTION, command, DataButton.this, null);
-				}
-			});
-		}
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#getDataProviderID()
-	 */
-	@Override
-	public String getDataProviderID()
-	{
-		return gc.getDataProviderID();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#getValueObject()
 	 */
 	@Override
@@ -96,55 +62,21 @@ public class DataButton extends JQMButton implements IDisplayData, IGraphicalCom
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#setValueObject(java.lang.Object)
 	 */
 	@Override
 	public void setValueObject(Object data)
 	{
-		String txt;
-		if (gc.getDataProviderID() == null)
-		{
-			txt = TagParser.processTags(gc.getText(), tagResolver, application.getI18nProvider());
-		}
-		else
-		{
-			txt = data != null ? data.toString() : ""; //$NON-NLS-1$
-		}
-
-		setText(txt);
+		scriptable.setText(data);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#needEntireState()
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.scripting.IScriptableProvider#getScriptObject()
 	 */
 	@Override
-	public boolean needEntireState()
+	public IRuntimeComponent getRuntimeComponent()
 	{
-		return gc.isDisplaysTags();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#notifyLastNewValueWasChange(java.lang.Object, java.lang.Object)
-	 */
-	@Override
-	public void notifyLastNewValueWasChange(Object oldVal, Object newVal)
-	{
-		// ignore
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#setTagResolver(com.servoy.j2db.util.ITagResolver)
-	 */
-	@Override
-	public void setTagResolver(ITagResolver resolver)
-	{
-		tagResolver = resolver;
+		return scriptable;
 	}
 }

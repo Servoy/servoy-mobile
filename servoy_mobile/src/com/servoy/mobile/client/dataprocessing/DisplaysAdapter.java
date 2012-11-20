@@ -21,6 +21,10 @@ import java.util.ArrayList;
 
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.scripting.GlobalScope;
+import com.servoy.mobile.client.scripting.IRuntimeComponent;
+import com.servoy.mobile.client.scripting.IRuntimeComponentProvider;
+import com.servoy.mobile.client.scripting.IRuntimeField;
+import com.servoy.mobile.client.scripting.IRuntimeGraphicalComponent;
 import com.servoy.mobile.client.scripting.ModificationEvent;
 import com.servoy.mobile.client.util.Utils;
 
@@ -47,7 +51,11 @@ public class DisplaysAdapter implements IDataAdapter, IEditListener
 	public void addDisplay(IDisplayData display)
 	{
 		displays.add(display);
-		if(display.needEntireState()) display.setTagResolver(dal);
+		if(display instanceof IRuntimeComponentProvider)
+		{
+			IRuntimeComponent runtimeComponent = ((IRuntimeComponentProvider)display).getRuntimeComponent();
+			if(runtimeComponent instanceof IRuntimeGraphicalComponent && runtimeComponent.needEntireState()) ((IRuntimeGraphicalComponent)runtimeComponent).setTagResolver(dal);
+		}
 	}
 
 	/*
@@ -60,7 +68,7 @@ public class DisplaysAdapter implements IDataAdapter, IEditListener
 		Object value = dal.getRecordValue(record, dataproviderID);
 		for (IDisplayData d : displays)
 		{
-			if(d.getDataProviderID() != null || d.needEntireState())
+			if(d instanceof IRuntimeComponentProvider && (((IRuntimeComponentProvider)d).getRuntimeComponent().needEntireState() || ((IRuntimeComponentProvider)d).getRuntimeComponent().getDataProviderID() != null))
 				d.setValueObject(value);
 		}
 	}
@@ -111,7 +119,7 @@ public class DisplaysAdapter implements IDataAdapter, IEditListener
 			record.setValue(dataproviderID, value);
 		}
 
-		if (!Utils.equalObjects(oldValue, value)) e.notifyLastNewValueWasChange(oldValue, value);
+		if (!Utils.equalObjects(oldValue, value) && e instanceof IRuntimeField) ((IRuntimeField)e).notifyLastNewValueWasChange(oldValue, value);
 	}
 
 	private String dataproviderSimpleName;
