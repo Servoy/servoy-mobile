@@ -119,7 +119,10 @@ public class DisplaysAdapter implements IDataAdapter, IEditListener
 			record.setValue(dataproviderID, value);
 		}
 
-		if (!Utils.equalObjects(oldValue, value) && e instanceof IRuntimeField) ((IRuntimeField)e).notifyLastNewValueWasChange(oldValue, value);
+		if (!Utils.equalObjects(oldValue, value) && e instanceof IRuntimeComponentProvider && ((IRuntimeComponentProvider)e).getRuntimeComponent() instanceof IRuntimeField)
+		{
+			((IRuntimeField)((IRuntimeComponentProvider)e).getRuntimeComponent()).notifyLastNewValueWasChange(oldValue, value);
+		}
 	}
 
 	private String dataproviderSimpleName;

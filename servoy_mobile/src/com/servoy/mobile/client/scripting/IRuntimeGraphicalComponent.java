@@ -23,7 +23,7 @@ import com.servoy.j2db.util.ITagResolver;
  * @author gboros
  *
  */
-public interface IRuntimeGraphicalComponent
+public interface IRuntimeGraphicalComponent extends IRuntimeComponent
 {
 	void setTagResolver(ITagResolver resolver);
 }

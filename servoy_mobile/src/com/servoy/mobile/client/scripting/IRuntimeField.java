@@ -21,7 +21,7 @@ package com.servoy.mobile.client.scripting;
  * @author gboros
  *
  */
-public interface IRuntimeField
+public interface IRuntimeField extends IRuntimeComponent
 {
 	void setChangeCommand(String command);
 
