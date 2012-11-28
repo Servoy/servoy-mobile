@@ -21,11 +21,17 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
 
+import com.servoy.j2db.scripting.api.IJSI18N;
+import com.servoy.mobile.client.SolutionI18nProvider;
+
 @Export
-public class JSI18N implements Exportable
+public class JSI18N implements Exportable, IJSI18N
 {
-	public JSI18N()
+	private final SolutionI18nProvider i18nProvider;
+
+	public JSI18N(SolutionI18nProvider i18nProvider)
 	{
+		this.i18nProvider = i18nProvider;
 		export(ExporterUtil.wrap(this));
 	}
 
@@ -33,6 +39,33 @@ public class JSI18N implements Exportable
 	/*-{
 		return $wnd.navigator.language;
 	}-*/;
+
+	public void setLocale(String language, String country)
+	{
+		if (language != null)
+		{
+			i18nProvider.setLocale(language);
+		}
+	}
+
+	@Override
+	public String getI18NMessage(String i18nKey)
+	{
+		return i18nProvider.getI18NMessage(i18nKey);
+	}
+
+	@Override
+	public String getI18NMessage(String i18nKey, Object[] dynamicValues)
+	{
+		return i18nProvider.getI18NMessage(i18nKey, dynamicValues);
+	}
+
+	@Override
+	public void setI18NMessage(String i18nKey, String value)
+	{
+		i18nProvider.setI18NMessage(i18nKey, value);
+
+	}
 
 	private native void export(Object object)
 	/*-{

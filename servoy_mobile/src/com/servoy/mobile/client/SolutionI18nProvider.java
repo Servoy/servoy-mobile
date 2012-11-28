@@ -28,7 +28,7 @@ public class SolutionI18nProvider implements I18NProvider
 {
 
 	private final Solution solution;
-	private final String locale;
+	private String locale;
 
 	public SolutionI18nProvider(Solution solution, String locale)
 	{
@@ -68,7 +68,13 @@ public class SolutionI18nProvider implements I18NProvider
 	@Override
 	public void setI18NMessage(String i18nKey, String value)
 	{
-		// not supported yet
+		String key = locale + "." + i18nKey;
+		solution.setI18nValue(key, value);
+	}
+
+	public void setLocale(String locale)
+	{
+		this.locale = locale;
 	}
 
 }

@@ -59,7 +59,7 @@ public class MobileClient implements EntryPoint
 	private OfflineDataProxy offlineDataProxy;
 	private FormManager formManager;
 	private Solution solution;
-	private I18NProvider i18nProvider;
+	private SolutionI18nProvider i18nProvider;
 
 	private final GlobalScopeModificationDelegate globalScopeModificationDelegate = new GlobalScopeModificationDelegate();
 
@@ -89,7 +89,7 @@ public class MobileClient implements EntryPoint
 		new JSSolutionModel(solution);
 		new JSUtils(this);
 		new JSSecurity();
-		new JSI18N();
+		new JSI18N(i18nProvider);
 		export();
 
 		addStartPageShowCallback();

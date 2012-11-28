@@ -66,6 +66,11 @@ public class Solution extends JavaScriptObject
 		return this.i18n[key];
 	}-*/;
 
+	public final native void setI18nValue(String key, String value)
+	/*-{
+		this.i18n[key] = value;
+	}-*/;
+
 	@Export
 	public final Form getForm(String name)
 	{
