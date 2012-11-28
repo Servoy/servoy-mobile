@@ -24,11 +24,12 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
 
+import com.servoy.j2db.scripting.api.IJSHistory;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.FormManager;
 
 @Export
-public class JSHistory implements Exportable
+public class JSHistory implements Exportable, IJSHistory
 {
 	private final FormManager formManager;
 	private final List<FormController> historyList = new ArrayList<FormController>();
@@ -43,24 +44,12 @@ public class JSHistory implements Exportable
 
 	public void back()
 	{
-		if (historyIndex > 0)
-		{
-			int history = historyIndex - 1;
-			historyIndex = -2;
-			formManager.showForm(historyList.get(history));
-			historyIndex = history;
-		}
+		go(-1);
 	}
 
 	public void forward()
 	{
-		if (historyIndex < historyList.size() - 1)
-		{
-			int history = historyIndex + 1;
-			historyIndex = -2;
-			formManager.showForm(historyList.get(history));
-			historyIndex = history;
-		}
+		go(1);
 	}
 
 	public void clear()
@@ -68,6 +57,82 @@ public class JSHistory implements Exportable
 		this.formManager.removeAllForms();
 		historyIndex = -1;
 		historyList.clear();
+	}
+
+	@Override
+	public String getFormName(int i)
+	{
+		int listIndex = i - 1;
+		if (listIndex >= 0 && listIndex < historyList.size())
+		{
+			return historyList.get(listIndex).getName();
+		}
+		return null;
+	}
+
+
+	@Override
+	public void go(int i)
+	{
+		int formIndex = historyIndex + i;
+		if (formIndex >= 0 && formIndex <= historyList.size() && historyList.get(formIndex) != null)
+		{
+			int history = formIndex;
+			historyIndex = -2;
+			formManager.showForm(historyList.get(history));
+			historyIndex = history;
+		}
+	}
+
+	@Override
+	public int size()
+	{
+		return historyList.size();
+	}
+
+
+	@Override
+	public int getCurrentIndex()
+	{
+		return historyIndex + 1;
+	}
+
+
+	@Override
+	public boolean removeIndex(int index)
+	{
+		if (index > 0 && index <= historyList.size())
+		{
+			if (historyList.size() == 1 && index == 1)
+			{
+				clear();
+				return true;
+			}
+			if (historyIndex == index - 1)
+			{
+				go(historyIndex == 0 ? 1 : -1);
+			}
+			historyList.remove(index - 1);
+			if (index - 1 < historyIndex)
+			{
+				historyIndex--;
+			}
+			return true;
+		}
+		return false;
+
+	}
+
+
+	@Override
+	public boolean removeForm(String formName)
+	{
+		int i = historyList.indexOf(formName);
+		if (i != -1 && !removeIndex(i))
+		{
+			return false;
+		}
+		return formManager.removeForm(formName);
 	}
 
 	// cannot use window.history, breaks javascript object
@@ -91,4 +156,5 @@ public class JSHistory implements Exportable
 		historyList.add(page);
 
 	}
+
 }

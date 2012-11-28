@@ -132,6 +132,21 @@ public class FormManager
 		currentForm = null;
 	}
 
+	public boolean removeForm(String formName)
+	{
+		if (currentForm != null && currentForm.getName().equals(formName))
+		{
+			return false;
+		}
+		FormController formController = formControllerMap.get(formName);
+		if (formController != null)
+		{
+			formController.cleanup();
+			formControllerMap.remove(formName);
+		}
+		return true;
+	}
+
 	public void showFirstForm()
 	{
 		// if showing the first form (when startup or after a sync)
