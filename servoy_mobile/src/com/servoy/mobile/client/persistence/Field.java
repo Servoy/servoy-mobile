@@ -1,5 +1,7 @@
 package com.servoy.mobile.client.persistence;
 
+import com.servoy.j2db.persistence.constants.IContentSpecConstantsBase;
+
 /*
  This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
 
@@ -36,22 +38,6 @@ public class Field extends Component
 	{
 	}
 
-	public final native String getDataProviderID() /*-{
-		return this.dataProviderID;
-	}-*/;
-
-	public final native String getSize() /*-{
-		return this.size;
-	}-*/;
-
-	public final native String getLocation() /*-{
-		return this.location;
-	}-*/;
-
-	public final native int getDisplayType() /*-{
-		return this.displayType ? this.displayType : 0;
-	}-*/;
-
 	public final native String getActionMethodID() /*-{
 		return this.onActionMethodID;
 	}-*/;
@@ -71,4 +57,25 @@ public class Field extends Component
 	public final native String getValuelistID() /*-{
 		return this.valuelistID;
 	}-*/;
+
+	public final void setDataProviderID(String dataprovider)
+	{
+		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_DATAPROVIDERID, dataprovider);
+	}
+
+	public final String getDataProviderID()
+	{
+		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_DATAPROVIDERID);
+	}
+
+	public final void setDisplayType(int type)
+	{
+		setAttributeValueInt(IContentSpecConstantsBase.PROPERTY_DISPLAYTYPE, Integer.valueOf(type));
+	}
+
+	public final int getDisplayType()
+	{
+		return getAttributeValueInt(IContentSpecConstantsBase.PROPERTY_DISPLAYTYPE);
+	}
+
 }

@@ -17,21 +17,16 @@ package com.servoy.mobile.client;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
-import java.util.HashMap;
-
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.Window;
-import com.servoy.j2db.util.I18NProvider;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.dataprocessing.FoundSetManager;
 import com.servoy.mobile.client.dataprocessing.OfflineDataProxy;
 import com.servoy.mobile.client.dto.ValueListDescription;
 import com.servoy.mobile.client.persistence.Solution;
-import com.servoy.mobile.client.scripting.GlobalScope;
-import com.servoy.mobile.client.scripting.GlobalScopeModificationDelegate;
 import com.servoy.mobile.client.scripting.JSApplication;
 import com.servoy.mobile.client.scripting.JSDatabaseManager;
 import com.servoy.mobile.client.scripting.JSEvent;
@@ -39,9 +34,8 @@ import com.servoy.mobile.client.scripting.JSHistory;
 import com.servoy.mobile.client.scripting.JSI18N;
 import com.servoy.mobile.client.scripting.JSSecurity;
 import com.servoy.mobile.client.scripting.JSUtils;
-import com.servoy.mobile.client.scripting.PluginsScope;
-import com.servoy.mobile.client.scripting.Scope;
-import com.servoy.mobile.client.solutionmodel.JSSolutionModel;
+import com.servoy.mobile.client.scripting.ScriptEngine;
+import com.servoy.mobile.client.scripting.solutionmodel.JSSolutionModel;
 import com.servoy.mobile.client.util.Failure;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.Mobile;
@@ -54,14 +48,12 @@ public class MobileClient implements EntryPoint
 {
 	protected I18NMessages messages = (I18NMessages)GWT.create(I18NMessages.class);
 
-	private final HashMap<String, GlobalScope> scopes = new HashMap<String, GlobalScope>();
 	private FoundSetManager foundSetManager;
 	private OfflineDataProxy offlineDataProxy;
 	private FormManager formManager;
+	private ScriptEngine scriptEngine;
 	private Solution solution;
 	private SolutionI18nProvider i18nProvider;
-
-	private final GlobalScopeModificationDelegate globalScopeModificationDelegate = new GlobalScopeModificationDelegate();
 
 	@Override
 	public void onModuleLoad()
@@ -83,14 +75,8 @@ public class MobileClient implements EntryPoint
 		foundSetManager = new FoundSetManager(this);
 		offlineDataProxy = new OfflineDataProxy(foundSetManager, getServerURL());
 		formManager = new FormManager(this);
-		new JSApplication();
-		new PluginsScope(this);
-		new JSDatabaseManager(foundSetManager);
-		new JSSolutionModel(solution);
-		new JSUtils(this);
-		new JSSecurity();
-		new JSI18N(i18nProvider);
-		export();
+
+		scriptEngine = new ScriptEngine(this);
 
 		addStartPageShowCallback();
 	}
@@ -252,6 +238,11 @@ public class MobileClient implements EntryPoint
 		});
 	}
 
+	public ScriptEngine getScriptEngine()
+	{
+		return scriptEngine;
+	}
+
 	public FormManager getFormManager()
 	{
 		return formManager;
@@ -307,68 +298,9 @@ public class MobileClient implements EntryPoint
 		return foundSetManager.getValueListItems(valueListName);
 	}
 
-	public Scope getGlobalScope()
-	{
-		return getGlobalScope("globals");
-	}
-
-	public GlobalScope getGlobalScope(String name)
-	{
-		GlobalScope scope = scopes.get(name);
-		if (scope == null)
-		{
-			scope = new GlobalScope(name, this);
-			scopes.put(name, scope);
-			initGlobalScope(name, scope);
-			scope.addModificationListener(globalScopeModificationDelegate);
-		}
-		return scope;
-	}
-
-	public GlobalScopeModificationDelegate getGlobalScopeModificationDelegate()
-	{
-		return globalScopeModificationDelegate;
-	}
-
-	public I18NProvider getI18nProvider()
+	public SolutionI18nProvider getI18nProvider()
 	{
 		return i18nProvider;
 	}
 
-	private native void initGlobalScope(String scopeName, GlobalScope formScope)
-	/*-{
-		$wnd._ServoyInit_.scopes["_$" + scopeName + "$"](formScope);
-	}-*/;
-
-	private native void export()
-	/*-{
-		$wnd._ServoyUtils_.application = this;
-		$wnd._ServoyUtils_.getGlobalScope = function(name) {
-			return $wnd._ServoyUtils_.application.@com.servoy.mobile.client.MobileClient::getGlobalScope(Ljava/lang/String;)(name);
-		}
-		$wnd._ServoyUtils_.setScopeVariableType = function(scope, name, type) {
-			return scope.@com.servoy.mobile.client.scripting.Scope::setVariableType(Ljava/lang/String;I)(name,type);
-		}
-		$wnd._ServoyUtils_.getScopeVariable = function(scope, name) {
-			var type = scope.@com.servoy.mobile.client.scripting.Scope::getVariableType(Ljava/lang/String;)(name);
-			if (type == 8 || type == 4) {
-				var value = scope.@com.servoy.mobile.client.scripting.Scope::getVariableNumberValue(Ljava/lang/String;)(name);
-				return isNaN(value) ? null : value;
-			} else if (type == 93) {
-				return scope.@com.servoy.mobile.client.scripting.Scope::getVariableDateValue(Ljava/lang/String;)(name);
-			}
-			return scope.@com.servoy.mobile.client.scripting.Scope::getVariableValue(Ljava/lang/String;)(name);
-		}
-		$wnd._ServoyUtils_.setScopeVariable = function(scope, name, value) {
-			var type = scope.@com.servoy.mobile.client.scripting.Scope::getVariableType(Ljava/lang/String;)(name);
-			if (typeof value == "number" || type == 8 || type == 4) {
-				scope.@com.servoy.mobile.client.scripting.Scope::setVariableNumberValue(Ljava/lang/String;D)(name,value);
-			} else if (type == 93) {
-				scope.@com.servoy.mobile.client.scripting.Scope::setVariableDateValue(Ljava/lang/String;Lcom/google/gwt/core/client/JsDate;)(name,value);
-			} else {
-				scope.@com.servoy.mobile.client.scripting.Scope::setVariableValue(Ljava/lang/String;Ljava/lang/Object;)(name,value);
-			}
-		}
-		$wnd._ServoyInit_.init();
-	}-*/;
 }

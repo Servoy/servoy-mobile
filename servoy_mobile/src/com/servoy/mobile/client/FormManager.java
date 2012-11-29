@@ -172,7 +172,9 @@ public class FormManager
 
 	private native void initFormScope(String formName, FormScope formScope)
 	/*-{
-		$wnd._ServoyInit_.forms["_$" + formName + "$"](formScope);
+		$wnd._ServoyInit_.initScope("forms", formName, formScope);
+		// define standard things (controller,foundset,elements)
+		$wnd._ServoyUtils_.defineStandardFormVariables(formScope);
 	}-*/;
 
 
@@ -182,4 +184,15 @@ public class FormManager
 			return formManager.@com.servoy.mobile.client.FormManager::getFormScope(Ljava/lang/String;)(name);
 		}
 	}-*/;
+
+	public void reloadScopeIfInitialized(String formName)
+	{
+		FormController fc;
+		if ((fc = formControllerMap.remove(formName)) != null)
+		{
+			fc.recreateScope();
+			initFormScope(formName, fc.getFormScope());
+		}
+	}
+
 }

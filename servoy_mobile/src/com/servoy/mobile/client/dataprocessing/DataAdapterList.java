@@ -49,7 +49,7 @@ public class DataAdapterList implements IModificationListener, ITagResolver
 		this.application = application;
 		this.formController = formController;
 
-		application.getGlobalScopeModificationDelegate().addModificationListener(this);
+		application.getScriptEngine().getGlobalScopeModificationDelegate().addModificationListener(this);
 		formController.getFormScope().addModificationListener(this);
 	}
 
@@ -58,7 +58,8 @@ public class DataAdapterList implements IModificationListener, ITagResolver
 		if (obj instanceof IDisplayData)
 		{
 			IDisplayData displayData = (IDisplayData)obj;
-			String dataproviderID = displayData instanceof IRuntimeComponentProvider ? ((IRuntimeComponentProvider)displayData).getRuntimeComponent().getDataProviderID() : null;
+			String dataproviderID = displayData instanceof IRuntimeComponentProvider
+				? ((IRuntimeComponentProvider)displayData).getRuntimeComponent().getDataProviderID() : null;
 
 			IDataAdapter dataAdapter = dataAdapters.get(dataproviderID);
 			if (dataAdapter == null)
@@ -111,7 +112,7 @@ public class DataAdapterList implements IModificationListener, ITagResolver
 
 			if (globalVariableScope[0] != null)
 			{
-				recordValue = application.getGlobalScope().getValue(globalVariableScope[1]);
+				recordValue = application.getScriptEngine().getGlobalScope().getValue(globalVariableScope[1]);
 			}
 			else if (getFormScope().hasVariable(dataproviderID))
 			{
@@ -142,13 +143,13 @@ public class DataAdapterList implements IModificationListener, ITagResolver
 	public void destroy()
 	{
 		if (this.record != null) this.record.removeModificationListener(this);
-		application.getGlobalScopeModificationDelegate().removeModificationListener(this);
+		application.getScriptEngine().getGlobalScopeModificationDelegate().removeModificationListener(this);
 		formController.getFormScope().removeModificationListener(this);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see com.servoy.j2db.util.ITagResolver#getStringValue(java.lang.String)
 	 */
 	@Override

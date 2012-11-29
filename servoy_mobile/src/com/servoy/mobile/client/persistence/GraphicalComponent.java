@@ -1,5 +1,7 @@
 package com.servoy.mobile.client.persistence;
 
+import com.servoy.j2db.persistence.constants.IContentSpecConstantsBase;
+
 /*
  This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
 
@@ -22,29 +24,47 @@ package com.servoy.mobile.client.persistence;
  */
 public class GraphicalComponent extends Component
 {
+
+	public static final String VIEW_TYPE_BUTTON = "button"; //$NON-NLS-1$
+	public static final String VIEW_TYPE_ATTR = "viewType"; //$NON-NLS-1$
+
 	protected GraphicalComponent()
 	{
+	}
+
+	public final void setViewType(String viewType)
+	{
+		setAttributeValueString(VIEW_TYPE_ATTR, viewType);
+	}
+
+	public final String getViewType()
+	{
+		return getAttributeValueString(VIEW_TYPE_ATTR);
+	}
+
+	public final void setOnActionMethodID(String id)
+	{
+		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_ONACTIONMETHODID, id);
+	}
+
+	public final String getOnActionMethodID()
+	{
+		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_ONACTIONMETHODID);
 	}
 
 	public final native String getDataProviderID() /*-{
 		return this.dataProviderID;
 	}-*/;
 
-	public final native String getSize() /*-{
-		return this.size;
-	}-*/;
+	public final void setText(String text)
+	{
+		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_TEXT, text);
+	}
 
-	public final native String getLocation() /*-{
-		return this.location;
-	}-*/;
-
-	public final native String getText() /*-{
-		return this.text;
-	}-*/;
-
-	public final native String getViewType() /*-{
-		return this.viewType;
-	}-*/;
+	public final String getText()
+	{
+		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_TEXT);
+	}
 
 	public final native String getActionMethodID() /*-{
 		return this.onActionMethodID;
@@ -60,6 +80,6 @@ public class GraphicalComponent extends Component
 
 	public final boolean isButton()
 	{
-		return "button".equals(getViewType()); //$NON-NLS-1$
+		return VIEW_TYPE_BUTTON.equals(getViewType());
 	}
 }

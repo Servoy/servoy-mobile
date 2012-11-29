@@ -26,7 +26,7 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 {
 	private final IFormDisplay formDisplay;
 	private FoundSet foundSet;
-	private final FormScope scope;
+	private FormScope scope;
 	private final Form form;
 	private final MobileClient mc;
 	private final Executor executor;
@@ -44,6 +44,12 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 		}
 		scope = new FormScope(mc, this);
 		formDisplay = ComponentFactory.createFormDisplay(mc, this);
+	}
+
+	public void recreateScope()
+	{
+		// TODO ac when reloading is done more fine grained, this will be no longer needed as the scope is not recreated
+		this.scope = new FormScope(mc, this);
 	}
 
 	/**

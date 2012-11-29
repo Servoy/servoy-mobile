@@ -60,7 +60,9 @@ public class DataLabel extends Heading implements IDisplayData, IGraphicalCompon
 		scriptable.setText(data);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.scripting.IScriptableProvider#getScriptObject()
 	 */
 	@Override
@@ -69,7 +71,9 @@ public class DataLabel extends Heading implements IDisplayData, IGraphicalCompon
 		return scriptable;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.google.gwt.event.dom.client.HasClickHandlers#addClickHandler(com.google.gwt.event.dom.client.ClickHandler)
 	 */
 	@Override

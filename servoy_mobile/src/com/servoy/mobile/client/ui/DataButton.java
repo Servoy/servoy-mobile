@@ -51,7 +51,7 @@ public class DataButton extends JQMButton implements IDisplayData, IGraphicalCom
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#getValueObject()
 	 */
 	@Override
@@ -62,7 +62,7 @@ public class DataButton extends JQMButton implements IDisplayData, IGraphicalCom
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#setValueObject(java.lang.Object)
 	 */
 	@Override
@@ -71,7 +71,9 @@ public class DataButton extends JQMButton implements IDisplayData, IGraphicalCom
 		scriptable.setText(data);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.scripting.IScriptableProvider#getScriptObject()
 	 */
 	@Override

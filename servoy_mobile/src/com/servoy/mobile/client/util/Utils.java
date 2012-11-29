@@ -33,6 +33,7 @@ import com.sksamuel.jqm4gwt.DataIcon;
  */
 public class Utils
 {
+
 	/**
 	 * Try to parse the given string as an integer
 	 * 
@@ -185,6 +186,15 @@ public class Utils
 			return ((Boolean)o).booleanValue() ? 1 : 0;
 		}
 		return getAsLong(o.toString());
+	}
+
+	public static int[] splitInTwoIntegers(String d)
+	{
+		if (d == null) return null;
+
+		int[] xy = Utils.splitAsIntegers(d);
+		if (xy != null && xy.length == 2) return xy;
+		return null;
 	}
 
 	public static int[] splitAsIntegers(String d)

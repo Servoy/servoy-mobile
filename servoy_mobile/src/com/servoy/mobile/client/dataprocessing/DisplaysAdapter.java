@@ -51,10 +51,10 @@ public class DisplaysAdapter implements IDataAdapter, IEditListener
 	public void addDisplay(IDisplayData display)
 	{
 		displays.add(display);
-		if(display instanceof IRuntimeComponentProvider)
+		if (display instanceof IRuntimeComponentProvider)
 		{
 			IRuntimeComponent runtimeComponent = ((IRuntimeComponentProvider)display).getRuntimeComponent();
-			if(runtimeComponent instanceof IRuntimeGraphicalComponent && runtimeComponent.needEntireState()) ((IRuntimeGraphicalComponent)runtimeComponent).setTagResolver(dal);
+			if (runtimeComponent instanceof IRuntimeGraphicalComponent && runtimeComponent.needEntireState()) ((IRuntimeGraphicalComponent)runtimeComponent).setTagResolver(dal);
 		}
 	}
 
@@ -68,8 +68,8 @@ public class DisplaysAdapter implements IDataAdapter, IEditListener
 		Object value = dal.getRecordValue(record, dataproviderID);
 		for (IDisplayData d : displays)
 		{
-			if(d instanceof IRuntimeComponentProvider && (((IRuntimeComponentProvider)d).getRuntimeComponent().needEntireState() || ((IRuntimeComponentProvider)d).getRuntimeComponent().getDataProviderID() != null))
-				d.setValueObject(value);
+			if (d instanceof IRuntimeComponentProvider &&
+				(((IRuntimeComponentProvider)d).getRuntimeComponent().needEntireState() || ((IRuntimeComponentProvider)d).getRuntimeComponent().getDataProviderID() != null)) d.setValueObject(value);
 		}
 	}
 
@@ -105,8 +105,8 @@ public class DisplaysAdapter implements IDataAdapter, IEditListener
 		Object oldValue = null;
 		if (globalVariableScope[0] != null)
 		{
-			oldValue = application.getGlobalScope().getValue(globalVariableScope[1]);
-			application.getGlobalScope().setValue(globalVariableScope[1], value);
+			oldValue = application.getScriptEngine().getGlobalScope().getValue(globalVariableScope[1]);
+			application.getScriptEngine().getGlobalScope().setValue(globalVariableScope[1], value);
 		}
 		else if (dal.getFormScope().hasVariable(dataproviderID))
 		{
@@ -119,7 +119,8 @@ public class DisplaysAdapter implements IDataAdapter, IEditListener
 			record.setValue(dataproviderID, value);
 		}
 
-		if (!Utils.equalObjects(oldValue, value) && e instanceof IRuntimeComponentProvider && ((IRuntimeComponentProvider)e).getRuntimeComponent() instanceof IRuntimeField)
+		if (!Utils.equalObjects(oldValue, value) && e instanceof IRuntimeComponentProvider &&
+			((IRuntimeComponentProvider)e).getRuntimeComponent() instanceof IRuntimeField)
 		{
 			((IRuntimeField)((IRuntimeComponentProvider)e).getRuntimeComponent()).notifyLastNewValueWasChange(oldValue, value);
 		}

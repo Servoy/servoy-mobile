@@ -19,6 +19,7 @@ package com.servoy.mobile.client.ui;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.user.client.ui.Widget;
+import com.servoy.j2db.persistence.constants.IFormConstants;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.DataAdapterList;
@@ -30,9 +31,9 @@ import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.servoy.mobile.client.persistence.Tab;
 import com.servoy.mobile.client.persistence.TabPanel;
-import com.servoy.mobile.client.scripting.IRuntimeField;
 import com.servoy.mobile.client.scripting.IRuntimeComponent;
 import com.servoy.mobile.client.scripting.IRuntimeComponentProvider;
+import com.servoy.mobile.client.scripting.IRuntimeField;
 
 /**
  * Create UI objects based on solution model objects
@@ -52,7 +53,7 @@ public class ComponentFactory
 	{
 		Form form = formController.getForm();
 		int viewType = form.getView();
-		if (viewType == Form.VIEW_TYPE_TABLE || viewType == Form.VIEW_TYPE_TABLE_LOCKED)
+		if (viewType == IFormConstants.VIEW_TYPE_TABLE || viewType == IFormConstants.VIEW_TYPE_TABLE_LOCKED)
 		{
 			return new ListFormDisplay(application, formController);
 		}
@@ -118,7 +119,8 @@ public class ComponentFactory
 				}
 			}
 
-			if (componentWidget instanceof IRuntimeComponentProvider) ((IRuntimeComponentProvider)componentWidget).getRuntimeComponent().setActionCommand(gc.getActionMethodID());
+			if (componentWidget instanceof IRuntimeComponentProvider) ((IRuntimeComponentProvider)componentWidget).getRuntimeComponent().setActionCommand(
+				gc.getActionMethodID());
 		}
 		else
 		{
@@ -163,7 +165,7 @@ public class ComponentFactory
 				{
 					IRuntimeComponent scriptable = ((IRuntimeComponentProvider)componentWidget).getRuntimeComponent();
 					scriptable.setActionCommand(field.getActionMethodID());
-					if(scriptable instanceof IRuntimeField) ((IRuntimeField)scriptable).setChangeCommand(field.getDataChangeMethodID());
+					if (scriptable instanceof IRuntimeField) ((IRuntimeField)scriptable).setChangeCommand(field.getDataChangeMethodID());
 				}
 			}
 			else

@@ -20,6 +20,9 @@ package com.servoy.mobile.client.persistence;
 import org.timepedia.exporter.client.Export;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.servoy.j2db.persistence.constants.IRepositoryConstants;
+import com.servoy.mobile.client.persistence.BaseComponent.MobilePropertiesWrapper;
+import com.servoy.mobile.client.util.Utils;
 
 /**
  * @author gboros
@@ -66,6 +69,48 @@ public class Solution extends JavaScriptObject
 		return this.i18n[key];
 	}-*/;
 
+	public final native Form createForm(String name, String uuid, int typeId) /*-{
+		var nf = {};
+		nf.uuid = uuid;
+		nf.name = name;
+		nf.typeid = typeId;
+		nf.items = [];
+		this.forms.push(nf);
+		return nf;
+	}-*/;
+
+	public final Form newForm(String name, String dataSource, int width, int height)
+	{
+		Form f = createForm(name, Utils.createStringUUID(), IRepositoryConstants.FORMS);
+//		f.setSize("380, 100"); //$NON-NLS-1$
+		MobilePropertiesWrapper mp = f.createMobileProperties();
+		mp.get().setMobileForm();
+		f.setMobileProperties(mp);
+		f.setDataSource(dataSource);
+		f.setSize(width + "," + height);
+		prepareFormScopeLoading(f.getName());
+		setFormScopeInitialization(f.getName());
+		return f;
+	}
+
+	private final native void prepareFormScopeLoading(String formName) /*-{
+		Object.defineProperty($wnd.forms, formName, {
+			get : function() {
+				return $wnd._ServoyUtils_.getFormScope(formName);
+			},
+			configurable : false
+		});
+	}-*/;
+
+	private final native void setFormScopeInitialization(String formName) /*-{
+		if (!$wnd._ServoyInit_.forms[formName]) {
+			$wnd._ServoyInit_.forms[formName] = {
+				fncs : {},
+				vrbs : {}
+			};
+		}
+	}-*/;
+
 	public final native void setI18nValue(String key, String value)
 	/*-{
 		this.i18n[key] = value;
@@ -99,4 +144,5 @@ public class Solution extends JavaScriptObject
 		}
 		return null;
 	}
+
 }

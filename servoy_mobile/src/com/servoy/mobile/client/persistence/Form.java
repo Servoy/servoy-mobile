@@ -18,21 +18,60 @@ package com.servoy.mobile.client.persistence;
  */
 
 import com.google.gwt.core.client.JsArray;
+import com.servoy.j2db.persistence.constants.IContentSpecConstantsBase;
+import com.servoy.j2db.persistence.constants.IRepositoryConstants;
+import com.servoy.mobile.client.util.Utils;
 
 /**
  * @author gboros
  */
 public class Form extends BaseComponent
 {
-	public static final int VIEW_TYPE_RECORD = 0;
-	public static final int VIEW_TYPE_LIST = 1;
-	public static final int VIEW_TYPE_TABLE = 2;
-	public static final int VIEW_TYPE_TABLE_LOCKED = 3;
-	public static final int VIEW_TYPE_LIST_LOCKED = 4;
-	public static final int VIEW_TYPE_RECORD_LOCKED = 5;
 
 	protected Form()
 	{
+	}
+
+	public final GraphicalComponent createNewGraphicalComponent(String viewType)
+	{
+		Component c = createEmptyChildComponent(Utils.createStringUUID(), IRepositoryConstants.GRAPHICALCOMPONENTS);
+		GraphicalComponent gc = c.isGraphicalComponent();
+		if (gc != null)
+		{
+			gc.setViewType(viewType);
+		}
+		return gc;
+	}
+
+	public final Field createNewField(int type)
+	{
+		Component c = createEmptyChildComponent(Utils.createStringUUID(), IRepositoryConstants.FIELDS);
+		Field f = c.isField();
+		if (f != null)
+		{
+			f.setDisplayType(type);
+		}
+		return f;
+	}
+
+	public final native Component createEmptyChildComponent(String uuid, int type) /*-{
+		var ei = {};
+		if (!this.items)
+			this.items = [];
+		ei.uuid = uuid;
+		ei.typeid = type;
+		this.items.push(ei);
+		return ei;
+	}-*/;
+
+	public final void setDataSource(String dataSource)
+	{
+		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_DATASOURCE, dataSource);
+	}
+
+	public final String getDataSource()
+	{
+		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_DATASOURCE);
 	}
 
 	public final native String getName() /*-{
@@ -47,6 +86,10 @@ public class Form extends BaseComponent
 		return this.size;
 	}-*/;
 
+	public final native String setSize(String size) /*-{
+		this.size = size;
+	}-*/;
+
 	public final native String getBackground() /*-{
 		return this.background;
 	}-*/;
@@ -59,7 +102,4 @@ public class Form extends BaseComponent
 		return this.items;
 	}-*/;
 
-	public final native String getDataSource() /*-{
-		return this.dataSource;
-	}-*/;
 }

@@ -7,6 +7,7 @@ import com.google.gwt.core.client.JsArray;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
+import com.servoy.mobile.client.dataprocessing.Record;
 import com.servoy.mobile.client.dto.DataProviderDescription;
 import com.servoy.mobile.client.dto.EntityDescription;
 
@@ -77,7 +78,8 @@ public class FormScope extends GlobalScope
 		{
 			return formController.getFormModel().getSelectedRecord().getValue(variable);
 		}
-		FoundSet rfs = formController.getFormModel().getSelectedRecord().getRelatedFoundSet(variable);
+		Record rec = formController.getFormModel().getSelectedRecord();
+		FoundSet rfs = rec != null ? rec.getRelatedFoundSet(variable) : null;
 		if (rfs != null) return rfs;
 		return super.getValue(variable);
 	}

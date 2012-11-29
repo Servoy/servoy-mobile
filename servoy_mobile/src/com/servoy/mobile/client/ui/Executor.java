@@ -32,6 +32,7 @@ public class Executor
 		JavaScriptObject function = null;
 		if (!functionLookup.startsWith("scopes."))
 		{
+
 			function = getFunction("forms", formController.getName(), functionLookup);
 		}
 		else
@@ -70,9 +71,10 @@ public class Executor
 
 	private native Object eval(Object param)
 	/*-{
-	  var evalled = $wnd.eval(param);
-	  if (typeof evalled == "number") evalled = new Number(evalled);
-	  return evalled;
+		var evalled = $wnd.eval(param);
+		if (typeof evalled == "number")
+			evalled = new Number(evalled);
+		return evalled;
 	}-*/;
 
 	/**
@@ -81,7 +83,7 @@ public class Executor
 	 */
 	private native void call(JavaScriptObject func, JsArrayMixed params)
 	/*-{
-		func.apply(func,params);
+		func.apply(func, params);
 	}-*/;
 
 	/**
@@ -90,7 +92,7 @@ public class Executor
 	 */
 	private native JavaScriptObject getFunction(String topLevel, String scopeOrForm, String methodName)
 	/*-{
-	    return $wnd[topLevel][scopeOrForm][methodName];
+		return $wnd[topLevel][scopeOrForm][methodName];
 	}-*/;
 
 

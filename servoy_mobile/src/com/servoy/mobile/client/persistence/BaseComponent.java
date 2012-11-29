@@ -14,23 +14,97 @@ public class BaseComponent extends JavaScriptObject
 	{
 	}
 
-	public final native String getCustomProperties() /*-{
+	public final native void setAttributeValueInt(String attrName, int value) /*-{
+		this[attrName] = value;
+	}-*/;
+
+	public final native void setAttributeValueString(String attrName, String value) /*-{
+		this[attrName] = value;
+	}-*/;
+
+	public final native String getAttributeValueString(String attrName) /*-{
+		return this[attrName];
+	}-*/;
+
+	public final native int getAttributeValueInt(String attrName) /*-{
+		return this[attrName];
+	}-*/;
+
+	public final native String getCustomPropertiesInt() /*-{
 		return this.customProperties;
 	}-*/;
 
-	public final MobileProperties getMobileProperties()
+	public final native void setCustomPropertiesInt(String customProperties) /*-{
+		if (customProperties != null)
+			this.customProperties = customProperties;
+		else
+			delete (this.customProperties);
+	}-*/;
+
+	public final MobilePropertiesWrapper getMobilePropertiesWrapper()
 	{
-		String customProperties = getCustomProperties();
+		String customProperties = getCustomPropertiesInt();
 		if (customProperties != null)
 		{
-			JSONObject customPropertiesJSON = JSONParser.parseStrict(customProperties).isObject();
-			if (customPropertiesJSON != null)
-			{
-				CustomProperties customProperies = (CustomProperties)customPropertiesJSON.getJavaScriptObject().cast();
-				return customProperies.getMobile();
-			}
+			return getMobileProperties(customProperties);
 		}
 
+		return null;
+	}
+
+	public final MobileProperties getMobileProperties()
+	{
+		MobilePropertiesWrapper x = getMobilePropertiesWrapper();
+		return x == null ? null : x.get();
+	}
+
+	public final void setCustomProperties(CustomProperties cp)
+	{
+		if (cp != null) setCustomPropertiesInt(cp.toSource());
+		else setCustomPropertiesInt(null);
+	}
+
+	public final CustomProperties getCustomProperties()
+	{
+		String customProperties = getCustomPropertiesInt();
+		if (customProperties != null)
+		{
+			return getCustomProperties(customProperties);
+		}
+
+		return null;
+	}
+
+	public final MobilePropertiesWrapper createMobileProperties()
+	{
+		return getMobileProperties("{\"mobile\":{}}"); //$NON-NLS-1$
+	}
+
+	public final void setMobileProperties(MobilePropertiesWrapper mp)
+	{
+		if (mp != null) setCustomPropertiesInt(mp.parent.toSource());
+		else
+		{
+			CustomProperties cp = getCustomProperties();
+			cp.deleteMobileInternal();
+			setCustomPropertiesInt(cp.toSource());
+		}
+	}
+
+	protected final CustomProperties getCustomProperties(String customProperties)
+	{
+		JSONObject customPropertiesJSON = JSONParser.parseStrict(customProperties).isObject();
+		if (customPropertiesJSON != null)
+		{
+			return (CustomProperties)customPropertiesJSON.getJavaScriptObject().cast();
+		}
+		return null;
+	}
+
+	protected final MobilePropertiesWrapper getMobileProperties(String customProperties)
+	{
+		CustomProperties cp = getCustomProperties(customProperties);
+		if (cp != null) return cp.getMobile();
 		return null;
 	}
 
@@ -40,9 +114,37 @@ public class BaseComponent extends JavaScriptObject
 		{
 		}
 
-		public final native MobileProperties getMobile() /*-{
+		public final MobilePropertiesWrapper getMobile()
+		{
+			MobileProperties mp = getMobileInternal();
+			return mp == null ? null : new MobilePropertiesWrapper(this, mp);
+		}
+
+		public final native MobileProperties getMobileInternal() /*-{
 			return this.mobile;
 		}-*/;
+
+		public final native void deleteMobileInternal() /*-{
+			delete this.mobile;
+		}-*/;
+
+	}
+
+	public static class MobilePropertiesWrapper
+	{
+		private final MobileProperties wrapped;
+		private final CustomProperties parent;
+
+		protected MobilePropertiesWrapper(CustomProperties parent, MobileProperties toWrap)
+		{
+			wrapped = toWrap;
+			this.parent = parent;
+		}
+
+		public MobileProperties get()
+		{
+			return wrapped;
+		}
 	}
 
 	public static class MobileProperties extends JavaScriptObject
@@ -50,6 +152,10 @@ public class BaseComponent extends JavaScriptObject
 		protected MobileProperties()
 		{
 		}
+
+		public final native void setMobileForm() /*-{
+			this.mobileform = true;
+		}-*/;
 
 		public final native boolean isHeaderLeftButton() /*-{
 			return this.headerLeftButton ? this.headerLeftButton : false;

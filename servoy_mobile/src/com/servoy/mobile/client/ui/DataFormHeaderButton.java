@@ -75,7 +75,9 @@ public class DataFormHeaderButton extends JQMButton implements IDisplayData, IGr
 		return orientation;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.scripting.IScriptableProvider#getScriptObject()
 	 */
 	@Override

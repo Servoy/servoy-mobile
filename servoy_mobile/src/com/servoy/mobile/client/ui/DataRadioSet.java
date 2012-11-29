@@ -157,7 +157,9 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 		return dataText;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.scripting.IScriptableProvider#getScriptObject()
 	 */
 	@Override

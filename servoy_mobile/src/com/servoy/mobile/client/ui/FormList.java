@@ -129,8 +129,8 @@ public class FormList extends JQMList implements IDisplayRelatedData
 	}
 
 	protected native void forceRefresh(String id) /*-{
-													$wnd.$("#" + id).listview('refresh', true);
-													}-*/;
+		$wnd.$("#" + id).listview('refresh', true);
+	}-*/;
 
 	private void createList(FoundSet foundset)
 	{
@@ -219,7 +219,7 @@ public class FormList extends JQMList implements IDisplayRelatedData
 
 		/*
 		 * (non-Javadoc)
-		 *
+		 * 
 		 * @see com.servoy.j2db.util.ITagResolver#getStringValue(java.lang.String)
 		 */
 		@Override
