@@ -18,7 +18,7 @@ if (typeof(_ServoyUtils_) == "undefined")
 		return function() {
 			_ServoyUtils_.stack.push(scope);
 			try {
-				func.apply(scope, arguments);
+				return func.apply(scope, arguments);
 			} finally {
 				_ServoyUtils_.stack.pop();   
 			}
