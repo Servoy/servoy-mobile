@@ -71,7 +71,7 @@ public class Form extends BaseComponent
 
 	public final String getDataSource()
 	{
-		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_DATASOURCE);
+		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_DATASOURCE, null);
 	}
 
 	public final native String getName() /*-{

@@ -19,6 +19,7 @@ package com.servoy.mobile.client.ui;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.user.client.ui.Widget;
+import com.servoy.j2db.persistence.constants.IFieldConstants;
 import com.servoy.j2db.persistence.constants.IFormConstants;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
@@ -135,28 +136,28 @@ public class ComponentFactory
 				}
 				switch (field.getDisplayType())
 				{
-					case Field.DISPLAY_TYPE_TEXT_FIELD :
+					case IFieldConstants.TEXT_FIELD :
 						componentWidget = new DataTextField(field, executor, application);
 						break;
-					case Field.DISPLAY_TYPE_TEXT_AREA :
+					case IFieldConstants.TEXT_AREA :
 						componentWidget = new DataTextArea(field);
 						break;
-					case Field.DISPLAY_TYPE_COMBOBOX :
+					case IFieldConstants.COMBOBOX :
 						componentWidget = new DataSelect(field, valuelist, executor, application);
 						break;
-					case Field.DISPLAY_TYPE_RADIOS :
+					case IFieldConstants.RADIOS :
 						componentWidget = new DataRadioSet(field, valuelist, executor, application);
 						break;
-					case Field.DISPLAY_TYPE_CHECKS :
+					case IFieldConstants.CHECKS :
 						componentWidget = new DataCheckboxSet(field, valuelist, executor, application);
 						break;
-					case Field.DISPLAY_TYPE_CALENDAR :
+					case IFieldConstants.CALENDAR :
 						componentWidget = new DataTextField(field, executor, application);
 						break;
-					case Field.DISPLAY_TYPE_LIST_BOX :
+					case IFieldConstants.LIST_BOX :
 						componentWidget = new DataList(field);
 						break;
-					case Field.DISPLAY_TYPE_PASSWORD :
+					case IFieldConstants.PASSWORD :
 						componentWidget = new DataPassword(field);
 						break;
 				}

@@ -59,7 +59,7 @@ public class Component extends BaseComponent
 
 	public final String getSize()
 	{
-		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_SIZE);
+		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_SIZE, null);
 	}
 
 	public final void setSize(int w, int h)
@@ -69,7 +69,7 @@ public class Component extends BaseComponent
 
 	public final String getLocation()
 	{
-		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_LOCATION);
+		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_LOCATION, null);
 	}
 
 	public final void setLocation(int x, int y)

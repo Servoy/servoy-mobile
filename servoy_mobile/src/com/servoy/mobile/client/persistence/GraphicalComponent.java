@@ -39,7 +39,7 @@ public class GraphicalComponent extends Component
 
 	public final String getViewType()
 	{
-		return getAttributeValueString(VIEW_TYPE_ATTR);
+		return getAttributeValueString(VIEW_TYPE_ATTR, null);
 	}
 
 	public final void setOnActionMethodID(String id)
@@ -49,7 +49,7 @@ public class GraphicalComponent extends Component
 
 	public final String getOnActionMethodID()
 	{
-		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_ONACTIONMETHODID);
+		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_ONACTIONMETHODID, null);
 	}
 
 	public final native String getDataProviderID() /*-{
@@ -63,7 +63,7 @@ public class GraphicalComponent extends Component
 
 	public final String getText()
 	{
-		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_TEXT);
+		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_TEXT, null);
 	}
 
 	public final native String getActionMethodID() /*-{

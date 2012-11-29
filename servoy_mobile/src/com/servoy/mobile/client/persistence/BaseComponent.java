@@ -5,7 +5,7 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 
 /**
- * 
+ *
  * @author gboros
  */
 public class BaseComponent extends JavaScriptObject
@@ -22,12 +22,12 @@ public class BaseComponent extends JavaScriptObject
 		this[attrName] = value;
 	}-*/;
 
-	public final native String getAttributeValueString(String attrName) /*-{
-		return this[attrName];
+	public final native String getAttributeValueString(String attrName, String defaultValue) /*-{
+		return this[attrName] ? this[attrName] : defaultValue;
 	}-*/;
 
-	public final native int getAttributeValueInt(String attrName) /*-{
-		return this[attrName];
+	public final native int getAttributeValueInt(String attrName, int defaultValue) /*-{
+		return this[attrName] ? this[attrName] : defaultValue;
 	}-*/;
 
 	public final native String getCustomPropertiesInt() /*-{

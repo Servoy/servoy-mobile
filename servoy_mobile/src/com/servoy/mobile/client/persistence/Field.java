@@ -1,6 +1,7 @@
 package com.servoy.mobile.client.persistence;
 
 import com.servoy.j2db.persistence.constants.IContentSpecConstantsBase;
+import com.servoy.j2db.persistence.constants.IFieldConstants;
 
 /*
  This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
@@ -24,16 +25,6 @@ import com.servoy.j2db.persistence.constants.IContentSpecConstantsBase;
  */
 public class Field extends Component
 {
-	public static final int DISPLAY_TYPE_TEXT_FIELD = 0;
-	public static final int DISPLAY_TYPE_TEXT_AREA = 1;
-	public static final int DISPLAY_TYPE_COMBOBOX = 2;
-	public static final int DISPLAY_TYPE_RADIOS = 3;
-	public static final int DISPLAY_TYPE_CHECKS = 4;
-	public static final int DISPLAY_TYPE_CALENDAR = 5;
-	public static final int DISPLAY_TYPE_PASSWORD = 6;
-	public static final int DISPLAY_TYPE_LIST_BOX = 11;
-	public static final int DISPLAY_TYPE_MULTISELECT_LISTBOX = 12;
-
 	protected Field()
 	{
 	}
@@ -65,7 +56,7 @@ public class Field extends Component
 
 	public final String getDataProviderID()
 	{
-		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_DATAPROVIDERID);
+		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_DATAPROVIDERID, null);
 	}
 
 	public final void setDisplayType(int type)
@@ -75,7 +66,7 @@ public class Field extends Component
 
 	public final int getDisplayType()
 	{
-		return getAttributeValueInt(IContentSpecConstantsBase.PROPERTY_DISPLAYTYPE);
+		return getAttributeValueInt(IContentSpecConstantsBase.PROPERTY_DISPLAYTYPE, IFieldConstants.TEXT_FIELD);
 	}
 
 }
