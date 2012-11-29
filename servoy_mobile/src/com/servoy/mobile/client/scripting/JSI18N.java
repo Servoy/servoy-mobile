@@ -35,10 +35,10 @@ public class JSI18N implements Exportable, IJSI18N
 		export(ExporterUtil.wrap(this));
 	}
 
-	public native String getCurrentLanguage()
-	/*-{
-		return $wnd.navigator.language;
-	}-*/;
+	public String getCurrentLanguage()
+	{
+		return i18nProvider.getLocale();
+	}
 
 	public void setLocale(String language, String country)
 	{

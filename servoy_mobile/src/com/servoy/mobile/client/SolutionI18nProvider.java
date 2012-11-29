@@ -77,4 +77,8 @@ public class SolutionI18nProvider implements I18NProvider
 		this.locale = locale;
 	}
 
+	public String getLocale()
+	{
+		return locale;
+	}
 }
