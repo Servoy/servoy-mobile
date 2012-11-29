@@ -101,7 +101,7 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 	 * @see com.servoy.mobile.client.dataprocessing.IFoundSetSelectionListener#valueChanged()
 	 */
 	@Override
-	public void valueChanged()
+	public void selectionChanged()
 	{
 		formDisplay.refreshRecord(foundSet.getSelectedRecord());
 	}
@@ -137,9 +137,9 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 	@Export
 	public void showRecords(FoundSet foundset) throws Exception
 	{
-		this.foundSet = foundset;
+		setModel(foundset);
 		mc.getFormManager().showForm(this);
-		valueChanged();
+		selectionChanged();
 	}
 
 	/*
@@ -163,8 +163,7 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 	@Export
 	public int getSelectedIndex()
 	{
-		// call +1 method of foundset
-		return 1;
+		return foundSet.jsFunction_getSelectedIndex();
 	}
 
 	/*
@@ -183,8 +182,10 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 	/**
 	 * @param relatedFoundset
 	 */
-	public void setModel(FoundSet relatedFoundset)
+	public void setModel(FoundSet foundset)
 	{
-		this.foundSet = relatedFoundset;
+		if (this.foundSet != null) this.foundSet.removeSelectionListener(this);
+		this.foundSet = foundset;
+		if (this.foundSet != null) this.foundSet.addSelectionListener(this);
 	}
 }

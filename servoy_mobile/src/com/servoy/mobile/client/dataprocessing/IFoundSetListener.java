@@ -20,9 +20,9 @@ package com.servoy.mobile.client.dataprocessing;
 /**
  * The listener that's notified when a foundset  selection value changes.
  * 
- * @author gboros
+ * @author jcompagner
  */
-public interface IFoundSetSelectionListener
+public interface IFoundSetListener
 {
-	void selectionChanged();
+	void contentChanged();
 }

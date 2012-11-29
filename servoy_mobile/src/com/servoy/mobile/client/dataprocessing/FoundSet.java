@@ -18,10 +18,12 @@ package com.servoy.mobile.client.dataprocessing;
  */
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.servoy.j2db.scripting.api.IJSFoundSet;
 import com.servoy.mobile.client.dto.FoundSetDescription;
 import com.servoy.mobile.client.dto.RecordDescription;
@@ -53,7 +55,7 @@ public class FoundSet implements Exportable, IJSFoundSet //  extends Scope if we
 		if (index > 0 && index < getSize() + 1)
 		{
 			selectedIndex = index - 1;
-			fireValueChanged();
+			fireSelectionChanged();
 		}
 	}
 
@@ -70,19 +72,9 @@ public class FoundSet implements Exportable, IJSFoundSet //  extends Scope if we
 	}
 
 	@Export("getSize")
-	public int js_getSize()
-	{
-		return getSize() + 1;
-	}
-
 	public int getSize()
 	{
 		return foundSetDescription.getRecords().length();
-	}
-
-	public int getSelectedIndex()
-	{
-		return selectedIndex;
 	}
 
 	@Export
@@ -109,6 +101,33 @@ public class FoundSet implements Exportable, IJSFoundSet //  extends Scope if we
 		return -1;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.j2db.scripting.api.IJSFoundSet#sort(java.lang.Object)
+	 */
+	@Override
+	@Export
+	public void sort(Object comparator)
+	{
+		if (comparator instanceof JavaScriptObject)
+		{
+			// first load all records;
+			for (int i = 0; i < getSize(); i++)
+			{
+				getRecord(i);
+			}
+
+			Collections.sort(records, new RecordComparater((JavaScriptObject)comparator));
+			fireContentChanged();
+		}
+	}
+
+	public int getSelectedIndex()
+	{
+		return selectedIndex;
+	}
+
 	public Record newRecord(int index, boolean changeSelection)
 	{
 		Object pk = Utils.createStringUUID();
@@ -121,7 +140,7 @@ public class FoundSet implements Exportable, IJSFoundSet //  extends Scope if we
 		if (changeSelection)
 		{
 			selectedIndex = index;
-			fireValueChanged();
+			fireSelectionChanged();
 		}
 		startEdit(retval);
 		return retval;
@@ -229,9 +248,27 @@ public class FoundSet implements Exportable, IJSFoundSet //  extends Scope if we
 		selectionListeners.remove(listener);
 	}
 
-	protected void fireValueChanged()
+	protected void fireSelectionChanged()
 	{
 		for (IFoundSetSelectionListener l : selectionListeners)
-			l.valueChanged();
+			l.selectionChanged();
+	}
+
+	private final ArrayList<IFoundSetListener> foundSetListeners = new ArrayList<IFoundSetListener>();
+
+	public void addFoundSetListener(IFoundSetListener listener)
+	{
+		if (foundSetListeners.indexOf(listener) == -1) foundSetListeners.add(listener);
+	}
+
+	public void removeFoundSetListener(IFoundSetListener listener)
+	{
+		foundSetListeners.remove(listener);
+	}
+
+	protected void fireContentChanged()
+	{
+		for (IFoundSetListener l : foundSetListeners)
+			l.contentChanged();
 	}
 }

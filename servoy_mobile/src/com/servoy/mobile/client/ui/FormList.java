@@ -27,6 +27,7 @@ import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.dataprocessing.DataAdapterList;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.dataprocessing.IDisplayRelatedData;
+import com.servoy.mobile.client.dataprocessing.IFoundSetListener;
 import com.servoy.mobile.client.dataprocessing.Record;
 import com.servoy.mobile.client.persistence.BaseComponent;
 import com.servoy.mobile.client.persistence.Component;
@@ -39,7 +40,7 @@ import com.sksamuel.jqm4gwt.list.JQMListItem;
  *
  * @author gboros
  */
-public class FormList extends JQMList implements IDisplayRelatedData
+public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetListener
 {
 	private final FormController formController;
 	private final DataAdapterList dal;
@@ -107,6 +108,7 @@ public class FormList extends JQMList implements IDisplayRelatedData
 
 
 	private FoundSet relatedFoundset;
+	private FoundSet foundSet;
 
 	/*
 	 * @see com.servoy.mobile.client.dataprocessing.IDisplayRelatedData#setRecord(com.servoy.mobile.client.dataprocessing.Record)
@@ -122,6 +124,17 @@ public class FormList extends JQMList implements IDisplayRelatedData
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.dataprocessing.IFoundSetListener#contentChanged()
+	 */
+	@Override
+	public void contentChanged()
+	{
+		refreshList();
+	}
+
 	public void refreshList()
 	{
 		createList(relatedFoundset != null ? relatedFoundset : formController.getFormModel());
@@ -134,6 +147,9 @@ public class FormList extends JQMList implements IDisplayRelatedData
 
 	private void createList(FoundSet foundset)
 	{
+		if (this.foundSet != null) this.foundSet.removeFoundSetListener(this);
+		this.foundSet = foundset;
+		if (this.foundSet != null) this.foundSet.addFoundSetListener(this);
 		clear();
 		int foundsetSize = foundset.getSize();
 		JQMListItem listItem;
