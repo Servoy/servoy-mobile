@@ -245,7 +245,7 @@ public class OfflineDataProxy
 		String json = row.toJSON();
 		totalLength += json.length();
 
-		//serverURL/entityName/12 POST (for update)
+		//serverURL/entityName/12 PUT (for update), POST for new
 		RequestBuilder builder = new RequestBuilder(row.isCreatedOnDevice() ? RequestBuilder.POST : RequestBuilder.PUT, serverURL + "/" +
 			foundSetManager.getEntityPrefix() + entityName + "/" + version + "/" + URL.encode(pk));
 		setRequestCredentials(builder);
