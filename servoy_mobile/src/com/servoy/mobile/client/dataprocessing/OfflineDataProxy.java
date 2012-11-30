@@ -43,7 +43,6 @@ import com.servoy.mobile.client.util.Failure;
  * The proxy class to communicate with server
  * @author jblok
  */
-//export as 'mobile' in plugin scope
 public class OfflineDataProxy
 {
 	private static final int version = 1;
@@ -64,8 +63,7 @@ public class OfflineDataProxy
 	{
 		this.loadCallback = cb;
 
-		//requires a REST url like:
-		//serverURL/offline_data/fsname
+		//requires a REST url like: serverURL/offline_data/version/name
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, serverURL + "/offline_data/" + version + "/" + URL.encode(name));
 		setRequestCredentials(builder);
 
