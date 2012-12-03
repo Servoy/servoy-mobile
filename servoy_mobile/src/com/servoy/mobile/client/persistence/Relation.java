@@ -27,10 +27,6 @@ public class Relation extends BaseComponent
 	{
 	}
 
-	public final native String getName() /*-{
-		return this.name;
-	}-*/;
-
 	public final native boolean isSelfRef() /*-{
 		return this.items == undefined || this.items == null
 				|| this.items.length == 0;

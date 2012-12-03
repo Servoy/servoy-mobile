@@ -74,10 +74,6 @@ public class Form extends BaseComponent
 		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_DATASOURCE, null);
 	}
 
-	public final native String getName() /*-{
-		return this.name;
-	}-*/;
-
 	public final native String getUUID() /*-{
 		return this.uuid;
 	}-*/;

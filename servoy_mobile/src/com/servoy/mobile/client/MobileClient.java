@@ -34,6 +34,15 @@ import com.servoy.mobile.client.scripting.JSHistory;
 import com.servoy.mobile.client.scripting.JSI18N;
 import com.servoy.mobile.client.scripting.JSSecurity;
 import com.servoy.mobile.client.scripting.JSUtils;
+import com.servoy.mobile.client.scripting.RuntimeDataButton;
+import com.servoy.mobile.client.scripting.RuntimeDataCheckboxSet;
+import com.servoy.mobile.client.scripting.RuntimeDataFormHeader;
+import com.servoy.mobile.client.scripting.RuntimeDataFormHeaderButton;
+import com.servoy.mobile.client.scripting.RuntimeDataLabel;
+import com.servoy.mobile.client.scripting.RuntimeDataRadioSet;
+import com.servoy.mobile.client.scripting.RuntimeDataSelect;
+import com.servoy.mobile.client.scripting.RuntimeDataText;
+import com.servoy.mobile.client.scripting.RuntimeDataTextField;
 import com.servoy.mobile.client.scripting.ScriptEngine;
 import com.servoy.mobile.client.scripting.solutionmodel.JSSolutionModel;
 import com.servoy.mobile.client.util.Failure;
@@ -68,6 +77,16 @@ public class MobileClient implements EntryPoint
 		GWT.create(JSEvent.class);
 		GWT.create(JSSolutionModel.class); // this will also export all referenced classes like JSForm
 		GWT.create(FoundSet.class); // foundset is not a scope yet, if it becomes a scope (aggregates) then this can't be done, or must he exported differently
+		// export all the scriptable ui classes:
+		GWT.create(RuntimeDataButton.class);
+		GWT.create(RuntimeDataCheckboxSet.class);
+		GWT.create(RuntimeDataFormHeader.class);
+		GWT.create(RuntimeDataFormHeaderButton.class);
+		GWT.create(RuntimeDataLabel.class);
+		GWT.create(RuntimeDataRadioSet.class);
+		GWT.create(RuntimeDataSelect.class);
+		GWT.create(RuntimeDataText.class);
+		GWT.create(RuntimeDataTextField.class);
 
 
 		solution = createSolution();
@@ -98,20 +117,20 @@ public class MobileClient implements EntryPoint
 	}
 
 	private native void addStartPageShowCallback()/*-{
-		var mobileClient = this;
-		if ($wnd.$.mobile.activePage
-				&& $wnd.$.mobile.activePage.attr("id") == 'start') {
-			mobileClient.@com.servoy.mobile.client.MobileClient::onStartPageShown()();
-		} else {
-			$wnd
-					.$('#start')
-					.live(
-							'pageshow',
-							function(event) {
-								mobileClient.@com.servoy.mobile.client.MobileClient::onStartPageShown()();
-							});
-		}
-	}-*/;
+													var mobileClient = this;
+													if ($wnd.$.mobile.activePage
+													&& $wnd.$.mobile.activePage.attr("id") == 'start') {
+													mobileClient.@com.servoy.mobile.client.MobileClient::onStartPageShown()();
+													} else {
+													$wnd
+													.$('#start')
+													.live(
+													'pageshow',
+													function(event) {
+													mobileClient.@com.servoy.mobile.client.MobileClient::onStartPageShown()();
+													});
+													}
+													}-*/;
 
 	protected String getServerURL()
 	{

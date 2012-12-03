@@ -250,8 +250,12 @@ public class FoundSet implements Exportable, IJSFoundSet //  extends Scope if we
 
 	protected void fireSelectionChanged()
 	{
-		for (IFoundSetSelectionListener l : selectionListeners)
-			l.selectionChanged();
+		if (selectionListeners.size() > 0)
+		{
+			IFoundSetSelectionListener[] array = selectionListeners.toArray(new IFoundSetSelectionListener[selectionListeners.size()]);
+			for (IFoundSetSelectionListener l : array)
+				l.selectionChanged();
+		}
 	}
 
 	private final ArrayList<IFoundSetListener> foundSetListeners = new ArrayList<IFoundSetListener>();

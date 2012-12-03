@@ -83,4 +83,12 @@ public class FormScope extends GlobalScope
 		if (rfs != null) return rfs;
 		return super.getValue(variable);
 	}
+
+	/**
+	 * 
+	 */
+	public ElementScope getElementScope()
+	{
+		return (ElementScope)servoyProperties.get("elements");
+	}
 }

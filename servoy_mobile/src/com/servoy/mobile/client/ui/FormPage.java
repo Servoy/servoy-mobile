@@ -35,6 +35,8 @@ import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
+import com.servoy.mobile.client.scripting.IRuntimeComponent;
+import com.servoy.mobile.client.scripting.IRuntimeComponentProvider;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
@@ -108,6 +110,8 @@ public class FormPage extends JQMPage
 		createContent(contentComponents);
 		JQMFooter componentFooter = createFooter(footerComponents);
 		if (componentFooter != null) add(componentFooter);
+
+
 	}
 
 	public JQMHeader createHeader(Component label, Component leftButton, Component rightButton)
@@ -255,6 +259,11 @@ public class FormPage extends JQMPage
 		if (component == null) return null;
 		Widget w = ComponentFactory.createComponent(application, component, dal, formController.getExecutor());
 		if (w != null) dal.addFormObject(w);
+		if (w instanceof IRuntimeComponentProvider && component.getName() != null)
+		{
+			IRuntimeComponent runtimeComponent = ((IRuntimeComponentProvider)w).getRuntimeComponent();
+			formController.getFormScope().getElementScope().addComponent(component.getName(), runtimeComponent);
+		}
 		return w;
 	}
 

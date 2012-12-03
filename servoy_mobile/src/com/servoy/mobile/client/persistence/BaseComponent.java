@@ -14,6 +14,10 @@ public class BaseComponent extends JavaScriptObject
 	{
 	}
 
+	public final native String getName() /*-{
+		return this.name;
+	}-*/;
+
 	public final native void setAttributeValueInt(String attrName, int value) /*-{
 		this[attrName] = value;
 	}-*/;
