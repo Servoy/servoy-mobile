@@ -20,7 +20,6 @@ package com.servoy.mobile.client.ui;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.HasText;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
@@ -34,14 +33,14 @@ import com.servoy.mobile.client.scripting.RuntimeDataText;
 public class DataText implements IDisplayData, IGraphicalComponent
 {
 	private final GraphicalComponent textComponent;
-	private final HasText parentComponent;
+	private final ISupportDataText parentComponent;
 	private final RuntimeDataText scriptable;
 
-	public DataText(HasText parentComponent, GraphicalComponent textComponent, Executor executor, MobileClient application)
+	public DataText(ISupportDataText parentComponent, GraphicalComponent textComponent, Executor executor, MobileClient application)
 	{
 		this.parentComponent = parentComponent;
 		this.textComponent = textComponent;
-		parentComponent.setText(application.getI18nProvider().getI18NMessageIfPrefixed(textComponent.getText() != null ? textComponent.getText() : ""));
+		parentComponent.setDataText(application.getI18nProvider().getI18NMessageIfPrefixed(textComponent.getText() != null ? textComponent.getText() : ""));
 		this.scriptable = new RuntimeDataText(application, executor, this, textComponent);
 	}
 
@@ -78,7 +77,7 @@ public class DataText implements IDisplayData, IGraphicalComponent
 	@Override
 	public void setText(String text)
 	{
-		parentComponent.setText(text);
+		parentComponent.setDataText(text);
 	}
 
 	/* (non-Javadoc)
@@ -87,7 +86,7 @@ public class DataText implements IDisplayData, IGraphicalComponent
 	@Override
 	public String getText()
 	{
-		return parentComponent.getText();
+		return parentComponent.getDataText();
 	}
 
 	/* (non-Javadoc)

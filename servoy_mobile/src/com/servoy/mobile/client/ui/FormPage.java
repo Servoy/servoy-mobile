@@ -19,9 +19,6 @@ package com.servoy.mobile.client.ui;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map.Entry;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.user.client.ui.Widget;
@@ -44,7 +41,7 @@ import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 
 /**
  * Form UI
- * 
+ *
  * @author gboros
  */
 public class FormPage extends JQMPage
@@ -151,8 +148,8 @@ public class FormPage extends JQMPage
 	public void createContent(ArrayList<Component> contentComponents)
 	{
 		Collections.sort(contentComponents, PositionComparator.YX_COMPARATOR);
-		HashMap<String, GraphicalComponent> fieldsetLabel = new HashMap<String, GraphicalComponent>();
-		HashMap<String, ISupportDataText> fieldsetField = new HashMap<String, ISupportDataText>();
+		ArrayList<FormPage.RowDisplay> rowsDisplay = new ArrayList<FormPage.RowDisplay>();
+
 		GraphicalComponent gc;
 		Field field;
 		String groupID;
@@ -162,38 +159,57 @@ public class FormPage extends JQMPage
 			if ((gc = c.isGraphicalComponent()) != null)
 			{
 				groupID = gc.getGroupID();
-				if (groupID != null)
-				{
-					fieldsetLabel.put(groupID, gc);
-					continue;
-				}
 			}
 			else if ((field = c.isField()) != null)
 			{
 				groupID = field.getGroupID();
 			}
 
-			Widget widget = createWidget(c);
-			if (widget != null)
+
+			if(groupID != null)
 			{
-				if (groupID != null && widget instanceof ISupportDataText)
+				GroupDisplay groupRow = null;
+				for(RowDisplay rd : rowsDisplay)
 				{
-					fieldsetField.put(groupID, (ISupportDataText)widget);
+					if(rd instanceof GroupDisplay && ((GroupDisplay)rd).groupID.equals(groupID))
+					{
+						groupRow = (GroupDisplay)rd;
+						break;
+					}
 				}
-				add(widget);
+				if(groupRow != null) groupRow.setRightComponent(c);
+				else rowsDisplay.add(new GroupDisplay(groupID, c));
+			}
+			else
+			{
+				rowsDisplay.add(new RowDisplay(c));
 			}
 		}
 
-		Iterator<Entry<String, ISupportDataText>> fieldsetFieldIte = fieldsetField.entrySet().iterator();
-		Entry<String, ISupportDataText> fieldsetFieldEntry;
-		while (fieldsetFieldIte.hasNext())
+		for(RowDisplay rd : rowsDisplay)
 		{
-			fieldsetFieldEntry = fieldsetFieldIte.next();
-			gc = fieldsetLabel.get(fieldsetFieldEntry.getKey());
-			if (gc != null)
+			if(rd instanceof GroupDisplay)
 			{
-				fieldsetFieldEntry.getValue().setDataTextComponent(gc);
-				dal.addFormObject(fieldsetFieldEntry.getValue().getDataTextDisplay());
+				GroupDisplay groupRow = (GroupDisplay)rd;
+				GraphicalComponent rowLabel = groupRow.component.isGraphicalComponent();
+				if(rowLabel != null)
+				{
+					Widget widget = createWidget(groupRow.rightComponent);
+					if(widget != null)
+					{
+						if(widget instanceof ISupportDataText)
+						{
+							((ISupportDataText)widget).setDataTextComponent(rowLabel);
+							dal.addFormObject(((ISupportDataText)widget).getDataTextDisplay());
+						}
+						add(widget);
+					}
+				}
+			}
+			else
+			{
+				Widget widget = createWidget(rd.component);
+				if(widget != null) add(widget);
 			}
 		}
 	}
@@ -280,5 +296,32 @@ public class FormPage extends JQMPage
 	public DataAdapterList getDataAdapterList()
 	{
 		return dal;
+	}
+
+	private class RowDisplay
+	{
+		Component component;
+
+		RowDisplay(Component component)
+		{
+			this.component = component;
+		}
+	}
+
+	private class GroupDisplay extends RowDisplay
+	{
+		String groupID;
+		Component rightComponent;
+
+		GroupDisplay(String groupID, Component leftComponent)
+		{
+			super(leftComponent);
+			this.groupID = groupID;
+		}
+
+		void setRightComponent(Component rightComponent)
+		{
+			this.rightComponent = rightComponent;
+		}
 	}
 }

@@ -29,4 +29,8 @@ public interface ISupportDataText
 	void setDataTextComponent(GraphicalComponent component);
 
 	IDisplayData getDataTextDisplay();
+
+	void setDataText(String dataText);
+
+	String getDataText();
 }

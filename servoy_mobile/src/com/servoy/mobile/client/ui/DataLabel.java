@@ -17,13 +17,18 @@ package com.servoy.mobile.client.ui;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasText;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.servoy.mobile.client.scripting.IRuntimeComponent;
 import com.servoy.mobile.client.scripting.RuntimeDataLabel;
+import com.sksamuel.jqm4gwt.JQMWidget;
+import com.sksamuel.jqm4gwt.html.FormLabel;
 import com.sksamuel.jqm4gwt.html.Heading;
 
 /**
@@ -31,14 +36,41 @@ import com.sksamuel.jqm4gwt.html.Heading;
  *
  * @author gboros
  */
-public class DataLabel extends Heading implements IDisplayData, IGraphicalComponent
+public class DataLabel extends JQMWidget implements HasText, IDisplayData, IGraphicalComponent, ISupportDataText
 {
+	private final FormLabel	labelFor;
+	private final Heading	label;
+	private final FlowPanel	flow;
+	protected final Executor executor;
+	private final MobileClient application;
 	private final RuntimeDataLabel scriptable;
 
 	public DataLabel(GraphicalComponent gc, Executor executor, MobileClient application)
 	{
-		super(gc.getMobileProperties() != null ? gc.getMobileProperties().getHeaderSize() : 4, application.getI18nProvider().getI18NMessageIfPrefixed(
-			gc.getText() != null ? gc.getText() : "")); //$NON-NLS-1$
+		this.executor = executor;
+		this.application = application;
+
+		String id = Document.get().createUniqueId();
+
+		flow = new FlowPanel();
+		initWidget(flow);
+
+		labelFor = new FormLabel();
+		labelFor.setFor(id);
+
+		label = new Heading(gc.getMobileProperties() != null ? gc.getMobileProperties().getHeaderSize() : 4, application.getI18nProvider().getI18NMessageIfPrefixed(
+				gc.getText() != null ? gc.getText() : "")); //$NON-NLS-1$
+		label.getElement().setId(id);
+
+		flow.add(labelFor);
+		flow.add(label);
+
+		setDataRole("fieldcontain"); //$NON-NLS-1$
+		addStyleName("jqm4gwt-fieldcontain"); //$NON-NLS-1$
+		labelFor.addStyleName("label-labelfor"); //$NON-NLS-1$
+		label.addStyleName("label-heading"); //$NON-NLS-1$
+		setId();
+
 		this.scriptable = new RuntimeDataLabel(application, executor, this, gc);
 	}
 
@@ -62,7 +94,7 @@ public class DataLabel extends Heading implements IDisplayData, IGraphicalCompon
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.mobile.client.scripting.IScriptableProvider#getScriptObject()
 	 */
 	@Override
@@ -73,7 +105,7 @@ public class DataLabel extends Heading implements IDisplayData, IGraphicalCompon
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.google.gwt.event.dom.client.HasClickHandlers#addClickHandler(com.google.gwt.event.dom.client.ClickHandler)
 	 */
 	@Override
@@ -81,5 +113,61 @@ public class DataLabel extends Heading implements IDisplayData, IGraphicalCompon
 	{
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.google.gwt.user.client.ui.HasText#getText()
+	 */
+	@Override
+	public String getText()
+	{
+		return label.getText();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.google.gwt.user.client.ui.HasText#setText(java.lang.String)
+	 */
+	@Override
+	public void setText(String text)
+	{
+		label.setText(text);
+	}
+
+	private DataText dataText;
+
+	/*
+	 * @see com.servoy.mobile.client.ui.ISupportDataText#setDataTextComponent(com.servoy.mobile.client.persistence.GraphicalComponent)
+	 */
+	@Override
+	public void setDataTextComponent(GraphicalComponent component)
+	{
+		if (component != null) dataText = new DataText(this, component, executor, application);
+	}
+
+	/*
+	 * @see com.servoy.mobile.client.ui.ISupportDataText#getDataTextDisplay()
+	 */
+	@Override
+	public IDisplayData getDataTextDisplay()
+	{
+		return dataText;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.ui.ISupportDataText#setDataText(java.lang.String)
+	 */
+	@Override
+	public void setDataText(String dataText)
+	{
+		labelFor.setText(dataText);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.ui.ISupportDataText#getDataText()
+	 */
+	@Override
+	public String getDataText()
+	{
+		return labelFor.getText();
 	}
 }

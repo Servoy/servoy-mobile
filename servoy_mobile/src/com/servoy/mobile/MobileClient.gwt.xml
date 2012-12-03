@@ -7,6 +7,7 @@
   <script src="../solution.js"/>
   <script src="../solution.json"/>
   <script src="../servoy_utils.js"/>
+  <stylesheet src="../servoy.css"/>
 
   <!-- Inherit the core Web Toolkit stuff.                        -->
   <inherits name='com.google.gwt.user.User'/>

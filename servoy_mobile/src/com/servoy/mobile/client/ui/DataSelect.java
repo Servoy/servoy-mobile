@@ -143,4 +143,22 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 	{
 		return scriptable;
 	}
+
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.ui.ISupportDataText#setDataText(java.lang.String)
+	 */
+	@Override
+	public void setDataText(String dataText)
+	{
+		setText(dataText);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.servoy.mobile.client.ui.ISupportDataText#getDataText()
+	 */
+	@Override
+	public String getDataText()
+	{
+		return getText();
+	}
 }
