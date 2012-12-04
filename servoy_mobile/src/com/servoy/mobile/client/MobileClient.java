@@ -117,20 +117,20 @@ public class MobileClient implements EntryPoint
 	}
 
 	private native void addStartPageShowCallback()/*-{
-													var mobileClient = this;
-													if ($wnd.$.mobile.activePage
-													&& $wnd.$.mobile.activePage.attr("id") == 'start') {
-													mobileClient.@com.servoy.mobile.client.MobileClient::onStartPageShown()();
-													} else {
-													$wnd
-													.$('#start')
-													.live(
-													'pageshow',
-													function(event) {
-													mobileClient.@com.servoy.mobile.client.MobileClient::onStartPageShown()();
-													});
-													}
-													}-*/;
+		var mobileClient = this;
+		if ($wnd.$.mobile.activePage
+				&& $wnd.$.mobile.activePage.attr("id") == 'start') {
+			mobileClient.@com.servoy.mobile.client.MobileClient::onStartPageShown()();
+		} else {
+			$wnd
+					.$('#start')
+					.live(
+							'pageshow',
+							function(event) {
+								mobileClient.@com.servoy.mobile.client.MobileClient::onStartPageShown()();
+							});
+		}
+	}-*/;
 
 	protected String getServerURL()
 	{
@@ -247,6 +247,22 @@ public class MobileClient implements EntryPoint
 			public void onFailure(Failure reason)
 			{
 				Mobile.hideLoadingDialog();
+				StringBuilder detail = new StringBuilder();
+				if (reason.getStatusCode() != 0)
+				{
+					detail.append(reason.getStatusCode());
+				}
+				if (reason.getException() != null)
+				{
+					detail.append(",");
+					detail.append(reason.getException().getMessage());
+				}
+				if (detail.length() > 0)
+				{
+					detail.insert(0, " (");
+					detail.append(")");
+				}
+				GWT.log(detail.toString());
 				error(reason.getMessage());
 				if (reason.getStatusCode() != Response.SC_UNAUTHORIZED && reason.getStatusCode() != 0)
 				{
