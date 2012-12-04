@@ -17,8 +17,6 @@
 
 package com.servoy.mobile.client.ui;
 
-import com.servoy.mobile.client.dataprocessing.IDisplayData;
-import com.servoy.mobile.client.persistence.GraphicalComponent;
 
 /**
  * @author gboros
@@ -26,10 +24,6 @@ import com.servoy.mobile.client.persistence.GraphicalComponent;
  */
 public interface ISupportDataText
 {
-	void setDataTextComponent(GraphicalComponent component);
-
-	IDisplayData getDataTextDisplay();
-
 	void setDataText(String dataText);
 
 	String getDataText();

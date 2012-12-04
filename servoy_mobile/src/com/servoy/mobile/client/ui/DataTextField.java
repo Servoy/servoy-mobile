@@ -22,7 +22,6 @@ import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.dataprocessing.IEditListenerSubject;
 import com.servoy.mobile.client.persistence.Field;
-import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.servoy.mobile.client.scripting.IRuntimeComponent;
 import com.servoy.mobile.client.scripting.RuntimeDataTextField;
 import com.sksamuel.jqm4gwt.form.elements.JQMText;
@@ -61,26 +60,6 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportData
 	public void setValueObject(Object data)
 	{
 		setValue(data != null ? data.toString() : ""); //$NON-NLS-1$
-	}
-
-	private DataText dataText;
-
-	/*
-	 * @see com.servoy.mobile.client.ui.ISupportDataText#setDataTextComponent(com.servoy.mobile.client.persistence.GraphicalComponent)
-	 */
-	@Override
-	public void setDataTextComponent(GraphicalComponent component)
-	{
-		if (component != null) dataText = new DataText(this, component, executor, application);
-	}
-
-	/*
-	 * @see com.servoy.mobile.client.ui.ISupportDataText#getDataTextDisplay()
-	 */
-	@Override
-	public IDisplayData getDataTextDisplay()
-	{
-		return dataText;
 	}
 
 	private EditProvider editProvider;

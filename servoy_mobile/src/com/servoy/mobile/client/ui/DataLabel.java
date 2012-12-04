@@ -38,9 +38,9 @@ import com.sksamuel.jqm4gwt.html.Heading;
  */
 public class DataLabel extends JQMWidget implements HasText, IDisplayData, IGraphicalComponent, ISupportDataText
 {
-	private final FormLabel	labelFor;
-	private final Heading	label;
-	private final FlowPanel	flow;
+	private final FormLabel labelFor;
+	private final Heading label;
+	private final FlowPanel flow;
 	protected final Executor executor;
 	private final MobileClient application;
 	private final RuntimeDataLabel scriptable;
@@ -58,8 +58,8 @@ public class DataLabel extends JQMWidget implements HasText, IDisplayData, IGrap
 		labelFor = new FormLabel();
 		labelFor.setFor(id);
 
-		label = new Heading(gc.getMobileProperties() != null ? gc.getMobileProperties().getHeaderSize() : 4, application.getI18nProvider().getI18NMessageIfPrefixed(
-				gc.getText() != null ? gc.getText() : "")); //$NON-NLS-1$
+		label = new Heading(gc.getMobileProperties() != null ? gc.getMobileProperties().getHeaderSize() : 4,
+			application.getI18nProvider().getI18NMessageIfPrefixed(gc.getText() != null ? gc.getText() : "")); //$NON-NLS-1$
 		label.getElement().setId(id);
 
 		flow.add(labelFor);
@@ -94,7 +94,7 @@ public class DataLabel extends JQMWidget implements HasText, IDisplayData, IGrap
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see com.servoy.mobile.client.scripting.IScriptableProvider#getScriptObject()
 	 */
 	@Override
@@ -105,7 +105,7 @@ public class DataLabel extends JQMWidget implements HasText, IDisplayData, IGrap
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see com.google.gwt.event.dom.client.HasClickHandlers#addClickHandler(com.google.gwt.event.dom.client.ClickHandler)
 	 */
 	@Override
@@ -115,7 +115,9 @@ public class DataLabel extends JQMWidget implements HasText, IDisplayData, IGrap
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.google.gwt.user.client.ui.HasText#getText()
 	 */
 	@Override
@@ -124,7 +126,9 @@ public class DataLabel extends JQMWidget implements HasText, IDisplayData, IGrap
 		return label.getText();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.google.gwt.user.client.ui.HasText#setText(java.lang.String)
 	 */
 	@Override
@@ -133,27 +137,9 @@ public class DataLabel extends JQMWidget implements HasText, IDisplayData, IGrap
 		label.setText(text);
 	}
 
-	private DataText dataText;
-
 	/*
-	 * @see com.servoy.mobile.client.ui.ISupportDataText#setDataTextComponent(com.servoy.mobile.client.persistence.GraphicalComponent)
-	 */
-	@Override
-	public void setDataTextComponent(GraphicalComponent component)
-	{
-		if (component != null) dataText = new DataText(this, component, executor, application);
-	}
-
-	/*
-	 * @see com.servoy.mobile.client.ui.ISupportDataText#getDataTextDisplay()
-	 */
-	@Override
-	public IDisplayData getDataTextDisplay()
-	{
-		return dataText;
-	}
-
-	/* (non-Javadoc)
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.ui.ISupportDataText#setDataText(java.lang.String)
 	 */
 	@Override
@@ -162,7 +148,9 @@ public class DataLabel extends JQMWidget implements HasText, IDisplayData, IGrap
 		labelFor.setText(dataText);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.ui.ISupportDataText#getDataText()
 	 */
 	@Override

@@ -166,18 +166,18 @@ public class FormPage extends JQMPage
 			}
 
 
-			if(groupID != null)
+			if (groupID != null)
 			{
 				GroupDisplay groupRow = null;
-				for(RowDisplay rd : rowsDisplay)
+				for (RowDisplay rd : rowsDisplay)
 				{
-					if(rd instanceof GroupDisplay && ((GroupDisplay)rd).groupID.equals(groupID))
+					if (rd instanceof GroupDisplay && ((GroupDisplay)rd).groupID.equals(groupID))
 					{
 						groupRow = (GroupDisplay)rd;
 						break;
 					}
 				}
-				if(groupRow != null) groupRow.setRightComponent(c);
+				if (groupRow != null) groupRow.setRightComponent(c);
 				else rowsDisplay.add(new GroupDisplay(groupID, c));
 			}
 			else
@@ -186,21 +186,20 @@ public class FormPage extends JQMPage
 			}
 		}
 
-		for(RowDisplay rd : rowsDisplay)
+		for (RowDisplay rd : rowsDisplay)
 		{
-			if(rd instanceof GroupDisplay)
+			if (rd instanceof GroupDisplay)
 			{
 				GroupDisplay groupRow = (GroupDisplay)rd;
 				GraphicalComponent rowLabel = groupRow.component.isGraphicalComponent();
-				if(rowLabel != null)
+				if (rowLabel != null)
 				{
 					Widget widget = createWidget(groupRow.rightComponent);
-					if(widget != null)
+					if (widget != null)
 					{
-						if(widget instanceof ISupportDataText)
+						if (widget instanceof ISupportDataText)
 						{
-							((ISupportDataText)widget).setDataTextComponent(rowLabel);
-							dal.addFormObject(((ISupportDataText)widget).getDataTextDisplay());
+							dal.addFormObject(new DataText((ISupportDataText)widget, rowLabel, formController.getExecutor(), application));
 						}
 						add(widget);
 					}
@@ -209,7 +208,7 @@ public class FormPage extends JQMPage
 			else
 			{
 				Widget widget = createWidget(rd.component);
-				if(widget != null) add(widget);
+				if (widget != null) add(widget);
 			}
 		}
 	}
