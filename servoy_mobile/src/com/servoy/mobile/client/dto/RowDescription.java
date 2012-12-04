@@ -20,8 +20,10 @@ package com.servoy.mobile.client.dto;
 import java.util.Date;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
 
 /**
  * @author jblok
@@ -59,53 +61,90 @@ public class RowDescription extends JavaScriptObject
 		{
 			setValueObject(dataProviderID, obj);
 		}
+
+		setModificationDate();
 	}
 
-	/**
-	 * @param dataProviderID
-	 */
-	public final native double getNumberValue(String dataProviderID)/*-{
-		return this[dataProviderID];
+	private final native void setModificationDate()/*-{
+		this['modification_date'] = new Date().getTime();
 	}-*/;
 
-
 	private final native void setBooleanValue(String dataProviderID, boolean val)/*-{
-		this['modification_date'] = new Date().getTime();
 		this[dataProviderID] = val;
 	}-*/;
 
 	private final native void setNumberValue(String dataProviderID, double val)/*-{
-		this['modification_date'] = new Date().getTime();
 		this[dataProviderID] = val;
 	}-*/;
 
 	private final native void setValueObject(String dataProviderID, Object obj) /*-{
-		this['modification_date'] = new Date().getTime();
 		this[dataProviderID] = obj;
 	}-*/;
 
-	public final native void setCreatedOnDevice(boolean createdOnDevice)/*-{
-		this['createdOnDevice'] = createdOnDevice;
+	public final native double getNumberValue(String dataProviderID)/*-{
+		return this[dataProviderID];
 	}-*/;
 
-	public final native boolean isCreatedOnDevice()
-/*-{
-		if (this['createdOnDevice'] == null
-				|| this['createdOnDevice'] == undefined)
-			return false;
-		return this['createdOnDevice'];
-	}-*/;
-
-
-	public final String toJSON()
+	public final String toJSONObject()
 	{
 		return new JSONObject(this).toString();
 	}
 
+	public final String toJSONArray(String[] dataProviders)
+	{
+		JSONObject jsthis = new JSONObject(this);
+
+		JSONArray retval = new JSONArray();
+		for (int i = 0; i < dataProviders.length; i++)
+		{
+			retval.set(i, jsthis.get(dataProviders[i]));
+		}
+		return retval.toString();
+	}
+
+	public static RowDescription newInstance(String[] dataProviders, JSONArray values)
+	{
+		RowDescription retval = newInstance();
+		for (int i = 0; i < dataProviders.length; i++)
+		{
+			JSONValue val = values.get(i);
+			if (val.isBoolean() != null)
+			{
+				retval.setBooleanValue(dataProviders[i], val.isBoolean().booleanValue());
+			}
+			else if (val.isNumber() != null)
+			{
+				retval.setNumberValue(dataProviders[i], val.isNumber().doubleValue());
+			}
+			else if (val.isString() != null)
+			{
+				retval.setValueObject(dataProviders[i], val.isString().stringValue());
+			}
+		}
+		return retval;
+	}
+
+	private final native void setCreatedOnDevice(boolean createdOnDevice)/*-{
+		this['created_on_device'] = createdOnDevice;
+	}-*/;
+
+	public final native boolean isCreatedOnDevice()
+	/*-{
+		if (this['created_on_device'] == null
+				|| this['createdOnDevice'] == undefined)
+			return false;
+		return this['created_on_device'];
+	}-*/;
+
 	public static RowDescription newInstance()
 	{
-		RowDescription desc = JSONParser.parseStrict("{}").isObject().getJavaScriptObject().cast();
-		desc.setCreatedOnDevice(true);
-		return desc;
+		RowDescription rd = JavaScriptObject.createObject().cast();
+		rd.setCreatedOnDevice(true);
+		return rd;
+	}
+
+	public final RowDescription cloneRowDescription()
+	{
+		return JSONParser.parseStrict(toJSONObject()).isObject().getJavaScriptObject().cast();
 	}
 }

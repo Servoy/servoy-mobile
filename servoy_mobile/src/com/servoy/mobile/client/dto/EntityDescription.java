@@ -17,6 +17,8 @@ with this program; if not, see http://www.gnu.org/licenses or write to the Free
 Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
 */
 
+import java.util.ArrayList;
+
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 
@@ -49,12 +51,42 @@ public class EntityDescription extends JavaScriptObject
 		for (int i = 0; i < dps.length(); i++) 
 		{
 			DataProviderDescription dpd = dps.get(i);
-			if (((dpd.getFlags() & 1) == 1) || ((dpd.getFlags() & 2) == 2))
+			if (dpd.isPK() || dpd.isRowIdent())
 			{
 				//is pk or row_ident
 				return dpd.getName();
 			}
 		}
 		return null;
+	}
+
+	public final String[] getUUIDDataProviderNames() 
+	{
+		ArrayList<String> retval = new ArrayList<String>();  
+		JsArray<DataProviderDescription> dps = getDataProviders();
+		for (int i = 0; i < dps.length(); i++) 
+		{
+			DataProviderDescription dpd = dps.get(i);
+			if (dpd.isUUID())
+			{
+				retval.add(dpd.getName());
+			}
+		}
+		if (retval.size() == 0) return null;
+		return retval.toArray(new String[retval.size()]);
+	}
+
+	public final boolean isPKUUID() 
+	{
+		JsArray<DataProviderDescription> dps = getDataProviders();
+		for (int i = 0; i < dps.length(); i++) 
+		{
+			DataProviderDescription dpd = dps.get(i);
+			if ((dpd.isPK() || dpd.isRowIdent()) && dpd.isUUID())
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 }

@@ -19,7 +19,6 @@ Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
-import com.google.gwt.json.client.JSONParser;
 
 /**
  * @author jblok
@@ -28,7 +27,11 @@ public class RecordDescription extends JavaScriptObject
 {
 	protected RecordDescription() {}
 
-	private final native Object setPK(Object pk) /*-{
+	public final native Object setPK(int pk) /*-{
+		return this.pk = pk;
+	}-*/;
+
+	public final native Object setPK(Object pk) /*-{
 		return this.pk = pk;
 	}-*/;
 
@@ -46,9 +49,16 @@ public class RecordDescription extends JavaScriptObject
 		return this.rfs;
 	}-*/;
 
+	public static RecordDescription newInstance(int pk) 
+	{
+		RecordDescription rd = JavaScriptObject.createObject().cast();
+		rd.setPK(pk);
+		return rd;
+	}
+
 	public static RecordDescription newInstance(Object pk) 
 	{
-		RecordDescription rd = JSONParser.parseStrict("{}").isObject().getJavaScriptObject().cast();
+		RecordDescription rd = JavaScriptObject.createObject().cast();
 		rd.setPK(pk);
 		return rd;
 	}

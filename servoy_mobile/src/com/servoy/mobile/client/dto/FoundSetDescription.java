@@ -1,42 +1,45 @@
 package com.servoy.mobile.client.dto;
 
 /*
-This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
+ This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
 
-This program is free software; you can redistribute it and/or modify it under
-the terms of the GNU Affero General Public License as published by the Free
-Software Foundation; either version 3 of the License, or (at your option) any
-later version.
+ This program is free software; you can redistribute it and/or modify it under
+ the terms of the GNU Affero General Public License as published by the Free
+ Software Foundation; either version 3 of the License, or (at your option) any
+ later version.
 
-This program is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License along
-with this program; if not, see http://www.gnu.org/licenses or write to the Free
-Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
-*/
+ You should have received a copy of the GNU Affero General Public License along
+ with this program; if not, see http://www.gnu.org/licenses or write to the Free
+ Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
+ */
 
 import java.util.ArrayList;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
 
 /**
  * @author jblok
  */
 public class FoundSetDescription extends JavaScriptObject
 {
-	protected FoundSetDescription() {}
+	protected FoundSetDescription()
+	{
+	}
 
 	public final native String getEntityName() /*-{
 		return this.entityName;
 	}-*/;
+
 	private final native void deleteEntityName() /*-{
 		delete this.entityName;
 	}-*/;
+
 	private final native void setEntityName(String ename) /*-{
 		this.entityName = ename;
 	}-*/;
@@ -44,9 +47,11 @@ public class FoundSetDescription extends JavaScriptObject
 	public final native String getRelationName() /*-{
 		return this.relationName;
 	}-*/;
+
 	private final native void deleteRelationName() /*-{
 		delete this.relationName;
 	}-*/;
+
 	private final native String setRelationName(String rname) /*-{
 		this.relationName = rname;
 	}-*/;
@@ -54,35 +59,33 @@ public class FoundSetDescription extends JavaScriptObject
 	public final native String getWhereArgsHash() /*-{
 		return this.hash;
 	}-*/;
+
 	private final native void deleteWhereArgsHash() /*-{
 		delete this.hash;
 	}-*/;
+
 	private final native String setWhereArgsHash(String ahash) /*-{
 		this.hash = ahash;
 	}-*/;
-	
+
 	private final native void deleteEmptyAttributes() /*-{
-		if (this.records && this.records.length == 0) 
-		{
+		if (this.records && this.records.length == 0) {
 			delete this.records;
-		}
-		else
-		{
-			for (var i = 0 ; i < this.records.length ; i++)
-			{ 
+		} else {
+			for ( var i = 0; i < this.records.length; i++) {
 				var rec = this.records[i];
-				if (rec.rfs && rec.rfs.length == 0) 
-				{
+				if (rec.rfs && rec.rfs.length == 0) {
 					delete rec.rfs;
 				}
 			}
 		}
 	}-*/;
-	
+
 	public final String toJSON()
 	{
 		return toJSON(false);
 	}
+
 	public final String toJSON(boolean omitForKeyInfo)
 	{
 		String relationName = getRelationName();
@@ -90,7 +93,7 @@ public class FoundSetDescription extends JavaScriptObject
 		String entityName = getEntityName();
 		try
 		{
-			if (omitForKeyInfo) 
+			if (omitForKeyInfo)
 			{
 				deleteRelationName();
 				deleteWhereArgsHash();
@@ -101,7 +104,7 @@ public class FoundSetDescription extends JavaScriptObject
 		}
 		finally
 		{
-			if (omitForKeyInfo) 
+			if (omitForKeyInfo)
 			{
 				setRelationName(relationName);
 				setWhereArgsHash(hash);
@@ -110,29 +113,30 @@ public class FoundSetDescription extends JavaScriptObject
 		}
 	}
 
-	public final boolean needsInfoFromKey() 
+	public final boolean needsInfoFromKey()
 	{
 		return (getRelationName() == null && getWhereArgsHash() == null);
 	}
 
-	public final void setInfoFromKey(String key,String entityName) 
+	public final void setInfoFromKey(String key, String relationName, String entityName)
 	{
-		String[] parts = key.split("|");
-		setRelationName(parts[0]);
-		setWhereArgsHash(parts[1]);
+		setRelationName(relationName);
+		int idx = key.indexOf('|');
+		setWhereArgsHash(key.substring(idx + 1));
 		setEntityName(entityName);
 	}
-	
+
 	public final native JsArray<RecordDescription> getRecords() /*-{
-		if (!this.records) this.records = new Array();
+		if (!this.records)
+			this.records = new Array();
 		return this.records;
 	}-*/;
 
-	public final ArrayList<Object> getPKs() 
+	public final ArrayList<Object> getPKs()
 	{
 		ArrayList<Object> retval = new ArrayList<Object>();
 		JsArray<RecordDescription> recs = getRecords();
-		for (int i = 0; i < recs.length(); i++) 
+		for (int i = 0; i < recs.length(); i++)
 		{
 			RecordDescription rec = recs.get(i);
 			retval.add(rec.getPK());
@@ -140,8 +144,12 @@ public class FoundSetDescription extends JavaScriptObject
 		return retval;
 	}
 
-	public static FoundSetDescription newInstance(String entityName,String relationName, String whereArgsHash) 
+	public static FoundSetDescription newInstance(String entityName, String relationName, String whereArgsHash)
 	{
-		return JSONParser.parseStrict("{\"entityName\":\""+entityName+"\",\"relationName\":\""+relationName+"\",\"hash\":\""+whereArgsHash+"\"}").isObject().getJavaScriptObject().cast();
+		FoundSetDescription fd = JavaScriptObject.createObject().cast();
+		fd.setEntityName(entityName);
+		fd.setRelationName(relationName);
+		fd.setWhereArgsHash(whereArgsHash);
+		return fd;
 	}
 }

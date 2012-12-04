@@ -6,7 +6,16 @@ import com.google.gwt.core.client.JsArrayString;
 public class RelationDescription extends JavaScriptObject 
 {
 	protected RelationDescription() {}
-	
+
+	public final native int getID() /*-{
+		if (!this.id) return 0;
+		return this.id;
+	}-*/;
+
+	public final native String setID(int id) /*-{
+		return this.id = id;
+	}-*/;
+
 	public final native String getName() /*-{
 		return this.name;
 	}-*/;
