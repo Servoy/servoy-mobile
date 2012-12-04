@@ -13,22 +13,9 @@ public class Login extends JQMPage implements SubmissionHandler<LoginData>
 	{
 		this.application = mc;
 
-		JQMHeader header = new JQMHeader(application.getMessages().loginTitle());
-
-//		JQMToolBarButton skip = new JQMToolBarButton("Skip");
-//		skip.setIcon(DataIcon.FORWARD);
-//		skip.addClickHandler(new ClickHandler()
-//		{
-//			@Override
-//			public void onClick(ClickEvent event)
-//			{
-//				application.showFirstForm();
-//			}
-//		});
-//		header.setRightButton(skip);
-
-		header.setTheme("b");
-		add(header);
+		JQMHeader h = new JQMHeader(application.getMessages().loginTitle());
+		h.setTheme("b");
+		add(h);
 
 		add(new Paragraph(application.getMessages().authenticationRequired()));
 
