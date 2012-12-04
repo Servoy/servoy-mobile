@@ -21,14 +21,13 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.NoExport;
 
-import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod;
 import com.servoy.mobile.client.scripting.Scope;
 
 /**
  * @author acostescu
  */
 @Export
-public abstract class JSScriptPart implements IBaseSMMethod, Exportable
+public abstract class JSScriptPart implements Exportable
 {
 
 	protected static final String SCOPES = "scopes"; //$NON-NLS-1$
@@ -42,13 +41,11 @@ public abstract class JSScriptPart implements IBaseSMMethod, Exportable
 		path = new String[] { parentScopeName, scopeName, name };
 	}
 
-	@Override
 	public String getName()
 	{
 		return path[2];
 	}
 
-	@Override
 	public String getScopeName()
 	{
 		if (SCOPES.equals(path[0])) return path[1];

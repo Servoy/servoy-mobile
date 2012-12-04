@@ -92,6 +92,7 @@ public class JSMethod extends JSScriptPart implements IBaseSMMethod, Exportable
 	}
 
 	@Override
+	@NoExport
 	public boolean exists()
 	{
 		return existsInternal(path[0], path[1], path[2]);
@@ -108,13 +109,12 @@ public class JSMethod extends JSScriptPart implements IBaseSMMethod, Exportable
 
 	@NoExport
 	public final native String getCodeInternal(String parentScope, String scope, String fName) /*-{
-		return $wnd._ServoyInit_[parentScope][scope].fncs[fName].toString();
+		return $wnd._ServoyInit_[parentScope][scope].fncs[fName];
 	}-*/;
 
 	@NoExport
 	public final native void setCodeInternal(String parentScope, String scope, String fName, String code) /*-{
-		$wnd._ServoyInit_[parentScope][scope].fncs[fName] = eval("(" + code
-				+ ")");
+		$wnd._ServoyInit_[parentScope][scope].fncs[fName] = code;
 	}-*/;
 
 	@NoExport

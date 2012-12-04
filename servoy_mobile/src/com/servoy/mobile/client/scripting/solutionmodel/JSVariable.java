@@ -18,22 +18,22 @@
 package com.servoy.mobile.client.scripting.solutionmodel;
 
 import org.timepedia.exporter.client.Exportable;
+import org.timepedia.exporter.client.NoExport;
 
-import com.google.gwt.core.client.JavaScriptObject;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMVariable;
 
 /**
  * @author acostescu
  *
  */
-public class JSVariable implements IBaseSMVariable, Exportable
+public class JSVariable extends JSScriptPart implements IBaseSMVariable, Exportable
 {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMVariable#getDefaultValue()
-	 */
+	public JSVariable(String parentScopeName, String scopeName, String name, JSSolutionModel model)
+	{
+		super(parentScopeName, scopeName, name, model);
+	}
+
 	@Override
 	public String getDefaultValue()
 	{
@@ -41,11 +41,6 @@ public class JSVariable implements IBaseSMVariable, Exportable
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMVariable#setDefaultValue(java.lang.String)
-	 */
 	@Override
 	public void setDefaultValue(String arg)
 	{
@@ -53,23 +48,6 @@ public class JSVariable implements IBaseSMVariable, Exportable
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMVariable#getName()
-	 */
-	@Override
-	public String getName()
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMVariable#setName(java.lang.String)
-	 */
 	@Override
 	public void setName(String name)
 	{
@@ -77,23 +55,6 @@ public class JSVariable implements IBaseSMVariable, Exportable
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMVariable#getScopeName()
-	 */
-	@Override
-	public String getScopeName()
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMVariable#getVariableType()
-	 */
 	@Override
 	public int getVariableType()
 	{
@@ -112,5 +73,32 @@ public class JSVariable implements IBaseSMVariable, Exportable
 		// TODO ac Auto-generated method stub
 
 	}
+
+	@Override
+	@NoExport
+	public boolean exists()
+	{
+		return existsInternal(path[0], path[1], path[2]);
+	}
+
+	@NoExport
+	public final native boolean existsInternal(String parentScope, String scope, String fName) /*-{
+		var scp = $wnd._ServoyInit_[parentScope][scope];
+		if (scp && scp.fncs[fName]) {
+			return true;
+		}
+		return false;
+	}-*/;
+
+	@NoExport
+	public final native String getCodeInternal(String parentScope, String scope, String fName) /*-{
+		return $wnd._ServoyInit_[parentScope][scope].fncs[fName].toString();
+	}-*/;
+
+	@NoExport
+	public final native void setCodeInternal(String parentScope, String scope, String fName, String code) /*-{
+		$wnd._ServoyInit_[parentScope][scope].fncs[fName] = eval("(" + code
+				+ ")");
+	}-*/;
 
 }
