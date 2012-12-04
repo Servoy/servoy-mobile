@@ -62,11 +62,10 @@
 		<copy tofile="../com.servoy.eclipse.exporter.mobile/src/com/servoy/eclipse/mobileexporter/export/resources/servoy_mobile.war" file="servoy_mobile.war"/>
 	</target>
 
-	<target name="deploy" depends="build_mobile">
+	<target name="deploy_plugins" depends="build_mobile">
 		<ant dir="../j2db_plugins" antfile="build_plugins.xml" target="mobileservice.jar"/>
 		<ant dir="../j2db_plugins" antfile="build_plugins.xml" target="mobile.jar"/>
 		<ant dir="../com.servoy.extensions" antfile="build_plugins.xml" target="rest_ws.jar"/>
-		<copy file="servoy_mobile.war" todir="${servoy_install}/application_server/server/webapps"/>
 		<copy file="../eclipse_build/build/plugins/mobileservice.jar" todir="${servoy_install}/application_server/plugins"/>
 		<copy file="../eclipse_build/build/plugins/mobile.jar" todir="${servoy_install}/application_server/plugins"/>
 		<copy file="../com.servoy.extensions/build/plugins/rest_ws.jar" todir="${servoy_install}/application_server/plugins"/>
