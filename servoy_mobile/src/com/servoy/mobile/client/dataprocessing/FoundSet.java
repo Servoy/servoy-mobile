@@ -102,8 +102,6 @@ public class FoundSet implements Exportable, IJSFoundSet //  extends Scope if we
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see com.servoy.j2db.scripting.api.IJSFoundSet#sort(java.lang.Object)
 	 */
 	@Override
@@ -130,7 +128,7 @@ public class FoundSet implements Exportable, IJSFoundSet //  extends Scope if we
 
 	public Record newRecord(int index, boolean changeSelection)
 	{
-		Object pk = Utils.createStringUUID();
+		String pk = foundSetManager.getNewPrimaryKey();
 		RecordDescription recd = RecordDescription.newInstance(pk);
 		RowDescription rowd = foundSetManager.createRowDescription(this, pk);
 		Record retval = new Record(this, recd, rowd);
@@ -274,5 +272,10 @@ public class FoundSet implements Exportable, IJSFoundSet //  extends Scope if we
 	{
 		for (IFoundSetListener l : foundSetListeners)
 			l.contentChanged();
+	}
+
+	int getRelationID(String relationName)
+	{
+		return foundSetManager.getRelationID(relationName);
 	}
 }

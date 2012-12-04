@@ -44,10 +44,10 @@ import com.servoy.mobile.client.util.Utils;
  */
 public class Record extends Scope implements IJSRecord
 {
-	protected FoundSet parent;
-	protected RecordDescription recordDescription;
+	protected final FoundSet parent;
+	protected final RecordDescription recordDescription;
 	protected RowDescription rowDescription;
-	protected HashMap<String, FoundSet> relatedFoundSets;
+	protected final HashMap<String, FoundSet> relatedFoundSets;
 
 	//existing record
 	public Record(FoundSet p, RecordDescription rd)
@@ -130,7 +130,8 @@ public class Record extends Scope implements IJSRecord
 				for (int i = 0; i < avail.length(); i++)
 				{
 					String key = avail.get(i);
-					if (key.startsWith(relationName + "|"))
+					int relationID = parent.getRelationID(relationName);
+					if (key.startsWith(relationID+"|"))
 					{
 						retval = parent.getRelatedFoundSet(this, relationName, key);
 						relatedFoundSets.put(relationName, retval);
@@ -141,8 +142,9 @@ public class Record extends Scope implements IJSRecord
 			retval = parent.createRelatedFoundSet(relationName, this);
 			if (retval != null)
 			{
-				relatedFoundSets.put(relationName, retval);
-				recordDescription.getRFS().push(relationName + "|" + retval.getWhereArgsHash());
+				relatedFoundSets.put(relationName,retval);
+				int relationID = parent.getRelationID(relationName);
+				recordDescription.getRFS().push(relationID+"|"+retval.getWhereArgsHash());
 			}
 		}
 		return retval;

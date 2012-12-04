@@ -165,8 +165,7 @@ public class OfflineDataProxy
 
 						if (rowData != null) foundSetManager.storeRowData(entityName, rowData);
 
-						HashSet<Object> coll = entitiesToPKs.get(entityName);
-						if (coll.size() == 0)
+						if (entitiesToPKs.get(entityName).size() == 0)
 						{
 							entitiesToPKs.remove(entityName);//remove current when empty
 						}
@@ -238,14 +237,15 @@ public class OfflineDataProxy
 		int idx = key.indexOf('|');
 		final String entityName = key.substring(0, idx);
 		String pk = key.substring(idx + 1, key.length());
-
 		RowDescription row = foundSetManager.getRowDescription(entityName, pk);
-		String json = row.toJSON();
+		String remotepk = foundSetManager.getRemotePK(entityName, pk, row);
+
+		String json = foundSetManager.toRemoteJSON(entityName, row);
 		totalLength += json.length();
 
 		//serverURL/entityName/12 PUT (for update), POST for new
 		RequestBuilder builder = new RequestBuilder(row.isCreatedOnDevice() ? RequestBuilder.POST : RequestBuilder.PUT, serverURL + "/" +
-			foundSetManager.getEntityPrefix() + entityName + "/" + version + "/" + URL.encode(pk));
+			foundSetManager.getEntityPrefix() + entityName + "/" + version + "/" + URL.encode(remotepk));
 		setRequestCredentials(builder);
 		builder.setHeader("Access-Control-Request-Method", row.isCreatedOnDevice() ? "POST" : "PUT");
 

@@ -46,12 +46,18 @@ import com.servoy.mobile.client.util.Utils;
 //export as databaseManager
 public class FoundSetManager
 {
+	private static final String VALUELISTS_KEY = "valuelists";
+	private static final String CHANGES_KEY = "changes";
+	private static final String ENTITY_PREFIX_KEY = "entityPrefix";
+	private static final String ENTITIES_KEY = "entities";
+
 	private final Storage localStorage = Storage.getLocalStorageIfSupported();
+	private final ValueStore valueStore = new ValueStore(localStorage);
 	private final MobileClient application;
 	private EditRecordList editRecordList;
 
 	//fields mapped to local storage
-	private JsArray<EntityDescription> entities;
+	private Entities entities;
 	private String entityPrefix;
 	private JsArray<ValueListDescription> valueLists;
 	private ArrayList<String> changes;
@@ -61,15 +67,19 @@ public class FoundSetManager
 		application = mc;
 		editRecordList = new EditRecordList(this);
 
-		String ejson = localStorage.getItem("entities");
+		String ejson = localStorage.getItem(ENTITIES_KEY);
 		if (ejson != null)
 		{
 			JSONArray ea = JSONParser.parseStrict(ejson).isArray();
-			if (ea != null) entities = ea.getJavaScriptObject().cast();
+			if (ea != null)
+			{
+				JsArray<EntityDescription> e = ea.getJavaScriptObject().cast();
+				entities = new Entities(e, null);
+			}
 		}
-		entityPrefix = localStorage.getItem("entityPrefix");
+		entityPrefix = localStorage.getItem(ENTITY_PREFIX_KEY);
 		changes = new ArrayList<String>();
-		String cjson = localStorage.getItem("changes");
+		String cjson = localStorage.getItem(CHANGES_KEY);
 		if (cjson != null)
 		{
 			JSONArray ca = JSONParser.parseStrict(cjson).isArray();
@@ -82,7 +92,7 @@ public class FoundSetManager
 				}
 			}
 		}
-		String vjson = localStorage.getItem("valuelists");
+		String vjson = localStorage.getItem(VALUELISTS_KEY);
 		if (vjson != null)
 		{
 			JSONArray va = JSONParser.parseStrict(vjson).isArray();
@@ -92,18 +102,16 @@ public class FoundSetManager
 
 	public boolean hasContent()
 	{
-		return (localStorage.getItem("entities") != null);
+		return (localStorage.getItem(ENTITIES_KEY) != null);
 	}
 
-	/**
-	 * 
-	 */
 	public void exportDataproviders()
 	{
 		Set<String> exported = new HashSet<String>();
-		for (int i = 0; i < entities.length(); i++)
+		JsArray<EntityDescription> eds = entities.getEntityDescriptions();
+		for (int i = 0; i < eds.length(); i++)
 		{
-			EntityDescription ed = entities.get(i);
+			EntityDescription ed = eds.get(i);
 			JsArray<DataProviderDescription> dataProviders = ed.getDataProviders();
 			for (int k = 0; k < dataProviders.length(); k++)
 			{
@@ -119,10 +127,14 @@ public class FoundSetManager
 		}
 	}
 
-	private native void export(String name)
-	/*-{
+	private native void export(String name) /*-{
 		$wnd._ServoyUtils_.defineWindowVariable(name);
 	}-*/;
+
+	public EntityDescription getEntityDescription(String entityName)
+	{
+		return entities.getDescription(entityName);
+	}
 
 	RowDescription getRowDescription(String entityName, Object pk)
 	{
@@ -130,7 +142,9 @@ public class FoundSetManager
 		String json = localStorage.getItem(entityName + '|' + pk);
 		if (json == null) return null;
 
-		return JSONParser.parseStrict(json).isObject().getJavaScriptObject().cast();
+		JSONArray values = JSONParser.parseStrict(json).isArray();
+		String[] dataProviders = entities.getDataProviders(entityName);
+		return RowDescription.newInstance(dataProviders, values);
 	}
 
 	FoundSet getRelatedFoundSet(Record rec, String entityName, String relationName, String key)
@@ -140,11 +154,8 @@ public class FoundSetManager
 		if (json == null) return null;
 
 		FoundSetDescription fsd = JSONParser.parseStrict(json).isObject().getJavaScriptObject().cast();
-		if (fsd.needsInfoFromKey())
-		{
-			RelationDescription rd = getPrimaryRelation(relationName, entityName);
-			fsd.setInfoFromKey(key, rd.getForeignEntityName());
-		}
+		RelationDescription rd = entities.getPrimaryRelation(entityName, relationName);
+		if (fsd.needsInfoFromKey()) fsd.setInfoFromKey(key, relationName, rd.getForeignEntityName());
 		return new RelatedFoundSet(this, rec, fsd, relationName);
 	}
 
@@ -159,19 +170,19 @@ public class FoundSetManager
 		HashMap<String, HashSet<Object>> entitiesToPKs = new HashMap<String, HashSet<Object>>();
 
 		//store data in offline db
-		entities = offlineData.getEntities();
-		localStorage.setItem("entities", new JSONArray(entities).toString());
+		entities = new Entities(offlineData.getEntities(), valueStore);
+		localStorage.setItem(ENTITIES_KEY, entities.toJSONArray());
 
 		entityPrefix = offlineData.getEntityPrefix();
 		if (entityPrefix != null)
 		{
-			localStorage.setItem("entityPrefix", entityPrefix);
+			localStorage.setItem(ENTITY_PREFIX_KEY, entityPrefix);
 		}
 
 		valueLists = offlineData.getValueLists();
 		if (valueLists != null)
 		{
-			localStorage.setItem("valuelists", new JSONArray(valueLists).toString());
+			localStorage.setItem(VALUELISTS_KEY, new JSONArray(valueLists).toString());
 		}
 
 		JsArray<FoundSetDescription> fsds = offlineData.getFoundSets();
@@ -180,15 +191,41 @@ public class FoundSetManager
 			for (int i = 0; i < fsds.length(); i++)
 			{
 				FoundSetDescription fd = fsds.get(i);
+				String entityName = fd.getEntityName();
 
 				//fill entitiesToPKs
-				HashSet<Object> set = entitiesToPKs.get(fd.getEntityName());
+				HashSet<Object> set = entitiesToPKs.get(entityName);
 				if (set == null)
 				{
 					set = new HashSet<Object>();
-					entitiesToPKs.put(fd.getEntityName(), set);
+					entitiesToPKs.put(entityName, set);
 				}
 				set.addAll(fd.getPKs());
+
+				boolean uuidPK = entities.isPKUUID(entityName);
+				JsArray<RecordDescription> recs = fd.getRecords();
+				for (int j = 0; j < recs.length(); j++)
+				{
+					RecordDescription rd = recs.get(j);
+					//replace UUIDs, to save local storage space
+					if (uuidPK)
+					{
+						String uuid = (String)rd.getPK();
+						int newPK = valueStore.putUUID(uuid);
+						rd.setPK(String.valueOf(newPK));
+					}
+					//replace relation names with relation ids, to save local storage space
+					JsArrayString rfs = rd.getRFS();
+					for (int k = 0; k < rfs.length(); k++)
+					{
+						String key = rfs.get(k);
+						int idx = key.indexOf('|');
+						int id = entities.getRelationID(key.substring(0, idx));
+						String hash = key.substring(idx + 1);
+						hash = replaceUUIDHash(hash);
+						rfs.set(k, id + "|" + hash);
+					}
+				}
 
 				//store data in offline db
 				storeFoundSetDescription(fd);
@@ -204,22 +241,61 @@ public class FoundSetManager
 		String key = fd.getEntityName();
 		if (fd.getRelationName() != null)
 		{
-			key = fd.getRelationName();
+			int rid = entities.getRelationID(fd.getRelationName());
+			key = (rid > 0 ? String.valueOf(rid) : fd.getRelationName());
 			if (fd.getWhereArgsHash() != null) //if global/constant relation at server we did omit the argshash
 			{
 				omitForKeyinfo = true;
-				key += '|' + fd.getWhereArgsHash();
+				String hash = fd.getWhereArgsHash();
+				hash = replaceUUIDHash(hash);
+				key += '|' + hash;
 			}
 		}
 		localStorage.setItem(key, fd.toJSON(omitForKeyinfo));
 	}
 
+	private String replaceUUIDHash(String hash)
+	{
+		if (!hash.startsWith("36.") && !hash.contains(";36.")) return hash;
+
+		StringBuilder retval = new StringBuilder();
+		String[] parts = hash.split(";");
+		for (String part : parts)
+		{
+			if (part.startsWith("36."))
+			{
+				//replace
+				retval.append(Utils.createPKHashKey(new Object[] { valueStore.putUUID(part.substring(3)) }));
+			}
+			else
+			{
+				//put back
+				retval.append(part);
+				retval.append(';');
+			}
+		}
+		return retval.toString();
+	}
+
 	void storeRowData(String entityName, JsArray<RowDescription> rowData)
 	{
+		String[] uuidCols = entities.getUUIDDataProviderNames(entityName);
+
 		ArrayList<RowDescription> list = new ArrayList<RowDescription>();
 		for (int i = 0; i < rowData.length(); i++)
 		{
 			RowDescription row = rowData.get(i);
+
+			//replace UUID to save local storage space
+			if (uuidCols != null)
+			{
+				for (String dataProviderID : uuidCols)
+				{
+					String val = (String)row.getValue(dataProviderID);
+					if (val != null) row.setValue(dataProviderID, String.valueOf(valueStore.putUUID(val)));
+				}
+			}
+
 			list.add(row);
 		}
 		storeRowData(entityName, list, false);
@@ -227,7 +303,7 @@ public class FoundSetManager
 
 	void storeRowData(String entityName, ArrayList<RowDescription> rowData, boolean local)
 	{
-		String dataProviderID = getPKDataProviderID(entityName);
+		String dataProviderID = entities.getPKDataProviderID(entityName);
 		if (dataProviderID == null) throw new IllegalStateException(application.getMessages().cannotWorkWithoutPK());
 
 		int oldSize = changes.size();
@@ -241,7 +317,7 @@ public class FoundSetManager
 			{
 				if (!changes.contains(key)) changes.add(key);
 			}
-			localStorage.setItem(key, row.toJSON());
+			localStorage.setItem(key, row.toJSONArray(entities.getDataProviders(entityName)));
 		}
 
 		if (changes.size() != oldSize)
@@ -252,32 +328,8 @@ public class FoundSetManager
 				String change = changes.get(i);
 				jsona.set(i, new JSONString(change));
 			}
-			localStorage.setItem("changes", jsona.toString());
+			localStorage.setItem(CHANGES_KEY, jsona.toString());
 		}
-	}
-
-	private String getPKDataProviderID(String entityName)
-	{
-		EntityDescription ed = getEntityDescription(entityName);
-		if (ed != null)
-		{
-			return ed.getPKDataProviderID();
-		}
-		return null;
-	}
-
-	public EntityDescription getEntityDescription(String entityName)
-	{
-		if (entities == null) return null;
-		for (int i = 0; i < entities.length(); i++)
-		{
-			EntityDescription ed = entities.get(i);
-			if (entityName.equals(ed.getEntityName()))
-			{
-				return ed;
-			}
-		}
-		return null;
 	}
 
 	public static String getEntityFromDataSource(String dataSource)
@@ -361,14 +413,14 @@ public class FoundSetManager
 	RowDescription createRowDescription(FoundSet fs, Object pkval)
 	{
 		RowDescription retval = RowDescription.newInstance();
-		retval.setValue(getPKDataProviderID(fs.getEntityName()), pkval);
+		retval.setValue(entities.getPKDataProviderID(fs.getEntityName()), pkval);
 		if (fs instanceof RelatedFoundSet)
 		{
 			RelatedFoundSet rfs = (RelatedFoundSet)fs;
 			String relationName = rfs.getRelationName();
 			Record[] parentRecords = rfs.getParents();
 			String entityName = parentRecords[0].getParent().getEntityName();
-			RelationDescription rd = getPrimaryRelation(relationName, entityName);
+			RelationDescription rd = entities.getPrimaryRelation(entityName, relationName);
 			if (rd != null)
 			{
 				JsArrayString pdp = rd.getPrimaryDataProviders();
@@ -393,28 +445,10 @@ public class FoundSetManager
 		}
 	}
 
-	RelationDescription getPrimaryRelation(String relationName, String entityName)
-	{
-		EntityDescription ed = getEntityDescription(entityName);
-		JsArray<RelationDescription> rels = ed.getPrimaryRelations();
-		if (rels != null)
-		{
-			for (int i = 0; i < rels.length(); i++)
-			{
-				RelationDescription rd = rels.get(i);
-				if (relationName.equals(rd.getName()))
-				{
-					return rd;
-				}
-			}
-		}
-		return null;
-	}
-
 	FoundSet createRelatedFoundSet(String relationName, Record record)
 	{
 		String entityName = record.getParent().getEntityName();
-		RelationDescription rd = getPrimaryRelation(relationName, entityName);
+		RelationDescription rd = entities.getPrimaryRelation(entityName, relationName);
 		if (rd != null)
 		{
 			JsArrayString pdp = rd.getPrimaryDataProviders();
@@ -437,7 +471,7 @@ public class FoundSetManager
 
 	private void seek(String entityName, JsArrayString foreignColumns, Object[] coldata, JsArray<RecordDescription> rds)
 	{
-		String entityNamePlusPipe = entityName + "|";
+		String entityNamePlusPipe = entityName + '|';
 		int length = localStorage.getLength();
 		for (int j = 0; j < length; j++)
 		{
@@ -471,17 +505,57 @@ public class FoundSetManager
 	ArrayList<String> getAllPrimaryRelationNames(String entityName)
 	{
 		ArrayList<String> retval = new ArrayList<String>();
-		EntityDescription ed = getEntityDescription(entityName);
-		JsArray<RelationDescription> rels = ed.getPrimaryRelations();
-		if (rels != null)
+		EntityDescription ed = entities.getDescription(entityName);
+		if (ed != null)
 		{
-			for (int i = 0; i < rels.length(); i++)
+			JsArray<RelationDescription> rels = ed.getPrimaryRelations();
+			if (rels != null)
 			{
-				RelationDescription rd = rels.get(i);
-				retval.add(rd.getName());
+				for (int i = 0; i < rels.length(); i++)
+				{
+					RelationDescription rd = rels.get(i);
+					retval.add(rd.getName());
+				}
 			}
 		}
 		return retval;
+	}
+
+	String getRemotePK(String entityName, String pk, RowDescription row)
+	{
+		if (entities.isPKUUID(entityName) || row.isCreatedOnDevice())
+		{
+			pk = valueStore.getUUIDValue(Utils.getAsInteger(pk));
+		}
+		return pk;
+	}
+
+	String toRemoteJSON(String entityName, RowDescription row)
+	{
+		String[] uuidCols = entities.getUUIDDataProviderNames(entityName);
+
+		RowDescription clone = row.cloneRowDescription();
+		if (uuidCols != null)
+		{
+			for (String dataProviderID : uuidCols)
+			{
+				Object val = clone.getValue(dataProviderID);
+				if (val != null) clone.setValue(dataProviderID, valueStore.getUUIDValue(Utils.getAsInteger(val)));
+			}
+		}
+
+		return clone.toJSONObject();
+	}
+
+	int getRelationID(String relationName)
+	{
+		return entities.getRelationID(relationName);
+	}
+
+	String getNewPrimaryKey()
+	{
+		String uuid = Utils.createStringUUID();
+		return String.valueOf(valueStore.putUUID(uuid));
 	}
 
 	/**
