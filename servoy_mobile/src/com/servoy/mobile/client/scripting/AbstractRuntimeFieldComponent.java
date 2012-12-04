@@ -13,9 +13,11 @@
  You should have received a copy of the GNU Affero General Public License along
  with this program; if not, see http://www.gnu.org/licenses or write to the Free
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
-*/
+ */
 
 package com.servoy.mobile.client.scripting;
+
+import org.timepedia.exporter.client.Export;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -36,7 +38,9 @@ public class AbstractRuntimeFieldComponent extends AbstractRuntimeBaseComponent<
 		super(application, executor, component, componentPersist);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.scripting.IScriptable#needEntireState()
 	 */
 	@Override
@@ -45,7 +49,9 @@ public class AbstractRuntimeFieldComponent extends AbstractRuntimeBaseComponent<
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.scripting.IScriptable#getDataProviderID()
 	 */
 	@Override
@@ -71,7 +77,9 @@ public class AbstractRuntimeFieldComponent extends AbstractRuntimeBaseComponent<
 
 	private String changeCommand;
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.scripting.IRuntimeField#setChangeCommand(java.lang.String)
 	 */
 	@Override
@@ -80,12 +88,21 @@ public class AbstractRuntimeFieldComponent extends AbstractRuntimeBaseComponent<
 		this.changeCommand = command;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.scripting.IRuntimeField#notifyLastNewValueWasChange(java.lang.Object, java.lang.Object)
 	 */
 	@Override
 	public void notifyLastNewValueWasChange(Object oldVal, Object newVal)
 	{
 		if (changeCommand != null) executor.fireEventCommand(IJSEvent.DATACHANGE, changeCommand, this, null);
+	}
+
+	@Override
+	@Export
+	public String getName()
+	{
+		return componentPersist.getGroupID();
 	}
 }

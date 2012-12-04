@@ -146,4 +146,28 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 	{
 		return getText();
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.ui.IComponent#isEnabled()
+	 */
+	@Override
+	public boolean isEnabled()
+	{
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.ui.IComponent#setEnabled(boolean)
+	 */
+	@Override
+	public void setEnabled(boolean enabled)
+	{
+		// TODO Auto-generated method stub
+
+	}
 }

@@ -77,4 +77,23 @@ public class Component extends BaseComponent
 		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_LOCATION, x + "," + y); //$NON-NLS-1$
 	}
 
+	public final boolean isVisible()
+	{
+		return getAttributeValueBoolean(IContentSpecConstantsBase.PROPERTY_VISIBLE, true);
+	}
+
+	public final void setVisible(boolean visible)
+	{
+		setAttributeValueBoolean(IContentSpecConstantsBase.PROPERTY_VISIBLE, visible);
+	}
+
+	public final boolean isEnabled()
+	{
+		return getAttributeValueBoolean(IContentSpecConstantsBase.PROPERTY_ENABLED, true);
+	}
+
+	public final void setEnabled(boolean enabled)
+	{
+		setAttributeValueBoolean(IContentSpecConstantsBase.PROPERTY_ENABLED, enabled);
+	}
 }

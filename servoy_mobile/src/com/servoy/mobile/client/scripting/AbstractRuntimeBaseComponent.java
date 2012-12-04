@@ -19,9 +19,12 @@ package com.servoy.mobile.client.scripting;
 
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
+import org.timepedia.exporter.client.Getter;
+import org.timepedia.exporter.client.Setter;
 
 import com.servoy.j2db.scripting.api.ui.HasRuntimeEnabled;
 import com.servoy.j2db.scripting.api.ui.HasRuntimeName;
+import com.servoy.j2db.scripting.api.ui.HasRuntimeVisible;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.ui.Executor;
@@ -32,7 +35,7 @@ import com.servoy.mobile.client.ui.IComponent;
  *
  */
 public abstract class AbstractRuntimeBaseComponent<C extends IComponent, P extends Component> implements IRuntimeComponent, HasRuntimeName, HasRuntimeEnabled,
-	Exportable
+	HasRuntimeVisible, Exportable
 {
 	protected final MobileClient application;
 	protected final Executor executor;
@@ -72,17 +75,30 @@ public abstract class AbstractRuntimeBaseComponent<C extends IComponent, P exten
 	}
 
 	@Override
-	@Export
+	@Getter
 	public boolean isEnabled()
 	{
-		// TODO
-		return true;
+		return component.isEnabled();
 	}
 
 	@Override
-	@Export
+	@Setter
 	public void setEnabled(boolean b)
 	{
-		// TODO
+		component.setEnabled(b);
+	}
+
+	@Override
+	@Getter
+	public boolean isVisible()
+	{
+		return component.isVisible();
+	}
+
+	@Override
+	@Setter
+	public void setVisible(boolean b)
+	{
+		component.setVisible(b);
 	}
 }

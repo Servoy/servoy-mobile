@@ -274,10 +274,14 @@ public class FormPage extends JQMPage
 		if (component == null) return null;
 		Widget w = ComponentFactory.createComponent(application, component, dal, formController.getExecutor());
 		if (w != null) dal.addFormObject(w);
-		if (w instanceof IRuntimeComponentProvider && component.getName() != null)
+		if (w instanceof IRuntimeComponentProvider)
 		{
 			IRuntimeComponent runtimeComponent = ((IRuntimeComponentProvider)w).getRuntimeComponent();
-			formController.getFormScope().getElementScope().addComponent(component.getName(), runtimeComponent);
+			String runtimeComponentName = runtimeComponent.getName();
+			if (runtimeComponentName != null)
+			{
+				formController.getFormScope().getElementScope().addComponent(runtimeComponentName, runtimeComponent);
+			}
 		}
 		return w;
 	}

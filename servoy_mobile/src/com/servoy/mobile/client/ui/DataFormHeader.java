@@ -62,7 +62,9 @@ public class DataFormHeader extends JQMHeader implements IDisplayData, IGraphica
 		scriptable.setText(data);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.scripting.IScriptableProvider#getScriptObject()
 	 */
 	@Override
@@ -71,12 +73,38 @@ public class DataFormHeader extends JQMHeader implements IDisplayData, IGraphica
 		return scriptable;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.google.gwt.event.dom.client.HasClickHandlers#addClickHandler(com.google.gwt.event.dom.client.ClickHandler)
 	 */
 	@Override
 	public HandlerRegistration addClickHandler(ClickHandler handler)
 	{
 		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.ui.IComponent#isEnabled()
+	 */
+	@Override
+	public boolean isEnabled()
+	{
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.ui.IComponent#setEnabled(boolean)
+	 */
+	@Override
+	public void setEnabled(boolean enabled)
+	{
+		// TODO Auto-generated method stub
+
 	}
 }

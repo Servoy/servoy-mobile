@@ -26,11 +26,19 @@ public class BaseComponent extends JavaScriptObject
 		this[attrName] = value;
 	}-*/;
 
+	public final native void setAttributeValueBoolean(String attrName, boolean value) /*-{
+		this[attrName] = value;
+	}-*/;
+
 	public final native String getAttributeValueString(String attrName, String defaultValue) /*-{
 		return this[attrName] ? this[attrName] : defaultValue;
 	}-*/;
 
 	public final native int getAttributeValueInt(String attrName, int defaultValue) /*-{
+		return this[attrName] ? this[attrName] : defaultValue;
+	}-*/;
+
+	public final native boolean getAttributeValueBoolean(String attrName, boolean defaultValue) /*-{
 		return this[attrName] ? this[attrName] : defaultValue;
 	}-*/;
 

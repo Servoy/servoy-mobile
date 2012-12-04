@@ -114,4 +114,52 @@ public class DataText implements IDisplayData, IGraphicalComponent
 	{
 		// ignore
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.ui.IComponent#isVisible()
+	 */
+	@Override
+	public boolean isVisible()
+	{
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.ui.IComponent#setVisible(boolean)
+	 */
+	@Override
+	public void setVisible(boolean visible)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.ui.IComponent#isEnabled()
+	 */
+	@Override
+	public boolean isEnabled()
+	{
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.ui.IComponent#setEnabled(boolean)
+	 */
+	@Override
+	public void setEnabled(boolean enabled)
+	{
+		// TODO Auto-generated method stub
+
+	}
 }
