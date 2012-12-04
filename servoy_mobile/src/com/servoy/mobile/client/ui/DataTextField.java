@@ -34,14 +34,12 @@ import com.sksamuel.jqm4gwt.form.elements.JQMText;
  */
 public class DataTextField extends JQMText implements IDisplayData, ISupportDataText, IFieldComponent, IEditListenerSubject
 {
-	protected final Field field;
 	protected final Executor executor;
 	private final MobileClient application;
 	private final RuntimeDataTextField scriptable;
 
 	public DataTextField(Field field, Executor executor, MobileClient application)
 	{
-		this.field = field;
 		this.executor = executor;
 		this.application = application;
 		this.scriptable = new RuntimeDataTextField(application, executor, this, field);
@@ -101,7 +99,9 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportData
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.scripting.IScriptableProvider#getScriptObject()
 	 */
 	@Override
@@ -110,7 +110,9 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportData
 		return scriptable;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.ui.ISupportDataText#setDataText(java.lang.String)
 	 */
 	@Override
@@ -119,7 +121,9 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportData
 		setText(dataText);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.ui.ISupportDataText#getDataText()
 	 */
 	@Override

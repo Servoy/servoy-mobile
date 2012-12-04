@@ -42,7 +42,6 @@ import com.sksamuel.jqm4gwt.form.elements.JQMCheckset;
  */
 public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IFieldComponent, ISupportDataText, IEditListenerSubject
 {
-	private final Field field;
 	private final ValueListDescription valuelist;
 	private final Executor executor;
 	private final MobileClient application;
@@ -52,7 +51,6 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 
 	public DataCheckboxSet(Field field, ValueListDescription valuelist, Executor executor, MobileClient application)
 	{
-		this.field = field;
 		this.valuelist = valuelist;
 		this.executor = executor;
 		this.application = application;
@@ -181,7 +179,9 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 		return dataText;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.scripting.IScriptableProvider#getScriptObject()
 	 */
 	@Override
@@ -190,7 +190,9 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 		return scriptable;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.ui.ISupportDataText#setDataText(java.lang.String)
 	 */
 	@Override
@@ -199,7 +201,9 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 		setText(dataText);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.ui.ISupportDataText#getDataText()
 	 */
 	@Override

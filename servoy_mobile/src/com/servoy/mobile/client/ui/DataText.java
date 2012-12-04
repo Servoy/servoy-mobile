@@ -32,14 +32,12 @@ import com.servoy.mobile.client.scripting.RuntimeDataText;
  */
 public class DataText implements IDisplayData, IGraphicalComponent
 {
-	private final GraphicalComponent textComponent;
 	private final ISupportDataText parentComponent;
 	private final RuntimeDataText scriptable;
 
 	public DataText(ISupportDataText parentComponent, GraphicalComponent textComponent, Executor executor, MobileClient application)
 	{
 		this.parentComponent = parentComponent;
-		this.textComponent = textComponent;
 		parentComponent.setDataText(application.getI18nProvider().getI18NMessageIfPrefixed(textComponent.getText() != null ? textComponent.getText() : ""));
 		this.scriptable = new RuntimeDataText(application, executor, this, textComponent);
 	}
@@ -50,7 +48,7 @@ public class DataText implements IDisplayData, IGraphicalComponent
 	@Override
 	public Object getValueObject()
 	{
-		return textComponent.getText();
+		return scriptable.getComponentPersist().getText();
 	}
 
 	/*
@@ -62,7 +60,9 @@ public class DataText implements IDisplayData, IGraphicalComponent
 		scriptable.setText(data);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.scripting.IScriptableProvider#getScriptObject()
 	 */
 	@Override
@@ -71,7 +71,9 @@ public class DataText implements IDisplayData, IGraphicalComponent
 		return scriptable;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.ui.IGraphicalComponent#setText(java.lang.String)
 	 */
 	@Override
@@ -80,7 +82,9 @@ public class DataText implements IDisplayData, IGraphicalComponent
 		parentComponent.setDataText(text);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.google.gwt.user.client.ui.HasText#getText()
 	 */
 	@Override
@@ -89,7 +93,9 @@ public class DataText implements IDisplayData, IGraphicalComponent
 		return parentComponent.getDataText();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.google.gwt.event.dom.client.HasClickHandlers#addClickHandler(com.google.gwt.event.dom.client.ClickHandler)
 	 */
 	@Override
@@ -98,11 +104,13 @@ public class DataText implements IDisplayData, IGraphicalComponent
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.google.gwt.event.shared.HasHandlers#fireEvent(com.google.gwt.event.shared.GwtEvent)
 	 */
 	@Override
-	public void fireEvent(GwtEvent<?> event)
+	public void fireEvent(GwtEvent< ? > event)
 	{
 		// ignore
 	}
