@@ -47,6 +47,11 @@ public class MobilePlugin implements Exportable
 		client.sync();
 	}
 
+	public native int getUsedStorageSpace()
+	/*-{
+		return unescape(encodeURIComponent(JSON.stringify(localStorage))).length
+	}-*/;
+
 	public native void getCurrentPosition(JavaScriptObject successCallback, JavaScriptObject errorHandler, String options)
 	/*-{
 		if (navigator.geolocation) {
@@ -70,10 +75,10 @@ public class MobilePlugin implements Exportable
 
 	private native void simulateClick(String link)/*-{
 		if ($wnd.$.mobile.activePage) {
-			if($wnd.$("#servoyanchor").length < 1) {
+			if ($wnd.$("#servoyanchor").length < 1) {
 				$wnd.$.mobile.activePage.append("<a id='servoyanchor'></a>");
 			}
-			$wnd.$("#servoyanchor").attr('href',link);
+			$wnd.$("#servoyanchor").attr('href', link);
 			$wnd._ServoyUtils_.simulateClick($wnd.$("#servoyanchor").get(0));
 		}
 	}-*/;
