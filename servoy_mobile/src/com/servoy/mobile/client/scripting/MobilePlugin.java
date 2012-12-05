@@ -49,7 +49,7 @@ public class MobilePlugin implements Exportable
 
 	public native int getUsedStorageSpace()
 	/*-{
-		return unescape(encodeURIComponent(JSON.stringify(localStorage))).length
+		return unescape(encodeURIComponent(JSON.stringify(localStorage))).length * 2;
 	}-*/;
 
 	public native void getCurrentPosition(JavaScriptObject successCallback, JavaScriptObject errorHandler, String options)
