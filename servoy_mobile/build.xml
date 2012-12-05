@@ -31,7 +31,7 @@
 			<!-- Additional arguments like -style PRETTY,DETAILED,OBFUSCATED, or -logLevel DEBUG -->
 			<arg value="com.servoy.mobile.MobileClient"/>
 			<arg value="-style"/>
-			<arg value="OBFUSCATED"/>
+			<arg value="DETAILED"/>
 		</java>
 	</target>
 
