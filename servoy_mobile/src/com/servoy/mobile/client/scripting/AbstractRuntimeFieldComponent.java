@@ -103,6 +103,7 @@ public class AbstractRuntimeFieldComponent extends AbstractRuntimeBaseComponent<
 	@Export
 	public String getName()
 	{
-		return componentPersist.getGroupID();
+		String name = super.getName();
+		return name != null ? name : componentPersist.getGroupID();
 	}
 }

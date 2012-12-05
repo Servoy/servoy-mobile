@@ -190,6 +190,12 @@ public class ComponentFactory
 			}
 		}
 
+		if (componentWidget instanceof IComponent)
+		{
+			((IComponent)componentWidget).setEnabled(component.isEnabled());
+			((IComponent)componentWidget).setVisible(component.isVisible());
+		}
+
 		return componentWidget;
 	}
 }

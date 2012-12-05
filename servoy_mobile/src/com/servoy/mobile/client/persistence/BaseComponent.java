@@ -39,7 +39,7 @@ public class BaseComponent extends JavaScriptObject
 	}-*/;
 
 	public final native boolean getAttributeValueBoolean(String attrName, boolean defaultValue) /*-{
-		return this[attrName] ? this[attrName] : defaultValue;
+		return this[attrName] != undefined ? this[attrName] : defaultValue;
 	}-*/;
 
 	public final native String getCustomPropertiesInt() /*-{

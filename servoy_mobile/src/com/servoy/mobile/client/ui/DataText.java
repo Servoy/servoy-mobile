@@ -39,6 +39,7 @@ public class DataText implements IDisplayData, IGraphicalComponent
 	{
 		this.parentComponent = parentComponent;
 		parentComponent.setDataText(application.getI18nProvider().getI18NMessageIfPrefixed(textComponent.getText() != null ? textComponent.getText() : ""));
+		parentComponent.setDataTextVisible(textComponent.isVisible());
 		this.scriptable = new RuntimeDataText(application, executor, this, textComponent);
 	}
 
@@ -123,8 +124,7 @@ public class DataText implements IDisplayData, IGraphicalComponent
 	@Override
 	public boolean isVisible()
 	{
-		// TODO Auto-generated method stub
-		return true;
+		return parentComponent.isDataTextVisible();
 	}
 
 	/*
@@ -135,8 +135,7 @@ public class DataText implements IDisplayData, IGraphicalComponent
 	@Override
 	public void setVisible(boolean visible)
 	{
-		// TODO Auto-generated method stub
-
+		parentComponent.setDataTextVisible(visible);
 	}
 
 	/*
@@ -147,7 +146,6 @@ public class DataText implements IDisplayData, IGraphicalComponent
 	@Override
 	public boolean isEnabled()
 	{
-		// TODO Auto-generated method stub
 		return true;
 	}
 
@@ -159,7 +157,5 @@ public class DataText implements IDisplayData, IGraphicalComponent
 	@Override
 	public void setEnabled(boolean enabled)
 	{
-		// TODO Auto-generated method stub
-
 	}
 }

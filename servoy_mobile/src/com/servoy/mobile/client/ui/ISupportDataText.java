@@ -27,4 +27,8 @@ public interface ISupportDataText
 	void setDataText(String dataText);
 
 	String getDataText();
+
+	void setDataTextVisible(boolean b);
+
+	boolean isDataTextVisible();
 }

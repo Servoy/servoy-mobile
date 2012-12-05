@@ -17,17 +17,13 @@
 
 package com.servoy.mobile.client.ui;
 
+import com.google.gwt.user.client.ui.HasEnabled;
+import com.google.gwt.user.client.ui.HasVisibility;
+
 /**
  * @author gboros
  *
  */
-public interface IComponent
+public interface IComponent extends HasVisibility, HasEnabled
 {
-	boolean isVisible();
-
-	void setVisible(boolean visible);
-
-	boolean isEnabled();
-
-	void setEnabled(boolean enabled);
 }

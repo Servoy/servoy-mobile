@@ -111,29 +111,24 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportData
 		return getText();
 	}
 
-	private boolean isEnabled = true;
-
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.servoy.mobile.client.ui.IComponent#isEnabled()
+	 * @see com.servoy.mobile.client.ui.ISupportDataText#setDataTextVisible(boolean)
 	 */
 	@Override
-	public boolean isEnabled()
+	public void setDataTextVisible(boolean b)
 	{
-		return isEnabled;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.servoy.mobile.client.ui.IComponent#setEnabled(boolean)
+	 * @see com.servoy.mobile.client.ui.ISupportDataText#isDataTextVisible()
 	 */
 	@Override
-	public void setEnabled(boolean enabled)
+	public boolean isDataTextVisible()
 	{
-		isEnabled = enabled;
-		if (isEnabled) enable();
-		else disable();
+		return true;
 	}
 }

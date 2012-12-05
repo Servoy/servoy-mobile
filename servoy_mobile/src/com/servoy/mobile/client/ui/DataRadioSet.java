@@ -172,24 +172,21 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.servoy.mobile.client.ui.IComponent#isEnabled()
+	 * @see com.servoy.mobile.client.ui.ISupportDataText#setDataTextVisible(boolean)
 	 */
 	@Override
-	public boolean isEnabled()
+	public void setDataTextVisible(boolean b)
 	{
-		// TODO Auto-generated method stub
-		return true;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.servoy.mobile.client.ui.IComponent#setEnabled(boolean)
+	 * @see com.servoy.mobile.client.ui.ISupportDataText#isDataTextVisible()
 	 */
 	@Override
-	public void setEnabled(boolean enabled)
+	public boolean isDataTextVisible()
 	{
-		// TODO Auto-generated method stub
-
+		return true;
 	}
 }
