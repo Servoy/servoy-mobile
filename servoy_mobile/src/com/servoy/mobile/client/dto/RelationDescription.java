@@ -3,17 +3,20 @@ package com.servoy.mobile.client.dto;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
 
-public class RelationDescription extends JavaScriptObject 
+public class RelationDescription extends JavaScriptObject
 {
-	protected RelationDescription() {}
+	protected RelationDescription()
+	{
+	}
 
 	public final native int getID() /*-{
-		if (!this.id) return 0;
+		if (!this.id)
+			return 0;
 		return this.id;
 	}-*/;
 
-	public final native String setID(int id) /*-{
-		return this.id = id;
+	public final native void setID(int id) /*-{
+		this.id = id;
 	}-*/;
 
 	public final native String getName() /*-{
@@ -27,7 +30,7 @@ public class RelationDescription extends JavaScriptObject
 	public final native JsArrayString getForeignColumns() /*-{
 		return this.foreignColumns;
 	}-*/;
-	
+
 	public final native JsArrayString getAllowCreationRelatedRecords() /*-{
 		return this.allowCreationRelatedRecords;
 	}-*/;
