@@ -7,9 +7,9 @@
 
   <!-- Servlets -->
   
-  <!-- Default page to serve -->
+  <!-- Default page to serve; will be renamed from servoy_mobile.html to index.html during export -->
   <welcome-file-list>
-    <welcome-file>servoy_mobile.html</welcome-file>
+    <welcome-file>index.html</welcome-file>
   </welcome-file-list>
 
 </web-app>
