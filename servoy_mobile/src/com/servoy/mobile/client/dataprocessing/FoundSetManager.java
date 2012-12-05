@@ -43,7 +43,7 @@ import com.servoy.mobile.client.util.Utils;
  * The mobile foundset manager
  * @author jblok
  */
-//export as databaseManager
+@SuppressWarnings("nls")
 public class FoundSetManager
 {
 	private static final String VALUELISTS_KEY = "valuelists";
