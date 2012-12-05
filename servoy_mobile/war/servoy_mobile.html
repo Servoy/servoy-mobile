@@ -12,11 +12,12 @@
 	<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
     <title>Servoy Mobile</title>
     
-    <!--                                           -->
-    <!-- This script loads your compiled module.   -->
-    <!-- If you add any GWT meta tags, they must   -->
-    <!-- be added before this line.                -->
-    <!--                                           -->
+	<script type="text/javascript" language="javascript">
+		if (window.location.hash.length > 0) {
+			window.location.hash = ' ';
+			window.location = window.location;
+		}
+	</script>
     <script type="text/javascript" language="javascript" src="mobileclient/mobileclient.nocache.js"></script>
 
   </head>
