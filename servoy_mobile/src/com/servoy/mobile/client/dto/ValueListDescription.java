@@ -27,6 +27,6 @@ public class ValueListDescription extends JavaScriptObject
 	}-*/;
 
 	public final native boolean hasRealValues() /*-{
-		return (this.realValues && this.realValues.lenght == this.displayValues.lenght);
+		return (this.realValues && this.realValues.length == this.displayValues.length);
 	}-*/;
 }
