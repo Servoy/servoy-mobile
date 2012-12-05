@@ -50,6 +50,8 @@ public class FoundSetManager
 	private static final String CHANGES_KEY = "changes";
 	private static final String ENTITY_PREFIX_KEY = "entityPrefix";
 	private static final String ENTITIES_KEY = "entities";
+	private static final String STORAGE_VERSION_KEY = "storage_version";
+	private static final int STORAGE_VERSION = 1;
 
 	private final Storage localStorage = Storage.getLocalStorageIfSupported();
 	private final ValueStore valueStore = new ValueStore(localStorage);
@@ -59,6 +61,7 @@ public class FoundSetManager
 	//fields mapped to local storage
 	private Entities entities;
 	private String entityPrefix;
+	private final int storage_version;
 	private JsArray<ValueListDescription> valueLists;
 	private ArrayList<String> changes;
 
@@ -66,6 +69,13 @@ public class FoundSetManager
 	{
 		application = mc;
 		editRecordList = new EditRecordList(this);
+
+		//check storage version, if not 1 do clear storage
+		storage_version = Utils.getAsInteger(localStorage.getItem(STORAGE_VERSION_KEY));
+		if (storage_version != STORAGE_VERSION)
+		{
+			localStorage.clear();
+		}
 
 		String ejson = localStorage.getItem(ENTITIES_KEY);
 		if (ejson != null)
@@ -168,6 +178,8 @@ public class FoundSetManager
 	void storeOfflineData(OfflineDataProxy offlineDataProxy, String fsname, OfflineDataDescription offlineData)
 	{
 		HashMap<String, HashSet<Object>> entitiesToPKs = new HashMap<String, HashSet<Object>>();
+
+		localStorage.setItem(STORAGE_VERSION_KEY, String.valueOf(STORAGE_VERSION));
 
 		//store data in offline db
 		entities = new Entities(offlineData.getEntities(), valueStore);
