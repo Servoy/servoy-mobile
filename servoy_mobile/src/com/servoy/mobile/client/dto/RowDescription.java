@@ -28,8 +28,12 @@ import com.google.gwt.json.client.JSONValue;
 /**
  * @author jblok
  */
+@SuppressWarnings("nls")
 public class RowDescription extends JavaScriptObject
 {
+	public static final String MODIFICATION_DATE = "modification_date";
+	public static final String CREATED_ON_DEVICE = "created_on_device";
+
 	protected RowDescription()
 	{
 	}
@@ -66,7 +70,8 @@ public class RowDescription extends JavaScriptObject
 	}
 
 	private final native void setModificationDate()/*-{
-		this['modification_date'] = new Date().getTime();
+		this[@com.servoy.mobile.client.dto.RowDescription::MODIFICATION_DATE] = new Date()
+				.getTime();
 	}-*/;
 
 	private final native void setBooleanValue(String dataProviderID, boolean val)/*-{
@@ -125,15 +130,14 @@ public class RowDescription extends JavaScriptObject
 	}
 
 	private final native void setCreatedOnDevice(boolean createdOnDevice)/*-{
-		this['created_on_device'] = createdOnDevice;
+		this[@com.servoy.mobile.client.dto.RowDescription::CREATED_ON_DEVICE] = createdOnDevice;
 	}-*/;
 
-	public final native boolean isCreatedOnDevice()
-	/*-{
-		if (this['created_on_device'] == null
-				|| this['createdOnDevice'] == undefined)
+	public final native boolean isCreatedOnDevice() /*-{
+		if (this[@com.servoy.mobile.client.dto.RowDescription::CREATED_ON_DEVICE] == null
+				|| this[@com.servoy.mobile.client.dto.RowDescription::CREATED_ON_DEVICE] == undefined)
 			return false;
-		return this['created_on_device'];
+		return this[@com.servoy.mobile.client.dto.RowDescription::CREATED_ON_DEVICE];
 	}-*/;
 
 	public static RowDescription newInstance()

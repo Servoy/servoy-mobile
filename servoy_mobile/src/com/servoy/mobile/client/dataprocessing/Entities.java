@@ -24,16 +24,16 @@ import com.google.gwt.json.client.JSONArray;
 import com.servoy.mobile.client.dto.DataProviderDescription;
 import com.servoy.mobile.client.dto.EntityDescription;
 import com.servoy.mobile.client.dto.RelationDescription;
+import com.servoy.mobile.client.dto.RowDescription;
 
 /**
  * Helper class to do fast lookups on EntityDescriptions
  * @author jblok
  */
+@SuppressWarnings("nls")
 public class Entities
 {
-	public static final String MODIFICATION_DATE = "modification_date";
 	private static final int MODIFICATION_DATE_TYPE = 93;//timestamp from java.sql.Types
-	public static final String CREATED_ON_DEVICE = "created_on_device";
 	private static final int CREATED_ON_DEVICE_TYPE = 4;//int from java.sql.Types
 
 	private final JsArray<EntityDescription> entities;
@@ -73,23 +73,23 @@ public class Entities
 		for (int i = 0; i < dps.length(); i++)
 		{
 			DataProviderDescription dpd = dps.get(i);
-			if (MODIFICATION_DATE.equals(dpd.getName()))
+			if (RowDescription.MODIFICATION_DATE.equals(dpd.getName()))
 			{
 				mod_date = dpd;
 			}
-			if (CREATED_ON_DEVICE.equals(dpd.getName()))
+			if (RowDescription.CREATED_ON_DEVICE.equals(dpd.getName()))
 			{
 				mod_date = dpd;
 			}
 		}
 		if (mod_date == null)
 		{
-			mod_date = DataProviderDescription.newInstance(MODIFICATION_DATE, MODIFICATION_DATE_TYPE);
+			mod_date = DataProviderDescription.newInstance(RowDescription.MODIFICATION_DATE, MODIFICATION_DATE_TYPE);
 			dps.push(mod_date);
 		}
 		if (created_on_device == null)
 		{
-			created_on_device = DataProviderDescription.newInstance(CREATED_ON_DEVICE, CREATED_ON_DEVICE_TYPE);
+			created_on_device = DataProviderDescription.newInstance(RowDescription.CREATED_ON_DEVICE, CREATED_ON_DEVICE_TYPE);
 			dps.push(created_on_device);
 		}
 	}
