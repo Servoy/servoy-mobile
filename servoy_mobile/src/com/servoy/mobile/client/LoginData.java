@@ -17,6 +17,8 @@
 
 package com.servoy.mobile.client;
 
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.sksamuel.jqm4gwt.form.JQMForm;
 import com.sksamuel.jqm4gwt.form.JQMSubmit;
 import com.sksamuel.jqm4gwt.form.SubmissionHandler;
@@ -41,6 +43,17 @@ public class LoginData extends JQMForm
 		addRequired(emailInput);
 
 		passwordInput = new JQMPassword(application.getMessages().password());
+		passwordInput.addKeyUpHandler(new KeyUpHandler()
+		{
+			@Override
+			public void onKeyUp(KeyUpEvent event)
+			{
+				if (event.getNativeKeyCode() == 13)
+				{
+					LoginData.this.submit();
+				}
+			}
+		});
 		addRequired(passwordInput);
 
 		JQMSubmit submit = new JQMSubmit(application.getMessages().login());
