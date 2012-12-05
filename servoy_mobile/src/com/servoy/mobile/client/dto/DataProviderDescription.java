@@ -59,6 +59,8 @@ public class DataProviderDescription extends JavaScriptObject
 	}-*/;
 
 	public final native int getLength() /*-{
+		if (!this.dplength)
+			return 0;
 		return this.dplength;
 	}-*/;
 
