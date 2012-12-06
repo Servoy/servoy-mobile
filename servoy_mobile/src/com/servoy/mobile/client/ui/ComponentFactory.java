@@ -154,9 +154,6 @@ public class ComponentFactory
 					case IFieldConstants.CALENDAR :
 						componentWidget = new DataTextField(field, executor, application);
 						break;
-					case IFieldConstants.LIST_BOX :
-						componentWidget = new DataList(field);
-						break;
 					case IFieldConstants.PASSWORD :
 						componentWidget = new DataPassword(field, executor, application);
 						break;
