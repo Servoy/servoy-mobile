@@ -75,8 +75,7 @@ public class DataTextArea extends JQMTextArea implements IDisplayData, ISupportD
 		{
 			editProvider = new EditProvider(this);
 			editProvider.addEditListener(editListener);
-			// TODO: add blur handler
-			//addBlurHandler(editProvider);
+			addBlurHandler(editProvider);
 		}
 	}
 

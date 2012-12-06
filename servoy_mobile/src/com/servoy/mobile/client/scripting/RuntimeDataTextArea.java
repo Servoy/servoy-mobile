@@ -17,6 +17,9 @@
 
 package com.servoy.mobile.client.scripting;
 
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.servoy.j2db.scripting.api.IJSEvent;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.ui.DataTextArea;
@@ -36,21 +39,16 @@ public class RuntimeDataTextArea extends AbstractRuntimeFieldComponent
 	@Override
 	public void setActionCommand(final String command)
 	{
-		// TODO: implement action
-//		if (command != null)
-//		{
-//			((DataTextArea)component).addKeyUpHandler(new KeyUpHandler()
-//			{
-//
-//				@Override
-//				public void onKeyUp(KeyUpEvent event)
-//				{
-//					if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
-//					{
-//						executor.fireEventCommand(IJSEvent.ACTION, command, this, null);
-//					}
-//				}
-//			});
-//		}
+		if (command != null)
+		{
+			((DataTextArea)component).addValueChangeHandler(new ValueChangeHandler<String>()
+			{
+				@Override
+				public void onValueChange(ValueChangeEvent<String> event)
+				{
+					executor.fireEventCommand(IJSEvent.ACTION, command, this, null);
+				}
+			});
+		}
 	}
 }
