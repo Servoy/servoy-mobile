@@ -73,14 +73,25 @@ public class FormScope extends GlobalScope
 	@Override
 	public Object getValue(String variable)
 	{
-		if ("foundset".equals(variable)) return formController.getFormModel();
-		if (recordTypes.containsKey(variable))
+		FoundSet foundSet = formController.getFormModel();
+
+		if ("foundset".equals(variable)) return foundSet;
+
+		if (foundSet != null)
 		{
-			return formController.getFormModel().getSelectedRecord().getValue(variable);
+			Record selRecord = foundSet.getSelectedRecord();
+			if (selRecord != null)
+			{
+				if (recordTypes.containsKey(variable))
+				{
+					return selRecord.getValue(variable);
+				}
+
+				FoundSet rfs = selRecord.getRelatedFoundSet(variable);
+				if (rfs != null) return rfs;
+			}
 		}
-		Record rec = formController.getFormModel().getSelectedRecord();
-		FoundSet rfs = rec != null ? rec.getRelatedFoundSet(variable) : null;
-		if (rfs != null) return rfs;
+
 		return super.getValue(variable);
 	}
 
