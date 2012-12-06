@@ -199,7 +199,7 @@ public class FormPage extends JQMPage
 					{
 						if (widget instanceof ISupportDataText)
 						{
-							dal.addFormObject(new DataText((ISupportDataText)widget, rowLabel, formController.getExecutor(), application));
+							dal.addFormObject(new DataText((ISupportDataText)widget, rowLabel, dal, application));
 						}
 						add(widget);
 					}

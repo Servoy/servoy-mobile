@@ -140,7 +140,7 @@ public class ComponentFactory
 						componentWidget = new DataTextField(field, executor, application);
 						break;
 					case IFieldConstants.TEXT_AREA :
-						componentWidget = new DataTextArea(field);
+						componentWidget = new DataTextArea(field, executor, application);
 						break;
 					case IFieldConstants.COMBOBOX :
 						componentWidget = new DataSelect(field, valuelist, executor, application);
@@ -158,7 +158,7 @@ public class ComponentFactory
 						componentWidget = new DataList(field);
 						break;
 					case IFieldConstants.PASSWORD :
-						componentWidget = new DataPassword(field);
+						componentWidget = new DataPassword(field, executor, application);
 						break;
 				}
 

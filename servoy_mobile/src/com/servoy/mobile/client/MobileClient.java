@@ -39,9 +39,10 @@ import com.servoy.mobile.client.scripting.RuntimeDataCheckboxSet;
 import com.servoy.mobile.client.scripting.RuntimeDataFormHeader;
 import com.servoy.mobile.client.scripting.RuntimeDataFormHeaderButton;
 import com.servoy.mobile.client.scripting.RuntimeDataLabel;
+import com.servoy.mobile.client.scripting.RuntimeDataPassword;
 import com.servoy.mobile.client.scripting.RuntimeDataRadioSet;
 import com.servoy.mobile.client.scripting.RuntimeDataSelect;
-import com.servoy.mobile.client.scripting.RuntimeDataText;
+import com.servoy.mobile.client.scripting.RuntimeDataTextArea;
 import com.servoy.mobile.client.scripting.RuntimeDataTextField;
 import com.servoy.mobile.client.scripting.ScriptEngine;
 import com.servoy.mobile.client.scripting.solutionmodel.JSSolutionModel;
@@ -85,8 +86,9 @@ public class MobileClient implements EntryPoint
 		GWT.create(RuntimeDataLabel.class);
 		GWT.create(RuntimeDataRadioSet.class);
 		GWT.create(RuntimeDataSelect.class);
-		GWT.create(RuntimeDataText.class);
 		GWT.create(RuntimeDataTextField.class);
+		GWT.create(RuntimeDataTextArea.class);
+		GWT.create(RuntimeDataPassword.class);
 
 
 		solution = createSolution();

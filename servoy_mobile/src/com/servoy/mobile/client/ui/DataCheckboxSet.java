@@ -190,25 +190,4 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 	{
 		return getText();
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.ui.ISupportDataText#setDataTextVisible()
-	 */
-	@Override
-	public void setDataTextVisible(boolean b)
-	{
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.ui.ISupportDataText#isDataTextVisible()
-	 */
-	@Override
-	public boolean isDataTextVisible()
-	{
-		return true;
-	}
 }

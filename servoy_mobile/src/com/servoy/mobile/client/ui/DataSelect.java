@@ -40,15 +40,11 @@ import com.sksamuel.jqm4gwt.form.elements.JQMSelect;
 public class DataSelect extends JQMSelect implements IDisplayData, IFieldComponent, ISupportDataText, IEditListenerSubject
 {
 	private final ValueListDescription valuelist;
-	private final Executor executor;
-	private final MobileClient application;
 	private final RuntimeDataSelect scriptable;
 
 	public DataSelect(Field field, ValueListDescription valuelist, Executor executor, MobileClient application)
 	{
 		this.valuelist = valuelist;
-		this.executor = executor;
-		this.application = application;
 		this.scriptable = new RuntimeDataSelect(application, executor, this, field);
 
 		setText(field.getText());
@@ -145,26 +141,5 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 	public String getDataText()
 	{
 		return getText();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.ui.ISupportDataText#setDataTextVisible(boolean)
-	 */
-	@Override
-	public void setDataTextVisible(boolean b)
-	{
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.ui.ISupportDataText#isDataTextVisible()
-	 */
-	@Override
-	public boolean isDataTextVisible()
-	{
-		return true;
 	}
 }

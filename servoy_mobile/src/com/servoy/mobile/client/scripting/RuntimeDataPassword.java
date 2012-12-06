@@ -13,23 +13,47 @@
  You should have received a copy of the GNU Affero General Public License along
  with this program; if not, see http://www.gnu.org/licenses or write to the Free
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
-*/
+ */
 
 package com.servoy.mobile.client.scripting;
 
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.servoy.j2db.scripting.api.IJSEvent;
 import com.servoy.mobile.client.MobileClient;
-import com.servoy.mobile.client.persistence.GraphicalComponent;
+import com.servoy.mobile.client.persistence.Field;
+import com.servoy.mobile.client.ui.DataPassword;
 import com.servoy.mobile.client.ui.Executor;
-import com.servoy.mobile.client.ui.IGraphicalComponent;
 
 /**
  * @author gboros
  *
  */
-public class RuntimeDataText extends AbstractRuntimeGraphicalComponent
+public class RuntimeDataPassword extends AbstractRuntimeFieldComponent
 {
-	public RuntimeDataText(MobileClient application, Executor executor, IGraphicalComponent component, GraphicalComponent componentPersist)
+	public RuntimeDataPassword(MobileClient application, Executor executor, DataPassword component, Field componentPersist)
 	{
 		super(application, executor, component, componentPersist);
+	}
+
+	@Override
+	public void setActionCommand(final String command)
+	{
+		if (command != null)
+		{
+			((DataPassword)component).addKeyUpHandler(new KeyUpHandler()
+			{
+
+				@Override
+				public void onKeyUp(KeyUpEvent event)
+				{
+					if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
+					{
+						executor.fireEventCommand(IJSEvent.ACTION, command, this, null);
+					}
+				}
+			});
+		}
 	}
 }

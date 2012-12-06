@@ -41,15 +41,10 @@ public class DataLabel extends JQMWidget implements HasText, IDisplayData, IGrap
 	private final FormLabel labelFor;
 	private final Heading label;
 	private final FlowPanel flow;
-	protected final Executor executor;
-	private final MobileClient application;
 	private final RuntimeDataLabel scriptable;
 
 	public DataLabel(GraphicalComponent gc, Executor executor, MobileClient application)
 	{
-		this.executor = executor;
-		this.application = application;
-
 		String id = Document.get().createUniqueId();
 
 		flow = new FlowPanel();
@@ -157,27 +152,5 @@ public class DataLabel extends JQMWidget implements HasText, IDisplayData, IGrap
 	public String getDataText()
 	{
 		return labelFor.getText();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.ui.ISupportDataText#setDataTextVisible(boolean)
-	 */
-	@Override
-	public void setDataTextVisible(boolean b)
-	{
-		labelFor.setVisible(b);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.ui.ISupportDataText#isDataTextVisible()
-	 */
-	@Override
-	public boolean isDataTextVisible()
-	{
-		return labelFor.isVisible();
 	}
 }

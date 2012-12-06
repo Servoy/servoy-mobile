@@ -38,7 +38,7 @@ public class DataButton extends JQMButton implements IDisplayData, IGraphicalCom
 
 	public DataButton(GraphicalComponent gc, Executor executor, MobileClient application)
 	{
-		super(application.getI18nProvider().getI18NMessageIfPrefixed(gc.getText() != null ? gc.getText() : ""));
+		super(application.getI18nProvider().getI18NMessageIfPrefixed(gc.getText() != null ? gc.getText() : "")); //$NON-NLS-1$
 		this.scriptable = new RuntimeDataButton(application, executor, this, gc);
 		setTheme("b"); //$NON-NLS-1$
 		MobileProperties mp = gc.getMobileProperties();

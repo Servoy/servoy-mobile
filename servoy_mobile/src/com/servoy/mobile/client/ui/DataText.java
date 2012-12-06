@@ -17,30 +17,32 @@
 
 package com.servoy.mobile.client.ui;
 
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.servoy.j2db.util.ITagResolver;
+import com.servoy.j2db.util.TagParser;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
-import com.servoy.mobile.client.scripting.IRuntimeComponent;
-import com.servoy.mobile.client.scripting.RuntimeDataText;
 
 /**
  * @author gboros
  *
  */
-public class DataText implements IDisplayData, IGraphicalComponent
+public class DataText implements IDisplayData
 {
 	private final ISupportDataText parentComponent;
-	private final RuntimeDataText scriptable;
+	private final GraphicalComponent textComponent;
+	private final ITagResolver tagResolver;
+	private final MobileClient application;
 
-	public DataText(ISupportDataText parentComponent, GraphicalComponent textComponent, Executor executor, MobileClient application)
+	public DataText(ISupportDataText parentComponent, GraphicalComponent textComponent, ITagResolver tagResolver, MobileClient application)
 	{
 		this.parentComponent = parentComponent;
-		parentComponent.setDataText(application.getI18nProvider().getI18NMessageIfPrefixed(textComponent.getText() != null ? textComponent.getText() : ""));
-		parentComponent.setDataTextVisible(textComponent.isVisible());
-		this.scriptable = new RuntimeDataText(application, executor, this, textComponent);
+		this.textComponent = textComponent;
+		this.tagResolver = tagResolver;
+		this.application = application;
+
+		parentComponent.setDataText(textComponent.isVisible() ? application.getI18nProvider().getI18NMessageIfPrefixed(
+			textComponent.getText() != null ? textComponent.getText() : "") : ""); //$NON-NLS-1$ //$NON-NLS-2$);
 	}
 
 	/*
@@ -49,7 +51,7 @@ public class DataText implements IDisplayData, IGraphicalComponent
 	@Override
 	public Object getValueObject()
 	{
-		return scriptable.getComponentPersist().getText();
+		return parentComponent.getDataText();
 	}
 
 	/*
@@ -58,104 +60,16 @@ public class DataText implements IDisplayData, IGraphicalComponent
 	@Override
 	public void setValueObject(Object data)
 	{
-		scriptable.setText(data);
-	}
+		String txt;
+		if (textComponent.getDataProviderID() == null)
+		{
+			txt = TagParser.processTags(textComponent.getText(), tagResolver, application.getI18nProvider());
+		}
+		else
+		{
+			txt = data != null ? data.toString() : ""; //$NON-NLS-1$
+		}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.scripting.IScriptableProvider#getScriptObject()
-	 */
-	@Override
-	public IRuntimeComponent getRuntimeComponent()
-	{
-		return scriptable;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.ui.IGraphicalComponent#setText(java.lang.String)
-	 */
-	@Override
-	public void setText(String text)
-	{
-		parentComponent.setDataText(text);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.google.gwt.user.client.ui.HasText#getText()
-	 */
-	@Override
-	public String getText()
-	{
-		return parentComponent.getDataText();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.google.gwt.event.dom.client.HasClickHandlers#addClickHandler(com.google.gwt.event.dom.client.ClickHandler)
-	 */
-	@Override
-	public HandlerRegistration addClickHandler(ClickHandler handler)
-	{
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.google.gwt.event.shared.HasHandlers#fireEvent(com.google.gwt.event.shared.GwtEvent)
-	 */
-	@Override
-	public void fireEvent(GwtEvent< ? > event)
-	{
-		// ignore
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.ui.IComponent#isVisible()
-	 */
-	@Override
-	public boolean isVisible()
-	{
-		return parentComponent.isDataTextVisible();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.ui.IComponent#setVisible(boolean)
-	 */
-	@Override
-	public void setVisible(boolean visible)
-	{
-		parentComponent.setDataTextVisible(visible);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.ui.IComponent#isEnabled()
-	 */
-	@Override
-	public boolean isEnabled()
-	{
-		return true;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.ui.IComponent#setEnabled(boolean)
-	 */
-	@Override
-	public void setEnabled(boolean enabled)
-	{
+		parentComponent.setDataText(txt);
 	}
 }

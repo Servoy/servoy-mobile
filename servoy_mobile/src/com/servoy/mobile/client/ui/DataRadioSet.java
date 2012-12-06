@@ -41,15 +41,11 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 	private static final int HORIZONTAL = 1;
 
 	private final ValueListDescription valuelist;
-	private final Executor executor;
-	private final MobileClient application;
 	private final RuntimeDataRadioSet scriptable;
 
 	public DataRadioSet(Field field, ValueListDescription valuelist, Executor executor, MobileClient application)
 	{
 		this.valuelist = valuelist;
-		this.executor = executor;
-		this.application = application;
 		this.scriptable = new RuntimeDataRadioSet(application, executor, this, field);
 
 		if (field.getMobileProperties() != null && field.getMobileProperties().getRadioStyle() == HORIZONTAL) setHorizontal();
@@ -167,26 +163,5 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 	public String getDataText()
 	{
 		return getText();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.ui.ISupportDataText#setDataTextVisible(boolean)
-	 */
-	@Override
-	public void setDataTextVisible(boolean b)
-	{
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.ui.ISupportDataText#isDataTextVisible()
-	 */
-	@Override
-	public boolean isDataTextVisible()
-	{
-		return true;
 	}
 }
