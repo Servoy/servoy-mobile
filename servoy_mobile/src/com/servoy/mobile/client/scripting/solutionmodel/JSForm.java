@@ -19,7 +19,9 @@ package com.servoy.mobile.client.scripting.solutionmodel;
 
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
+import org.timepedia.exporter.client.ExporterUtil;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.servoy.j2db.persistence.constants.IFieldConstants;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod;
@@ -294,16 +296,16 @@ public class JSForm implements IBaseSMForm, Exportable
 	@Override
 	public JSButton newButton(String txt, int x, int y, int width, int height, Object action)
 	{
-		return newButton(txt, x, y, width, height, null); // because of how GWT Exporter works, the other method will be most likely called instead anyway for JSMethod actions
-	}
-
-	public JSButton newButton(String txt, int x, int y, int width, int height, JSMethod action)
-	{
+		Object method = action;
+		if (method instanceof JavaScriptObject)
+		{
+			method = ExporterUtil.gwtInstance(method);
+		}
 		GraphicalComponent gc = form.createNewGraphicalComponent(GraphicalComponent.VIEW_TYPE_BUTTON);
 		gc.setText(txt);
 		gc.setSize(width, height);
 		gc.setLocation(x, y);
-		if (action != null) gc.setOnActionMethodID(action.getReferenceString());
+		if (method instanceof JSMethod) gc.setOnActionMethodID(((JSMethod)method).getReferenceString());
 		return new JSButton(gc);
 	}
 
