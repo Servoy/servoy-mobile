@@ -107,6 +107,12 @@ public class RowDescription extends JavaScriptObject
 		return retval.toString();
 	}
 
+	/**
+	 * For creation from storage values
+	 * @param dataProviders
+	 * @param values
+	 * @return the object instance
+	 */
 	public static RowDescription newInstance(String[] dataProviders, JSONArray values)
 	{
 		RowDescription retval = JavaScriptObject.createObject().cast();
@@ -140,6 +146,10 @@ public class RowDescription extends JavaScriptObject
 		return this[@com.servoy.mobile.client.dto.RowDescription::CREATED_ON_DEVICE];
 	}-*/;
 
+	/**
+	 * For creation for brand new records
+	 * @return the object instance
+	 */
 	public static RowDescription newInstance()
 	{
 		RowDescription rd = JavaScriptObject.createObject().cast();
