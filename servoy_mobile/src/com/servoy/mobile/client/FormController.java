@@ -46,10 +46,11 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 		formDisplay = ComponentFactory.createFormDisplay(mc, this);
 	}
 
-	public void recreateScope()
+	public FormScope recreateScope()
 	{
-		// TODO ac when reloading is done more fine grained, this will be no longer needed as the scope is not recreated
+		FormScope old = scope;
 		this.scope = new FormScope(mc, this);
+		return old;
 	}
 
 	/**

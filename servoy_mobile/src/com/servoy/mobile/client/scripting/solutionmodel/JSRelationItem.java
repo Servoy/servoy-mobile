@@ -18,15 +18,16 @@
 package com.servoy.mobile.client.scripting.solutionmodel;
 
 import org.timepedia.exporter.client.Export;
+import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 
-import com.google.gwt.core.client.JavaScriptObject;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMRelationItem;
 
 /**
  * @author acostescu
  */
 @Export
+@ExportPackage("")
 public class JSRelationItem implements IBaseSMRelationItem, Exportable
 {
 

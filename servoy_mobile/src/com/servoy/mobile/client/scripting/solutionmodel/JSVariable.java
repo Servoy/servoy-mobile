@@ -17,17 +17,28 @@
 
 package com.servoy.mobile.client.scripting.solutionmodel;
 
+import org.timepedia.exporter.client.Export;
+import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.NoExport;
 
+import com.servoy.j2db.persistence.constants.IColumnTypeConstants;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMVariable;
 
 /**
  * @author acostescu
  *
  */
+@Export
+@ExportPackage("")
 public class JSVariable extends JSScriptPart implements IBaseSMVariable, Exportable
 {
+
+	public static final int DATETIME = IBaseSMVariable.DATETIME;
+	public static final int TEXT = IBaseSMVariable.TEXT;
+	public static final int NUMBER = IBaseSMVariable.NUMBER;
+	public static final int INTEGER = IBaseSMVariable.INTEGER;
+	public static final int MEDIA = IBaseSMVariable.MEDIA;
 
 	public JSVariable(String parentScopeName, String scopeName, String name, JSSolutionModel model)
 	{
@@ -37,41 +48,26 @@ public class JSVariable extends JSScriptPart implements IBaseSMVariable, Exporta
 	@Override
 	public String getDefaultValue()
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		return getDefaultValueInternal(path[0], path[1], path[2]);
 	}
 
 	@Override
-	public void setDefaultValue(String arg)
+	public void setDefaultValue(String defValueStr)
 	{
-		// TODO ac Auto-generated method stub
-
-	}
-
-	@Override
-	public void setName(String name)
-	{
-		// TODO ac Auto-generated method stub
-
+		if (defValueStr == null) return;
+		setDefaultValueInternal(path[0], path[1], path[2], defValueStr);
 	}
 
 	@Override
 	public int getVariableType()
 	{
-		// TODO ac Auto-generated method stub
-		return 0;
+		return getVariableTypeInternal(path[0], path[1], path[2]);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMVariable#setVariableType(int)
-	 */
 	@Override
-	public void setVariableType(int arg)
+	public void setVariableType(int type)
 	{
-		// TODO ac Auto-generated method stub
-
+		setVariableTypeInternal(path[0], path[1], path[2], type);
 	}
 
 	@Override
@@ -81,24 +77,55 @@ public class JSVariable extends JSScriptPart implements IBaseSMVariable, Exporta
 		return existsInternal(path[0], path[1], path[2]);
 	}
 
-	@NoExport
-	public final native boolean existsInternal(String parentScope, String scope, String fName) /*-{
+	private final native boolean existsInternal(String parentScope, String scope, String vName) /*-{
 		var scp = $wnd._ServoyInit_[parentScope][scope];
-		if (scp && scp.fncs[fName]) {
+		if (scp && scp.vrbs[vName]) {
 			return true;
 		}
 		return false;
 	}-*/;
 
-	@NoExport
-	public final native String getCodeInternal(String parentScope, String scope, String fName) /*-{
-		return $wnd._ServoyInit_[parentScope][scope].fncs[fName].toString();
+	private final native String getDefaultValueInternal(String parentScope, String scope, String vName) /*-{
+		return $wnd._ServoyInit_[parentScope][scope].vrbs[vName][0];
+	}-*/;
+
+	private final native void setDefaultValueInternal(String parentScope, String scope, String vName, String defValueStr) /*-{
+		$wnd._ServoyInit_[parentScope][scope].vrbs[vName][0] = defValueStr;
+	}-*/;
+
+	private final native int getVariableTypeInternal(String parentScope, String scope, String vName) /*-{
+		return $wnd._ServoyInit_[parentScope][scope].vrbs[vName][1];
+	}-*/;
+
+	private final native void setVariableTypeInternal(String parentScope, String scope, String vName, int type) /*-{
+		$wnd._ServoyInit_[parentScope][scope].vrbs[vName][1] = type;
+	}-*/;
+
+	private final native void createVarInternal(String parentScope, String scope, String vName, int type) /*-{
+		$wnd._ServoyInit_[parentScope][scope].vrbs[vName] = [ "null", type ];
+	}-*/;
+
+	private final native void removeInternal(String parentScope, String scope, String vName) /*-{
+		delete $wnd._ServoyInit_[parentScope][scope].vrbs[vName];
 	}-*/;
 
 	@NoExport
-	public final native void setCodeInternal(String parentScope, String scope, String fName, String code) /*-{
-		$wnd._ServoyInit_[parentScope][scope].fncs[fName] = eval("(" + code
-				+ ")");
-	}-*/;
+	public void create(int type)
+	{
+		createVarInternal(path[0], path[1], path[2], type);
+		reloadScope();
+	}
+
+	@Override
+	public boolean remove()
+	{
+		if (exists())
+		{
+			removeInternal(path[0], path[1], path[2]);
+			reloadScope();
+			return true;
+		}
+		return false;
+	}
 
 }

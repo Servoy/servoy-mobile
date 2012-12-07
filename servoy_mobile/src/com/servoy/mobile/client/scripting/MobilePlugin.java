@@ -19,9 +19,13 @@ package com.servoy.mobile.client.scripting;
 
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
+import org.timepedia.exporter.client.Exporter;
+import org.timepedia.exporter.client.Getter;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.servoy.mobile.client.MobileClient;
+import com.servoy.mobile.client.scripting.solutionmodel.SolutionHelper;
 
 /**
  * @author lvostinar
@@ -30,12 +34,37 @@ import com.servoy.mobile.client.MobileClient;
 @Export
 public class MobilePlugin implements Exportable
 {
+
+	private SolutionHelper solutionHelper;
 	private final MobileClient client;
+
+	private final Exporter solutionHelperExport;
 
 	public MobilePlugin(MobileClient client)
 	{
 		this.client = client;
+		solutionHelperExport = (Exporter)GWT.create(SolutionHelper.class);
 	}
+
+	@Getter
+	public SolutionHelper getSolutionHelper()
+	{
+		if (solutionHelper == null) solutionHelper = new SolutionHelper();
+		return solutionHelper;
+	}
+
+	@Getter("SolutionHelper")
+	public JavaScriptObject getSolutionHelperConstants()
+	{
+//		return solutionHelperExport;
+//		return getSolutionHelper();
+		return solutionHelperExport.getJsConstructor();
+//		return getSolutionHelperExportedClass();
+	}
+
+//	private final native JavaScriptObject getSolutionHelperExportedClass() /*-{
+//		return $wnd.SolutionHelper;
+//	}-*/;
 
 	public boolean isOnline()
 	{

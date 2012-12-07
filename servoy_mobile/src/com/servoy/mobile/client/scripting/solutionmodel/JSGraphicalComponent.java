@@ -20,16 +20,21 @@ package com.servoy.mobile.client.scripting.solutionmodel;
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 
-import com.google.gwt.core.client.JavaScriptObject;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMGraphicalComponent;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod;
+import com.servoy.mobile.client.persistence.GraphicalComponent;
 
 /**
  * @author acostescu
  */
 @Export
-public class JSGraphicalComponent implements IBaseSMGraphicalComponent, Exportable
+public class JSGraphicalComponent extends JSComponent implements IBaseSMGraphicalComponent, Exportable
 {
+
+	public JSGraphicalComponent(GraphicalComponent gc, JSSolutionModel model)
+	{
+		super(gc, model);
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -118,18 +123,6 @@ public class JSGraphicalComponent implements IBaseSMGraphicalComponent, Exportab
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#getGroupID()
-	 */
-	@Override
-	public String getGroupID()
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#setX(int)
 	 */
 	@Override
@@ -206,18 +199,6 @@ public class JSGraphicalComponent implements IBaseSMGraphicalComponent, Exportab
 	 */
 	@Override
 	public void setHeight(int height)
-	{
-		// TODO ac Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#setGroupID(java.lang.String)
-	 */
-	@Override
-	public void setGroupID(String arg)
 	{
 		// TODO ac Auto-generated method stub
 

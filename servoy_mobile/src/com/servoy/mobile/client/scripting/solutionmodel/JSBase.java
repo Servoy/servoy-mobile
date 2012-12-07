@@ -17,28 +17,31 @@
 
 package com.servoy.mobile.client.scripting.solutionmodel;
 
-import org.timepedia.exporter.client.Export;
-import org.timepedia.exporter.client.Exportable;
-
+import com.servoy.mobile.client.persistence.AbstractBase;
 
 /**
  * @author acostescu
  */
-@Export
-public class JSMethodWithArguments extends JSMethod implements Exportable
+public class JSBase
 {
 
-	public JSMethodWithArguments(JSMethod jsMethod, Object[] args)
+	private final AbstractBase ab;
+	private final JSSolutionModel model;
+
+	public JSBase(AbstractBase ab, JSSolutionModel model)
 	{
-		// TODO ac
-		super(jsMethod.path[0], jsMethod.path[1], jsMethod.path[2], jsMethod.model);
-//		this.arguments = args;
+		this.ab = ab;
+		this.model = model;
 	}
 
-	@Override
-	public Object[] getArguments()
+	protected AbstractBase getBase()
 	{
-		return null; // this is only implemented by JSMethodWithArguments
+		return ab;
+	}
+
+	protected JSSolutionModel getSolutionModel()
+	{
+		return model;
 	}
 
 }

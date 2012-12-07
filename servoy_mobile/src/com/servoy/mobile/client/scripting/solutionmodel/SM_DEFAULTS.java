@@ -18,27 +18,21 @@
 package com.servoy.mobile.client.scripting.solutionmodel;
 
 import org.timepedia.exporter.client.Export;
-import org.timepedia.exporter.client.Exportable;
+import org.timepedia.exporter.client.ExportPackage;
 
+import com.servoy.j2db.persistence.constants.IDefaultSMConstants;
+import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod;
 
 /**
  * @author acostescu
  */
 @Export
-public class JSMethodWithArguments extends JSMethod implements Exportable
+@ExportPackage("")
+public class SM_DEFAULTS implements IDefaultSMConstants
 {
 
-	public JSMethodWithArguments(JSMethod jsMethod, Object[] args)
-	{
-		// TODO ac
-		super(jsMethod.path[0], jsMethod.path[1], jsMethod.path[2], jsMethod.model);
-//		this.arguments = args;
-	}
-
-	@Override
-	public Object[] getArguments()
-	{
-		return null; // this is only implemented by JSMethodWithArguments
-	}
+	public static final int DEFAULT = IDefaultSMConstants.DEFAULT;
+	public static final int NONE = IDefaultSMConstants.NONE;
+	public static final IBaseSMMethod COMMAND_NONE = IDefaultSMConstants.COMMAND_NONE;
 
 }

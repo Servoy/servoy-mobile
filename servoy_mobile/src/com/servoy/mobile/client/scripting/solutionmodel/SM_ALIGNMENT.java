@@ -18,27 +18,20 @@
 package com.servoy.mobile.client.scripting.solutionmodel;
 
 import org.timepedia.exporter.client.Export;
-import org.timepedia.exporter.client.Exportable;
+import org.timepedia.exporter.client.ExportPackage;
 
+import com.servoy.j2db.persistence.constants.IAlignmentSMConstants;
 
 /**
  * @author acostescu
  */
 @Export
-public class JSMethodWithArguments extends JSMethod implements Exportable
+@ExportPackage("")
+public class SM_ALIGNMENT implements IAlignmentSMConstants
 {
 
-	public JSMethodWithArguments(JSMethod jsMethod, Object[] args)
-	{
-		// TODO ac
-		super(jsMethod.path[0], jsMethod.path[1], jsMethod.path[2], jsMethod.model);
-//		this.arguments = args;
-	}
-
-	@Override
-	public Object[] getArguments()
-	{
-		return null; // this is only implemented by JSMethodWithArguments
-	}
+	public static final int DEFAULT = IAlignmentSMConstants.DEFAULT;
+	public static final int TOP = IAlignmentSMConstants.TOP;
+	public static final int BOTTOM = IAlignmentSMConstants.BOTTOM;
 
 }

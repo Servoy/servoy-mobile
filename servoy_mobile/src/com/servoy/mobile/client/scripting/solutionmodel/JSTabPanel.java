@@ -17,17 +17,30 @@
 
 package com.servoy.mobile.client.scripting.solutionmodel;
 
+import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMTabPanel;
+import com.servoy.mobile.client.persistence.Field;
 
 /**
  * @author acostescu
  *
  */
+@Export
 public class JSTabPanel extends JSComponent implements IBaseSMTabPanel, Exportable
 {
+
+	/**
+	 * @param f
+	 * @param model
+	 */
+	public JSTabPanel(Field f, JSSolutionModel model)
+	{
+		super(f, model);
+		// TODO ac Auto-generated constructor stub
+	}
 
 	/*
 	 * (non-Javadoc)

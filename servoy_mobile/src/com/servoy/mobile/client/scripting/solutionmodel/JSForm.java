@@ -18,34 +18,44 @@
 package com.servoy.mobile.client.scripting.solutionmodel;
 
 import org.timepedia.exporter.client.Export;
+import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
-import org.timepedia.exporter.client.ExporterUtil;
 
-import com.google.gwt.core.client.JavaScriptObject;
 import com.servoy.j2db.persistence.constants.IFieldConstants;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod;
+import com.servoy.j2db.util.DataSourceUtilsBase;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
+import com.servoy.mobile.client.scripting.ScriptEngine;
 
 /**
- * @author jcompagner
+ * @author acostescu
  */
 @Export
-public class JSForm implements IBaseSMForm, Exportable
+@ExportPackage("")
+public class JSForm extends JSBase implements IBaseSMForm, Exportable
 {
 
-	private final Form form;
-	private final JSSolutionModel model;
+	public static final int LIST_VIEW = IBaseSMForm.LIST_VIEW;
+	public static final int RECORD_VIEW = IBaseSMForm.RECORD_VIEW;
+	public static final int LOCKED_LIST_VIEW = IBaseSMForm.LOCKED_LIST_VIEW;
+	public static final int LOCKED_RECORD_VIEW = IBaseSMForm.LOCKED_RECORD_VIEW;
+	public static final int DEFAULT_ENCAPSULATION = IBaseSMForm.DEFAULT_ENCAPSULATION;
+	public static final int PRIVATE_ENCAPSULATION = IBaseSMForm.PRIVATE_ENCAPSULATION;
+	public static final int MODULE_PRIVATE_ENCAPSULATION = IBaseSMForm.MODULE_PRIVATE_ENCAPSULATION;
+	public static final int HIDE_DATAPROVIDERS_ENCAPSULATION = IBaseSMForm.HIDE_DATAPROVIDERS_ENCAPSULATION;
+	public static final int HIDE_FOUNDSET_ENCAPSULATION = IBaseSMForm.HIDE_FOUNDSET_ENCAPSULATION;
+	public static final int HIDE_CONTROLLER_ENCAPSULATION = IBaseSMForm.HIDE_CONTROLLER_ENCAPSULATION;
+	public static final int HIDE_ELEMENTS_ENCAPSULATION = IBaseSMForm.HIDE_ELEMENTS_ENCAPSULATION;
 
-	/**
-	 * @param form
-	 */
+	private final Form form;
+
 	public JSForm(Form form, JSSolutionModel model)
 	{
+		super(form, model);
 		this.form = form;
-		this.model = model;
 	}
 
 	public String getName()
@@ -89,52 +99,47 @@ public class JSForm implements IBaseSMForm, Exportable
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#newVariable(java.lang.String, int)
-	 */
 	@Override
 	public JSVariable newVariable(String name, int type)
 	{
-		// TODO ac Auto-generated method stub
+		JSVariable fv = new JSVariable(ScriptEngine.FORMS, getName(), name, getSolutionModel());
+
+		if (!fv.exists())
+		{
+			fv.create(type);
+			return fv;
+		}
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#newVariable(java.lang.String, int, java.lang.String)
-	 */
 	@Override
 	public JSVariable newVariable(String name, int type, String defaultValue)
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		JSVariable newVar = newVariable(name, type);
+		if (newVar != null) newVar.setDefaultValue(defaultValue);
+		return newVar;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#getVariable(java.lang.String)
-	 */
 	@Override
 	public JSVariable getVariable(String name)
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		JSVariable fv = new JSVariable(ScriptEngine.FORMS, getName(), name, getSolutionModel());
+		return fv.exists() ? fv : null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#getVariables()
-	 */
 	@Override
 	public JSVariable[] getVariables()
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		String[] names = ScriptEngine.getVariableNamesInternal(ScriptEngine.FORMS, getName());
+		if (names != null)
+		{
+			JSVariable[] variables = new JSVariable[names.length];
+			for (int i = names.length - 1; i >= 0; i--)
+			{
+				variables[i] = getVariable(names[i]);
+			}
+		}
+		return new JSVariable[0];
 	}
 
 	@Override
@@ -144,7 +149,7 @@ public class JSForm implements IBaseSMForm, Exportable
 		String[] codeAndName = JSMethod.splitCodeFromName(code);
 		if (codeAndName != null && codeAndName.length == 2)
 		{
-			JSMethod fm = new JSMethod(JSScriptPart.FORMS, getName(), codeAndName[1], model);
+			JSMethod fm = new JSMethod(ScriptEngine.FORMS, getName(), codeAndName[1], getSolutionModel());
 
 			if (!fm.exists())
 			{
@@ -158,167 +163,163 @@ public class JSForm implements IBaseSMForm, Exportable
 	@Override
 	public JSMethod getMethod(String name)
 	{
-		JSMethod fm = new JSMethod(JSScriptPart.FORMS, getName(), name, model);
+		JSMethod fm = new JSMethod(ScriptEngine.FORMS, getName(), name, getSolutionModel());
 		return fm.exists() ? fm : null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#getMethods()
-	 */
 	@Override
 	public JSMethod[] getMethods()
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		String[] names = ScriptEngine.getFunctionNamesInternal(ScriptEngine.FORMS, getName());
+		if (names != null)
+		{
+			JSMethod[] methods = new JSMethod[names.length];
+			for (int i = names.length - 1; i >= 0; i--)
+			{
+				methods[i] = getMethod(names[i]);
+			}
+		}
+		return new JSMethod[0];
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#newField(java.lang.Object, int, int, int, int, int)
-	 */
 	@Override
 	public JSField newField(Object dataprovider, int type, int x, int y, int width, int height)
 	{
-		// TODO ac add support for JSVariable for all these methods that get a dataprovider
 		Field f = form.createNewField(type);
 		if (dataprovider instanceof String) f.setDataProviderID((String)dataprovider);
 		f.setSize(width, height);
 		f.setLocation(x, y);
-		return new JSField(f, model);
+		return new JSField(f, getSolutionModel());
+	}
+
+	public JSField newField(JSVariable dataprovider, int type, int x, int y, int width, int height)
+	{
+		return newField(dataprovider.getReferenceString(), type, x, y, width, height);
 	}
 
 	@Override
 	public JSField newTextField(Object dataprovider, int x, int y, int width, int height)
 	{
-		// TODO ac add support for JSVariable for all these methods that get a dataprovider
 		return newField(dataprovider, IFieldConstants.TEXT_FIELD, x, y, width, height);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#newTextArea(java.lang.Object, int, int, int, int)
-	 */
+	public JSField newTextField(JSVariable dataprovider, int x, int y, int width, int height)
+	{
+		return newTextField(dataprovider.getReferenceString(), x, y, width, height);
+	}
+
 	@Override
 	public JSField newTextArea(Object dataprovider, int x, int y, int width, int height)
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		return newField(dataprovider, IFieldConstants.TEXT_AREA, x, y, width, height);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#newComboBox(java.lang.Object, int, int, int, int)
-	 */
+	public JSField newTextArea(JSVariable dataprovider, int x, int y, int width, int height)
+	{
+		return newTextArea(dataprovider.getReferenceString(), x, y, width, height);
+	}
+
 	@Override
 	public JSField newComboBox(Object dataprovider, int x, int y, int width, int height)
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		return newField(dataprovider, IFieldConstants.COMBOBOX, x, y, width, height);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#newListBox(java.lang.Object, int, int, int, int)
-	 */
+	public JSField newComboBox(JSVariable dataprovider, int x, int y, int width, int height)
+	{
+		return newComboBox(dataprovider.getReferenceString(), x, y, width, height);
+	}
+
 	@Override
 	public JSField newListBox(Object dataprovider, int x, int y, int width, int height)
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		return newField(dataprovider, IFieldConstants.LIST_BOX, x, y, width, height);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#newRadios(java.lang.Object, int, int, int, int)
-	 */
+	public JSField newListBox(JSVariable dataprovider, int x, int y, int width, int height)
+	{
+		return newListBox(dataprovider.getReferenceString(), x, y, width, height);
+	}
+
 	@Override
 	public JSField newRadios(Object dataprovider, int x, int y, int width, int height)
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		return newField(dataprovider, IFieldConstants.RADIOS, x, y, width, height);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#newCheck(java.lang.Object, int, int, int, int)
-	 */
+	public JSField newRadios(JSVariable dataprovider, int x, int y, int width, int height)
+	{
+		return newRadios(dataprovider.getReferenceString(), x, y, width, height);
+	}
+
 	@Override
 	public JSField newCheck(Object dataprovider, int x, int y, int width, int height)
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		return newField(dataprovider, IFieldConstants.CHECKS, x, y, width, height);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#newCalendar(java.lang.Object, int, int, int, int)
-	 */
+	public JSField newCheck(JSVariable dataprovider, int x, int y, int width, int height)
+	{
+		return newCheck(dataprovider.getReferenceString(), x, y, width, height);
+	}
+
 	@Override
 	public JSField newCalendar(Object dataprovider, int x, int y, int width, int height)
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		return newField(dataprovider, IFieldConstants.CALENDAR, x, y, width, height);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#newImageMedia(java.lang.Object, int, int, int, int)
-	 */
+	public JSField newCalendar(JSVariable dataprovider, int x, int y, int width, int height)
+	{
+		return newCalendar(dataprovider.getReferenceString(), x, y, width, height);
+	}
+
 	@Override
 	public JSField newImageMedia(Object dataprovider, int x, int y, int width, int height)
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		return newField(dataprovider, IFieldConstants.IMAGE_MEDIA, x, y, width, height);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#newPassword(java.lang.Object, int, int, int, int)
-	 */
+	public JSField newImageMedia(JSVariable dataprovider, int x, int y, int width, int height)
+	{
+		return newImageMedia(dataprovider.getReferenceString(), x, y, width, height);
+	}
+
 	@Override
 	public JSField newPassword(Object dataprovider, int x, int y, int width, int height)
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		return newField(dataprovider, IFieldConstants.PASSWORD, x, y, width, height);
+	}
+
+	public JSField newPassword(JSVariable dataprovider, int x, int y, int width, int height)
+	{
+		return newPassword(dataprovider.getReferenceString(), x, y, width, height);
 	}
 
 	@Override
 	public JSButton newButton(String txt, int x, int y, int width, int height, Object action)
 	{
-		Object method = action;
-		if (method instanceof JavaScriptObject)
-		{
-			method = ExporterUtil.gwtInstance(method);
-		}
+		return newButton(txt, x, y, width, height, null); // because of how GWT Exporter works, the other method will be most likely called instead anyway for JSMethod actions
+	}
+
+	public JSButton newButton(String txt, int x, int y, int width, int height, JSMethod action)
+	{
 		GraphicalComponent gc = form.createNewGraphicalComponent(GraphicalComponent.VIEW_TYPE_BUTTON);
 		gc.setText(txt);
 		gc.setSize(width, height);
 		gc.setLocation(x, y);
-		if (method instanceof JSMethod) gc.setOnActionMethodID(((JSMethod)method).getReferenceString());
-		return new JSButton(gc);
+		if (action != null) gc.setOnActionMethodID(action.getReferenceString());
+		return new JSButton(gc, getSolutionModel());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#newLabel(java.lang.String, int, int, int, int)
-	 */
 	@Override
 	public JSLabel newLabel(String txt, int x, int y, int width, int height)
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		GraphicalComponent gc = form.createNewGraphicalComponent(GraphicalComponent.VIEW_TYPE_LABEL);
+		gc.setText(txt);
+		gc.setSize(width, height);
+		gc.setLocation(x, y);
+		return new JSLabel(gc, getSolutionModel());
 	}
 
 	/*
@@ -513,40 +514,34 @@ public class JSForm implements IBaseSMForm, Exportable
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#getServerName()
-	 */
 	@Override
 	public String getServerName()
 	{
-		// TODO ac Auto-generated method stub
+		String ds = form.getDataSource();
+		if (ds != null)
+		{
+			String[] stn = DataSourceUtilsBase.getDBServernameTablename(ds);
+			if (stn != null && stn.length > 0) return stn[0];
+		}
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#getTableName()
-	 */
 	@Override
 	public String getTableName()
 	{
-		// TODO ac Auto-generated method stub
+		String ds = form.getDataSource();
+		if (ds != null)
+		{
+			String[] stn = DataSourceUtilsBase.getDBServernameTablename(ds);
+			if (stn != null && stn.length == 2) return stn[1];
+		}
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#getDataSource()
-	 */
 	@Override
 	public String getDataSource()
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		return form.getDataSource();
 	}
 
 	/*
@@ -897,28 +892,18 @@ public class JSForm implements IBaseSMForm, Exportable
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#removeVariable(java.lang.String)
-	 */
 	@Override
 	public boolean removeVariable(String name)
 	{
-		// TODO ac Auto-generated method stub
-		return false;
+		JSVariable variable = getVariable(name);
+		return variable.remove();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#removeMethod(java.lang.String)
-	 */
 	@Override
 	public boolean removeMethod(String name)
 	{
-		// TODO ac Auto-generated method stub
-		return false;
+		JSMethod method = getMethod(name);
+		return method.remove();
 	}
 
 }

@@ -26,6 +26,7 @@ public class GraphicalComponent extends Component
 {
 
 	public static final String VIEW_TYPE_BUTTON = "button"; //$NON-NLS-1$
+	public static final String VIEW_TYPE_LABEL = "label"; //$NON-NLS-1$
 	public static final String VIEW_TYPE_ATTR = "viewType"; //$NON-NLS-1$
 
 	protected GraphicalComponent()
@@ -68,10 +69,6 @@ public class GraphicalComponent extends Component
 
 	public final native String getActionMethodID() /*-{
 		return this.onActionMethodID;
-	}-*/;
-
-	public final native String getGroupID() /*-{
-		return this.groupID;
 	}-*/;
 
 	public final native boolean isDisplaysTags() /*-{

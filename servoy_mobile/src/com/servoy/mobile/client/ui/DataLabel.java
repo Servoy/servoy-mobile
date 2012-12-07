@@ -53,7 +53,7 @@ public class DataLabel extends JQMWidget implements HasText, IDisplayData, IGrap
 		labelFor = new FormLabel();
 		labelFor.setFor(id);
 
-		label = new Heading(gc.getMobileProperties() != null ? gc.getMobileProperties().getHeaderSize() : 4,
+		label = new Heading(gc.getMobilePropertiesCopy() != null ? gc.getMobilePropertiesCopy().getHeaderSize() : 4,
 			application.getI18nProvider().getI18NMessageIfPrefixed(gc.getText() != null ? gc.getText() : "")); //$NON-NLS-1$
 		label.getElement().setId(id);
 

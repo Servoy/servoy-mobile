@@ -21,7 +21,7 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.NoExport;
 
-import com.servoy.mobile.client.scripting.Scope;
+import com.servoy.mobile.client.scripting.ScriptEngine;
 
 /**
  * @author acostescu
@@ -30,8 +30,6 @@ import com.servoy.mobile.client.scripting.Scope;
 public abstract class JSScriptPart implements Exportable
 {
 
-	protected static final String SCOPES = "scopes"; //$NON-NLS-1$
-	protected static final String FORMS = "forms"; //$NON-NLS-1$
 	protected final String[] path;
 	protected final JSSolutionModel model;
 
@@ -48,18 +46,18 @@ public abstract class JSScriptPart implements Exportable
 
 	public String getScopeName()
 	{
-		if (SCOPES.equals(path[0])) return path[1];
+		if (ScriptEngine.SCOPES.equals(path[0])) return path[1];
 		return null;
 	}
 
 	@NoExport
 	public String getReferenceString()
 	{
-		if (SCOPES.equals(path[0]))
+		if (ScriptEngine.SCOPES.equals(path[0]))
 		{
 			return path[0] + "." + path[1] + "." + path[2]; //$NON-NLS-1$//$NON-NLS-2$
 		}
-		else if (FORMS.equals(path[0]))
+		else if (ScriptEngine.FORMS.equals(path[0]))
 		{
 			return path[2];
 		}
@@ -70,24 +68,19 @@ public abstract class JSScriptPart implements Exportable
 	public abstract boolean exists();
 
 	@NoExport
+	public abstract boolean remove();
+
+	@NoExport
 	protected void reloadScope()
 	{
-		// TODO ac do this a bit more fine grained / like only reload this method - not everything, including default values for variables
-		if (SCOPES.equals(path[0]))
+		if (ScriptEngine.SCOPES.equals(path[0]))
 		{
 			model.getApplication().getScriptEngine().reloadScopeIfInitialized(path[1]);
 		}
-		else if (FORMS.equals(path[0]))
+		else if (ScriptEngine.FORMS.equals(path[0]))
 		{
 			model.getApplication().getFormManager().reloadScopeIfInitialized(path[1]);
 		}
 	}
-
-	@NoExport
-	public final native void reloadScopeInternal(Scope scope) /*-{
-		if (scope != null) {
-		}
-		return $wnd._ServoyInit_[parentScope][scope].fncs[fName] = eval(code);
-	}-*/;
 
 }

@@ -24,7 +24,7 @@ import com.servoy.j2db.persistence.constants.IContentSpecConstantsBase;
 /**
  * @author gboros
  */
-public class Component extends BaseComponent
+public class Component extends AbstractBase
 {
 	private static final int TYPE_ID_GRAPHICALCOMPONENT = 7;
 	private static final int TYPE_ID_FIELD = 4;
@@ -40,6 +40,14 @@ public class Component extends BaseComponent
 
 	public final native String getUUID() /*-{
 		return this.uuid;
+	}-*/;
+
+	public final native String getGroupID() /*-{
+		return this.groupID ? this.groupID : null;
+	}-*/;
+
+	public final native void setGroupID(String id) /*-{
+		this.groupID = id;
 	}-*/;
 
 	public final GraphicalComponent isGraphicalComponent()

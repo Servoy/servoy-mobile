@@ -24,6 +24,7 @@ import java.util.Map.Entry;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.scripting.FormScope;
 import com.servoy.mobile.client.scripting.JSHistory;
+import com.servoy.mobile.client.scripting.ScriptEngine;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.JQMPage;
 
@@ -96,8 +97,7 @@ public class FormManager
 			{
 				formController = new FormController(application, form);
 				formControllerMap.put(name, formController);
-				initFormScope(name, formController.getFormScope());
-
+				initFormScope(name, formController.getFormScope(), null);
 			}
 		}
 		return formController;
@@ -170,10 +170,8 @@ public class FormManager
 		return null;
 	}
 
-	private native void initFormScope(String formName, FormScope formScope)
+	private native void defineStandardFormVariables(FormScope formScope)
 	/*-{
-		$wnd._ServoyInit_.initScope("forms", formName, formScope);
-		// define standard things (controller,foundset,elements)
 		$wnd._ServoyUtils_.defineStandardFormVariables(formScope);
 	}-*/;
 
@@ -190,9 +188,16 @@ public class FormManager
 		FormController fc;
 		if ((fc = formControllerMap.remove(formName)) != null)
 		{
-			fc.recreateScope();
-			initFormScope(formName, fc.getFormScope());
+			FormScope oldScope = fc.recreateScope();
+			FormScope newScope = fc.getFormScope();
+			initFormScope(formName, newScope, oldScope);
 		}
+	}
+
+	private void initFormScope(String formName, FormScope newScope, FormScope oldScope)
+	{
+		ScriptEngine.initScope(ScriptEngine.FORMS, formName, newScope, oldScope);
+		defineStandardFormVariables(newScope);
 	}
 
 }

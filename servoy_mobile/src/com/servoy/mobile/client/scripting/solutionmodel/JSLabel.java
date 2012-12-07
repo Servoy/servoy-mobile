@@ -21,6 +21,7 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMLabel;
+import com.servoy.mobile.client.persistence.GraphicalComponent;
 
 /**
  * @author acostescu
@@ -28,5 +29,10 @@ import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMLabel;
 @Export
 public class JSLabel extends JSGraphicalComponent implements IBaseSMLabel, Exportable
 {
+
+	public JSLabel(GraphicalComponent gc, JSSolutionModel model)
+	{
+		super(gc, model);
+	}
 
 }

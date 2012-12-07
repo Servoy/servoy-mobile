@@ -25,7 +25,7 @@ import com.servoy.mobile.client.util.Utils;
 /**
  * @author gboros
  */
-public class Form extends BaseComponent
+public class Form extends AbstractBase
 {
 
 	protected Form()

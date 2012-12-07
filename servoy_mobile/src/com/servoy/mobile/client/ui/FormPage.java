@@ -27,9 +27,8 @@ import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.DataAdapterList;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.dataprocessing.Record;
-import com.servoy.mobile.client.persistence.BaseComponent;
+import com.servoy.mobile.client.persistence.AbstractBase;
 import com.servoy.mobile.client.persistence.Component;
-import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.servoy.mobile.client.scripting.IRuntimeComponent;
@@ -69,12 +68,12 @@ public class FormPage extends JQMPage
 		ArrayList<Component> contentComponents = new ArrayList<Component>();
 
 		Component component;
-		BaseComponent.MobileProperties mobileProperties;
+		AbstractBase.MobileProperties mobileProperties;
 
 		for (int i = 0; i < formComponents.length(); i++)
 		{
 			component = formComponents.get(i);
-			mobileProperties = component.getMobileProperties();
+			mobileProperties = component.getMobilePropertiesCopy();
 			if (mobileProperties != null)
 			{
 				if (mobileProperties.isHeaderText())
@@ -107,8 +106,6 @@ public class FormPage extends JQMPage
 		createContent(contentComponents);
 		JQMFooter componentFooter = createFooter(footerComponents);
 		if (componentFooter != null) add(componentFooter);
-
-
 	}
 
 	public JQMHeader createHeader(Component label, Component leftButton, Component rightButton)
@@ -150,21 +147,10 @@ public class FormPage extends JQMPage
 		Collections.sort(contentComponents, PositionComparator.YX_COMPARATOR);
 		ArrayList<FormPage.RowDisplay> rowsDisplay = new ArrayList<FormPage.RowDisplay>();
 
-		GraphicalComponent gc;
-		Field field;
 		String groupID;
 		for (Component c : contentComponents)
 		{
-			groupID = null;
-			if ((gc = c.isGraphicalComponent()) != null)
-			{
-				groupID = gc.getGroupID();
-			}
-			else if ((field = c.isField()) != null)
-			{
-				groupID = field.getGroupID();
-			}
-
+			groupID = c.getGroupID();
 
 			if (groupID != null)
 			{

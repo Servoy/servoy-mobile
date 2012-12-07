@@ -48,7 +48,7 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 		this.valuelist = valuelist;
 		this.scriptable = new RuntimeDataRadioSet(application, executor, this, field);
 
-		if (field.getMobileProperties() != null && field.getMobileProperties().getRadioStyle() == HORIZONTAL) setHorizontal();
+		if (field.getMobilePropertiesCopy() != null && field.getMobilePropertiesCopy().getRadioStyle() == HORIZONTAL) setHorizontal();
 
 		setText(field.getText());
 		if (valuelist != null)

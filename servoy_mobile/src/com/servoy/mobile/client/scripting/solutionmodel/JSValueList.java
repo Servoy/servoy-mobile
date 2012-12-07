@@ -18,9 +18,9 @@
 package com.servoy.mobile.client.scripting.solutionmodel;
 
 import org.timepedia.exporter.client.Export;
+import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 
-import com.google.gwt.core.client.JavaScriptObject;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMValueList;
 
@@ -28,8 +28,14 @@ import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMValueList;
  * @author acostescu
  */
 @Export
+@ExportPackage("")
 public class JSValueList implements IBaseSMValueList, Exportable
 {
+
+	public static final int CUSTOM_VALUES = IBaseSMValueList.CUSTOM_VALUES;
+	public static final int DATABASE_VALUES = IBaseSMValueList.DATABASE_VALUES;
+	public static final int EMPTY_VALUE_ALWAYS = IBaseSMValueList.EMPTY_VALUE_ALWAYS;
+	public static final int EMPTY_VALUE_NEVER = IBaseSMValueList.EMPTY_VALUE_NEVER;
 
 	/*
 	 * (non-Javadoc)

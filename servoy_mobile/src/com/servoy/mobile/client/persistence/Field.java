@@ -37,10 +37,6 @@ public class Field extends Component
 		return this.onDataChangeMethodID;
 	}-*/;
 
-	public final native String getGroupID() /*-{
-		return this.groupID;
-	}-*/;
-
 	public final native String getText() /*-{
 		return this.text;
 	}-*/;
@@ -61,7 +57,7 @@ public class Field extends Component
 
 	public final void setDisplayType(int type)
 	{
-		setAttributeValueInt(IContentSpecConstantsBase.PROPERTY_DISPLAYTYPE, Integer.valueOf(type));
+		setAttributeValueInt(IContentSpecConstantsBase.PROPERTY_DISPLAYTYPE, type);
 	}
 
 	public final int getDisplayType()

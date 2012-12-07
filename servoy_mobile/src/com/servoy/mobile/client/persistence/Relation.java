@@ -21,7 +21,7 @@ package com.servoy.mobile.client.persistence;
  * @author lvostinar
  *
  */
-public class Relation extends BaseComponent
+public class Relation extends AbstractBase
 {
 	protected Relation()
 	{

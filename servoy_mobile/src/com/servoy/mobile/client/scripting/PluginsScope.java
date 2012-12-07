@@ -17,62 +17,53 @@
 
 package com.servoy.mobile.client.scripting;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.timepedia.exporter.client.Export;
+import org.timepedia.exporter.client.Exportable;
+import org.timepedia.exporter.client.ExporterUtil;
+import org.timepedia.exporter.client.Getter;
 
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.servoy.mobile.client.MobileClient;
 
 /**
- * @author lvostinar
- *
+ * @author acostescu
  */
-public class PluginsScope extends Scope
+@Export
+public class PluginsScope implements Exportable
 {
-	protected final Map<String, Object> plugins = new HashMap<String, Object>();
+
+	private final MobileClient client;
+	private MobilePlugin mobilePlugin;
+	private DialogPlugin dialogsPlugin;
 
 	public PluginsScope(MobileClient client)
 	{
-		exportPlugins(client);
+		this.client = client;
+		export(ExporterUtil.wrap(this));
 	}
 
-	private void exportPlugins(MobileClient client)
-	{
-		export();
-
-		GWT.create(MobilePlugin.class);
-		plugins.put("mobile", new MobilePlugin(client));
-		exportProperty("mobile");
-
-		GWT.create(DialogPlugin.class);
-		plugins.put("dialogs", new DialogPlugin());
-		exportProperty("dialogs");
-	}
-
-	private native void export()
-	/*-{
-		$wnd.plugins = this;
+	private native void export(JavaScriptObject javaScriptObject) /*-{
+		$wnd.plugins = javaScriptObject;
 	}-*/;
 
-	@Override
-	public void setVariableType(String variable, int type)
+	@Getter
+	public MobilePlugin getMobile()
 	{
+		if (mobilePlugin == null)
+		{
+			mobilePlugin = new MobilePlugin(client);
+		}
+		return mobilePlugin;
 	}
 
-	@Override
-	public int getVariableType(String variable)
+	@Getter
+	public DialogPlugin getDialogs()
 	{
-		return 0;
+		if (dialogsPlugin == null)
+		{
+			dialogsPlugin = new DialogPlugin();
+		}
+		return dialogsPlugin;
 	}
 
-	@Override
-	public Object getValue(String variable)
-	{
-		return plugins.get(variable);
-	}
-
-	@Override
-	public void setValue(String variable, Object vaue)
-	{
-	}
 }

@@ -6,8 +6,11 @@ import java.util.Date;
 import org.timepedia.exporter.client.ExporterBaseActual.JsArrayObject;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.json.client.JSONObject;
+import com.servoy.j2db.scripting.BaseSolutionHelper;
 import com.sksamuel.jqm4gwt.DataIcon;
 
 /*
@@ -564,46 +567,33 @@ public class Utils
 		return -1;
 	}
 
+	public static String getJSONString(JavaScriptObject o)
+	{
+		return new JSONObject(o).toString();
+	}
+
 	public static DataIcon stringToDataIcon(String dataIcon)
 	{
 		if (dataIcon != null)
 		{
-			if (dataIcon.equals("gear")) //$NON-NLS-1$
-			return DataIcon.GEAR;
-			if (dataIcon.equals("arrow-l")) //$NON-NLS-1$
-			return DataIcon.LEFT;
-			if (dataIcon.equals("arrow-r")) //$NON-NLS-1$
-			return DataIcon.RIGHT;
-			if (dataIcon.equals("arrow-u")) //$NON-NLS-1$
-			return DataIcon.UP;
-			if (dataIcon.equals("arrow-d")) //$NON-NLS-1$
-			return DataIcon.DOWN;
-			if (dataIcon.equals("delete")) //$NON-NLS-1$
-			return DataIcon.DELETE;
-			if (dataIcon.equals("plus")) //$NON-NLS-1$
-			return DataIcon.PLUS;
-			if (dataIcon.equals("minus")) //$NON-NLS-1$
-			return DataIcon.MINUS;
-			if (dataIcon.equals("check")) //$NON-NLS-1$
-			return DataIcon.CHECK;
-			if (dataIcon.equals("refresh")) //$NON-NLS-1$
-			return DataIcon.REFRESH;
-			if (dataIcon.equals("forward")) //$NON-NLS-1$
-			return DataIcon.FORWARD;
-			if (dataIcon.equals("back")) //$NON-NLS-1$
-			return DataIcon.BACK;
-			if (dataIcon.equals("grid")) //$NON-NLS-1$
-			return DataIcon.GRID;
-			if (dataIcon.equals("star")) //$NON-NLS-1$
-			return DataIcon.STAR;
-			if (dataIcon.equals("alert")) //$NON-NLS-1$
-			return DataIcon.ALERT;
-			if (dataIcon.equals("info")) //$NON-NLS-1$
-			return DataIcon.INFO;
-			if (dataIcon.equals("home")) //$NON-NLS-1$
-			return DataIcon.HOME;
-			if (dataIcon.equals("search")) //$NON-NLS-1$
-			return DataIcon.SEARCH;
+			if (dataIcon.equals(BaseSolutionHelper.ICON_GEAR)) return DataIcon.GEAR;
+			if (dataIcon.equals(BaseSolutionHelper.ICON_LEFT)) return DataIcon.LEFT;
+			if (dataIcon.equals(BaseSolutionHelper.ICON_RIGHT)) return DataIcon.RIGHT;
+			if (dataIcon.equals(BaseSolutionHelper.ICON_UP)) return DataIcon.UP;
+			if (dataIcon.equals(BaseSolutionHelper.ICON_DOWN)) return DataIcon.DOWN;
+			if (dataIcon.equals(BaseSolutionHelper.ICON_DELETE)) return DataIcon.DELETE;
+			if (dataIcon.equals(BaseSolutionHelper.ICON_PLUS)) return DataIcon.PLUS;
+			if (dataIcon.equals(BaseSolutionHelper.ICON_MINUS)) return DataIcon.MINUS;
+			if (dataIcon.equals(BaseSolutionHelper.ICON_CHECK)) return DataIcon.CHECK;
+			if (dataIcon.equals(BaseSolutionHelper.ICON_REFRESH)) return DataIcon.REFRESH;
+			if (dataIcon.equals(BaseSolutionHelper.ICON_FORWARD)) return DataIcon.FORWARD;
+			if (dataIcon.equals(BaseSolutionHelper.ICON_BACK)) return DataIcon.BACK;
+			if (dataIcon.equals(BaseSolutionHelper.ICON_GRID)) return DataIcon.GRID;
+			if (dataIcon.equals(BaseSolutionHelper.ICON_STAR)) return DataIcon.STAR;
+			if (dataIcon.equals(BaseSolutionHelper.ICON_ALERT)) return DataIcon.ALERT;
+			if (dataIcon.equals(BaseSolutionHelper.ICON_INFO)) return DataIcon.INFO;
+			if (dataIcon.equals(BaseSolutionHelper.ICON_HOME)) return DataIcon.HOME;
+			if (dataIcon.equals(BaseSolutionHelper.ICON_SEARCH)) return DataIcon.SEARCH;
 		}
 
 		return null;

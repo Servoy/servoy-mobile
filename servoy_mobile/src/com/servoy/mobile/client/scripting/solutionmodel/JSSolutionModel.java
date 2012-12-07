@@ -20,15 +20,17 @@ package com.servoy.mobile.client.scripting.solutionmodel;
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
-import org.timepedia.exporter.client.NoExport;
 
+import com.google.gwt.core.client.GWT;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel;
+import com.servoy.j2db.util.DataSourceUtilsBase;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.Solution;
+import com.servoy.mobile.client.scripting.ScriptEngine;
 
 /**
  * @author jcompagner
@@ -44,6 +46,8 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 	{
 		this.application = application;
 		this.solution = application.getSolution();
+		GWT.create(SM_ALIGNMENT.class);
+		GWT.create(SM_DEFAULTS.class);
 		export(ExporterUtil.wrap(this));
 	}
 
@@ -71,22 +75,15 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 	@Override
 	public JSForm newForm(String name, String serverName, String tableName, String styleName, boolean show_in_menu, int width, int height)
 	{
-		// TODO ac merge servername with tablename => datasource USING an utility method
-		return newForm(name, "db:/" + serverName + "/" + tableName, styleName, show_in_menu, width, height);
+		return newForm(name, DataSourceUtilsBase.createDBTableDataSource(serverName, tableName), styleName, show_in_menu, width, height);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel#newForm(java.lang.String, java.lang.String, java.lang.String, boolean, int, int)
-	 */
 	@Override
 	public JSForm newForm(String name, String dataSource, String styleName, boolean show_in_menu, int width, int height)
 	{
 		Form form = solution.getForm(name);
 		if (form == null)
 		{
-			// TODO ac use datasource and width/height
 			return new JSForm(solution.newForm(name, dataSource, width, height), this);
 		}
 		return null;
@@ -154,28 +151,18 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel#removeGlobalMethod(java.lang.String, java.lang.String)
-	 */
 	@Override
 	public boolean removeGlobalMethod(String scopeName, String name)
 	{
-		// TODO ac Auto-generated method stub
-		return false;
+		JSMethod method = getGlobalMethod(scopeName, name);
+		return method.remove();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel#removeGlobalVariable(java.lang.String, java.lang.String)
-	 */
 	@Override
 	public boolean removeGlobalVariable(String scopeName, String name)
 	{
-		// TODO ac Auto-generated method stub
-		return false;
+		JSVariable variable = getGlobalVariable(scopeName, name);
+		return variable.remove();
 	}
 
 	/*
@@ -262,28 +249,27 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel#newGlobalVariable(java.lang.String, java.lang.String, int)
-	 */
 	@Override
 	public JSVariable newGlobalVariable(String scopeName, String name, int type)
 	{
-		// TODO ac Auto-generated method stub
+		String scope = (scopeName == null ? "globals" : scopeName); //$NON-NLS-1$
+
+		JSVariable gv = new JSVariable(ScriptEngine.SCOPES, scope, name, this);
+
+		if (!gv.exists())
+		{
+			createScopeIfNecessary(scope);
+			gv.create(type);
+			return gv;
+		}
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel#getGlobalVariable(java.lang.String, java.lang.String)
-	 */
 	@Override
 	public JSVariable getGlobalVariable(String scopeName, String name)
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		JSVariable gv = new JSVariable(ScriptEngine.SCOPES, scopeName, name, this);
+		return gv.exists() ? gv : null;
 	}
 
 	/*
@@ -331,20 +317,19 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 		String[] codeAndName = JSMethod.splitCodeFromName(code);
 		if (codeAndName != null && codeAndName.length == 2)
 		{
-			JSMethod fm = new JSMethod(JSScriptPart.SCOPES, scope, codeAndName[1], this);
+			JSMethod gm = new JSMethod(ScriptEngine.SCOPES, scope, codeAndName[1], this);
 
-			if (!fm.exists())
+			if (!gm.exists())
 			{
 				createScopeIfNecessary(scope);
-				fm.create(codeAndName[0]);
-				return fm;
+				gm.create(codeAndName[0]);
+				return gm;
 			}
 		}
 		return null;
 	}
 
-	@NoExport
-	public final native void createScopeIfNecessary(String scope) /*-{
+	private final native void createScopeIfNecessary(String scope) /*-{
 		if (!$wnd._ServoyInit_.scopes[scope]) {
 			Object.defineProperty($wnd.scopes, scope, {
 				get : function() {
@@ -362,7 +347,7 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 	@Override
 	public JSMethod getGlobalMethod(String scopeName, String name)
 	{
-		JSMethod gm = new JSMethod(JSScriptPart.SCOPES, scopeName, name, this);
+		JSMethod gm = new JSMethod(ScriptEngine.SCOPES, scopeName, name, this);
 		return gm.exists() ? gm : null;
 	}
 
@@ -379,6 +364,7 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 		return null;
 	}
 
+	// TODO ac there are several methods like this one commented out because of a compilation error in GWT. Please uncomment and implement all of them
 //	/*
 //	 * (non-Javadoc)
 //	 * 
@@ -388,6 +374,7 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 //	public JSMethod[] getGlobalMethods()
 //	{
 //		// TODO ac Auto-generated method stub
+//		// see the implementation in JSForm 
 //		return null;
 //	}
 //

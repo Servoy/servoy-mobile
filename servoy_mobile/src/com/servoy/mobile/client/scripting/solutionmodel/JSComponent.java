@@ -20,15 +20,20 @@ package com.servoy.mobile.client.scripting.solutionmodel;
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 
-import com.google.gwt.core.client.JavaScriptObject;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent;
+import com.servoy.mobile.client.persistence.Component;
 
 /**
  * @author acostescu
  */
 @Export
-public class JSComponent implements IBaseSMComponent, Exportable
+public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 {
+
+	public JSComponent(Component c, JSSolutionModel model)
+	{
+		super(c, model);
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -150,16 +155,11 @@ public class JSComponent implements IBaseSMComponent, Exportable
 		return 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#getGroupID()
-	 */
 	@Override
 	public String getGroupID()
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		Component c = (Component)getBase();
+		return c.getGroupID();
 	}
 
 	/*
@@ -246,16 +246,11 @@ public class JSComponent implements IBaseSMComponent, Exportable
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#setGroupID(java.lang.String)
-	 */
 	@Override
-	public void setGroupID(String arg)
+	public void setGroupID(String id)
 	{
-		// TODO ac Auto-generated method stub
-
+		Component c = (Component)getBase();
+		c.setGroupID(id);
 	}
 
 }

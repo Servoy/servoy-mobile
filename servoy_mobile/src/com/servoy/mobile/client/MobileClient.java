@@ -34,6 +34,7 @@ import com.servoy.mobile.client.scripting.JSHistory;
 import com.servoy.mobile.client.scripting.JSI18N;
 import com.servoy.mobile.client.scripting.JSSecurity;
 import com.servoy.mobile.client.scripting.JSUtils;
+import com.servoy.mobile.client.scripting.PluginsScope;
 import com.servoy.mobile.client.scripting.RuntimeDataButton;
 import com.servoy.mobile.client.scripting.RuntimeDataCheckboxSet;
 import com.servoy.mobile.client.scripting.RuntimeDataFormHeader;
@@ -69,6 +70,7 @@ public class MobileClient implements EntryPoint
 	public void onModuleLoad()
 	{
 		GWT.create(JSDatabaseManager.class);
+		GWT.create(PluginsScope.class);
 		GWT.create(JSApplication.class);
 		GWT.create(FormController.class);
 		GWT.create(JSHistory.class);

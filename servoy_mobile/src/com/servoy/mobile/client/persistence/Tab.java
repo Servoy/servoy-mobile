@@ -20,7 +20,7 @@ package com.servoy.mobile.client.persistence;
 /**
  * @author gboros
  */
-public class Tab extends BaseComponent
+public class Tab extends AbstractBase
 {
 	protected Tab()
 	{

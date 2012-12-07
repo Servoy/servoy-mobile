@@ -19,7 +19,7 @@ package com.servoy.mobile.client.ui;
 
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
-import com.servoy.mobile.client.persistence.BaseComponent.MobileProperties;
+import com.servoy.mobile.client.persistence.AbstractBase.MobileProperties;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.servoy.mobile.client.scripting.IRuntimeComponent;
 import com.servoy.mobile.client.scripting.RuntimeDataFormHeaderButton;
@@ -42,7 +42,7 @@ public class DataFormHeaderButton extends JQMButton implements IDisplayData, IGr
 	public DataFormHeaderButton(GraphicalComponent gc, int orientation, Executor executor, MobileClient application)
 	{
 		super(application.getI18nProvider().getI18NMessageIfPrefixed(gc.getText() != null ? gc.getText() : "")); //$NON-NLS-1$
-		MobileProperties mp = gc.getMobileProperties();
+		MobileProperties mp = gc.getMobilePropertiesCopy();
 		if (mp != null)
 		{
 			DataIcon dataIcon = Utils.stringToDataIcon(mp.getDataIcon());

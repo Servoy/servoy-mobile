@@ -18,6 +18,7 @@
 package com.servoy.mobile.client.scripting.solutionmodel;
 
 import org.timepedia.exporter.client.Export;
+import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMField;
@@ -29,16 +30,22 @@ import com.servoy.mobile.client.persistence.Field;
  * @author acostescu
  */
 @Export
+@ExportPackage("")
 public class JSField extends JSComponent implements IBaseSMField, Exportable
 {
 
-	/**
-	 * @param f
-	 * @param model
-	 */
+	public static final int TEXT_FIELD = IBaseSMField.TEXT_FIELD;
+	public static final int TEXT_AREA = IBaseSMField.TEXT_AREA;
+	public static final int COMBOBOX = IBaseSMField.COMBOBOX;
+	public static final int RADIOS = IBaseSMField.RADIOS;
+	public static final int CHECKS = IBaseSMField.CHECKS;
+	public static final int CALENDAR = IBaseSMField.CALENDAR;
+	public static final int PASSWORD = IBaseSMField.PASSWORD;
+	public static final int IMAGE_MEDIA = IBaseSMField.IMAGE_MEDIA;
+
 	public JSField(Field f, JSSolutionModel model)
 	{
-		// TODO ac Auto-generated constructor stub
+		super(f, model);
 	}
 
 	/*

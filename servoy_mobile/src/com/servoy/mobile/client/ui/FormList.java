@@ -29,7 +29,7 @@ import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.dataprocessing.IDisplayRelatedData;
 import com.servoy.mobile.client.dataprocessing.IFoundSetListener;
 import com.servoy.mobile.client.dataprocessing.Record;
-import com.servoy.mobile.client.persistence.BaseComponent;
+import com.servoy.mobile.client.persistence.AbstractBase;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Relation;
 import com.sksamuel.jqm4gwt.list.JQMList;
@@ -64,14 +64,14 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 		JsArray<Component> formComponents = formController.getForm().getComponents();
 
 		Component component;
-		BaseComponent.MobileProperties mobileProperties;
+		AbstractBase.MobileProperties mobileProperties;
 
 		for (int i = 0; i < formComponents.length(); i++)
 		{
 			component = formComponents.get(i);
 			if (component != null)
 			{
-				mobileProperties = component.getMobileProperties();
+				mobileProperties = component.getMobilePropertiesCopy();
 				if (mobileProperties != null)
 				{
 					if (mobileProperties.isListItemButton())

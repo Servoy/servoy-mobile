@@ -29,6 +29,9 @@ import com.servoy.mobile.client.scripting.solutionmodel.JSSolutionModel;
 public class ScriptEngine
 {
 
+	public static final String SCOPES = "scopes"; //$NON-NLS-1$
+	public static final String FORMS = "forms"; //$NON-NLS-1$
+
 	private final MobileClient application;
 
 	private final HashMap<String, GlobalScope> scopes = new HashMap<String, GlobalScope>();
@@ -58,17 +61,38 @@ public class ScriptEngine
 		GlobalScope scope = scopes.get(name);
 		if (scope == null)
 		{
-			scope = new GlobalScope(name, application);
-			scopes.put(name, scope);
-			initGlobalScope(name, scope);
-			scope.addModificationListener(globalScopeModificationDelegate);
+			scope = createNewGlobalScope(name);
+			initScope(SCOPES, name, scope, null);
 		}
 		return scope;
 	}
 
-	private native void initGlobalScope(String scopeName, GlobalScope globalScope)
+	private GlobalScope createNewGlobalScope(String name)
+	{
+		GlobalScope scope = new GlobalScope(name, application);
+		scopes.put(name, scope);
+		scope.addModificationListener(globalScopeModificationDelegate);
+		return scope;
+	}
+
+	public static native void initScope(String scopeParent, String scopeName, Scope scopeToInit, Scope oldScope)
 	/*-{
-		$wnd._ServoyInit_.initScope("scopes", scopeName, globalScope);
+		$wnd._ServoyInit_.initScope(scopeParent, scopeName, scopeToInit,
+				oldScope);
+	}-*/;
+
+	public static final native String[] getFunctionNamesInternal(String parentScope, String scope) /*-{
+		var keys = [];
+		for ( var k in $wnd._ServoyInit_[parentScope][scope].fncs)
+			keys.push(k);
+		return keys;
+	}-*/;
+
+	public static final native String[] getVariableNamesInternal(String parentScope, String scope) /*-{
+		var keys = [];
+		for ( var k in $wnd._ServoyInit_[parentScope][scope].vrbs)
+			keys.push(k);
+		return keys;
 	}-*/;
 
 	public GlobalScopeModificationDelegate getGlobalScopeModificationDelegate()
@@ -110,9 +134,11 @@ public class ScriptEngine
 
 	public void reloadScopeIfInitialized(String scopeName)
 	{
-		if (scopes.remove(scopeName) != null)
+		GlobalScope oldGs;
+		if ((oldGs = scopes.remove(scopeName)) != null)
 		{
-			getGlobalScope(scopeName); // will reinitialize it
+			GlobalScope newGs = createNewGlobalScope(scopeName);
+			initScope(SCOPES, scopeName, newGs, oldGs);
 		}
 	}
 

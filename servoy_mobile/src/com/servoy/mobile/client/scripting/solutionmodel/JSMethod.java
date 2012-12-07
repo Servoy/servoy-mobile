@@ -98,8 +98,7 @@ public class JSMethod extends JSScriptPart implements IBaseSMMethod, Exportable
 		return existsInternal(path[0], path[1], path[2]);
 	}
 
-	@NoExport
-	public final native boolean existsInternal(String parentScope, String scope, String fName) /*-{
+	private final native boolean existsInternal(String parentScope, String scope, String fName) /*-{
 		var scp = $wnd._ServoyInit_[parentScope][scope];
 		if (scp && scp.fncs[fName]) {
 			return true;
@@ -107,14 +106,16 @@ public class JSMethod extends JSScriptPart implements IBaseSMMethod, Exportable
 		return false;
 	}-*/;
 
-	@NoExport
-	public final native String getCodeInternal(String parentScope, String scope, String fName) /*-{
+	private final native String getCodeInternal(String parentScope, String scope, String fName) /*-{
 		return $wnd._ServoyInit_[parentScope][scope].fncs[fName];
 	}-*/;
 
-	@NoExport
-	public final native void setCodeInternal(String parentScope, String scope, String fName, String code) /*-{
+	private final native void setCodeInternal(String parentScope, String scope, String fName, String code) /*-{
 		$wnd._ServoyInit_[parentScope][scope].fncs[fName] = code;
+	}-*/;
+
+	private final native void removeInternal(String parentScope, String scope, String fName) /*-{
+		delete $wnd._ServoyInit_[parentScope][scope].fncs[fName];
 	}-*/;
 
 	@NoExport
@@ -122,6 +123,18 @@ public class JSMethod extends JSScriptPart implements IBaseSMMethod, Exportable
 	{
 		setCodeInternal(path[0], path[1], path[2], code);
 		reloadScope();
+	}
+
+	@Override
+	public boolean remove()
+	{
+		if (exists())
+		{
+			removeInternal(path[0], path[1], path[2]);
+			reloadScope();
+			return true;
+		}
+		return false;
 	}
 
 }

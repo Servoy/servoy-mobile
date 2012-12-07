@@ -25,7 +25,7 @@ import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.DataAdapterList;
 import com.servoy.mobile.client.dto.ValueListDescription;
-import com.servoy.mobile.client.persistence.BaseComponent;
+import com.servoy.mobile.client.persistence.AbstractBase;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.Form;
@@ -61,12 +61,12 @@ public class ComponentFactory
 
 		JsArray<Component> formComponents = form.getComponents();
 		Component component;
-		BaseComponent.MobileProperties mobileProperties;
+		AbstractBase.MobileProperties mobileProperties;
 		TabPanel tabPanel = null;
 		for (int i = 0; i < formComponents.length(); i++)
 		{
 			component = formComponents.get(i);
-			mobileProperties = component.getMobileProperties();
+			mobileProperties = component.getMobilePropertiesCopy();
 			if (mobileProperties != null && mobileProperties.isFormTabPanel() && (tabPanel = component.isTabPanel()) != null)
 			{
 				return new TabsFormDisplay(application, form, tabPanel);
@@ -87,10 +87,10 @@ public class ComponentFactory
 	{
 		Widget componentWidget = null;
 		GraphicalComponent gc = component.isGraphicalComponent();
-		BaseComponent.MobileProperties mobileProperties;
+		AbstractBase.MobileProperties mobileProperties;
 		if (gc != null)
 		{
-			mobileProperties = gc.getMobileProperties();
+			mobileProperties = gc.getMobilePropertiesCopy();
 
 			if (mobileProperties != null)
 			{
@@ -169,7 +169,7 @@ public class ComponentFactory
 			else
 			{
 				TabPanel tabPanel = component.isTabPanel();
-				mobileProperties = component.getMobileProperties();
+				mobileProperties = component.getMobilePropertiesCopy();
 				if (tabPanel != null && mobileProperties != null && mobileProperties.isListTabPanel())
 				{
 					JsArray<Tab> tabs = tabPanel.getTabs();
