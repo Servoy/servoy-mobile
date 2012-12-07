@@ -109,7 +109,7 @@ public class RowDescription extends JavaScriptObject
 
 	public static RowDescription newInstance(String[] dataProviders, JSONArray values)
 	{
-		RowDescription retval = newInstance();
+		RowDescription retval = JavaScriptObject.createObject().cast();
 		for (int i = 0; i < dataProviders.length; i++)
 		{
 			JSONValue val = values.get(i);
