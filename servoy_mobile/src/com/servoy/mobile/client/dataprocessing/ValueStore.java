@@ -44,7 +44,7 @@ public class ValueStore
 
 	int putUUID(String uuid)
 	{
-		uuid = uuid.toLowerCase();
+		uuid = uuid.toUpperCase(); //default java UUID representation is in uppercase A-F
 		int val = Utils.getAsInteger(uid_to_id.get(uuid));
 		if (val == 0)
 		{
