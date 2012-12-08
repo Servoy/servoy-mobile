@@ -47,7 +47,7 @@ public class RowDescription extends JavaScriptObject
 		return value;
 	}-*/;
 
-	public final void setValue(String dataProviderID, Object obj)
+	public final void setValueInternal(String dataProviderID, Object obj)
 	{
 		if (obj instanceof Number)
 		{
@@ -65,8 +65,12 @@ public class RowDescription extends JavaScriptObject
 		{
 			setValueObject(dataProviderID, obj);
 		}
+	}
 
-		setModificationDate();
+	public final void setValue(String dataProviderID, Object obj)
+	{
+		setValueInternal(dataProviderID, obj);
+		setModificationDate();//flag as changed
 	}
 
 	private final native void setModificationDate()/*-{

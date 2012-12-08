@@ -304,7 +304,7 @@ public class FoundSetManager
 				for (String dataProviderID : uuidCols)
 				{
 					String val = (String)row.getValue(dataProviderID);
-					if (val != null) row.setValue(dataProviderID, String.valueOf(valueStore.putUUID(val)));
+					if (val != null) row.setValueInternal(dataProviderID, String.valueOf(valueStore.putUUID(val)));
 				}
 			}
 
@@ -552,7 +552,7 @@ public class FoundSetManager
 			for (String dataProviderID : uuidCols)
 			{
 				Object val = clone.getValue(dataProviderID);
-				if (val != null) clone.setValue(dataProviderID, valueStore.getUUIDValue(Utils.getAsInteger(val)));
+				if (val != null) clone.setValueInternal(dataProviderID, valueStore.getUUIDValue(Utils.getAsInteger(val)));
 			}
 		}
 
