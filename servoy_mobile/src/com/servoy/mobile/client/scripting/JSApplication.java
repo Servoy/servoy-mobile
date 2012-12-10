@@ -42,6 +42,12 @@ public class JSApplication implements Exportable, IJSApplication
 		GWT.log(output == null ? "<null>" : output.toString()); //$NON-NLS-1$
 	}
 
+	@Override
+	public boolean isInDeveloper()
+	{
+		return false;
+	}
+
 	private native void export(Object object)
 	/*-{
 		$wnd.application = object;
