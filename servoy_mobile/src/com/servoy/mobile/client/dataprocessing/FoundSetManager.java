@@ -117,22 +117,25 @@ public class FoundSetManager
 
 	public void exportDataproviders()
 	{
-		Set<String> exported = new HashSet<String>();
-		JsArray<EntityDescription> eds = entities.getEntityDescriptions();
-		for (int i = 0; i < eds.length(); i++)
+		if (entities != null)
 		{
-			EntityDescription ed = eds.get(i);
-			JsArray<DataProviderDescription> dataProviders = ed.getDataProviders();
-			for (int k = 0; k < dataProviders.length(); k++)
+			Set<String> exported = new HashSet<String>();
+			JsArray<EntityDescription> eds = entities.getEntityDescriptions();
+			for (int i = 0; i < eds.length(); i++)
 			{
-				String name = dataProviders.get(k).getName();
-				if (exported.add(name)) export(name);
-			}
-			JsArray<RelationDescription> primaryRelations = ed.getPrimaryRelations();
-			for (int k = 0; k < primaryRelations.length(); k++)
-			{
-				String name = primaryRelations.get(k).getName();
-				if (exported.add(name)) export(name);
+				EntityDescription ed = eds.get(i);
+				JsArray<DataProviderDescription> dataProviders = ed.getDataProviders();
+				for (int k = 0; k < dataProviders.length(); k++)
+				{
+					String name = dataProviders.get(k).getName();
+					if (exported.add(name)) export(name);
+				}
+				JsArray<RelationDescription> primaryRelations = ed.getPrimaryRelations();
+				for (int k = 0; k < primaryRelations.length(); k++)
+				{
+					String name = primaryRelations.get(k).getName();
+					if (exported.add(name)) export(name);
+				}
 			}
 		}
 	}
