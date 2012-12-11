@@ -80,6 +80,14 @@ public class Record extends Scope implements IJSRecord
 		if ("maxRecordIndex".equals(dataProviderID) || "lazyMaxRecordIndex".equals(dataProviderID)) return Integer.valueOf(parent.getSize()); //$NON-NLS-1$ //$NON-NLS-2$
 		if ("currentRecordIndex".equals(dataProviderID)) return new Integer(parent.getRecordIndex(this) + 1); //$NON-NLS-1$
 
+		if (!variableTypes.containsKey(dataProviderID))
+		{
+			FoundSet rfs = getRelatedFoundSet(dataProviderID);
+			if (rfs != null)
+			{
+				return rfs;
+			}
+		}
 		RowDescription rd = getRowDescription();
 		if (rd == null || rd.getValue(dataProviderID) == null) return null;
 		int type = getVariableType(dataProviderID);
