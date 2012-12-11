@@ -77,7 +77,7 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 					if (mobileProperties.isListItemButton())
 					{
 						listItemTextDP = component.isGraphicalComponent().getDataProviderID();
-						listItemOnAction = component.isGraphicalComponent().getActionMethodID();
+						listItemOnAction = component.isGraphicalComponent().getOnActionMethodCall();
 						listItemStaticText = component.isGraphicalComponent().getText();
 						listItemDataIcon = mobileProperties.getDataIcon();
 					}

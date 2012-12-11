@@ -34,9 +34,9 @@ import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMField;
 public class JSField extends JSComponent implements IMobileSMField, Exportable
 {
 
-	public JSField(Field f, JSSolutionModel model)
+	public JSField(Field f, String formName, JSSolutionModel model)
 	{
-		super(f, model);
+		super(f, formName, model);
 	}
 
 	/*

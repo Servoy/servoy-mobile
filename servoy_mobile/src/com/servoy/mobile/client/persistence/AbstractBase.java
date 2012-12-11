@@ -3,6 +3,7 @@ package com.servoy.mobile.client.persistence;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
+import com.servoy.j2db.persistence.constants.IContentSpecConstantsBase;
 import com.servoy.mobile.client.util.Utils;
 
 /**
@@ -18,6 +19,11 @@ public abstract class AbstractBase extends JavaScriptObject
 	public final native String getName() /*-{
 		return this.name;
 	}-*/;
+
+	public final void setName(String name)
+	{
+		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_NAME, name);
+	}
 
 	protected final native void setAttributeValueInt(String attrName, int value) /*-{
 		this[attrName] = value;

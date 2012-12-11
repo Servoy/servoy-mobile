@@ -51,41 +51,6 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 		return form.getName();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMHasDesignTimeProperty#getDesignTimeProperty(java.lang.String)
-	 */
-	@Override
-	public Object getDesignTimeProperty(String key)
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMHasDesignTimeProperty#putDesignTimeProperty(java.lang.String, java.lang.Object)
-	 */
-	@Override
-	public Object putDesignTimeProperty(String key, Object value)
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMHasDesignTimeProperty#removeDesignTimeProperty(java.lang.String)
-	 */
-	@Override
-	public Object removeDesignTimeProperty(String key)
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public JSVariable newVariable(String name, int type)
@@ -177,7 +142,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 		if (dataprovider instanceof String) f.setDataProviderID((String)dataprovider);
 		f.setSize(width, height);
 		f.setLocation(x, y);
-		return new JSField(f, getSolutionModel());
+		return new JSField(f, form.getName(), getSolutionModel());
 	}
 
 	public JSField newField(JSVariable dataprovider, int type, int x, int y, int width, int height)
@@ -296,8 +261,8 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 		gc.setText(txt);
 		gc.setSize(width, height);
 		gc.setLocation(x, y);
-		if (action != null) gc.setOnActionMethodID(action.getReferenceString());
-		return new JSButton(gc, getSolutionModel());
+		if (action != null) gc.setOnActionMethodCall(action.getReferenceString());
+		return new JSButton(gc, form.getName(), getSolutionModel());
 	}
 
 	@Override
@@ -307,7 +272,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 		gc.setText(txt);
 		gc.setSize(width, height);
 		gc.setLocation(x, y);
-		return new JSLabel(gc, getSolutionModel());
+		return new JSLabel(gc, form.getName(), getSolutionModel());
 	}
 
 	/*

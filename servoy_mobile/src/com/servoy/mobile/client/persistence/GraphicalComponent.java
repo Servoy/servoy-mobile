@@ -43,12 +43,12 @@ public class GraphicalComponent extends Component
 		return getAttributeValueString(VIEW_TYPE_ATTR, null);
 	}
 
-	public final void setOnActionMethodID(String id)
+	public final void setOnActionMethodCall(String methodCall)
 	{
-		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_ONACTIONMETHODID, id);
+		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_ONACTIONMETHODID, methodCall);
 	}
 
-	public final String getOnActionMethodID()
+	public final String getOnActionMethodCall()
 	{
 		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_ONACTIONMETHODID, null);
 	}
@@ -57,19 +57,25 @@ public class GraphicalComponent extends Component
 		return this.dataProviderID;
 	}-*/;
 
+	public final void setDataProviderID(String dataProviderID)
+	{
+		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_DATAPROVIDERID, dataProviderID);
+	}
+
 	public final void setText(String text)
 	{
 		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_TEXT, text);
+	}
+
+	public final void setDisplayTags(boolean displayTags)
+	{
+		setAttributeValueBoolean(IContentSpecConstantsBase.PROPERTY_DISPLAY_TAGS, displayTags);
 	}
 
 	public final String getText()
 	{
 		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_TEXT, null);
 	}
-
-	public final native String getActionMethodID() /*-{
-		return this.onActionMethodID;
-	}-*/;
 
 	public final native boolean isDisplaysTags() /*-{
 		return this.displaysTags ? this.displaysTags : false;

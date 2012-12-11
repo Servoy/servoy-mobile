@@ -19,10 +19,13 @@ package com.servoy.mobile.client.scripting.solutionmodel;
 
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
+import org.timepedia.exporter.client.Getter;
+import org.timepedia.exporter.client.Setter;
 
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMGraphicalComponent;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
+import com.servoy.mobile.client.scripting.ScriptEngine;
 
 /**
  * @author acostescu
@@ -31,332 +34,87 @@ import com.servoy.mobile.client.persistence.GraphicalComponent;
 public class JSGraphicalComponent extends JSComponent implements IBaseSMGraphicalComponent, Exportable
 {
 
-	public JSGraphicalComponent(GraphicalComponent gc, JSSolutionModel model)
+	public JSGraphicalComponent(GraphicalComponent gc, String formName, JSSolutionModel model)
 	{
-		super(gc, model);
+		super(gc, formName, model);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#getX()
-	 */
 	@Override
-	public int getX()
-	{
-		// TODO ac Auto-generated method stub
-		return 0;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#getY()
-	 */
-	@Override
-	public int getY()
-	{
-		// TODO ac Auto-generated method stub
-		return 0;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#getName()
-	 */
-	@Override
-	public String getName()
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#getEnabled()
-	 */
-	@Override
-	public boolean getEnabled()
-	{
-		// TODO ac Auto-generated method stub
-		return false;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#getVisible()
-	 */
-	@Override
-	public boolean getVisible()
-	{
-		// TODO ac Auto-generated method stub
-		return false;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#getWidth()
-	 */
-	@Override
-	public int getWidth()
-	{
-		// TODO ac Auto-generated method stub
-		return 0;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#getHeight()
-	 */
-	@Override
-	public int getHeight()
-	{
-		// TODO ac Auto-generated method stub
-		return 0;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#setX(int)
-	 */
-	@Override
-	public void setX(int x)
-	{
-		// TODO ac Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#setY(int)
-	 */
-	@Override
-	public void setY(int y)
-	{
-		// TODO ac Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#setName(java.lang.String)
-	 */
-	@Override
-	public void setName(String arg)
-	{
-		// TODO ac Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#setEnabled(boolean)
-	 */
-	@Override
-	public void setEnabled(boolean arg)
-	{
-		// TODO ac Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#setVisible(boolean)
-	 */
-	@Override
-	public void setVisible(boolean arg)
-	{
-		// TODO ac Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#setWidth(int)
-	 */
-	@Override
-	public void setWidth(int width)
-	{
-		// TODO ac Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#setHeight(int)
-	 */
-	@Override
-	public void setHeight(int height)
-	{
-		// TODO ac Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMHasDesignTimeProperty#getDesignTimeProperty(java.lang.String)
-	 */
-	@Override
-	public Object getDesignTimeProperty(String key)
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMHasDesignTimeProperty#putDesignTimeProperty(java.lang.String, java.lang.Object)
-	 */
-	@Override
-	public Object putDesignTimeProperty(String key, Object value)
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMHasDesignTimeProperty#removeDesignTimeProperty(java.lang.String)
-	 */
-	@Override
-	public Object removeDesignTimeProperty(String key)
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMGraphicalComponent#getLabelFor()
-	 */
-	@Override
-	public String getLabelFor()
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMGraphicalComponent#getDataProviderID()
-	 */
-	@Override
+	@Getter
 	public String getDataProviderID()
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		return ((GraphicalComponent)getBase()).getDataProviderID();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMGraphicalComponent#getDisplaysTags()
-	 */
 	@Override
+	@Getter
 	public boolean getDisplaysTags()
 	{
-		// TODO ac Auto-generated method stub
-		return false;
+		return ((GraphicalComponent)getBase()).isDisplaysTags();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMGraphicalComponent#getText()
-	 */
 	@Override
+	@Getter
 	public String getText()
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		return ((GraphicalComponent)getBase()).getText();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMGraphicalComponent#setLabelFor(java.lang.String)
-	 */
 	@Override
-	public void setLabelFor(String arg)
-	{
-		// TODO ac Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMGraphicalComponent#setDataProviderID(java.lang.String)
-	 */
-	@Override
+	@Setter
 	public void setDataProviderID(String arg)
 	{
-		// TODO ac Auto-generated method stub
+		((GraphicalComponent)getBase()).setDataProviderID(arg);
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMGraphicalComponent#setDisplaysTags(boolean)
-	 */
 	@Override
+	@Setter
 	public void setDisplaysTags(boolean arg)
 	{
-		// TODO ac Auto-generated method stub
+		((GraphicalComponent)getBase()).setDisplayTags(arg);
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMGraphicalComponent#setText(java.lang.String)
-	 */
 	@Override
+	@Setter
 	public void setText(String arg)
 	{
-		// TODO ac Auto-generated method stub
+		((GraphicalComponent)getBase()).setText(arg);
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMGraphicalComponent#setOnAction(com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod)
-	 */
 	@Override
+	@Setter
 	public void setOnAction(IBaseSMMethod method)
 	{
-		// TODO ac Auto-generated method stub
-
+		((GraphicalComponent)getBase()).setOnActionMethodCall(((JSMethod)method).getReferenceString());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMGraphicalComponent#getOnAction()
-	 */
+	public void setOnAction(JSMethod method)
+	{
+		// workaround for classcast exception in javascript
+		setOnAction((IBaseSMMethod)method);
+	}
+
 	@Override
+	@Getter
 	public JSMethod getOnAction()
 	{
-		// TODO ac Auto-generated method stub
+		String methodCall = ((GraphicalComponent)getBase()).getOnActionMethodCall();
+		if (methodCall != null && methodCall.contains("("))
+		{
+			methodCall = methodCall.substring(0, methodCall.indexOf("(")).trim();
+			String[] callParts = methodCall.split("\\.");
+			if (callParts.length == 1)
+			{
+				return new JSMethod(ScriptEngine.FORMS, formName, callParts[0], getSolutionModel());
+			}
+			else
+			{
+				return new JSMethod(ScriptEngine.SCOPES, callParts[callParts.length - 2], callParts[callParts.length - 1], getSolutionModel());
+			}
+		}
 		return null;
 	}
 

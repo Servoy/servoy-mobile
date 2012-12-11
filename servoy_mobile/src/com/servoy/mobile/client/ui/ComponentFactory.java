@@ -121,7 +121,7 @@ public class ComponentFactory
 			}
 
 			if (componentWidget instanceof IRuntimeComponentProvider) ((IRuntimeComponentProvider)componentWidget).getRuntimeComponent().setActionCommand(
-				gc.getActionMethodID());
+				gc.getOnActionMethodCall());
 		}
 		else
 		{

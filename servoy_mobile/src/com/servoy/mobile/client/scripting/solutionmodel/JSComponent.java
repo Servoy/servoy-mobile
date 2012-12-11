@@ -19,9 +19,12 @@ package com.servoy.mobile.client.scripting.solutionmodel;
 
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
+import org.timepedia.exporter.client.Getter;
+import org.timepedia.exporter.client.Setter;
 
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent;
 import com.servoy.mobile.client.persistence.Component;
+import com.servoy.mobile.client.ui.PositionComparator;
 
 /**
  * @author acostescu
@@ -29,228 +32,151 @@ import com.servoy.mobile.client.persistence.Component;
 @Export
 public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 {
+	protected final String formName;
 
-	public JSComponent(Component c, JSSolutionModel model)
+	public JSComponent(Component c, String formName, JSSolutionModel model)
 	{
 		super(c, model);
+		this.formName = formName;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMHasDesignTimeProperty#getDesignTimeProperty(java.lang.String)
-	 */
 	@Override
-	public Object getDesignTimeProperty(String key)
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMHasDesignTimeProperty#putDesignTimeProperty(java.lang.String, java.lang.Object)
-	 */
-	@Override
-	public Object putDesignTimeProperty(String key, Object value)
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMHasDesignTimeProperty#removeDesignTimeProperty(java.lang.String)
-	 */
-	@Override
-	public Object removeDesignTimeProperty(String key)
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#getX()
-	 */
-	@Override
+	@Getter
 	public int getX()
 	{
-		// TODO ac Auto-generated method stub
+		int[] location = PositionComparator.splitIntegers(((Component)getBase()).getLocation());
+		if (location != null && location.length == 2)
+		{
+			return location[0];
+		}
 		return 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#getY()
-	 */
 	@Override
+	@Getter
 	public int getY()
 	{
-		// TODO ac Auto-generated method stub
+		int[] location = PositionComparator.splitIntegers(((Component)getBase()).getLocation());
+		if (location != null && location.length == 2)
+		{
+			return location[1];
+		}
 		return 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#getName()
-	 */
 	@Override
+	@Getter
 	public String getName()
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		return getBase().getName();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#getEnabled()
-	 */
 	@Override
+	@Getter
 	public boolean getEnabled()
 	{
-		// TODO ac Auto-generated method stub
-		return false;
+		return ((Component)getBase()).isEnabled();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#getVisible()
-	 */
 	@Override
+	@Getter
 	public boolean getVisible()
 	{
-		// TODO ac Auto-generated method stub
-		return false;
+		return ((Component)getBase()).isVisible();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#getWidth()
-	 */
 	@Override
+	@Getter
 	public int getWidth()
 	{
-		// TODO ac Auto-generated method stub
+		int[] size = PositionComparator.splitIntegers(((Component)getBase()).getSize());
+		if (size != null && size.length == 2)
+		{
+			return size[0];
+		}
 		return 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#getHeight()
-	 */
 	@Override
+	@Getter
 	public int getHeight()
 	{
-		// TODO ac Auto-generated method stub
+		int[] size = PositionComparator.splitIntegers(((Component)getBase()).getSize());
+		if (size != null && size.length == 2)
+		{
+			return size[1];
+		}
 		return 0;
 	}
 
 	@Override
+	@Getter
 	public String getGroupID()
 	{
-		Component c = (Component)getBase();
-		return c.getGroupID();
+		return ((Component)getBase()).getGroupID();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#setX(int)
-	 */
 	@Override
+	@Setter
 	public void setX(int x)
 	{
-		// TODO ac Auto-generated method stub
+		((Component)getBase()).setLocation(x, getY());
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#setY(int)
-	 */
 	@Override
+	@Setter
 	public void setY(int y)
 	{
-		// TODO ac Auto-generated method stub
+		((Component)getBase()).setLocation(getX(), y);
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#setName(java.lang.String)
-	 */
 	@Override
+	@Setter
 	public void setName(String arg)
 	{
-		// TODO ac Auto-generated method stub
+		getBase().setName(arg);
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#setEnabled(boolean)
-	 */
 	@Override
+	@Setter
 	public void setEnabled(boolean arg)
 	{
-		// TODO ac Auto-generated method stub
+		((Component)getBase()).setEnabled(arg);
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#setVisible(boolean)
-	 */
 	@Override
+	@Setter
 	public void setVisible(boolean arg)
 	{
-		// TODO ac Auto-generated method stub
+		((Component)getBase()).setVisible(arg);
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#setWidth(int)
-	 */
 	@Override
+	@Setter
 	public void setWidth(int width)
 	{
-		// TODO ac Auto-generated method stub
+		((Component)getBase()).setSize(width, getHeight());
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent#setHeight(int)
-	 */
 	@Override
+	@Setter
 	public void setHeight(int height)
 	{
-		// TODO ac Auto-generated method stub
+		((Component)getBase()).setSize(getWidth(), height);
 
 	}
 
 	@Override
+	@Setter
 	public void setGroupID(String id)
 	{
-		Component c = (Component)getBase();
-		c.setGroupID(id);
+		((Component)getBase()).setGroupID(id);
 	}
 
 }

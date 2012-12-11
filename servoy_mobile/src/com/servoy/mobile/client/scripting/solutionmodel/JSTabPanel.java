@@ -36,9 +36,9 @@ public class JSTabPanel extends JSComponent implements IBaseSMTabPanel, Exportab
 	 * @param f
 	 * @param model
 	 */
-	public JSTabPanel(Field f, JSSolutionModel model)
+	public JSTabPanel(Field f, String formName, JSSolutionModel model)
 	{
-		super(f, model);
+		super(f, formName, model);
 		// TODO ac Auto-generated constructor stub
 	}
 
