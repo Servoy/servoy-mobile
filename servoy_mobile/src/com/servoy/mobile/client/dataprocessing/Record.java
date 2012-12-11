@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
 import com.servoy.j2db.scripting.api.IJSDataSet;
@@ -131,7 +130,7 @@ public class Record extends Scope implements IJSRecord
 				{
 					String key = avail.get(i);
 					int relationID = parent.getRelationID(relationName);
-					if (key.startsWith(relationID+"|"))
+					if (key.startsWith(relationID + "|"))
 					{
 						retval = parent.getRelatedFoundSet(this, relationName, key);
 						relatedFoundSets.put(relationName, retval);
@@ -142,9 +141,9 @@ public class Record extends Scope implements IJSRecord
 			retval = parent.createRelatedFoundSet(relationName, this);
 			if (retval != null)
 			{
-				relatedFoundSets.put(relationName,retval);
+				relatedFoundSets.put(relationName, retval);
 				int relationID = parent.getRelationID(relationName);
-				recordDescription.getRFS().push(relationID+"|"+retval.getWhereArgsHash());
+				recordDescription.getRFS().push(relationID + "|" + retval.getWhereArgsHash());
 			}
 		}
 		return retval;
@@ -232,25 +231,7 @@ public class Record extends Scope implements IJSRecord
 		this.revertChanges = function() {
 			return this.@com.servoy.mobile.client.dataprocessing.Record::revertChanges()();
 		}
-
-		this.getSelectedIndex = function() {
-			return this.@com.servoy.mobile.client.dataprocessing.Record::getSelectedIndex()();
-		}
-		this.setSelectedIndex = function(index) {
-			return this.@com.servoy.mobile.client.dataprocessing.Record::setSelectedIndex(I)(index);
-		}
-
 	}-*/;
-
-	public int getSelectedIndex()
-	{
-		return 1;
-	}
-
-	public void setSelectedIndex(int index)
-	{
-		GWT.log("index: " + index);
-	}
 
 	@Override
 	public String getDataSource()
@@ -273,12 +254,35 @@ public class Record extends Scope implements IJSRecord
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see com.servoy.j2db.scripting.api.IJSRecord#hasChangedData()
+	 */
+	@Override
+	public boolean hasChangedData()
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.j2db.scripting.api.IJSRecord#revertChanges()
+	 */
+	@Override
+	public void revertChanges()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.j2db.scripting.api.IJSRecord#getException()
 	 */
 	@Override
 	public Exception getException()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -309,25 +313,12 @@ public class Record extends Scope implements IJSRecord
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.servoy.j2db.scripting.api.IJSRecord#hasChangedData()
-	 */
-	@Override
-	public boolean hasChangedData()
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see com.servoy.j2db.scripting.api.IJSRecord#isEditing()
 	 */
 	@Override
 	public boolean isEditing()
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return parent.getFoundSetManager().getEditRecordList().isEditting(this);
 	}
 
 	/*
@@ -338,20 +329,7 @@ public class Record extends Scope implements IJSRecord
 	@Override
 	public boolean isNew()
 	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.IJSRecord#revertChanges()
-	 */
-	@Override
-	public void revertChanges()
-	{
-		// TODO Auto-generated method stub
-
+		return getRow().isCreatedOnDevice(); // TODO is created on device and is still editing??
 	}
 
 	@Override
