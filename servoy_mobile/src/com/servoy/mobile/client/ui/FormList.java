@@ -151,75 +151,78 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 		this.foundSet = foundset;
 		if (this.foundSet != null) this.foundSet.addFoundSetListener(this);
 		clear();
-		int foundsetSize = foundset.getSize();
-		JQMListItem listItem;
-		Record listItemRecord;
-		Object dpValue;
-
-		int listWidgetCount = 0;
-
-		dpValue = dal.getRecordValue(null, listItemHeaderDP);
-		if (dpValue == null)
+		if (foundset != null)
 		{
-			dpValue = TagParser.processTags(listItemStaticHeader, dal, formController.getApplication().getI18nProvider());
-			if (dpValue != null && dpValue.toString().startsWith("i18n:"))
-			{
-				dpValue = formController.getApplication().getI18nProvider().getI18NMessageIfPrefixed(listItemStaticHeader);
-			}
-		}
-		if (dpValue != null)
-		{
-			addDivider(dpValue.toString());
-			listWidgetCount = 1;
-		}
+			int foundsetSize = foundset.getSize();
+			JQMListItem listItem;
+			Record listItemRecord;
+			Object dpValue;
 
-		for (int i = 0; i < foundsetSize; i++)
-		{
-			listItemRecord = foundset.getRecord(i);
-			listItemTagResolver.setRecord(listItemRecord);
+			int listWidgetCount = 0;
 
-			dpValue = dal.getRecordValue(listItemRecord, listItemTextDP);
+			dpValue = dal.getRecordValue(null, listItemHeaderDP);
 			if (dpValue == null)
 			{
-				dpValue = TagParser.processTags(listItemStaticText, listItemTagResolver, formController.getApplication().getI18nProvider());
+				dpValue = TagParser.processTags(listItemStaticHeader, dal, formController.getApplication().getI18nProvider());
 				if (dpValue != null && dpValue.toString().startsWith("i18n:"))
 				{
-					dpValue = formController.getApplication().getI18nProvider().getI18NMessageIfPrefixed(listItemStaticText);
+					dpValue = formController.getApplication().getI18nProvider().getI18NMessageIfPrefixed(listItemStaticHeader);
 				}
 			}
-			listItem = addItem(listWidgetCount, dpValue != null ? dpValue.toString() : ""); //$NON-NLS-1$
-			listWidgetCount++;
-
-			dpValue = dal.getRecordValue(listItemRecord, listItemCountDP);
-			if (dpValue instanceof Integer) listItem.setCount((Integer)dpValue);
-			else if (dpValue instanceof Double) listItem.setCount(Integer.valueOf(((Double)dpValue).intValue()));
-
-			dpValue = dal.getRecordValue(listItemRecord, listItemImageDP);
-			if (dpValue != null) listItem.setImage(dpValue.toString(), false);
-
-			final int selIndex = i + 1;
-			listItem.addClickHandler(new ClickHandler()
+			if (dpValue != null)
 			{
-				@Override
-				public void onClick(ClickEvent event)
-				{
-					formController.setSelectedIndex(selIndex);
-					if (listItemOnAction != null) formController.getExecutor().fireEventCommand(IJSEvent.ACTION, listItemOnAction, null, null);
-				}
-			});
-
-			dpValue = dal.getRecordValue(listItemRecord, listItemSubtextDP);
-			if (dpValue == null)
-			{
-				dpValue = TagParser.processTags(listItemStaticSubtext, listItemTagResolver, formController.getApplication().getI18nProvider());
-				if (dpValue != null && dpValue.toString().startsWith("i18n:"))
-				{
-					dpValue = formController.getApplication().getI18nProvider().getI18NMessageIfPrefixed(listItemStaticSubtext);
-				}
+				addDivider(dpValue.toString());
+				listWidgetCount = 1;
 			}
-			if (dpValue != null) listItem.addText(dpValue.toString());
 
-			if (listItemDataIcon != null) listItem.getElement().setAttribute("data-icon", listItemDataIcon); //$NON-NLS-1$
+			for (int i = 0; i < foundsetSize; i++)
+			{
+				listItemRecord = foundset.getRecord(i);
+				listItemTagResolver.setRecord(listItemRecord);
+
+				dpValue = dal.getRecordValue(listItemRecord, listItemTextDP);
+				if (dpValue == null)
+				{
+					dpValue = TagParser.processTags(listItemStaticText, listItemTagResolver, formController.getApplication().getI18nProvider());
+					if (dpValue != null && dpValue.toString().startsWith("i18n:"))
+					{
+						dpValue = formController.getApplication().getI18nProvider().getI18NMessageIfPrefixed(listItemStaticText);
+					}
+				}
+				listItem = addItem(listWidgetCount, dpValue != null ? dpValue.toString() : ""); //$NON-NLS-1$
+				listWidgetCount++;
+
+				dpValue = dal.getRecordValue(listItemRecord, listItemCountDP);
+				if (dpValue instanceof Integer) listItem.setCount((Integer)dpValue);
+				else if (dpValue instanceof Double) listItem.setCount(Integer.valueOf(((Double)dpValue).intValue()));
+
+				dpValue = dal.getRecordValue(listItemRecord, listItemImageDP);
+				if (dpValue != null) listItem.setImage(dpValue.toString(), false);
+
+				final int selIndex = i + 1;
+				listItem.addClickHandler(new ClickHandler()
+				{
+					@Override
+					public void onClick(ClickEvent event)
+					{
+						formController.setSelectedIndex(selIndex);
+						if (listItemOnAction != null) formController.getExecutor().fireEventCommand(IJSEvent.ACTION, listItemOnAction, null, null);
+					}
+				});
+
+				dpValue = dal.getRecordValue(listItemRecord, listItemSubtextDP);
+				if (dpValue == null)
+				{
+					dpValue = TagParser.processTags(listItemStaticSubtext, listItemTagResolver, formController.getApplication().getI18nProvider());
+					if (dpValue != null && dpValue.toString().startsWith("i18n:"))
+					{
+						dpValue = formController.getApplication().getI18nProvider().getI18NMessageIfPrefixed(listItemStaticSubtext);
+					}
+				}
+				if (dpValue != null) listItem.addText(dpValue.toString());
+
+				if (listItemDataIcon != null) listItem.getElement().setAttribute("data-icon", listItemDataIcon); //$NON-NLS-1$
+			}
 		}
 	}
 

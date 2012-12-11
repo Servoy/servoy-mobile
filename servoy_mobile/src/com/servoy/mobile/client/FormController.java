@@ -104,7 +104,7 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 	@Override
 	public void selectionChanged()
 	{
-		formDisplay.refreshRecord(foundSet.getSelectedRecord());
+		if (foundSet != null) formDisplay.refreshRecord(foundSet.getSelectedRecord());
 	}
 
 	@Getter
@@ -164,7 +164,7 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 	@Export
 	public int getSelectedIndex()
 	{
-		return foundSet.jsFunction_getSelectedIndex();
+		return foundSet != null ? foundSet.jsFunction_getSelectedIndex() : -1;
 	}
 
 	/*
@@ -177,7 +177,7 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 	public void setSelectedIndex(int index)
 	{
 		// call +1 method of foundset
-		foundSet.jsFunction_setSelectedIndex(index);
+		if (foundSet != null) foundSet.jsFunction_setSelectedIndex(index);
 	}
 
 	/**
