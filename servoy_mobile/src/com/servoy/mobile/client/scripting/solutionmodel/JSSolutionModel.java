@@ -24,7 +24,6 @@ import org.timepedia.exporter.client.ExporterUtil;
 import com.google.gwt.core.client.GWT;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm;
-import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel;
 import com.servoy.j2db.util.DataSourceUtilsBase;
 import com.servoy.mobile.client.MobileClient;
@@ -71,7 +70,6 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 		}
 		return null;
 	}
-
 
 	@Override
 	public JSForm newForm(String name, String serverName, String tableName, String styleName, boolean show_in_menu, int width, int height)
@@ -135,18 +133,6 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 	 */
 	@Override
 	public boolean removeForm(String name)
-	{
-		// TODO ac Auto-generated method stub
-		return false;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel#removeRelation(java.lang.String)
-	 */
-	@Override
-	public boolean removeRelation(String name)
 	{
 		// TODO ac Auto-generated method stub
 		return false;
@@ -321,19 +307,6 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 	{
 		JSMethod gm = new JSMethod(ScriptEngine.SCOPES, scopeName, name, this);
 		return gm.exists() ? gm : null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel#wrapMethodWithArguments(com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod,
-	 * java.lang.Object[])
-	 */
-	@Override
-	public JSMethod wrapMethodWithArguments(IBaseSMMethod method, Object... args)
-	{
-		// TODO ac Auto-generated method stub
-		return null;
 	}
 
 	// TODO ac there are several methods like this one commented out because of a compilation error in GWT. Please uncomment and implement all of them
