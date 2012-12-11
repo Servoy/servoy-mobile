@@ -22,33 +22,21 @@ import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 
 import com.servoy.j2db.persistence.constants.IFieldConstants;
-import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod;
 import com.servoy.j2db.util.DataSourceUtilsBase;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.servoy.mobile.client.scripting.ScriptEngine;
+import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMForm;
 
 /**
  * @author acostescu
  */
 @Export
 @ExportPackage("")
-public class JSForm extends JSBase implements IBaseSMForm, Exportable
+public class JSForm extends JSBase implements IMobileSMForm, Exportable
 {
-
-	public static final int LIST_VIEW = IBaseSMForm.LIST_VIEW;
-	public static final int RECORD_VIEW = IBaseSMForm.RECORD_VIEW;
-	public static final int LOCKED_LIST_VIEW = IBaseSMForm.LOCKED_LIST_VIEW;
-	public static final int LOCKED_RECORD_VIEW = IBaseSMForm.LOCKED_RECORD_VIEW;
-	public static final int DEFAULT_ENCAPSULATION = IBaseSMForm.DEFAULT_ENCAPSULATION;
-	public static final int PRIVATE_ENCAPSULATION = IBaseSMForm.PRIVATE_ENCAPSULATION;
-	public static final int MODULE_PRIVATE_ENCAPSULATION = IBaseSMForm.MODULE_PRIVATE_ENCAPSULATION;
-	public static final int HIDE_DATAPROVIDERS_ENCAPSULATION = IBaseSMForm.HIDE_DATAPROVIDERS_ENCAPSULATION;
-	public static final int HIDE_FOUNDSET_ENCAPSULATION = IBaseSMForm.HIDE_FOUNDSET_ENCAPSULATION;
-	public static final int HIDE_CONTROLLER_ENCAPSULATION = IBaseSMForm.HIDE_CONTROLLER_ENCAPSULATION;
-	public static final int HIDE_ELEMENTS_ENCAPSULATION = IBaseSMForm.HIDE_ELEMENTS_ENCAPSULATION;
 
 	private final Form form;
 

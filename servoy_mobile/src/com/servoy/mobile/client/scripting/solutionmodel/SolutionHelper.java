@@ -27,6 +27,7 @@ import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMLabel;
 import com.servoy.mobile.client.persistence.AbstractBase;
 import com.servoy.mobile.client.persistence.AbstractBase.MobilePropertiesWrapper;
+import com.servoy.mobile.client.scripting.solutionmodel.i.IMobilePredefinedIconConstants;
 import com.servoy.mobile.client.util.Utils;
 
 /**
@@ -36,28 +37,8 @@ import com.servoy.mobile.client.util.Utils;
 @Export
 //@ExportPackage("plugins.mobile") // this doesn't work because plugins.mobile already exists in some way in other exporters
 //@ExportPackage("")
-public class SolutionHelper extends BaseSolutionHelper implements Exportable
+public class SolutionHelper extends BaseSolutionHelper implements IMobilePredefinedIconConstants, Exportable
 {
-
-	// we have to re-declare all these in order for them to be exported :(
-	public static final String ICON_GEAR = BaseSolutionHelper.ICON_GEAR;
-	public static final String ICON_LEFT = BaseSolutionHelper.ICON_LEFT;
-	public static final String ICON_RIGHT = BaseSolutionHelper.ICON_RIGHT;
-	public static final String ICON_UP = BaseSolutionHelper.ICON_UP;
-	public static final String ICON_DOWN = BaseSolutionHelper.ICON_DOWN;
-	public static final String ICON_DELETE = BaseSolutionHelper.ICON_DELETE;
-	public static final String ICON_PLUS = BaseSolutionHelper.ICON_PLUS;
-	public static final String ICON_MINUS = BaseSolutionHelper.ICON_MINUS;
-	public static final String ICON_CHECK = BaseSolutionHelper.ICON_CHECK;
-	public static final String ICON_REFRESH = BaseSolutionHelper.ICON_REFRESH;
-	public static final String ICON_FORWARD = BaseSolutionHelper.ICON_FORWARD;
-	public static final String ICON_BACK = BaseSolutionHelper.ICON_BACK;
-	public static final String ICON_GRID = BaseSolutionHelper.ICON_GRID;
-	public static final String ICON_STAR = BaseSolutionHelper.ICON_STAR;
-	public static final String ICON_ALERT = BaseSolutionHelper.ICON_ALERT;
-	public static final String ICON_INFO = BaseSolutionHelper.ICON_INFO;
-	public static final String ICON_HOME = BaseSolutionHelper.ICON_HOME;
-	public static final String ICON_SEARCH = BaseSolutionHelper.ICON_SEARCH;
 
 	@Override
 	public void markLeftHeaderButton(IBaseSMButton button)
@@ -110,7 +91,7 @@ public class SolutionHelper extends BaseSolutionHelper implements Exportable
 		AbstractBase persist = ((JSBase)component).getBase();
 
 		MobilePropertiesWrapper mpc = persist.getOrCreateMobilePropertiesCopy();
-		mpc.get().setHeaderText();
+		mpc.get().setFooterItem();
 		persist.setMobileProperties(mpc);
 	}
 

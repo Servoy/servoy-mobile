@@ -21,20 +21,15 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 
-import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMRelation;
+import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMRelation;
 
 /**
  * @author acostescu
  */
 @Export
 @ExportPackage("")
-public class JSRelation implements IBaseSMRelation, Exportable
+public class JSRelation implements IMobileSMRelation, Exportable
 {
-
-	public static final int INNER_JOIN = IBaseSMRelation.INNER_JOIN;
-	public static final int LEFT_OUTER_JOIN = IBaseSMRelation.LEFT_OUTER_JOIN;
-	public static final int RIGHT_OUTER_JOIN = IBaseSMRelation.RIGHT_OUTER_JOIN;
-	public static final int FULL_JOIN = IBaseSMRelation.FULL_JOIN;
 
 	/*
 	 * (non-Javadoc)

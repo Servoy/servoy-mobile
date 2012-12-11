@@ -22,8 +22,7 @@ import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.NoExport;
 
-import com.servoy.j2db.persistence.constants.IColumnTypeConstants;
-import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMVariable;
+import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMVariable;
 
 /**
  * @author acostescu
@@ -31,14 +30,8 @@ import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMVariable;
  */
 @Export
 @ExportPackage("")
-public class JSVariable extends JSScriptPart implements IBaseSMVariable, Exportable
+public class JSVariable extends JSScriptPart implements IMobileSMVariable, Exportable
 {
-
-	public static final int DATETIME = IBaseSMVariable.DATETIME;
-	public static final int TEXT = IBaseSMVariable.TEXT;
-	public static final int NUMBER = IBaseSMVariable.NUMBER;
-	public static final int INTEGER = IBaseSMVariable.INTEGER;
-	public static final int MEDIA = IBaseSMVariable.MEDIA;
 
 	public JSVariable(String parentScopeName, String scopeName, String name, JSSolutionModel model)
 	{
@@ -102,6 +95,7 @@ public class JSVariable extends JSScriptPart implements IBaseSMVariable, Exporta
 	}-*/;
 
 	private final native void createVarInternal(String parentScope, String scope, String vName, int type) /*-{
+		$wnd._ServoyUtils_.defineWindowVariable(vName);
 		$wnd._ServoyInit_[parentScope][scope].vrbs[vName] = [ "null", type ];
 	}-*/;
 

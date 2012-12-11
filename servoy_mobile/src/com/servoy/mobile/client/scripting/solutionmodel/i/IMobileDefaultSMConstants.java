@@ -15,19 +15,18 @@
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
-package com.servoy.mobile.client.scripting.solutionmodel;
+package com.servoy.mobile.client.scripting.solutionmodel.i;
 
-import org.timepedia.exporter.client.Export;
-import org.timepedia.exporter.client.ExportPackage;
+import org.timepedia.exporter.client.Exportable;
 
-import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileAlignmentSMConstants;
+import com.servoy.j2db.persistence.constants.IDefaultSMConstants;
 
 /**
  * @author acostescu
+ *
  */
-@Export
-@ExportPackage("")
-public class SM_ALIGNMENT implements IMobileAlignmentSMConstants
+//workaround to have constants automatically exported without re-defining them
+public interface IMobileDefaultSMConstants extends IDefaultSMConstants, Exportable
 {
 
 }

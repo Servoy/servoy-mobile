@@ -217,6 +217,10 @@ public abstract class AbstractBase extends JavaScriptObject
 			return this.footeritem ? this.footeritem : false;
 		}-*/;
 
+		public final native void setFooterItem() /*-{
+			this.footeritem = true;
+		}-*/;
+
 		public final native boolean isFormTabPanel() /*-{
 			return this.formtabpanel ? this.formtabpanel : false;
 		}-*/;

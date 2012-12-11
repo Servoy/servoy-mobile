@@ -20,19 +20,14 @@ package com.servoy.mobile.client.scripting.solutionmodel;
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 
-import com.servoy.j2db.persistence.constants.IDefaultSMConstants;
-import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod;
+import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileDefaultSMConstants;
 
 /**
  * @author acostescu
  */
 @Export
 @ExportPackage("")
-public class SM_DEFAULTS implements IDefaultSMConstants
+public class SM_DEFAULTS implements IMobileDefaultSMConstants
 {
-
-	public static final int DEFAULT = IDefaultSMConstants.DEFAULT;
-	public static final int NONE = IDefaultSMConstants.NONE;
-	public static final IBaseSMMethod COMMAND_NONE = IDefaultSMConstants.COMMAND_NONE;
 
 }
