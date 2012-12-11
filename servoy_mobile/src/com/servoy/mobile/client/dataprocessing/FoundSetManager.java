@@ -257,13 +257,16 @@ public class FoundSetManager
 		if (fd.getRelationName() != null)
 		{
 			int rid = entities.getRelationID(fd.getRelationName());
-			key = (rid > 0 ? String.valueOf(rid) : fd.getRelationName());
-			if (fd.getWhereArgsHash() != null) //if global/constant relation at server we did omit the argshash
+			if (rid > 0)
 			{
-				omitForKeyinfo = true;
-				String hash = fd.getWhereArgsHash();
-				hash = replaceUUIDHash(hash);
-				key += '|' + hash;
+				key = String.valueOf(rid);
+				if (fd.getWhereArgsHash() != null) //if global/constant relation at server we did omit the argshash
+				{
+					omitForKeyinfo = true;
+					String hash = fd.getWhereArgsHash();
+					hash = replaceUUIDHash(hash);
+					key += '|' + hash;
+				}
 			}
 		}
 		localStorage.setItem(key, fd.toJSON(omitForKeyinfo));
