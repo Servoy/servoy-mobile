@@ -428,6 +428,22 @@ public class FoundSetManager
 		return null;
 	}
 
+	public ValueListDescription getValueListByName(String name)
+	{
+		if (valueLists != null)
+		{
+			for (int i = 0; i < valueLists.length(); i++)
+			{
+				ValueListDescription vld = valueLists.get(i);
+				if (vld.getName().equals(name))
+				{
+					return vld;
+				}
+			}
+		}
+		return null;
+	}
+
 	RowDescription createRowDescription(FoundSet fs, Object pkval)
 	{
 		RowDescription retval = RowDescription.newInstance();

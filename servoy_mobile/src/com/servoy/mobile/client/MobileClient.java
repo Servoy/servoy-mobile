@@ -25,7 +25,6 @@ import com.google.gwt.user.client.Window;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.dataprocessing.FoundSetManager;
 import com.servoy.mobile.client.dataprocessing.OfflineDataProxy;
-import com.servoy.mobile.client.dto.ValueListDescription;
 import com.servoy.mobile.client.persistence.Solution;
 import com.servoy.mobile.client.scripting.JSApplication;
 import com.servoy.mobile.client.scripting.JSDatabaseManager;
@@ -330,11 +329,6 @@ public class MobileClient implements EntryPoint
 	public I18NMessages getMessages()
 	{
 		return messages;
-	}
-
-	public ValueListDescription getValueListItems(String valueListName)
-	{
-		return foundSetManager.getValueListItems(valueListName);
 	}
 
 	public SolutionI18nProvider getI18nProvider()

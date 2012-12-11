@@ -28,6 +28,7 @@ import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel;
 import com.servoy.j2db.util.DataSourceUtilsBase;
 import com.servoy.mobile.client.MobileClient;
+import com.servoy.mobile.client.dto.ValueListDescription;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.Solution;
 import com.servoy.mobile.client.scripting.ScriptEngine;
@@ -165,18 +166,6 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 		return variable.remove();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel#removeValueList(java.lang.String)
-	 */
-	@Override
-	public boolean removeValueList(String name)
-	{
-		// TODO ac Auto-generated method stub
-		return false;
-	}
-
 //	/*
 //	 * (non-Javadoc)
 //	 * 
@@ -213,16 +202,11 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 //		return null;
 //	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel#getValueList(java.lang.String)
-	 */
 	@Override
 	public JSValueList getValueList(String name)
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		ValueListDescription vl = application.getFoundSetManager().getValueListByName(name);
+		return vl != null ? new JSValueList(vl) : null;
 	}
 
 //	/*
@@ -236,18 +220,6 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 //		// TODO ac Auto-generated method stub
 //		return null;
 //	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel#newValueList(java.lang.String, int)
-	 */
-	@Override
-	public JSValueList newValueList(String name, int type)
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public JSVariable newGlobalVariable(String scopeName, String name, int type)
