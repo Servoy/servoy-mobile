@@ -7,6 +7,7 @@ import com.google.gwt.core.client.JsArray;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
+import com.servoy.mobile.client.dataprocessing.FoundSetManager;
 import com.servoy.mobile.client.dataprocessing.Record;
 import com.servoy.mobile.client.dto.DataProviderDescription;
 import com.servoy.mobile.client.dto.EntityDescription;
@@ -27,10 +28,10 @@ public class FormScope extends GlobalScope
 		super(formController.getName(), application);
 		this.formController = formController;
 
-		FoundSet fs = formController.getFormModel();
-		if (fs != null)
+		String ds = formController.getForm().getDataSource();
+		if (ds != null)
 		{
-			EntityDescription ed = fs.getFoundSetManager().getEntityDescription(fs.getEntityName());
+			EntityDescription ed = application.getFoundSetManager().getEntityDescription(FoundSetManager.getEntityFromDataSource(ds));
 			JsArray<DataProviderDescription> dataProviders = ed.getDataProviders();
 
 			for (int k = 0; k < dataProviders.length(); k++)
