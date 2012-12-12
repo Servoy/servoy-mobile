@@ -26,7 +26,9 @@ import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.dataprocessing.IEditListenerSubject;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.ValueList;
+import com.servoy.mobile.client.scripting.IModificationListener;
 import com.servoy.mobile.client.scripting.IRuntimeComponent;
+import com.servoy.mobile.client.scripting.ModificationEvent;
 import com.servoy.mobile.client.scripting.RuntimeDataRadioSet;
 import com.servoy.mobile.client.util.Utils;
 import com.sksamuel.jqm4gwt.form.elements.JQMRadioset;
@@ -36,7 +38,7 @@ import com.sksamuel.jqm4gwt.form.elements.JQMRadioset;
  *
  * @author gboros
  */
-public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldComponent, ISupportDataText, IEditListenerSubject
+public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldComponent, ISupportDataText, IEditListenerSubject, IModificationListener
 {
 	private static final int HORIZONTAL = 1;
 
@@ -53,10 +55,31 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 		setText(field.getText());
 		if (valuelist != null)
 		{
-			JsArrayString displayValues = valuelist.getDiplayValues();
-			for (int i = 0; i < displayValues.length(); i++)
-				addRadio(displayValues.get(i));
+			valuelist.addModificationListener(this);
+			fillByValueList();
 		}
+	}
+
+	/**
+	 * @param valuelist
+	 */
+	public void fillByValueList()
+	{
+		JsArrayString displayValues = valuelist.getDiplayValues();
+		for (int i = 0; i < displayValues.length(); i++)
+			addRadio(displayValues.get(i));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.scripting.IModificationListener#valueChanged(com.servoy.mobile.client.scripting.ModificationEvent)
+	 */
+	@Override
+	public void valueChanged(ModificationEvent e)
+	{
+		// TODO remove the radio's
+		fillByValueList();
 	}
 
 	/*

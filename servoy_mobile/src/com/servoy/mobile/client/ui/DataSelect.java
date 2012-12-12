@@ -26,7 +26,9 @@ import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.dataprocessing.IEditListenerSubject;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.ValueList;
+import com.servoy.mobile.client.scripting.IModificationListener;
 import com.servoy.mobile.client.scripting.IRuntimeComponent;
+import com.servoy.mobile.client.scripting.ModificationEvent;
 import com.servoy.mobile.client.scripting.RuntimeDataSelect;
 import com.servoy.mobile.client.util.Utils;
 import com.sksamuel.jqm4gwt.form.elements.JQMSelect;
@@ -37,7 +39,7 @@ import com.sksamuel.jqm4gwt.form.elements.JQMSelect;
  *
  * @author gboros
  */
-public class DataSelect extends JQMSelect implements IDisplayData, IFieldComponent, ISupportDataText, IEditListenerSubject
+public class DataSelect extends JQMSelect implements IDisplayData, IFieldComponent, ISupportDataText, IEditListenerSubject, IModificationListener
 {
 	private final ValueList valuelist;
 	private final RuntimeDataSelect scriptable;
@@ -50,10 +52,35 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 		setText(field.getText());
 		if (valuelist != null)
 		{
-			JsArrayString displayValues = valuelist.getDiplayValues();
-			for (int i = 0; i < displayValues.length(); i++)
-				addOption(displayValues.get(i));
+			valuelist.addModificationListener(this);
+			fillByValueList();
 		}
+	}
+
+	/**
+	 * @param valuelist
+	 */
+	private void fillByValueList()
+	{
+		JsArrayString displayValues = valuelist.getDiplayValues();
+		for (int i = 0; i < displayValues.length(); i++)
+			addOption(displayValues.get(i));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.scripting.IModificationListener#valueChanged(com.servoy.mobile.client.scripting.ModificationEvent)
+	 */
+	@Override
+	public void valueChanged(ModificationEvent e)
+	{
+		// need a method to get the select/item count or just a clear method.
+//		for (int i = 0; i < getItemCount(); i++)
+//		{
+//			removeOption(getValue(i));
+//		}
+		fillByValueList();
 	}
 
 	/*
