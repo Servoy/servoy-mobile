@@ -29,11 +29,11 @@ public class Field extends Component
 	{
 	}
 
-	public final native String getActionMethodID() /*-{
+	public final native String getActionMethodCall() /*-{
 		return this.onActionMethodID;
 	}-*/;
 
-	public final native String getDataChangeMethodID() /*-{
+	public final native String getDataChangeMethodCall() /*-{
 		return this.onDataChangeMethodID;
 	}-*/;
 
@@ -44,6 +44,21 @@ public class Field extends Component
 	public final native String getValuelistID() /*-{
 		return this.valuelistID;
 	}-*/;
+
+	public final void setValueListID(String valuelistID)
+	{
+		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_VALUELISTID, valuelistID);
+	}
+
+	public final void setActionMethodCall(String methodCall)
+	{
+		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_ONACTIONMETHODID, methodCall);
+	}
+
+	public final void setDataChangeMethodCall(String methodCall)
+	{
+		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_ONDATACHANGEMETHODID, methodCall);
+	}
 
 	public final void setDataProviderID(String dataprovider)
 	{

@@ -22,6 +22,7 @@ import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.NoExport;
 
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod;
+import com.servoy.mobile.client.scripting.ScriptEngine;
 
 /**
  * @author acostescu
@@ -90,6 +91,26 @@ public class JSMethod extends JSScriptPart implements IBaseSMMethod, Exportable
 	{
 		return super.getReferenceString() + "()"; //$NON-NLS-1$
 	}
+
+	@NoExport
+	public static JSMethod getMethodFromString(String methodCall, String formName, JSSolutionModel solutionModel)
+	{
+		if (methodCall != null && methodCall.contains("("))
+		{
+			methodCall = methodCall.substring(0, methodCall.indexOf("(")).trim();
+			String[] callParts = methodCall.split("\\.");
+			if (callParts.length == 1)
+			{
+				return new JSMethod(ScriptEngine.FORMS, formName, callParts[0], solutionModel);
+			}
+			else
+			{
+				return new JSMethod(ScriptEngine.SCOPES, callParts[callParts.length - 2], callParts[callParts.length - 1], solutionModel);
+			}
+		}
+		return null;
+	}
+
 
 	@Override
 	@NoExport

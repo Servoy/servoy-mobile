@@ -45,4 +45,9 @@ public class JSValueList /* extends JSBase */implements IBaseSMValueList, Export
 		return vl.getName();
 	}
 
+	public String getUUID()
+	{
+		return vl.getUUID();
+	}
+
 }

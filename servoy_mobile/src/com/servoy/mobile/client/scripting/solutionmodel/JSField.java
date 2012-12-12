@@ -20,6 +20,8 @@ package com.servoy.mobile.client.scripting.solutionmodel;
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
+import org.timepedia.exporter.client.Getter;
+import org.timepedia.exporter.client.Setter;
 
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMValueList;
@@ -39,197 +41,90 @@ public class JSField extends JSComponent implements IMobileSMField, Exportable
 		super(f, formName, model);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMField#getDataProviderID()
-	 */
 	@Override
+	@Getter
 	public String getDataProviderID()
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		return ((Field)getBase()).getDataProviderID();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMField#getDisplaysTags()
-	 */
-	@Override
-	public boolean getDisplaysTags()
-	{
-		// TODO ac Auto-generated method stub
-		return false;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMField#getDisplayType()
-	 */
+	@Getter
 	@Override
 	public int getDisplayType()
 	{
-		// TODO ac Auto-generated method stub
-		return 0;
+		return ((Field)getBase()).getDisplayType();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMField#getValuelist()
-	 */
+	@Getter
 	@Override
 	public JSValueList getValuelist()
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		return new JSValueList(getSolutionModel().getApplication().getFoundSetManager().getValueListItems(((Field)getBase()).getValuelistID()));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMField#setDataProviderID(java.lang.String)
-	 */
+	@Setter
 	@Override
 	public void setDataProviderID(String arg)
 	{
-		// TODO ac Auto-generated method stub
+		((Field)getBase()).setDataProviderID(arg);
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMField#setDisplaysTags(boolean)
-	 */
-	@Override
-	public void setDisplaysTags(boolean arg)
-	{
-		// TODO ac Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMField#setDisplayType(int)
-	 */
+	@Setter
 	@Override
 	public void setDisplayType(int arg)
 	{
-		// TODO ac Auto-generated method stub
-
+		((Field)getBase()).setDisplayType(arg);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMField#setValuelist(com.servoy.j2db.scripting.api.solutionmodel.IBaseSMValueList)
-	 */
+	@Setter
 	@Override
 	public void setValuelist(IBaseSMValueList valuelist)
 	{
-		// TODO ac Auto-generated method stub
+		setValuelist((JSValueList)valuelist);
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMField#setOnAction(com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod)
-	 */
+	public void setValuelist(JSValueList valuelist)
+	{
+		((Field)getBase()).setValueListID(valuelist.getUUID());
+	}
+
+	@Setter
 	@Override
 	public void setOnAction(IBaseSMMethod method)
 	{
-		// TODO ac Auto-generated method stub
-
+		setOnAction((JSMethod)method);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMField#getOnAction()
-	 */
+	public void setOnAction(JSMethod method)
+	{
+		((Field)getBase()).setActionMethodCall(method.getReferenceString());
+	}
+
+	@Getter
 	@Override
 	public JSMethod getOnAction()
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		return JSMethod.getMethodFromString(((Field)getBase()).getActionMethodCall(), formName, getSolutionModel());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMField#setOnDataChange(com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod)
-	 */
+	@Setter
 	@Override
 	public void setOnDataChange(IBaseSMMethod method)
 	{
-		// TODO ac Auto-generated method stub
-
+		setOnDataChange((JSMethod)method);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMField#getOnDataChange()
-	 */
+	public void setOnDataChange(JSMethod method)
+	{
+		((Field)getBase()).setDataChangeMethodCall(method.getReferenceString());
+	}
+
+	@Getter
 	@Override
 	public JSMethod getOnDataChange()
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		return JSMethod.getMethodFromString(((Field)getBase()).getDataChangeMethodCall(), formName, getSolutionModel());
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMField#setOnFocusGained(com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod)
-	 */
-	@Override
-	public void setOnFocusGained(IBaseSMMethod method)
-	{
-		// TODO ac Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMField#getOnFocusGained()
-	 */
-	@Override
-	public JSMethod getOnFocusGained()
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMField#setOnFocusLost(com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod)
-	 */
-	@Override
-	public void setOnFocusLost(IBaseSMMethod method)
-	{
-		// TODO ac Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMField#getOnFocusLost()
-	 */
-	@Override
-	public JSMethod getOnFocusLost()
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
-
-
 }

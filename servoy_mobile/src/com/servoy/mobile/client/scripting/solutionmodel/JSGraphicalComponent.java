@@ -25,7 +25,6 @@ import org.timepedia.exporter.client.Setter;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMGraphicalComponent;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
-import com.servoy.mobile.client.scripting.ScriptEngine;
 
 /**
  * @author acostescu
@@ -101,21 +100,8 @@ public class JSGraphicalComponent extends JSComponent implements IBaseSMGraphica
 	@Getter
 	public JSMethod getOnAction()
 	{
-		String methodCall = ((GraphicalComponent)getBase()).getOnActionMethodCall();
-		if (methodCall != null && methodCall.contains("("))
-		{
-			methodCall = methodCall.substring(0, methodCall.indexOf("(")).trim();
-			String[] callParts = methodCall.split("\\.");
-			if (callParts.length == 1)
-			{
-				return new JSMethod(ScriptEngine.FORMS, formName, callParts[0], getSolutionModel());
-			}
-			else
-			{
-				return new JSMethod(ScriptEngine.SCOPES, callParts[callParts.length - 2], callParts[callParts.length - 1], getSolutionModel());
-			}
-		}
-		return null;
+		return JSMethod.getMethodFromString(((GraphicalComponent)getBase()).getOnActionMethodCall(), formName, getSolutionModel());
+
 	}
 
 }

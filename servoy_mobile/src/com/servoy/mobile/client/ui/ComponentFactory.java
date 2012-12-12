@@ -162,8 +162,8 @@ public class ComponentFactory
 				if (componentWidget instanceof IRuntimeComponentProvider)
 				{
 					IRuntimeComponent scriptable = ((IRuntimeComponentProvider)componentWidget).getRuntimeComponent();
-					scriptable.setActionCommand(field.getActionMethodID());
-					if (scriptable instanceof IRuntimeField) ((IRuntimeField)scriptable).setChangeCommand(field.getDataChangeMethodID());
+					scriptable.setActionCommand(field.getActionMethodCall());
+					if (scriptable instanceof IRuntimeField) ((IRuntimeField)scriptable).setChangeCommand(field.getDataChangeMethodCall());
 				}
 			}
 			else
