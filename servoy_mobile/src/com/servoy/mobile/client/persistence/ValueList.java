@@ -17,8 +17,6 @@
 
 package com.servoy.mobile.client.persistence;
 
-import java.util.ArrayList;
-
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
 import com.servoy.mobile.client.scripting.IModificationListener;
@@ -30,8 +28,6 @@ import com.servoy.mobile.client.scripting.ModificationEvent;
  */
 public class ValueList extends AbstractBase
 {
-	private final ArrayList<IModificationListener> listeners = new ArrayList<IModificationListener>();
-
 	protected ValueList()
 	{
 	}
@@ -52,7 +48,7 @@ public class ValueList extends AbstractBase
 		return (this.realValues && this.realValues.length == this.displayValues.length);
 	}-*/;
 
-	private native void setValuesImpl(JsArrayString display, JsArrayMixed real)
+	private final native void setValuesImpl(JsArrayString display, JsArrayMixed real)
 	/*-{
 		this.displayValues = display;
 		this.realValues = real;
@@ -64,24 +60,42 @@ public class ValueList extends AbstractBase
 		fireChanged();
 	}
 
-	public void addModificationListener(IModificationListener listener)
-	{
-		listeners.add(listener);
-	}
+	public final native void addModificationListener(IModificationListener listener)
+	/*-{
+		if (!this.listeners)
+			this.listeners = new Array();
+		this.listeners.add(listener);
+	}-*/;
 
-	public void removeModificationListener(IModificationListener listener)
-	{
-		listeners.remove(listener);
-	}
+	public final native void removeModificationListener(IModificationListener listener)
+	/*-{
+		if (this.listeners)
+			this.listeners.remove(listener);
+	}-*/;
 
-	private void fireChanged()
+	public final native int listenersCount()
+	/*-{
+		if (this.listeners)
+			return this.listeners.length;
+		return 0;
+	}-*/;
+
+	public final native IModificationListener getListener(int index)
+	/*-{
+		if (this.listeners)
+			return this.listeners[index];
+		return null;
+	}-*/;
+
+	private final void fireChanged()
 	{
-		if (listeners.size() > 0)
+		int count = listenersCount();
+		if (count > 0)
 		{
 			ModificationEvent event = new ModificationEvent(getName(), null, this);
-			for (IModificationListener listener : listeners)
+			for (int i = 0; i < count; i++)
 			{
-				listener.valueChanged(event);
+				getListener(i).valueChanged(event);
 			}
 		}
 	}
