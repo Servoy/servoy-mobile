@@ -17,16 +17,24 @@
 
 package com.servoy.mobile.client.scripting.solutionmodel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
+import org.timepedia.exporter.client.Getter;
+import org.timepedia.exporter.client.Setter;
 
+import com.google.gwt.core.client.JsArray;
 import com.servoy.j2db.persistence.constants.IFieldConstants;
-import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod;
+import com.servoy.j2db.persistence.constants.IRepositoryConstants;
 import com.servoy.j2db.util.DataSourceUtilsBase;
+import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
+import com.servoy.mobile.client.persistence.TabPanel;
 import com.servoy.mobile.client.scripting.ScriptEngine;
 import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMForm;
 
@@ -275,198 +283,314 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 		return new JSLabel(gc, form.getName(), getSolutionModel());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#newTabPanel(java.lang.String, int, int, int, int)
-	 */
 	@Override
 	public JSTabPanel newTabPanel(String name, int x, int y, int width, int height)
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		TabPanel tabPanel = form.createNewTabPanel();
+		tabPanel.setSize(width, height);
+		tabPanel.setLocation(x, y);
+		return new JSTabPanel(tabPanel, form.getName(), getSolutionModel());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#getTabPanel(java.lang.String)
-	 */
 	@Override
 	public JSTabPanel getTabPanel(String name)
 	{
-		// TODO ac Auto-generated method stub
+		if (name != null)
+		{
+			JsArray<Component> formComponents = form.getComponents();
+			for (int i = 0; i < formComponents.length(); i++)
+			{
+				Component component = formComponents.get(i);
+				TabPanel tabPanel = component.isTabPanel();
+				if (tabPanel != null && name.equals(tabPanel.getName()))
+				{
+					return new JSTabPanel(tabPanel, getName(), getSolutionModel());
+				}
+			}
+		}
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#removeTabPanel(java.lang.String)
-	 */
 	@Override
 	public boolean removeTabPanel(String name)
 	{
-		// TODO ac Auto-generated method stub
-		return false;
+		return removeComponent(name, IRepositoryConstants.TABPANELS);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#getTabPanels()
-	 */
 	@Override
 	public JSTabPanel[] getTabPanels()
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		List<JSTabPanel> tabPanels = new ArrayList<JSTabPanel>();
+		JsArray<Component> formComponents = form.getComponents();
+		for (int i = 0; i < formComponents.length(); i++)
+		{
+			Component component = formComponents.get(i);
+			TabPanel tabPanel = component.isTabPanel();
+			if (tabPanel != null)
+			{
+				JSTabPanel jsTabPanel = new JSTabPanel(tabPanel, getName(), getSolutionModel());
+				tabPanels.add(jsTabPanel);
+			}
+		}
+		return tabPanels.toArray(new JSTabPanel[0]);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#getField(java.lang.String)
-	 */
 	@Override
 	public JSField getField(String name)
 	{
-		// TODO ac Auto-generated method stub
+		if (name != null)
+		{
+			JsArray<Component> formComponents = form.getComponents();
+			for (int i = 0; i < formComponents.length(); i++)
+			{
+				Component component = formComponents.get(i);
+				Field field = component.isField();
+				if (field != null)
+				{
+					return new JSField(field, getName(), getSolutionModel());
+				}
+			}
+		}
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#removeField(java.lang.String)
-	 */
 	@Override
 	public boolean removeField(String name)
 	{
-		// TODO ac Auto-generated method stub
-		return false;
+		return removeComponent(name, IRepositoryConstants.FIELDS);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#getFields()
-	 */
 	@Override
 	public JSField[] getFields()
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		List<JSField> fields = new ArrayList<JSField>();
+		JsArray<Component> formComponents = form.getComponents();
+		for (int i = 0; i < formComponents.length(); i++)
+		{
+			Component component = formComponents.get(i);
+			Field field = component.isField();
+			if (field != null)
+			{
+				JSField jsField = new JSField(field, getName(), getSolutionModel());
+				fields.add(jsField);
+			}
+		}
+		return fields.toArray(new JSField[0]);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#getButton(java.lang.String)
-	 */
 	@Override
 	public JSButton getButton(String name)
 	{
-		// TODO ac Auto-generated method stub
+		if (name != null)
+		{
+			JsArray<Component> formComponents = form.getComponents();
+			for (int i = 0; i < formComponents.length(); i++)
+			{
+				Component component = formComponents.get(i);
+				GraphicalComponent graphicalComponent = component.isGraphicalComponent();
+				if (graphicalComponent != null && graphicalComponent.isButton() && name.equals(graphicalComponent.getName()))
+				{
+					return new JSButton(graphicalComponent, getName(), getSolutionModel());
+				}
+			}
+		}
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#removeButton(java.lang.String)
-	 */
 	@Override
 	public boolean removeButton(String name)
 	{
-		// TODO ac Auto-generated method stub
-		return false;
+		return removeComponent(name, IRepositoryConstants.GRAPHICALCOMPONENTS);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#getButtons()
-	 */
 	@Override
 	public JSButton[] getButtons()
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		List<JSButton> buttons = new ArrayList<JSButton>();
+		JsArray<Component> formComponents = form.getComponents();
+		for (int i = 0; i < formComponents.length(); i++)
+		{
+			Component component = formComponents.get(i);
+			GraphicalComponent graphicalComponent = component.isGraphicalComponent();
+			if (graphicalComponent != null && graphicalComponent.isButton())
+			{
+				JSButton jsButton = new JSButton(graphicalComponent, getName(), getSolutionModel());
+				buttons.add(jsButton);
+			}
+		}
+		return buttons.toArray(new JSButton[0]);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#getComponent(java.lang.String)
-	 */
 	@Override
 	public JSComponent getComponent(String name)
 	{
-		// TODO ac Auto-generated method stub
+		if (name != null)
+		{
+			JsArray<Component> formComponents = form.getComponents();
+			for (int i = 0; i < formComponents.length(); i++)
+			{
+				Component component = formComponents.get(i);
+				if (name.equals(component.getName()))
+				{
+					GraphicalComponent graphicalComponent = component.isGraphicalComponent();
+					if (graphicalComponent != null)
+					{
+						if (graphicalComponent.isButton())
+						{
+							return new JSButton(graphicalComponent, getName(), getSolutionModel());
+						}
+						else
+						{
+							return new JSLabel(graphicalComponent, getName(), getSolutionModel());
+						}
+					}
+					else
+					{
+						Field field = component.isField();
+						if (field != null)
+						{
+							return new JSField(field, getName(), getSolutionModel());
+						}
+						else
+						{
+							TabPanel tabPanel = component.isTabPanel();
+							if (tabPanel != null)
+							{
+								return new JSTabPanel(tabPanel, getName(), getSolutionModel());
+							}
+						}
+					}
+				}
+			}
+		}
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#removeComponent(java.lang.String)
-	 */
 	@Override
 	public boolean removeComponent(String name)
 	{
-		// TODO ac Auto-generated method stub
-		return false;
+		return removeComponent(name, -1);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#getComponents()
-	 */
 	@Override
 	public JSComponent[] getComponents()
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		List<JSComponent> components = new ArrayList<JSComponent>();
+		JsArray<Component> formComponents = form.getComponents();
+		for (int i = 0; i < formComponents.length(); i++)
+		{
+			Component component = formComponents.get(i);
+			GraphicalComponent graphicalComponent = component.isGraphicalComponent();
+			if (graphicalComponent != null)
+			{
+				if (graphicalComponent.isButton())
+				{
+					components.add(new JSButton(graphicalComponent, getName(), getSolutionModel()));
+				}
+				else
+				{
+					components.add(new JSLabel(graphicalComponent, getName(), getSolutionModel()));
+				}
+			}
+			else
+			{
+				Field field = component.isField();
+				if (field != null)
+				{
+					components.add(new JSField(field, getName(), getSolutionModel()));
+				}
+				else
+				{
+					TabPanel tabPanel = component.isTabPanel();
+					if (tabPanel != null)
+					{
+						components.add(new JSTabPanel(tabPanel, getName(), getSolutionModel()));
+					}
+				}
+			}
+		}
+		return components.toArray(new JSComponent[0]);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#getLabel(java.lang.String)
-	 */
 	@Override
 	public JSLabel getLabel(String name)
 	{
-		// TODO ac Auto-generated method stub
+		if (name != null)
+		{
+			JsArray<Component> formComponents = form.getComponents();
+			for (int i = 0; i < formComponents.length(); i++)
+			{
+				Component component = formComponents.get(i);
+				GraphicalComponent graphicalComponent = component.isGraphicalComponent();
+				if (graphicalComponent != null && !graphicalComponent.isButton() && name.equals(graphicalComponent.getName()))
+				{
+					return new JSLabel(graphicalComponent, getName(), getSolutionModel());
+				}
+			}
+		}
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#removeLabel(java.lang.String)
-	 */
 	@Override
 	public boolean removeLabel(String name)
 	{
-		// TODO ac Auto-generated method stub
+		return removeComponent(name, IRepositoryConstants.GRAPHICALCOMPONENTS);
+	}
+
+	public boolean removeComponent(String name, int componentType)
+	{
+		if (name != null)
+		{
+			JsArray<Component> formComponents = form.getComponents();
+			for (int i = 0; i < formComponents.length(); i++)
+			{
+				Component component = formComponents.get(i);
+				Component persistComponent = null;
+				if (componentType == IRepositoryConstants.GRAPHICALCOMPONENTS)
+				{
+					persistComponent = component.isGraphicalComponent();
+				}
+				else if (componentType == IRepositoryConstants.FIELDS)
+				{
+					persistComponent = component.isField();
+				}
+				else if (componentType == IRepositoryConstants.TABPANELS)
+				{
+					persistComponent = component.isTabPanel();
+				}
+				else
+				{
+					persistComponent = component;
+				}
+				if (persistComponent != null && name.equals(persistComponent.getName()))
+				{
+					form.removeComponent(i);
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#getLabels()
-	 */
 	@Override
 	public JSLabel[] getLabels()
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		List<JSLabel> labels = new ArrayList<JSLabel>();
+		JsArray<Component> formComponents = form.getComponents();
+		for (int i = 0; i < formComponents.length(); i++)
+		{
+			Component component = formComponents.get(i);
+			GraphicalComponent graphicalComponent = component.isGraphicalComponent();
+			if (graphicalComponent != null && !graphicalComponent.isButton())
+			{
+				JSLabel jsLabel = new JSLabel(graphicalComponent, getName(), getSolutionModel());
+				labels.add(jsLabel);
+			}
+		}
+		return labels.toArray(new JSLabel[0]);
 	}
 
+	@Getter
 	@Override
 	public String getServerName()
 	{
@@ -479,6 +603,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 		return null;
 	}
 
+	@Getter
 	@Override
 	public String getTableName()
 	{
@@ -491,358 +616,32 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 		return null;
 	}
 
+	@Getter
 	@Override
 	public String getDataSource()
 	{
 		return form.getDataSource();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#getView()
-	 */
-	@Override
-	public int getView()
-	{
-		// TODO ac Auto-generated method stub
-		return 0;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#getWidth()
-	 */
-	@Override
-	public int getWidth()
-	{
-		// TODO ac Auto-generated method stub
-		return 0;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#setServerName(java.lang.String)
-	 */
+	@Setter
 	@Override
 	public void setServerName(String arg)
 	{
-		// TODO ac Auto-generated method stub
-
+		setDataSource(DataSourceUtilsBase.createDBTableDataSource(arg, getTableName()));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#setTableName(java.lang.String)
-	 */
+	@Setter
 	@Override
 	public void setTableName(String arg)
 	{
-		// TODO ac Auto-generated method stub
-
+		setDataSource(DataSourceUtilsBase.createDBTableDataSource(getServerName(), arg));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#setDataSource(java.lang.String)
-	 */
+	@Setter
 	@Override
 	public void setDataSource(String arg)
 	{
-		// TODO ac Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#setView(int)
-	 */
-	@Override
-	public void setView(int arg)
-	{
-		// TODO ac Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#setWidth(int)
-	 */
-	@Override
-	public void setWidth(int width)
-	{
-		// TODO ac Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#getOnElementFocusGained()
-	 */
-	@Override
-	public JSMethod getOnElementFocusGained()
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#getOnElementFocusLost()
-	 */
-	@Override
-	public JSMethod getOnElementFocusLost()
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#getOnHide()
-	 */
-	@Override
-	public JSMethod getOnHide()
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#getOnLoad()
-	 */
-	@Override
-	public JSMethod getOnLoad()
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#getOnRecordEditStart()
-	 */
-	@Override
-	public JSMethod getOnRecordEditStart()
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#getOnRecordEditStop()
-	 */
-	@Override
-	public JSMethod getOnRecordEditStop()
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#getOnRecordSelection()
-	 */
-	@Override
-	public JSMethod getOnRecordSelection()
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#getOnShow()
-	 */
-	@Override
-	public JSMethod getOnShow()
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#getOnUnLoad()
-	 */
-	@Override
-	public JSMethod getOnUnLoad()
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#getOnResize()
-	 */
-	@Override
-	public JSMethod getOnResize()
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#setOnElementFocusGained(com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod)
-	 */
-	@Override
-	public void setOnElementFocusGained(IBaseSMMethod method)
-	{
-		// TODO ac Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#setOnElementFocusLost(com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod)
-	 */
-	@Override
-	public void setOnElementFocusLost(IBaseSMMethod method)
-	{
-		// TODO ac Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#setOnHide(com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod)
-	 */
-	@Override
-	public void setOnHide(IBaseSMMethod method)
-	{
-		// TODO ac Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#setOnLoad(com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod)
-	 */
-	@Override
-	public void setOnLoad(IBaseSMMethod method)
-	{
-		// TODO ac Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#setOnRecordEditStart(com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod)
-	 */
-	@Override
-	public void setOnRecordEditStart(IBaseSMMethod method)
-	{
-		// TODO ac Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#setOnRecordEditStop(com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod)
-	 */
-	@Override
-	public void setOnRecordEditStop(IBaseSMMethod method)
-	{
-		// TODO ac Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#setOnRecordSelection(com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod)
-	 */
-	@Override
-	public void setOnRecordSelection(IBaseSMMethod method)
-	{
-		// TODO ac Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#setOnShow(com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod)
-	 */
-	@Override
-	public void setOnShow(IBaseSMMethod method)
-	{
-		// TODO ac Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#setOnUnLoad(com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod)
-	 */
-	@Override
-	public void setOnUnLoad(IBaseSMMethod method)
-	{
-		// TODO ac Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#setOnResize(com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod)
-	 */
-	@Override
-	public void setOnResize(IBaseSMMethod method)
-	{
-		// TODO ac Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#getEncapsulation()
-	 */
-	@Override
-	public int getEncapsulation()
-	{
-		// TODO ac Auto-generated method stub
-		return 0;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm#setEncapsulation(int)
-	 */
-	@Override
-	public void setEncapsulation(int arg)
-	{
-		// TODO ac Auto-generated method stub
-
+		form.setDataSource(arg);
 	}
 
 	@Override

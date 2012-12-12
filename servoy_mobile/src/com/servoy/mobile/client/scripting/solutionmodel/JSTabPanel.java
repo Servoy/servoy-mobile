@@ -22,7 +22,7 @@ import org.timepedia.exporter.client.Exportable;
 
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMTabPanel;
-import com.servoy.mobile.client.persistence.Field;
+import com.servoy.mobile.client.persistence.TabPanel;
 
 /**
  * @author acostescu
@@ -36,9 +36,9 @@ public class JSTabPanel extends JSComponent implements IBaseSMTabPanel, Exportab
 	 * @param f
 	 * @param model
 	 */
-	public JSTabPanel(Field f, String formName, JSSolutionModel model)
+	public JSTabPanel(TabPanel tabPanel, String formName, JSSolutionModel model)
 	{
-		super(f, formName, model);
+		super(tabPanel, formName, model);
 		// TODO ac Auto-generated constructor stub
 	}
 

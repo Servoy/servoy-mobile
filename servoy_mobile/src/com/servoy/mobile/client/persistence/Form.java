@@ -54,6 +54,13 @@ public class Form extends AbstractBase
 		return f;
 	}
 
+	public final TabPanel createNewTabPanel()
+	{
+		Component c = createEmptyChildComponent(Utils.createStringUUID(), IRepositoryConstants.TABPANELS);
+		TabPanel tabPanel = c.isTabPanel();
+		return tabPanel;
+	}
+
 	public final native Component createEmptyChildComponent(String uuid, int type) /*-{
 		var ei = {};
 		if (!this.items)
@@ -96,6 +103,10 @@ public class Form extends AbstractBase
 
 	public final native JsArray<Component> getComponents() /*-{
 		return this.items;
+	}-*/;
+
+	public final native void removeComponent(int index) /*-{
+		this.items.splice(index, 1);
 	}-*/;
 
 }
