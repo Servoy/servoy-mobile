@@ -179,6 +179,6 @@ public class Solution extends JavaScriptObject
 
 	public final native ValueList getValueList(int i)
 	/*-{
-		return this.relations[i];
+		return this.valuelists[i];
 	}-*/;
 }
