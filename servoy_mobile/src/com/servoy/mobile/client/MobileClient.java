@@ -120,20 +120,20 @@ public class MobileClient implements EntryPoint
 	}
 
 	private native void addStartPageShowCallback()/*-{
-		var mobileClient = this;
-		if ($wnd.$.mobile.activePage
-				&& $wnd.$.mobile.activePage.attr("id") == 'start') {
-			mobileClient.@com.servoy.mobile.client.MobileClient::onStartPageShown()();
-		} else {
-			$wnd
-					.$('#start')
-					.live(
-							'pageshow',
-							function(event) {
-								mobileClient.@com.servoy.mobile.client.MobileClient::onStartPageShown()();
-							});
-		}
-	}-*/;
+													var mobileClient = this;
+													if ($wnd.$.mobile.activePage
+													&& $wnd.$.mobile.activePage.attr("id") == 'start') {
+													mobileClient.@com.servoy.mobile.client.MobileClient::onStartPageShown()();
+													} else {
+													$wnd
+													.$('#start')
+													.live(
+													'pageshow',
+													function(event) {
+													mobileClient.@com.servoy.mobile.client.MobileClient::onStartPageShown()();
+													});
+													}
+													}-*/;
 
 	protected String getServerURL()
 	{

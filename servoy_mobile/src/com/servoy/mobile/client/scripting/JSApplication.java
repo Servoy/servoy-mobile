@@ -22,7 +22,12 @@ import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArrayMixed;
+import com.google.gwt.core.client.JsArrayString;
 import com.servoy.j2db.scripting.api.IJSApplication;
+import com.servoy.mobile.client.MobileClient;
+import com.servoy.mobile.client.persistence.ValueList;
 
 /**
  * @author jcompagner
@@ -31,8 +36,11 @@ import com.servoy.j2db.scripting.api.IJSApplication;
 @Export
 public class JSApplication implements Exportable, IJSApplication
 {
-	public JSApplication()
+	private final MobileClient application;
+
+	public JSApplication(MobileClient application)
 	{
+		this.application = application;
 		GWT.create(JSApplication.class);
 		export(ExporterUtil.wrap(this));
 	}
@@ -46,6 +54,59 @@ public class JSApplication implements Exportable, IJSApplication
 	public boolean isInDeveloper()
 	{
 		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.j2db.scripting.api.IJSApplication#setValueListItems(java.lang.String, java.lang.Object[])
+	 */
+	@Override
+	public void setValueListItems(String name, Object[] displayValues)
+	{
+		setValueListItems(name, displayValues, null);
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.j2db.scripting.api.IJSApplication#setValueListItems(java.lang.String, java.lang.Object[], java.lang.Object[])
+	 */
+	@Override
+	public void setValueListItems(String name, Object[] displayValues, Object[] realValues)
+	{
+		ValueList list = application.getSolution().getValueList(name);
+		JsArrayString display = JavaScriptObject.createArray().cast();
+		if (displayValues != null)
+		{
+			for (Object object : displayValues)
+			{
+				display.push(object.toString());
+			}
+		}
+		list.setDiplayValues(display);
+		JsArrayMixed real = JavaScriptObject.createArray().cast();
+		if (realValues != null)
+		{
+			for (Object object : realValues)
+			{
+				if (object instanceof String)
+				{
+					real.push((String)object);
+				}
+				else if (object instanceof Number)
+				{
+					real.push(((Number)object).doubleValue());
+				}
+				else if (object instanceof JavaScriptObject)
+				{
+					real.push((JavaScriptObject)object);
+				}
+			}
+		}
+		list.setRealValues(real);
+
 	}
 
 	private native void export(Object object)

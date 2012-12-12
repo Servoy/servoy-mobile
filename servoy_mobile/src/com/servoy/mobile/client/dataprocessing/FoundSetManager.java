@@ -36,7 +36,6 @@ import com.servoy.mobile.client.dto.OfflineDataDescription;
 import com.servoy.mobile.client.dto.RecordDescription;
 import com.servoy.mobile.client.dto.RelationDescription;
 import com.servoy.mobile.client.dto.RowDescription;
-import com.servoy.mobile.client.dto.ValueListDescription;
 import com.servoy.mobile.client.util.Utils;
 
 /**
@@ -46,7 +45,6 @@ import com.servoy.mobile.client.util.Utils;
 @SuppressWarnings("nls")
 public class FoundSetManager
 {
-	private static final String VALUELISTS_KEY = "valuelists";
 	private static final String CHANGES_KEY = "changes";
 	private static final String ENTITY_PREFIX_KEY = "entityPrefix";
 	private static final String ENTITIES_KEY = "entities";
@@ -62,7 +60,6 @@ public class FoundSetManager
 	private Entities entities;
 	private String entityPrefix;
 	private final int storage_version;
-	private JsArray<ValueListDescription> valueLists;
 	private ArrayList<String> changes;
 
 	public FoundSetManager(MobileClient mc)
@@ -101,12 +98,6 @@ public class FoundSetManager
 					changes.add(jca.get(i));
 				}
 			}
-		}
-		String vjson = localStorage.getItem(VALUELISTS_KEY);
-		if (vjson != null)
-		{
-			JSONArray va = JSONParser.parseStrict(vjson).isArray();
-			if (va != null) valueLists = va.getJavaScriptObject().cast();
 		}
 	}
 
@@ -192,12 +183,6 @@ public class FoundSetManager
 		if (entityPrefix != null)
 		{
 			localStorage.setItem(ENTITY_PREFIX_KEY, entityPrefix);
-		}
-
-		valueLists = offlineData.getValueLists();
-		if (valueLists != null)
-		{
-			localStorage.setItem(VALUELISTS_KEY, new JSONArray(valueLists).toString());
 		}
 
 		JsArray<FoundSetDescription> fsds = offlineData.getFoundSets();
@@ -410,38 +395,6 @@ public class FoundSetManager
 	public static boolean hasRecords(FoundSet fs)
 	{
 		return (fs != null && fs.getSize() > 0);
-	}
-
-	public ValueListDescription getValueListItems(String valueListUUID)
-	{
-		if (valueLists != null)
-		{
-			for (int i = 0; i < valueLists.length(); i++)
-			{
-				ValueListDescription vld = valueLists.get(i);
-				if (vld.getUUID().equals(valueListUUID))
-				{
-					return vld;
-				}
-			}
-		}
-		return null;
-	}
-
-	public ValueListDescription getValueListByName(String name)
-	{
-		if (valueLists != null)
-		{
-			for (int i = 0; i < valueLists.length(); i++)
-			{
-				ValueListDescription vld = valueLists.get(i);
-				if (vld.getName().equals(name))
-				{
-					return vld;
-				}
-			}
-		}
-		return null;
 	}
 
 	RowDescription createRowDescription(FoundSet fs, Object pkval)

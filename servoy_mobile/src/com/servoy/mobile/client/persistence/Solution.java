@@ -146,4 +146,39 @@ public class Solution extends JavaScriptObject
 		return null;
 	}
 
+	/**
+	 * @param valuelistID
+	 * @return
+	 */
+	public ValueList getValueListByUUID(String valuelistID)
+	{
+		for (int i = 0; i < valuelistCount(); i++)
+		{
+			if (getValueList(i).getUUID().equals(valuelistID)) return getValueList(i);
+		}
+		return null;
+	}
+
+
+	/**
+	 * @param name
+	 */
+	public ValueList getValueList(String name)
+	{
+		for (int i = 0; i < valuelistCount(); i++)
+		{
+			if (getValueList(i).getName().equals(name)) return getValueList(i);
+		}
+		return null;
+	}
+
+	public final native int valuelistCount()
+	/*-{
+		return this.valuelists.length;
+	}-*/;
+
+	public final native ValueList getValueList(int i)
+	/*-{
+		return this.relations[i];
+	}-*/;
 }

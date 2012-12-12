@@ -1,5 +1,3 @@
-package com.servoy.mobile.client.dto;
-
 /*
  This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
 
@@ -17,38 +15,44 @@ package com.servoy.mobile.client.dto;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArray;
+package com.servoy.mobile.client.persistence;
+
+import com.google.gwt.core.client.JsArrayMixed;
+import com.google.gwt.core.client.JsArrayString;
 
 /**
- * @author jblok
+ * @author jcompagner
+ * @since 7.0
  */
-public class OfflineDataDescription extends JavaScriptObject
+public class ValueList extends AbstractBase
 {
-	protected OfflineDataDescription()
+	protected ValueList()
 	{
 	}
 
-	public final native String getEntityPrefix()
-	/*-{
-		if (this.entityPrefix) {
-			return this.entityPrefix;
-		} else {
-			return null;
-		}
+	public final native String getUUID() /*-{
+		return this.uuid;
 	}-*/;
 
-	public final native JsArray<EntityDescription> getEntities()
-	/*-{
-		return this.entities;
+	public final native JsArrayString getDiplayValues() /*-{
+		return this.displayValues;
 	}-*/;
 
-	public final native JsArray<FoundSetDescription> getFoundSets()
+	public final native void setDiplayValues(JsArrayString values)
 	/*-{
-		if (this.foundSets) {
-			return this.foundSets;
-		} else {
-			return null;
-		}
+		this.displayValues = values;
+	}-*/;
+
+	public final native JsArrayMixed getRealValues() /*-{
+		return this.realValues;
+	}-*/;
+
+	public final native void setRealValues(JsArrayMixed values)
+	/*-{
+		this.realValues = values;
+	}-*/;
+
+	public final native boolean hasRealValues() /*-{
+		return (this.realValues && this.realValues.length == this.displayValues.length);
 	}-*/;
 }

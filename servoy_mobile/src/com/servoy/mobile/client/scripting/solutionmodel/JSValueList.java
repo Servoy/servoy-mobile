@@ -22,7 +22,7 @@ import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMValueList;
-import com.servoy.mobile.client.dto.ValueListDescription;
+import com.servoy.mobile.client.persistence.ValueList;
 
 /**
  * @author acostescu
@@ -32,9 +32,9 @@ import com.servoy.mobile.client.dto.ValueListDescription;
 public class JSValueList /* extends JSBase */implements IBaseSMValueList, Exportable // TODO ac when ValueListDescription becomes a persist, please extends JSBase
 {
 
-	private final ValueListDescription vl;
+	private final ValueList vl;
 
-	public JSValueList(ValueListDescription vl)
+	public JSValueList(ValueList vl)
 	{
 		this.vl = vl;
 	}

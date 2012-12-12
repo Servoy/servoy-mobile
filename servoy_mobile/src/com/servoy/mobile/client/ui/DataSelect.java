@@ -24,8 +24,8 @@ import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.dataprocessing.IEditListenerSubject;
-import com.servoy.mobile.client.dto.ValueListDescription;
 import com.servoy.mobile.client.persistence.Field;
+import com.servoy.mobile.client.persistence.ValueList;
 import com.servoy.mobile.client.scripting.IRuntimeComponent;
 import com.servoy.mobile.client.scripting.RuntimeDataSelect;
 import com.servoy.mobile.client.util.Utils;
@@ -39,10 +39,10 @@ import com.sksamuel.jqm4gwt.form.elements.JQMSelect;
  */
 public class DataSelect extends JQMSelect implements IDisplayData, IFieldComponent, ISupportDataText, IEditListenerSubject
 {
-	private final ValueListDescription valuelist;
+	private final ValueList valuelist;
 	private final RuntimeDataSelect scriptable;
 
-	public DataSelect(Field field, ValueListDescription valuelist, Executor executor, MobileClient application)
+	public DataSelect(Field field, ValueList valuelist, Executor executor, MobileClient application)
 	{
 		this.valuelist = valuelist;
 		this.scriptable = new RuntimeDataSelect(application, executor, this, field);

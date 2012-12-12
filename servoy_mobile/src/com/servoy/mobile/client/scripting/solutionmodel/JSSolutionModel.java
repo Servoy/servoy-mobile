@@ -27,9 +27,9 @@ import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel;
 import com.servoy.j2db.util.DataSourceUtilsBase;
 import com.servoy.mobile.client.MobileClient;
-import com.servoy.mobile.client.dto.ValueListDescription;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.Solution;
+import com.servoy.mobile.client.persistence.ValueList;
 import com.servoy.mobile.client.scripting.ScriptEngine;
 
 /**
@@ -191,7 +191,7 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 	@Override
 	public JSValueList getValueList(String name)
 	{
-		ValueListDescription vl = application.getFoundSetManager().getValueListByName(name);
+		ValueList vl = application.getSolution().getValueList(name);
 		return vl != null ? new JSValueList(vl) : null;
 	}
 

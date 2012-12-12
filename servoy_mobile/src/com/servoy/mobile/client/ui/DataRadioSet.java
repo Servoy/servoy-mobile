@@ -24,8 +24,8 @@ import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.dataprocessing.IEditListenerSubject;
-import com.servoy.mobile.client.dto.ValueListDescription;
 import com.servoy.mobile.client.persistence.Field;
+import com.servoy.mobile.client.persistence.ValueList;
 import com.servoy.mobile.client.scripting.IRuntimeComponent;
 import com.servoy.mobile.client.scripting.RuntimeDataRadioSet;
 import com.servoy.mobile.client.util.Utils;
@@ -40,10 +40,10 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 {
 	private static final int HORIZONTAL = 1;
 
-	private final ValueListDescription valuelist;
+	private final ValueList valuelist;
 	private final RuntimeDataRadioSet scriptable;
 
-	public DataRadioSet(Field field, ValueListDescription valuelist, Executor executor, MobileClient application)
+	public DataRadioSet(Field field, ValueList valuelist, Executor executor, MobileClient application)
 	{
 		this.valuelist = valuelist;
 		this.scriptable = new RuntimeDataRadioSet(application, executor, this, field);

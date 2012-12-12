@@ -24,7 +24,6 @@ import com.servoy.j2db.persistence.constants.IFormConstants;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.DataAdapterList;
-import com.servoy.mobile.client.dto.ValueListDescription;
 import com.servoy.mobile.client.persistence.AbstractBase;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Field;
@@ -32,6 +31,7 @@ import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.servoy.mobile.client.persistence.Tab;
 import com.servoy.mobile.client.persistence.TabPanel;
+import com.servoy.mobile.client.persistence.ValueList;
 import com.servoy.mobile.client.scripting.IRuntimeComponent;
 import com.servoy.mobile.client.scripting.IRuntimeComponentProvider;
 import com.servoy.mobile.client.scripting.IRuntimeField;
@@ -128,11 +128,11 @@ public class ComponentFactory
 			Field field = component.isField();
 			if (field != null)
 			{
-				ValueListDescription valuelist = null;
+				ValueList valuelist = null;
 				String valuelistID = field.getValuelistID();
 				if (valuelistID != null)
 				{
-					valuelist = application.getFoundSetManager().getValueListItems(valuelistID);
+					valuelist = application.getSolution().getValueListByUUID(valuelistID);
 				}
 				switch (field.getDisplayType())
 				{

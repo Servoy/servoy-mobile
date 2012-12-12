@@ -41,7 +41,7 @@ public class ScriptEngine
 	{
 		this.application = application;
 
-		new JSApplication();
+		new JSApplication(application);
 		new PluginsScope(application);
 		new JSDatabaseManager(application.getFoundSetManager());
 		new JSSolutionModel(application);
