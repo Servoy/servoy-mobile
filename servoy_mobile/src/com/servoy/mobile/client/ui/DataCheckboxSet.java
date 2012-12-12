@@ -28,7 +28,9 @@ import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.dataprocessing.IEditListenerSubject;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.ValueList;
+import com.servoy.mobile.client.scripting.IModificationListener;
 import com.servoy.mobile.client.scripting.IRuntimeComponent;
+import com.servoy.mobile.client.scripting.ModificationEvent;
 import com.servoy.mobile.client.scripting.RuntimeDataCheckboxSet;
 import com.servoy.mobile.client.util.Utils;
 import com.sksamuel.jqm4gwt.form.elements.JQMCheckbox;
@@ -39,7 +41,7 @@ import com.sksamuel.jqm4gwt.form.elements.JQMCheckset;
  *
  * @author gboros
  */
-public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IFieldComponent, ISupportDataText, IEditListenerSubject
+public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IFieldComponent, ISupportDataText, IEditListenerSubject, IModificationListener
 {
 	private final ValueList valuelist;
 	private final Executor executor;
@@ -47,30 +49,58 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 
 	private final List<DataCheckboxSetItem> items = new ArrayList<DataCheckboxSetItem>();
 	private final RuntimeDataCheckboxSet scriptable;
+	private final Field field;
 
 	public DataCheckboxSet(Field field, ValueList valuelist, Executor executor, MobileClient application)
 	{
 		this.valuelist = valuelist;
 		this.executor = executor;
 		this.application = application;
+		this.field = field;
 		this.scriptable = new RuntimeDataCheckboxSet(application, executor, this, field);
 
 		if (valuelist != null)
 		{
-			JsArrayString displayValues = valuelist.getDiplayValues();
-			JsArrayMixed realValues = valuelist.hasRealValues() ? valuelist.getRealValues() : null;
-			String displayValue;
-			for (int i = 0; i < displayValues.length(); i++)
-			{
-				displayValue = displayValues.get(i);
-				items.add(new DataCheckboxSetItem(addCheck(field.getUUID() + Integer.toString(i), displayValue), realValues != null ? realValues.getString(i)
-					: displayValue));
-			}
+			valuelist.addModificationListener(this);
+			fillByValueList();
 		}
 		else
 		{
 			items.add(new DataCheckboxSetItem(addCheck(field.getUUID(), field.getText()), null));
 		}
+	}
+
+	/**
+	 * @param field
+	 * @param valuelist
+	 */
+	private void fillByValueList()
+	{
+		JsArrayString displayValues = valuelist.getDiplayValues();
+		JsArrayMixed realValues = valuelist.hasRealValues() ? valuelist.getRealValues() : null;
+		String displayValue;
+		for (int i = 0; i < displayValues.length(); i++)
+		{
+			displayValue = displayValues.get(i);
+			items.add(new DataCheckboxSetItem(addCheck(field.getUUID() + Integer.toString(i), displayValue), realValues != null ? realValues.getString(i)
+				: displayValue));
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.scripting.IModificationListener#valueChanged(com.servoy.mobile.client.scripting.ModificationEvent)
+	 */
+	@Override
+	public void valueChanged(ModificationEvent e)
+	{
+		for (DataCheckboxSetItem item : items)
+		{
+			removeCheck(item.checkbox.getId(), item.checkbox.getText());
+		}
+		items.clear();
+		fillByValueList();
 	}
 
 	/*

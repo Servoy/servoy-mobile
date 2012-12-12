@@ -17,8 +17,12 @@
 
 package com.servoy.mobile.client.persistence;
 
+import java.util.ArrayList;
+
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
+import com.servoy.mobile.client.scripting.IModificationListener;
+import com.servoy.mobile.client.scripting.ModificationEvent;
 
 /**
  * @author jcompagner
@@ -26,6 +30,8 @@ import com.google.gwt.core.client.JsArrayString;
  */
 public class ValueList extends AbstractBase
 {
+	private final ArrayList<IModificationListener> listeners = new ArrayList<IModificationListener>();
+
 	protected ValueList()
 	{
 	}
@@ -38,21 +44,45 @@ public class ValueList extends AbstractBase
 		return this.displayValues;
 	}-*/;
 
-	public final native void setDiplayValues(JsArrayString values)
-	/*-{
-		this.displayValues = values;
-	}-*/;
-
 	public final native JsArrayMixed getRealValues() /*-{
 		return this.realValues;
-	}-*/;
-
-	public final native void setRealValues(JsArrayMixed values)
-	/*-{
-		this.realValues = values;
 	}-*/;
 
 	public final native boolean hasRealValues() /*-{
 		return (this.realValues && this.realValues.length == this.displayValues.length);
 	}-*/;
+
+	private native void setValuesImpl(JsArrayString display, JsArrayMixed real)
+	/*-{
+		this.displayValues = display;
+		this.realValues = real;
+	}-*/;
+
+	public final void setValues(JsArrayString display, JsArrayMixed real)
+	{
+		setValuesImpl(display, real);
+		fireChanged();
+	}
+
+	public void addModificationListener(IModificationListener listener)
+	{
+		listeners.add(listener);
+	}
+
+	public void removeModificationListener(IModificationListener listener)
+	{
+		listeners.remove(listener);
+	}
+
+	private void fireChanged()
+	{
+		if (listeners.size() > 0)
+		{
+			ModificationEvent event = new ModificationEvent(getName(), null, this);
+			for (IModificationListener listener : listeners)
+			{
+				listener.valueChanged(event);
+			}
+		}
+	}
 }

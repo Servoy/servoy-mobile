@@ -85,7 +85,6 @@ public class JSApplication implements Exportable, IJSApplication
 				display.push(object.toString());
 			}
 		}
-		list.setDiplayValues(display);
 		JsArrayMixed real = JavaScriptObject.createArray().cast();
 		if (realValues != null)
 		{
@@ -105,7 +104,7 @@ public class JSApplication implements Exportable, IJSApplication
 				}
 			}
 		}
-		list.setRealValues(real);
+		list.setValues(display, real);
 
 	}
 
