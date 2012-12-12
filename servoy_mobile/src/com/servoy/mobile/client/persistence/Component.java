@@ -104,4 +104,15 @@ public class Component extends AbstractBase
 	{
 		setAttributeValueBoolean(IContentSpecConstantsBase.PROPERTY_ENABLED, enabled);
 	}
+
+	public final void setStyleClass(String styleClass)
+	{
+		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_STYLECLASS, styleClass);
+	}
+
+	public final String getStyleClass()
+	{
+		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_STYLECLASS, null);
+	}
+
 }

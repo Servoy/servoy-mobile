@@ -40,7 +40,6 @@ public class DataFormHeader extends JQMHeader implements IDisplayData, IGraphica
 	public DataFormHeader(GraphicalComponent gc, Executor executor, MobileClient application)
 	{
 		super(application.getI18nProvider().getI18NMessageIfPrefixed(gc.getText() != null ? gc.getText() : "")); //$NON-NLS-1$
-		setTheme("b"); //$NON-NLS-1$
 		this.scriptable = new RuntimeDataFormHeader(application, executor, this, gc);
 	}
 
