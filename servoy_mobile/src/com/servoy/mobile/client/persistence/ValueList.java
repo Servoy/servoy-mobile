@@ -64,13 +64,15 @@ public class ValueList extends AbstractBase
 	/*-{
 		if (!this.listeners)
 			this.listeners = new Array();
-		this.listeners.add(listener);
+		this.listeners.push(listener);
 	}-*/;
 
 	public final native void removeModificationListener(IModificationListener listener)
 	/*-{
-		if (this.listeners)
-			this.listeners.remove(listener);
+		if (this.listeners) {
+			var index = this.listeners.indexOf(listener);
+			this.listeners.splice(index, 1);
+		}
 	}-*/;
 
 	public final native int listenersCount()
