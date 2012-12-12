@@ -19,11 +19,12 @@ package com.servoy.mobile.client.ui;
 
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasVisibility;
+import com.sksamuel.jqm4gwt.HasTheme;
 
 /**
  * @author gboros
  *
  */
-public interface IComponent extends HasVisibility, HasEnabled
+public interface IComponent extends HasVisibility, HasEnabled, HasTheme
 {
 }

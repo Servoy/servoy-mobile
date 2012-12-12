@@ -35,7 +35,7 @@ import com.servoy.mobile.client.persistence.ValueList;
 import com.servoy.mobile.client.scripting.IRuntimeComponent;
 import com.servoy.mobile.client.scripting.IRuntimeComponentProvider;
 import com.servoy.mobile.client.scripting.IRuntimeField;
-import com.sksamuel.jqm4gwt.JQMWidget;
+import com.sksamuel.jqm4gwt.HasTheme;
 
 /**
  * Create UI objects based on solution model objects
@@ -120,10 +120,6 @@ public class ComponentFactory
 					componentWidget = new DataLabel(gc, executor, application);
 				}
 			}
-			if (componentWidget instanceof JQMWidget)
-			{
-				((JQMWidget)componentWidget).setTheme(gc.getStyleClass());
-			}
 
 			if (componentWidget instanceof IRuntimeComponentProvider) ((IRuntimeComponentProvider)componentWidget).getRuntimeComponent().setActionCommand(
 				gc.getOnActionMethodCall());
@@ -196,6 +192,11 @@ public class ComponentFactory
 		{
 			((IComponent)componentWidget).setEnabled(component.isEnabled());
 			((IComponent)componentWidget).setVisible(component.isVisible());
+		}
+
+		if (componentWidget instanceof HasTheme)
+		{
+			((HasTheme)componentWidget).setTheme(component.getStyleClass());
 		}
 
 		return componentWidget;
