@@ -150,7 +150,7 @@ public class Solution extends JavaScriptObject
 	 * @param valuelistID
 	 * @return
 	 */
-	public ValueList getValueListByUUID(String valuelistID)
+	public final ValueList getValueListByUUID(String valuelistID)
 	{
 		for (int i = 0; i < valuelistCount(); i++)
 		{
@@ -163,7 +163,7 @@ public class Solution extends JavaScriptObject
 	/**
 	 * @param name
 	 */
-	public ValueList getValueList(String name)
+	public final ValueList getValueList(String name)
 	{
 		for (int i = 0; i < valuelistCount(); i++)
 		{
