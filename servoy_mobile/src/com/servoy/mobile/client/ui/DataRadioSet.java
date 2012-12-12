@@ -20,6 +20,7 @@ package com.servoy.mobile.client.ui;
 import org.timepedia.exporter.client.ExporterBaseActual.JsArrayObject;
 
 import com.google.gwt.core.client.JsArrayString;
+import com.servoy.j2db.util.IDestroyable;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
@@ -38,7 +39,8 @@ import com.sksamuel.jqm4gwt.form.elements.JQMRadioset;
  *
  * @author gboros
  */
-public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldComponent, ISupportDataText, IEditListenerSubject, IModificationListener
+public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldComponent, ISupportDataText, IEditListenerSubject, IModificationListener,
+	IDestroyable
 {
 	private static final int HORIZONTAL = 1;
 
@@ -80,6 +82,17 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 	{
 		// TODO remove the radio's
 		fillByValueList();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.j2db.util.IDestroyable#destroy()
+	 */
+	@Override
+	public void destroy()
+	{
+		if (valuelist != null) valuelist.removeModificationListener(this);
 	}
 
 	/*

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
+import com.servoy.j2db.util.IDestroyable;
 import com.servoy.j2db.util.ITagResolver;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
@@ -41,6 +42,7 @@ public class DataAdapterList implements IModificationListener, ITagResolver
 	private final FormController formController;
 	private final LinkedHashMap<String, IDataAdapter> dataAdapters = new LinkedHashMap<String, IDataAdapter>();
 	private final ArrayList<IDisplayRelatedData> relatedDataAdapters = new ArrayList<IDisplayRelatedData>();
+	private final ArrayList<IDestroyable> destroyables = new ArrayList<IDestroyable>();
 
 	private Record record;
 
@@ -78,6 +80,11 @@ public class DataAdapterList implements IModificationListener, ITagResolver
 		else if (obj instanceof IDisplayRelatedData)
 		{
 			relatedDataAdapters.add((IDisplayRelatedData)obj);
+		}
+
+		if (obj instanceof IDestroyable)
+		{
+			destroyables.add((IDestroyable)obj);
 		}
 	}
 
@@ -145,6 +152,11 @@ public class DataAdapterList implements IModificationListener, ITagResolver
 		if (this.record != null) this.record.removeModificationListener(this);
 		application.getScriptEngine().getGlobalScopeModificationDelegate().removeModificationListener(this);
 		formController.getFormScope().removeModificationListener(this);
+
+		for (IDestroyable destroyable : destroyables)
+		{
+			destroyable.destroy();
+		}
 	}
 
 	/*

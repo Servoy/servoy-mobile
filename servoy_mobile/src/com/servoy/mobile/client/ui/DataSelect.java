@@ -20,6 +20,7 @@ package com.servoy.mobile.client.ui;
 import org.timepedia.exporter.client.ExporterBaseActual.JsArrayObject;
 
 import com.google.gwt.core.client.JsArrayString;
+import com.servoy.j2db.util.IDestroyable;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
@@ -39,7 +40,7 @@ import com.sksamuel.jqm4gwt.form.elements.JQMSelect;
  *
  * @author gboros
  */
-public class DataSelect extends JQMSelect implements IDisplayData, IFieldComponent, ISupportDataText, IEditListenerSubject, IModificationListener
+public class DataSelect extends JQMSelect implements IDisplayData, IFieldComponent, ISupportDataText, IEditListenerSubject, IModificationListener, IDestroyable
 {
 	private final ValueList valuelist;
 	private final RuntimeDataSelect scriptable;
@@ -81,6 +82,17 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 //			removeOption(getValue(i));
 //		}
 		fillByValueList();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.j2db.util.IDestroyable#destroy()
+	 */
+	@Override
+	public void destroy()
+	{
+		if (valuelist != null) valuelist.removeModificationListener(this);
 	}
 
 	/*

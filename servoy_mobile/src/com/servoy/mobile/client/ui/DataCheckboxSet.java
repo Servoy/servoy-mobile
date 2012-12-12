@@ -22,6 +22,7 @@ import java.util.List;
 
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
+import com.servoy.j2db.util.IDestroyable;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
@@ -41,7 +42,8 @@ import com.sksamuel.jqm4gwt.form.elements.JQMCheckset;
  *
  * @author gboros
  */
-public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IFieldComponent, ISupportDataText, IEditListenerSubject, IModificationListener
+public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IFieldComponent, ISupportDataText, IEditListenerSubject, IModificationListener,
+	IDestroyable
 {
 	private final ValueList valuelist;
 	private final Executor executor;
@@ -101,6 +103,17 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 		}
 		items.clear();
 		fillByValueList();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.j2db.util.IDestroyable#destroy()
+	 */
+	@Override
+	public void destroy()
+	{
+		if (valuelist != null) valuelist.removeModificationListener(this);
 	}
 
 	/*
