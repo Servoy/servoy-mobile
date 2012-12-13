@@ -30,6 +30,7 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
 import com.servoy.j2db.persistence.constants.IFieldConstants;
 import com.servoy.j2db.persistence.constants.IRepositoryConstants;
+import com.servoy.j2db.scripting.annotations.ServoyMobileFilterOut;
 import com.servoy.j2db.util.DataSourceUtilsBase;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Field;
@@ -194,17 +195,6 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	}
 
 	@Override
-	public JSField newListBox(Object dataprovider, int x, int y, int width, int height)
-	{
-		return newField(dataprovider, IFieldConstants.LIST_BOX, x, y, width, height);
-	}
-
-	public JSField newListBox(JSVariable dataprovider, int x, int y, int width, int height)
-	{
-		return newListBox(dataprovider.getReferenceString(), x, y, width, height);
-	}
-
-	@Override
 	public JSField newRadios(Object dataprovider, int x, int y, int width, int height)
 	{
 		return newField(dataprovider, IFieldConstants.RADIOS, x, y, width, height);
@@ -235,17 +225,6 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	public JSField newCalendar(JSVariable dataprovider, int x, int y, int width, int height)
 	{
 		return newCalendar(dataprovider.getReferenceString(), x, y, width, height);
-	}
-
-	@Override
-	public JSField newImageMedia(Object dataprovider, int x, int y, int width, int height)
-	{
-		return newField(dataprovider, IFieldConstants.IMAGE_MEDIA, x, y, width, height);
-	}
-
-	public JSField newImageMedia(JSVariable dataprovider, int x, int y, int width, int height)
-	{
-		return newImageMedia(dataprovider.getReferenceString(), x, y, width, height);
 	}
 
 	@Override
@@ -286,6 +265,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	}
 
 	@Override
+	@ServoyMobileFilterOut
 	public JSTabPanel newTabPanel(String name, int x, int y, int width, int height)
 	{
 		TabPanel tabPanel = form.createNewTabPanel();
@@ -295,6 +275,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	}
 
 	@Override
+	@ServoyMobileFilterOut
 	public JSTabPanel getTabPanel(String name)
 	{
 		if (name != null)
@@ -314,12 +295,14 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	}
 
 	@Override
+	@ServoyMobileFilterOut
 	public boolean removeTabPanel(String name)
 	{
 		return removeComponent(name, IRepositoryConstants.TABPANELS);
 	}
 
 	@Override
+	@ServoyMobileFilterOut
 	public JSTabPanel[] getTabPanels()
 	{
 		List<JSTabPanel> tabPanels = new ArrayList<JSTabPanel>();

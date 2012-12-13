@@ -24,7 +24,6 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 
 import com.google.gwt.core.client.JsArray;
-import com.servoy.j2db.scripting.annotations.ServoyMobileFilterOut;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMTabPanel;
 import com.servoy.mobile.client.persistence.Form;
@@ -35,7 +34,7 @@ import com.servoy.mobile.client.persistence.TabPanel;
  * @author acostescu
  *
  */
-@ServoyMobileFilterOut
+
 @Export
 public class JSTabPanel extends JSComponent implements IBaseSMTabPanel, Exportable
 {
