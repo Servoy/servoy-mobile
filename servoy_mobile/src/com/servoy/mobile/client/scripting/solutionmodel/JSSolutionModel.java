@@ -17,12 +17,14 @@
 
 package com.servoy.mobile.client.scripting.solutionmodel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
 
-import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent;
-import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm;
+import com.google.gwt.core.client.JsArrayString;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel;
 import com.servoy.j2db.util.DataSourceUtilsBase;
 import com.servoy.mobile.client.MobileClient;
@@ -30,6 +32,7 @@ import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.Solution;
 import com.servoy.mobile.client.persistence.ValueList;
 import com.servoy.mobile.client.scripting.ScriptEngine;
+import com.servoy.mobile.client.util.Utils;
 
 /**
  * @author jcompagner
@@ -85,53 +88,21 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel#cloneForm(java.lang.String, com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm)
-	 */
-	@Override
-	public JSForm cloneForm(String newName, IBaseSMForm form)
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel#cloneComponent(java.lang.String,
-	 * com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent)
-	 */
-	@Override
-	public JSComponent cloneComponent(String newName, IBaseSMComponent component)
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel#cloneComponent(java.lang.String,
-	 * com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent, com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm)
-	 */
-	@Override
-	public JSComponent cloneComponent(String newName, IBaseSMComponent component, IBaseSMForm newParentForm)
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel#removeForm(java.lang.String)
-	 */
 	@Override
 	public boolean removeForm(String name)
 	{
-		// TODO ac Auto-generated method stub
+		if (name != null && application.getFormManager().removeForm(name))
+		{
+			for (int i = 0; i < application.getSolution().formCount(); i++)
+			{
+				Form form = application.getSolution().getForm(i);
+				if (form != null && name.equals(form.getName()))
+				{
+					application.getSolution().removeForm(i);
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 
@@ -149,41 +120,31 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 		return variable.remove();
 	}
 
-//	/*
-//	 * (non-Javadoc)
-//	 * 
-//	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel#getForms(java.lang.String)
-//	 */
-//	@Override
-//	public JSForm[] getForms(String datasource)
-//	{
-//		// TODO ac Auto-generated method stub
-//		return null;
-//	}
-//
-//	/*
-//	 * (non-Javadoc)
-//	 * 
-//	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel#getForms(java.lang.String, java.lang.String)
-//	 */
-//	@Override
-//	public JSForm[] getForms(String server, String tablename)
-//	{
-//		// TODO ac Auto-generated method stub
-//		return null;
-//	}
-//
-//	/*
-//	 * (non-Javadoc)
-//	 * 
-//	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel#getForms()
-//	 */
-//	@Override
-//	public JSForm[] getForms()
-//	{
-//		// TODO ac Auto-generated method stub
-//		return null;
-//	}
+	@Override
+	public JSForm[] getForms(String datasource)
+	{
+		List<JSForm> forms = new ArrayList<JSForm>();
+		for (int i = 0; i < application.getSolution().formCount(); i++)
+		{
+			if (datasource == null || datasource.equals(application.getSolution().getForm(i).getDataSource()))
+			{
+				forms.add(new JSForm(application.getSolution().getForm(i), this));
+			}
+		}
+		return forms.toArray(new JSForm[0]);
+	}
+
+	@Override
+	public JSForm[] getForms(String server, String tablename)
+	{
+		return getForms(DataSourceUtilsBase.createDBTableDataSource(server, tablename));
+	}
+
+	@Override
+	public JSForm[] getForms()
+	{
+		return getForms(null);
+	}
 
 	@Override
 	public JSValueList getValueList(String name)
@@ -192,17 +153,16 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 		return vl != null ? new JSValueList(vl) : null;
 	}
 
-//	/*
-//	 * (non-Javadoc)
-//	 * 
-//	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel#getValueLists()
-//	 */
-//	@Override
-//	public JSValueList[] getValueLists()
-//	{
-//		// TODO ac Auto-generated method stub
-//		return null;
-//	}
+	@Override
+	public JSValueList[] getValueLists()
+	{
+		List<JSValueList> valuelists = new ArrayList<JSValueList>();
+		for (int i = 0; i < application.getSolution().valuelistCount(); i++)
+		{
+			valuelists.add(new JSValueList(application.getSolution().getValueList(i)));
+		}
+		return valuelists.toArray(new JSValueList[0]);
+	}
 
 	@Override
 	public JSVariable newGlobalVariable(String scopeName, String name, int type)
@@ -227,41 +187,49 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 		return gv.exists() ? gv : null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel#getScopeNames()
-	 */
 	@Override
 	public String[] getScopeNames()
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		return Utils.unwrapArray(ScriptEngine.getScopeNamesInternal(ScriptEngine.SCOPES));
 	}
 
-//	/*
-//	 * (non-Javadoc)
-//	 * 
-//	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel#getGlobalVariables()
-//	 */
-//	@Override
-//	public JSVariable[] getGlobalVariables()
-//	{
-//		// TODO ac Auto-generated method stub
-//		return null;
-//	}
-//
-//	/*
-//	 * (non-Javadoc)
-//	 * 
-//	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel#getGlobalVariables(java.lang.String)
-//	 */
-//	@Override
-//	public JSVariable[] getGlobalVariables(String scopeName)
-//	{
-//		// TODO ac Auto-generated method stub
-//		return null;
-//	}
+	@Override
+	public JSVariable[] getGlobalVariables()
+	{
+		return getGlobalVariables(null);
+	}
+
+	@Override
+	public JSVariable[] getGlobalVariables(String scopeName)
+	{
+		List<JSVariable> methods = new ArrayList<JSVariable>();
+		if (scopeName == null)
+		{
+			for (String scope : getScopeNames())
+			{
+				methods.addAll(getGlobalVariablesForAScope(scope));
+			}
+		}
+		else
+		{
+			methods = getGlobalVariablesForAScope(scopeName);
+		}
+		return methods.toArray(new JSVariable[0]);
+	}
+
+	private List<JSVariable> getGlobalVariablesForAScope(String scopeName)
+	{
+		List<JSVariable> variables = new ArrayList<JSVariable>();
+		JsArrayString names = ScriptEngine.getVariableNamesInternal(ScriptEngine.SCOPES, scopeName);
+		if (names != null)
+		{
+			for (int i = names.length() - 1; i >= 0; i--)
+			{
+				variables.add(getGlobalVariable(scopeName, names.get(i)));
+			}
+		}
+		return variables;
+	}
 
 	@Override
 	public JSMethod newGlobalMethod(String scopeName, String code)
@@ -306,30 +274,42 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 		return gm.exists() ? gm : null;
 	}
 
-	// TODO ac there are several methods like this one commented out because of a compilation error in GWT. Please uncomment and implement all of them
-//	/*
-//	 * (non-Javadoc)
-//	 * 
-//	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel#getGlobalMethods()
-//	 */
-//	@Override
-//	public JSMethod[] getGlobalMethods()
-//	{
-//		// TODO ac Auto-generated method stub
-//		// see the implementation in JSForm 
-//		return null;
-//	}
-//
-//	/*
-//	 * (non-Javadoc)
-//	 * 
-//	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel#getGlobalMethods(java.lang.String)
-//	 */
-//	@Override
-//	public JSMethod[] getGlobalMethods(String scopeName)
-//	{
-//		// TODO ac Auto-generated method stub
-//		return null;
-//	}
+	@Override
+	public JSMethod[] getGlobalMethods()
+	{
+		return getGlobalMethods(null);
+	}
+
+	@Override
+	public JSMethod[] getGlobalMethods(String scopeName)
+	{
+		List<JSMethod> methods = new ArrayList<JSMethod>();
+		if (scopeName == null)
+		{
+			for (String scope : getScopeNames())
+			{
+				methods.addAll(getGlobalMethodsForAScope(scope));
+			}
+		}
+		else
+		{
+			methods = getGlobalMethodsForAScope(scopeName);
+		}
+		return methods.toArray(new JSMethod[0]);
+	}
+
+	private List<JSMethod> getGlobalMethodsForAScope(String scopeName)
+	{
+		List<JSMethod> methods = new ArrayList<JSMethod>();
+		JsArrayString names = ScriptEngine.getFunctionNamesInternal(ScriptEngine.SCOPES, scopeName);
+		if (names != null)
+		{
+			for (int i = names.length() - 1; i >= 0; i--)
+			{
+				methods.add(getGlobalMethod(scopeName, names.get(i)));
+			}
+		}
+		return methods;
+	}
 
 }

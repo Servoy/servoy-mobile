@@ -84,6 +84,10 @@ public class Solution extends JavaScriptObject
 		return nf;
 	}-*/;
 
+	public final native void removeForm(int index) /*-{
+		this.forms.splice(index, 1);
+	}-*/;
+
 	public final Form newForm(String name, String dataSource, int width, int height)
 	{
 		// TODO ac use datasource and width/height

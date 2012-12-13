@@ -27,6 +27,7 @@ import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.Setter;
 
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.JsArrayString;
 import com.servoy.j2db.persistence.constants.IFieldConstants;
 import com.servoy.j2db.persistence.constants.IRepositoryConstants;
 import com.servoy.j2db.util.DataSourceUtilsBase;
@@ -54,6 +55,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 		this.form = form;
 	}
 
+	@Getter
 	public String getName()
 	{
 		return form.getName();
@@ -91,13 +93,13 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	@Override
 	public JSVariable[] getVariables()
 	{
-		String[] names = ScriptEngine.getVariableNamesInternal(ScriptEngine.FORMS, getName());
+		JsArrayString names = ScriptEngine.getVariableNamesInternal(ScriptEngine.FORMS, getName());
 		if (names != null)
 		{
-			JSVariable[] variables = new JSVariable[names.length];
-			for (int i = names.length - 1; i >= 0; i--)
+			JSVariable[] variables = new JSVariable[names.length()];
+			for (int i = names.length() - 1; i >= 0; i--)
 			{
-				variables[i] = getVariable(names[i]);
+				variables[i] = getVariable(names.get(i));
 			}
 		}
 		return new JSVariable[0];
@@ -131,13 +133,13 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	@Override
 	public JSMethod[] getMethods()
 	{
-		String[] names = ScriptEngine.getFunctionNamesInternal(ScriptEngine.FORMS, getName());
+		JsArrayString names = ScriptEngine.getFunctionNamesInternal(ScriptEngine.FORMS, getName());
 		if (names != null)
 		{
-			JSMethod[] methods = new JSMethod[names.length];
-			for (int i = names.length - 1; i >= 0; i--)
+			JSMethod[] methods = new JSMethod[names.length()];
+			for (int i = names.length() - 1; i >= 0; i--)
 			{
-				methods[i] = getMethod(names[i]);
+				methods[i] = getMethod(names.get(i));
 			}
 		}
 		return new JSMethod[0];

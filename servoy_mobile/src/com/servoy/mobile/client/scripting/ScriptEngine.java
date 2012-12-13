@@ -19,6 +19,7 @@ package com.servoy.mobile.client.scripting;
 
 import java.util.HashMap;
 
+import com.google.gwt.core.client.JsArrayString;
 import com.servoy.mobile.client.MobileClient;
 
 /**
@@ -79,16 +80,23 @@ public class ScriptEngine
 				oldScope);
 	}-*/;
 
-	public static final native String[] getFunctionNamesInternal(String parentScope, String scope) /*-{
+	public static final native JsArrayString getFunctionNamesInternal(String parentScope, String scope) /*-{
 		var keys = [];
 		for ( var k in $wnd._ServoyInit_[parentScope][scope].fncs)
 			keys.push(k);
 		return keys;
 	}-*/;
 
-	public static final native String[] getVariableNamesInternal(String parentScope, String scope) /*-{
+	public static final native JsArrayString getVariableNamesInternal(String parentScope, String scope) /*-{
 		var keys = [];
 		for ( var k in $wnd._ServoyInit_[parentScope][scope].vrbs)
+			keys.push(k);
+		return keys;
+	}-*/;
+
+	public static final native JsArrayString getScopeNamesInternal(String parentScope) /*-{
+		var keys = [];
+		for ( var k in $wnd._ServoyInit_[parentScope])
 			keys.push(k);
 		return keys;
 	}-*/;

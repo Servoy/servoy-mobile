@@ -621,4 +621,14 @@ public class Utils implements Exportable
 
 		return null;
 	}
+
+	public static String[] unwrapArray(JsArrayString jsArrayString)
+	{
+		String[] result = new String[jsArrayString.length()];
+		for (int i = 0; i < jsArrayString.length(); i++)
+		{
+			result[i] = jsArrayString.get(i);
+		}
+		return result;
+	}
 }
