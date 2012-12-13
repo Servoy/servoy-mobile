@@ -25,7 +25,7 @@ import org.timepedia.exporter.client.Getter;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.servoy.mobile.client.MobileClient;
-import com.servoy.mobile.client.scripting.solutionmodel.SolutionHelper;
+import com.servoy.mobile.client.scripting.solutionhelper.SolutionHelper;
 
 /**
  * @author lvostinar

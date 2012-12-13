@@ -44,6 +44,8 @@ public class TabPanel extends Component
 		nt.name = name;
 		nt.text = text;
 		nt.containsFormID = formUUID;
+		if (!this.items)
+			this.items = [];
 		this.items.push(nt);
 		return nt;
 	}-*/;

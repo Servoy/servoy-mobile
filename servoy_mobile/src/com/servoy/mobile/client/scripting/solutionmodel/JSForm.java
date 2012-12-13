@@ -638,4 +638,16 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 		return method.remove();
 	}
 
+	@Override
+	public int getView()
+	{
+		return form.getView();
+	}
+
+	@Override
+	public void setView(int viewType)
+	{
+		form.setView(viewType);
+	}
+
 }

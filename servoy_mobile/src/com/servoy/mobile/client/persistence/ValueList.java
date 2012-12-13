@@ -32,10 +32,6 @@ public class ValueList extends AbstractBase
 	{
 	}
 
-	public final native String getUUID() /*-{
-		return this.uuid;
-	}-*/;
-
 	public final native JsArrayString getDiplayValues() /*-{
 		return this.displayValues;
 	}-*/;

@@ -15,17 +15,23 @@
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
-package com.servoy.mobile.client.scripting.solutionmodel;
+package com.servoy.mobile.client.scripting.solutionhelper;
 
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 
-import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMButton;
-import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent;
-import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMLabel;
+import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm;
+import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMTabPanel;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel;
 import com.servoy.j2db.scripting.solutionhelper.BaseSolutionHelper;
+import com.servoy.j2db.scripting.solutionhelper.IBaseSHInsetList;
+import com.servoy.j2db.scripting.solutionhelper.IBaseSHList;
 import com.servoy.j2db.scripting.solutionhelper.IMobileProperties;
+import com.servoy.mobile.client.scripting.solutionmodel.JSBase;
+import com.servoy.mobile.client.scripting.solutionmodel.JSButton;
+import com.servoy.mobile.client.scripting.solutionmodel.JSComponent;
+import com.servoy.mobile.client.scripting.solutionmodel.JSForm;
+import com.servoy.mobile.client.scripting.solutionmodel.JSLabel;
 import com.servoy.mobile.client.scripting.solutionmodel.i.IMobilePredefinedIconConstants;
 import com.servoy.mobile.client.util.Utils;
 
@@ -51,30 +57,37 @@ public class SolutionHelper extends BaseSolutionHelper implements IMobilePredefi
 		return null;
 	}
 
+	@Override
+	protected String getStringUUID(Object jsObject)
+	{
+		if (jsObject instanceof JSBase) return ((JSBase)jsObject).getBase().getUUID();
+		return null;
+	}
+
 	// methods like this one are necessary for exporter (with real class instead of interface)
 	public void markLeftHeaderButton(JSButton button)
 	{
-		markLeftHeaderButton((IBaseSMButton)button);
+		super.markLeftHeaderButton(button);
 	}
 
 	public void markRightHeaderButton(JSButton button)
 	{
-		markRightHeaderButton((IBaseSMButton)button);
+		super.markRightHeaderButton(button);
 	}
 
 	public void markHeaderText(JSLabel button)
 	{
-		markHeaderText((IBaseSMLabel)button);
+		super.markHeaderText(button);
 	}
 
 	public void markFooterItem(JSComponent button)
 	{
-		markFooterItem((IBaseSMComponent)button);
+		super.markFooterItem(button);
 	}
 
 	public void groupComponents(JSComponent c1, JSComponent c2)
 	{
-		groupComponents((IBaseSMComponent)c1, (IBaseSMComponent)c2);
+		super.groupComponents(c1, c2);
 	}
 
 	@Override
@@ -85,7 +98,35 @@ public class SolutionHelper extends BaseSolutionHelper implements IMobilePredefi
 
 	public void setIconType(JSButton button, String iconType)
 	{
-		setIconType((IBaseSMButton)button, iconType);
+		super.setIconType(button, iconType);
+	}
+
+	public String getIconType(JSButton button)
+	{
+		return super.getIconType(button);
+	}
+
+	public JSInsetList createInsetList(JSForm form, int yLocation, String dataSource, String relationName, String headerText, String textDataProviderID)
+	{
+		return (JSInsetList)super.createInsetList(form, yLocation, dataSource, relationName, headerText, textDataProviderID);
+	}
+
+	@Override
+	public JSList createListForm(String formName, String dataSource, String textDataProviderID)
+	{
+		return (JSList)super.createListForm(formName, dataSource, textDataProviderID);
+	}
+
+	@Override
+	protected IBaseSHInsetList instantiateInsetList(IBaseSMForm form, IBaseSMTabPanel tabPanel, IBaseSMForm listForm, BaseSolutionHelper baseSolutionHelper)
+	{
+		return new JSInsetList(tabPanel, listForm, baseSolutionHelper);
+	}
+
+	@Override
+	protected IBaseSHList instantiateList(IBaseSMForm listForm, BaseSolutionHelper baseSolutionHelper)
+	{
+		return new JSList(listForm, baseSolutionHelper);
 	}
 
 }

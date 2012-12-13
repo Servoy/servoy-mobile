@@ -17,6 +17,8 @@
 
 package com.servoy.mobile.client.scripting.solutionmodel;
 
+import org.timepedia.exporter.client.NoExport;
+
 import com.servoy.mobile.client.persistence.AbstractBase;
 
 /**
@@ -34,6 +36,7 @@ public class JSBase
 		this.model = model;
 	}
 
+	@NoExport
 	public AbstractBase getBase()
 	{
 		return ab;

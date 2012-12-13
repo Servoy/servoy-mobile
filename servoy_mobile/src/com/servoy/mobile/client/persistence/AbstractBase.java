@@ -26,6 +26,10 @@ public abstract class AbstractBase extends JavaScriptObject
 		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_NAME, name);
 	}
 
+	public final native String getUUID() /*-{
+		return this.uuid;
+	}-*/;
+
 	protected final native void setAttributeValueInt(String attrName, int value) /*-{
 		this[attrName] = value;
 	}-*/;

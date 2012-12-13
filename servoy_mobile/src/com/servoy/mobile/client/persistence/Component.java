@@ -38,10 +38,6 @@ public class Component extends AbstractBase
 		return this.typeid;
 	}-*/;
 
-	public final native String getUUID() /*-{
-		return this.uuid;
-	}-*/;
-
 	public final native String getGroupID() /*-{
 		return this.groupID ? this.groupID : null;
 	}-*/;

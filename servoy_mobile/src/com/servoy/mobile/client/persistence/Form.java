@@ -81,9 +81,15 @@ public class Form extends AbstractBase
 		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_DATASOURCE, null);
 	}
 
-	public final native String getUUID() /*-{
-		return this.uuid;
-	}-*/;
+	public final void setView(int viewType)
+	{
+		setAttributeValueInt(IContentSpecConstantsBase.PROPERTY_VIEW, viewType);
+	}
+
+	public final int getView()
+	{
+		return getAttributeValueInt(IContentSpecConstantsBase.PROPERTY_VIEW, 0);
+	}
 
 	public final native String getSize() /*-{
 		return this.size;
@@ -95,10 +101,6 @@ public class Form extends AbstractBase
 
 	public final native String getBackground() /*-{
 		return this.background;
-	}-*/;
-
-	public final native int getView() /*-{
-		return this.view ? this.view : 0;
 	}-*/;
 
 	public final native JsArray<Component> getComponents() /*-{
