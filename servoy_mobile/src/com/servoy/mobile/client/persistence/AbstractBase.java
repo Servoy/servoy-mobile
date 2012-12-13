@@ -4,6 +4,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.servoy.j2db.persistence.constants.IContentSpecConstantsBase;
+import com.servoy.j2db.scripting.solutionhelper.IMobileProperties;
 import com.servoy.mobile.client.util.Utils;
 
 /**
@@ -60,7 +61,7 @@ public abstract class AbstractBase extends JavaScriptObject
 			delete (this.customProperties);
 	}-*/;
 
-	protected final MobilePropertiesWrapper getMobilePropertiesWrapper()
+	public final MobileProperties getMobileProperties()
 	{
 		String customProperties = getCustomPropertiesInt();
 		if (customProperties != null)
@@ -69,12 +70,6 @@ public abstract class AbstractBase extends JavaScriptObject
 		}
 
 		return null;
-	}
-
-	public final MobileProperties getMobilePropertiesCopy()
-	{
-		MobilePropertiesWrapper x = getMobilePropertiesWrapper();
-		return x == null ? null : x.get();
 	}
 
 	public final void setCustomProperties(CustomProperties cp)
@@ -94,7 +89,7 @@ public abstract class AbstractBase extends JavaScriptObject
 		return null;
 	}
 
-	public final MobilePropertiesWrapper getOrCreateMobilePropertiesCopy()
+	public final MobileProperties getOrCreateMobileProperties()
 	{
 		String customProperties = getCustomPropertiesInt();
 		if (customProperties == null)
@@ -104,19 +99,15 @@ public abstract class AbstractBase extends JavaScriptObject
 		else
 		{
 			CustomProperties cp = getCustomProperties(customProperties);
-			return cp.getOrCreateMobile();
+			return getOrCreateMobile(cp);
 		}
 	}
 
-	public final void setMobileProperties(MobilePropertiesWrapper mp)
+	public final void removeMobileProperties()
 	{
-		if (mp != null) setCustomPropertiesInt(Utils.getJSONString(mp.parent));
-		else
-		{
-			CustomProperties cp = getCustomProperties();
-			cp.deleteMobileInternal();
-			setCustomPropertiesInt(Utils.getJSONString(cp));
-		}
+		CustomProperties cp = getCustomProperties();
+		cp.deleteMobileInternal();
+		setCustomPropertiesInt(Utils.getJSONString(cp));
 	}
 
 	private final CustomProperties getCustomProperties(String customProperties)
@@ -129,36 +120,37 @@ public abstract class AbstractBase extends JavaScriptObject
 		return null;
 	}
 
-	private final MobilePropertiesWrapper getMobileProperties(String customProperties)
+	private final MobileProperties getMobileProperties(String customProperties)
 	{
 		CustomProperties cp = getCustomProperties(customProperties);
-		if (cp != null) return cp.getMobile();
+		if (cp != null) return getMobile(cp);
 		return null;
 	}
 
-	static class CustomProperties extends JavaScriptObject
+
+	private final MobileProperties getOrCreateMobile(CustomProperties cp)
+	{
+		MobileProperties mpw = getMobile(cp);
+		return mpw == null ? new MobileProperties(this, cp, cp.createMobile()) : mpw;
+	}
+
+	private final MobileProperties getMobile(CustomProperties cp)
+	{
+		MobilePropertiesInternal mp = cp.getMobileInternal();
+		return mp == null ? null : new MobileProperties(this, cp, mp);
+	}
+
+	private static class CustomProperties extends JavaScriptObject
 	{
 		protected CustomProperties()
 		{
 		}
 
-		public final MobilePropertiesWrapper getOrCreateMobile()
-		{
-			MobilePropertiesWrapper mpw = getMobile();
-			return mpw == null ? new MobilePropertiesWrapper(this, createMobile()) : mpw;
-		}
-
-		public final MobilePropertiesWrapper getMobile()
-		{
-			MobileProperties mp = getMobileInternal();
-			return mp == null ? null : new MobilePropertiesWrapper(this, mp);
-		}
-
-		public final native MobileProperties createMobile() /*-{
+		private final native MobilePropertiesInternal createMobile() /*-{
 			this.mobile = {};
 		}-*/;
 
-		public final native MobileProperties getMobileInternal() /*-{
+		private final native MobilePropertiesInternal getMobileInternal() /*-{
 			return this.mobile;
 		}-*/;
 
@@ -168,107 +160,152 @@ public abstract class AbstractBase extends JavaScriptObject
 
 	}
 
-	public static class MobilePropertiesWrapper
+	public static class MobileProperties implements IMobileProperties
 	{
-		private final MobileProperties wrapped;
+		private final MobilePropertiesInternal wrapped;
 		private final CustomProperties parent;
+		private final AbstractBase base;
 
-		protected MobilePropertiesWrapper(CustomProperties parent, MobileProperties toWrap)
+		protected MobileProperties(AbstractBase base, CustomProperties parent, MobilePropertiesInternal toWrap)
 		{
+			this.base = base;
 			wrapped = toWrap;
 			this.parent = parent;
 		}
 
-		public MobileProperties get()
+		private void save()
 		{
-			return wrapped;
+			base.setCustomPropertiesInt(Utils.getJSONString(parent));
 		}
+
+		@Override
+		public <T> void setPropertyValue(MobileProperty<T> property, T value)
+		{
+			if (property.defaultValue == value || (property.defaultValue != null && property.defaultValue.equals(value))) wrapped.deletePropertyInternal(property.propertyName);
+
+			// add more here if more primitive types are used
+			if (value instanceof Integer) wrapped.setPropertyValueInternal(property.propertyName, ((Integer)value).intValue());
+			else if (value instanceof Boolean) wrapped.setPropertyValueInternal(property.propertyName, ((Boolean)value).booleanValue());
+			else wrapped.setPropertyValueInternal(property.propertyName, value);
+
+			save();
+		}
+
+		@Override
+		public <T> T getPropertyValue(MobileProperty<T> property)
+		{
+			return wrapped.getPropertyValueInternal(property.propertyName, property.defaultValue);
+		}
+
 	}
 
-	public static class MobileProperties extends JavaScriptObject
+	private static class MobilePropertiesInternal extends JavaScriptObject
 	{
-		protected MobileProperties()
+		protected MobilePropertiesInternal()
 		{
 		}
 
-		public final native void setMobileForm() /*-{
-			this.mobileform = true;
+		private final native void setPropertyValueInternal(String propertyName, int value) /*-{
+			this[propertyName] = value;
 		}-*/;
 
-		public final native void setHeaderLeftButton() /*-{
-			this.headerLeftButton = true;
+		private final native void setPropertyValueInternal(String propertyName, boolean value) /*-{
+			this[propertyName] = value;
 		}-*/;
 
-		public final native boolean isHeaderLeftButton() /*-{
-			return this.headerLeftButton ? this.headerLeftButton : false;
+		private final native void setPropertyValueInternal(String propertyName, Object value) /*-{
+			this[propertyName] = value;
 		}-*/;
 
-		public final native void setHeaderRightButton() /*-{
-			this.headerRightButton = true;
+		private final native void deletePropertyInternal(String propertyName) /*-{
+			delete this[propertyName];
 		}-*/;
 
-		public final native boolean isHeaderRightButton() /*-{
-			return this.headerRightButton ? this.headerRightButton : false;
+
+		private final native <T> T getPropertyValueInternal(String propertyName, T defaultValue) /*-{
+			return $wnd.internal.Utils
+					.wrapIfPrimitive(this[propertyName] ? this[propertyName]
+							: defaultValue);
 		}-*/;
 
-		public final native void setHeaderText() /*-{
-			this.headerText = true;
-		}-*/;
-
-		public final native boolean isHeaderText() /*-{
-			return this.headerText ? this.headerText : false;
-		}-*/;
-
-		public final native boolean isFooterItem() /*-{
-			return this.footeritem ? this.footeritem : false;
-		}-*/;
-
-		public final native void setFooterItem() /*-{
-			this.footeritem = true;
-		}-*/;
-
-		public final native boolean isFormTabPanel() /*-{
-			return this.formtabpanel ? this.formtabpanel : false;
-		}-*/;
-
-		public final native boolean isListTabPanel() /*-{
-			return this.list ? this.list : false;
-		}-*/;
-
-		public final native boolean isListItemButton() /*-{
-			return this.listitemButton ? this.listitemButton : false;
-		}-*/;
-
-		public final native boolean isListItemSubtext() /*-{
-			return this.listitemSubtext ? this.listitemSubtext : false;
-		}-*/;
-
-		public final native boolean isListItemCount() /*-{
-			return this.listitemCount ? this.listitemCount : false;
-		}-*/;
-
-		public final native boolean isListItemImage() /*-{
-			return this.listitemImage ? this.listitemImage : false;
-		}-*/;
-
-		public final native boolean isListItemHeader() /*-{
-			return this.listitemHeader ? this.listitemHeader : false;
-		}-*/;
-
-		public final native int getHeaderSize() /*-{
-			return this.headerSize ? this.headerSize : 4;
-		}-*/;
-
-		public final native int getRadioStyle() /*-{
-			return this.radioStyle ? this.radioStyle : 0;
-		}-*/;
-
-		public final native void setDataIcon(String di) /*-{
-			this.dataIcon = di;
-		}-*/;
-
-		public final native String getDataIcon() /*-{
-			return this.dataIcon;
-		}-*/;
+//		public final native void setMobileForm() /*-{
+//			this.mobileform = true;
+//		}-*/;
+//
+//		public final native void setHeaderLeftButton() /*-{
+//			this.headerLeftButton = true;
+//		}-*/;
+//
+//		public final native boolean isHeaderLeftButton() /*-{
+//			return this.headerLeftButton ? this.headerLeftButton : false;
+//		}-*/;
+//
+//		public final native void setHeaderRightButton() /*-{
+//			this.headerRightButton = true;
+//		}-*/;
+//
+//		public final native boolean isHeaderRightButton() /*-{
+//			return this.headerRightButton ? this.headerRightButton : false;
+//		}-*/;
+//
+//		public final native void setHeaderText() /*-{
+//			this.headerText = true;
+//		}-*/;
+//
+//		public final native boolean isHeaderText() /*-{
+//			return this.headerText ? this.headerText : false;
+//		}-*/;
+//
+//		public final native boolean isFooterItem() /*-{
+//			return this.footeritem ? this.footeritem : false;
+//		}-*/;
+//
+//		public final native void setFooterItem() /*-{
+//			this.footeritem = true;
+//		}-*/;
+//
+//		public final native boolean isFormTabPanel() /*-{
+//			return this.formtabpanel ? this.formtabpanel : false;
+//		}-*/;
+//
+//		public final native boolean isListTabPanel() /*-{
+//			return this.list ? this.list : false;
+//		}-*/;
+//
+//		public final native boolean isListItemButton() /*-{
+//			return this.listitemButton ? this.listitemButton : false;
+//		}-*/;
+//
+//		public final native boolean isListItemSubtext() /*-{
+//			return this.listitemSubtext ? this.listitemSubtext : false;
+//		}-*/;
+//
+//		public final native boolean isListItemCount() /*-{
+//			return this.listitemCount ? this.listitemCount : false;
+//		}-*/;
+//
+//		public final native boolean isListItemImage() /*-{
+//			return this.listitemImage ? this.listitemImage : false;
+//		}-*/;
+//
+//		public final native boolean isListItemHeader() /*-{
+//			return this.listitemHeader ? this.listitemHeader : false;
+//		}-*/;
+//
+//		public final native int getHeaderSize() /*-{
+//			return this.headerSize ? this.headerSize : 4;
+//		}-*/;
+//
+//		public final native int getRadioStyle() /*-{
+//			return this.radioStyle ? this.radioStyle : 0;
+//		}-*/;
+//
+//		public final native void setDataIcon(String di) /*-{
+//			this.dataIcon = di;
+//		}-*/;
+//
+//		public final native String getDataIcon() /*-{
+//			return this.dataIcon;
+//		}-*/;
 	}
 }

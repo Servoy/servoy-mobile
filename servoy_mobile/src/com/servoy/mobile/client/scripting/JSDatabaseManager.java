@@ -24,6 +24,7 @@ import org.timepedia.exporter.client.ExporterUtil;
 import com.servoy.j2db.scripting.api.IJSDatabaseManager;
 import com.servoy.j2db.scripting.api.IJSFoundSet;
 import com.servoy.j2db.scripting.api.IJSRecord;
+import com.servoy.j2db.util.DataSourceUtilsBase;
 import com.servoy.mobile.client.dataprocessing.EditRecordList;
 import com.servoy.mobile.client.dataprocessing.FoundSetManager;
 
@@ -87,6 +88,24 @@ public class JSDatabaseManager implements Exportable, IJSDatabaseManager
 		return manager.getAutoSave();
 	}
 
+	public String getDataSourceServerName(String dataSource)
+	{
+		String[] retval = DataSourceUtilsBase.getDBServernameTablename(dataSource);
+		if (retval == null) return null;
+		return retval[0];
+	}
+
+	public String getDataSourceTableName(String dataSource)
+	{
+		String[] retval = DataSourceUtilsBase.getDBServernameTablename(dataSource);
+		if (retval == null) return null;
+		return retval[1];
+	}
+
+	public String getDataSource(String serverName, String tableName)
+	{
+		return DataSourceUtilsBase.createDBTableDataSource(serverName, tableName);
+	}
 
 	private native void export(Object object)
 	/*-{

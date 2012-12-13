@@ -21,7 +21,6 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
 
-import com.google.gwt.core.client.GWT;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel;
@@ -46,8 +45,6 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 	{
 		this.application = application;
 		this.solution = application.getSolution();
-		GWT.create(SM_ALIGNMENT.class);
-		GWT.create(SM_DEFAULTS.class);
 		export(ExporterUtil.wrap(this));
 	}
 

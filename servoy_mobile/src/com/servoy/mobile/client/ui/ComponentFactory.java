@@ -21,6 +21,7 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.user.client.ui.Widget;
 import com.servoy.j2db.persistence.constants.IFieldConstants;
 import com.servoy.j2db.persistence.constants.IFormConstants;
+import com.servoy.j2db.scripting.solutionhelper.IMobileProperties;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.DataAdapterList;
@@ -67,8 +68,9 @@ public class ComponentFactory
 		for (int i = 0; i < formComponents.length(); i++)
 		{
 			component = formComponents.get(i);
-			mobileProperties = component.getMobilePropertiesCopy();
-			if (mobileProperties != null && mobileProperties.isFormTabPanel() && (tabPanel = component.isTabPanel()) != null)
+			mobileProperties = component.getMobileProperties();
+			if (mobileProperties != null && mobileProperties.getPropertyValue(IMobileProperties.FORM_TAB_PANEL).booleanValue() &&
+				(tabPanel = component.isTabPanel()) != null)
 			{
 				return new TabsFormDisplay(application, form, tabPanel);
 			}
@@ -91,19 +93,19 @@ public class ComponentFactory
 		AbstractBase.MobileProperties mobileProperties;
 		if (gc != null)
 		{
-			mobileProperties = gc.getMobilePropertiesCopy();
+			mobileProperties = gc.getMobileProperties();
 
 			if (mobileProperties != null)
 			{
-				if (mobileProperties.isHeaderText())
+				if (mobileProperties.getPropertyValue(IMobileProperties.HEADER_TEXT).booleanValue())
 				{
 					componentWidget = new DataFormHeader(gc, executor, application);
 				}
-				else if (mobileProperties.isHeaderLeftButton())
+				else if (mobileProperties.getPropertyValue(IMobileProperties.HEADER_LEFT_BUTTON).booleanValue())
 				{
 					componentWidget = new DataFormHeaderButton(gc, DataFormHeaderButton.ORIENTATION_LEFT, executor, application);
 				}
-				else if (mobileProperties.isHeaderRightButton())
+				else if (mobileProperties.getPropertyValue(IMobileProperties.HEADER_RIGHT_BUTTON).booleanValue())
 				{
 					componentWidget = new DataFormHeaderButton(gc, DataFormHeaderButton.ORIENTATION_RIGHT, executor, application);
 				}
@@ -170,8 +172,8 @@ public class ComponentFactory
 			else
 			{
 				TabPanel tabPanel = component.isTabPanel();
-				mobileProperties = component.getMobilePropertiesCopy();
-				if (tabPanel != null && mobileProperties != null && mobileProperties.isListTabPanel())
+				mobileProperties = component.getMobileProperties();
+				if (tabPanel != null && mobileProperties != null && mobileProperties.getPropertyValue(IMobileProperties.LIST_TAB_PANEL).booleanValue())
 				{
 					JsArray<Tab> tabs = tabPanel.getTabs();
 

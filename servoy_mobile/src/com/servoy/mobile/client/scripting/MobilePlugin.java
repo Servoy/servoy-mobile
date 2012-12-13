@@ -49,7 +49,7 @@ public class MobilePlugin implements Exportable
 	@Getter
 	public SolutionHelper getSolutionHelper()
 	{
-		if (solutionHelper == null) solutionHelper = new SolutionHelper();
+		if (solutionHelper == null) solutionHelper = new SolutionHelper(client.getSolutionModel());
 		return solutionHelper;
 	}
 

@@ -21,7 +21,7 @@ import org.timepedia.exporter.client.Export;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.servoy.j2db.persistence.constants.IRepositoryConstants;
-import com.servoy.mobile.client.persistence.AbstractBase.MobilePropertiesWrapper;
+import com.servoy.j2db.scripting.solutionhelper.IMobileProperties;
 import com.servoy.mobile.client.util.Utils;
 
 /**
@@ -89,9 +89,7 @@ public class Solution extends JavaScriptObject
 		// TODO ac use datasource and width/height
 		Form f = createForm(name, Utils.createStringUUID(), IRepositoryConstants.FORMS);
 //		f.setSize("380, 100"); //$NON-NLS-1$
-		MobilePropertiesWrapper mp = f.getOrCreateMobilePropertiesCopy();
-		mp.get().setMobileForm();
-		f.setMobileProperties(mp);
+		f.getOrCreateMobileProperties().setPropertyValue(IMobileProperties.MOBILE_FORM, Boolean.TRUE);
 		f.setDataSource(dataSource);
 		f.setSize(width + "," + height);
 		prepareFormScopeLoading(f.getName());

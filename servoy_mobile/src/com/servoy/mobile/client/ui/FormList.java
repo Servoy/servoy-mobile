@@ -21,6 +21,7 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.servoy.j2db.scripting.api.IJSEvent;
+import com.servoy.j2db.scripting.solutionhelper.IMobileProperties;
 import com.servoy.j2db.util.ITagResolver;
 import com.servoy.j2db.util.TagParser;
 import com.servoy.mobile.client.FormController;
@@ -71,30 +72,30 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 			component = formComponents.get(i);
 			if (component != null)
 			{
-				mobileProperties = component.getMobilePropertiesCopy();
+				mobileProperties = component.getMobileProperties();
 				if (mobileProperties != null)
 				{
-					if (mobileProperties.isListItemButton())
+					if (mobileProperties.getPropertyValue(IMobileProperties.LIST_ITEM_BUTTON).booleanValue())
 					{
 						listItemTextDP = component.isGraphicalComponent().getDataProviderID();
 						listItemOnAction = component.isGraphicalComponent().getOnActionMethodCall();
 						listItemStaticText = component.isGraphicalComponent().getText();
-						listItemDataIcon = mobileProperties.getDataIcon();
+						listItemDataIcon = mobileProperties.getPropertyValue(IMobileProperties.DATA_ICON);
 					}
-					else if (mobileProperties.isListItemSubtext())
+					else if (mobileProperties.getPropertyValue(IMobileProperties.LIST_ITEM_SUBTEXT).booleanValue())
 					{
 						listItemSubtextDP = component.isGraphicalComponent().getDataProviderID();
 						listItemStaticSubtext = component.isGraphicalComponent().getText();
 					}
-					else if (mobileProperties.isListItemCount())
+					else if (mobileProperties.getPropertyValue(IMobileProperties.LIST_ITEM_COUNT).booleanValue())
 					{
 						listItemCountDP = component.isField().getDataProviderID();
 					}
-					else if (mobileProperties.isListItemImage())
+					else if (mobileProperties.getPropertyValue(IMobileProperties.LIST_ITEM_IMAGE).booleanValue())
 					{
 						listItemImageDP = component.isField().getDataProviderID();
 					}
-					else if (mobileProperties.isListItemHeader())
+					else if (mobileProperties.getPropertyValue(IMobileProperties.LIST_ITEM_HEADER).booleanValue())
 					{
 						listItemHeaderDP = component.isGraphicalComponent().getDataProviderID();
 						listItemStaticHeader = component.isGraphicalComponent().getText();

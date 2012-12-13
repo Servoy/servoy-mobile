@@ -22,6 +22,7 @@ import java.util.Collections;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.user.client.ui.Widget;
+import com.servoy.j2db.scripting.solutionhelper.IMobileProperties;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.DataAdapterList;
@@ -73,25 +74,25 @@ public class FormPage extends JQMPage
 		for (int i = 0; i < formComponents.length(); i++)
 		{
 			component = formComponents.get(i);
-			mobileProperties = component.getMobilePropertiesCopy();
+			mobileProperties = component.getMobileProperties();
 			if (mobileProperties != null)
 			{
-				if (mobileProperties.isHeaderText())
+				if (mobileProperties.getPropertyValue(IMobileProperties.HEADER_TEXT).booleanValue())
 				{
 					headerLabel = component;
 					continue;
 				}
-				else if (mobileProperties.isHeaderLeftButton())
+				else if (mobileProperties.getPropertyValue(IMobileProperties.HEADER_LEFT_BUTTON).booleanValue())
 				{
 					headerLeftButton = component;
 					continue;
 				}
-				else if (mobileProperties.isHeaderRightButton())
+				else if (mobileProperties.getPropertyValue(IMobileProperties.HEADER_RIGHT_BUTTON).booleanValue())
 				{
 					headerRightButton = component;
 					continue;
 				}
-				else if (mobileProperties.isFooterItem())
+				else if (mobileProperties.getPropertyValue(IMobileProperties.FOOTER_ITEM).booleanValue())
 				{
 					footerComponents.add(component);
 					continue;

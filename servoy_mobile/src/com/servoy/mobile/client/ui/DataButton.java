@@ -17,6 +17,7 @@ package com.servoy.mobile.client.ui;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
+import com.servoy.j2db.scripting.solutionhelper.IMobileProperties;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.persistence.AbstractBase.MobileProperties;
@@ -40,10 +41,10 @@ public class DataButton extends JQMButton implements IDisplayData, IGraphicalCom
 	{
 		super(application.getI18nProvider().getI18NMessageIfPrefixed(gc.getText() != null ? gc.getText() : "")); //$NON-NLS-1$
 		this.scriptable = new RuntimeDataButton(application, executor, this, gc);
-		MobileProperties mp = gc.getMobilePropertiesCopy();
+		MobileProperties mp = gc.getMobileProperties();
 		if (mp != null)
 		{
-			DataIcon dataIcon = Utils.stringToDataIcon(mp.getDataIcon());
+			DataIcon dataIcon = Utils.stringToDataIcon(mp.getPropertyValue(IMobileProperties.DATA_ICON));
 			if (dataIcon != null) setIcon(dataIcon);
 		}
 	}

@@ -20,11 +20,13 @@ package com.servoy.mobile.client.ui;
 import org.timepedia.exporter.client.ExporterBaseActual.JsArrayObject;
 
 import com.google.gwt.core.client.JsArrayString;
+import com.servoy.j2db.scripting.solutionhelper.IMobileProperties;
 import com.servoy.j2db.util.IDestroyable;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.dataprocessing.IEditListenerSubject;
+import com.servoy.mobile.client.persistence.AbstractBase.MobileProperties;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.ValueList;
 import com.servoy.mobile.client.scripting.IModificationListener;
@@ -52,7 +54,8 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 		this.valuelist = valuelist;
 		this.scriptable = new RuntimeDataRadioSet(application, executor, this, field);
 
-		if (field.getMobilePropertiesCopy() != null && field.getMobilePropertiesCopy().getRadioStyle() == HORIZONTAL) setHorizontal();
+		MobileProperties mp = field.getMobileProperties();
+		if (mp != null && mp.getPropertyValue(IMobileProperties.RADIO_STYLE).intValue() == HORIZONTAL) setHorizontal();
 
 		setText(field.getText());
 		if (valuelist != null)

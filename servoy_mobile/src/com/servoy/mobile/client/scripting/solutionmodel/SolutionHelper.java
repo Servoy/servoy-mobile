@@ -19,14 +19,13 @@ package com.servoy.mobile.client.scripting.solutionmodel;
 
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
-import org.timepedia.exporter.client.ExporterUtil;
 
-import com.servoy.j2db.scripting.BaseSolutionHelper;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMButton;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMLabel;
-import com.servoy.mobile.client.persistence.AbstractBase;
-import com.servoy.mobile.client.persistence.AbstractBase.MobilePropertiesWrapper;
+import com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel;
+import com.servoy.j2db.scripting.solutionhelper.BaseSolutionHelper;
+import com.servoy.j2db.scripting.solutionhelper.IMobileProperties;
 import com.servoy.mobile.client.scripting.solutionmodel.i.IMobilePredefinedIconConstants;
 import com.servoy.mobile.client.util.Utils;
 
@@ -40,29 +39,22 @@ import com.servoy.mobile.client.util.Utils;
 public class SolutionHelper extends BaseSolutionHelper implements IMobilePredefinedIconConstants, Exportable
 {
 
-	@Override
-	public void markLeftHeaderButton(IBaseSMButton button)
+	public SolutionHelper(IBaseSolutionModel solutionModel)
 	{
-		AbstractBase persist = ((JSButton)ExporterUtil.gwtInstance(button)).getBase();
-
-		MobilePropertiesWrapper mpc = persist.getOrCreateMobilePropertiesCopy();
-		mpc.get().setHeaderLeftButton();
-		persist.setMobileProperties(mpc);
+		super(solutionModel);
 	}
 
+	@Override
+	protected IMobileProperties getMobileProperties(Object jsObject)
+	{
+		if (jsObject instanceof JSBase) return ((JSBase)jsObject).getBase().getOrCreateMobileProperties();
+		return null;
+	}
+
+	// methods like this one are necessary for exporter (with real class instead of interface)
 	public void markLeftHeaderButton(JSButton button)
 	{
 		markLeftHeaderButton((IBaseSMButton)button);
-	}
-
-	@Override
-	public void markRightHeaderButton(IBaseSMButton button)
-	{
-		AbstractBase persist = ((JSBase)button).getBase();
-
-		MobilePropertiesWrapper mpc = persist.getOrCreateMobilePropertiesCopy();
-		mpc.get().setHeaderRightButton();
-		persist.setMobileProperties(mpc);
 	}
 
 	public void markRightHeaderButton(JSButton button)
@@ -70,40 +62,14 @@ public class SolutionHelper extends BaseSolutionHelper implements IMobilePredefi
 		markRightHeaderButton((IBaseSMButton)button);
 	}
 
-	@Override
-	public void markHeaderText(IBaseSMLabel label)
-	{
-		AbstractBase persist = ((JSBase)label).getBase();
-
-		MobilePropertiesWrapper mpc = persist.getOrCreateMobilePropertiesCopy();
-		mpc.get().setHeaderText();
-		persist.setMobileProperties(mpc);
-	}
-
 	public void markHeaderText(JSLabel button)
 	{
 		markHeaderText((IBaseSMLabel)button);
 	}
 
-	@Override
-	public void markFooterItem(IBaseSMComponent component)
-	{
-		AbstractBase persist = ((JSBase)component).getBase();
-
-		MobilePropertiesWrapper mpc = persist.getOrCreateMobilePropertiesCopy();
-		mpc.get().setFooterItem();
-		persist.setMobileProperties(mpc);
-	}
-
 	public void markFooterItem(JSComponent button)
 	{
 		markFooterItem((IBaseSMComponent)button);
-	}
-
-	@Override
-	public void groupComponents(IBaseSMComponent c1, IBaseSMComponent c2)
-	{
-		super.groupComponents(c1, c2);
 	}
 
 	public void groupComponents(JSComponent c1, JSComponent c2)
@@ -115,16 +81,6 @@ public class SolutionHelper extends BaseSolutionHelper implements IMobilePredefi
 	protected String createNewGroupId()
 	{
 		return Utils.createStringUUID();
-	}
-
-	@Override
-	public void setIconType(IBaseSMButton button, String iconType)
-	{
-		AbstractBase persist = ((JSBase)button).getBase();
-
-		MobilePropertiesWrapper mpc = persist.getOrCreateMobilePropertiesCopy();
-		mpc.get().setDataIcon(iconType);
-		persist.setMobileProperties(mpc);
 	}
 
 	public void setIconType(JSButton button, String iconType)

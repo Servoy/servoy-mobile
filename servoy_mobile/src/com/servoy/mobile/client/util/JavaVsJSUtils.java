@@ -13,20 +13,24 @@
  You should have received a copy of the GNU Affero General Public License along
  with this program; if not, see http://www.gnu.org/licenses or write to the Free
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
- */
+*/
 
-package com.servoy.mobile.client.scripting.solutionmodel.i;
-
-import org.timepedia.exporter.client.Exportable;
-
-import com.servoy.j2db.persistence.constants.IDefaultSMConstants;
+package com.servoy.mobile.client.util;
 
 /**
- * @author acostescu
+ * @author Andrei
  *
  */
-//workaround to have constants automatically exported without re-defining them
-public interface IMobileDefaultSMConstants extends IDefaultSMConstants, Exportable
+public class JavaVsJSUtils
 {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args)
+	{
+		// TODO Auto-generated method stub
+
+	}
 
 }

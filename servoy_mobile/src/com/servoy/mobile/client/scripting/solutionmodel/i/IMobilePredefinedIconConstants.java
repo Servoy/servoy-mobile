@@ -19,7 +19,7 @@ package com.servoy.mobile.client.scripting.solutionmodel.i;
 
 import org.timepedia.exporter.client.Exportable;
 
-import com.servoy.j2db.scripting.IPredefinedIconConstants;
+import com.servoy.j2db.scripting.solutionhelper.IPredefinedIconConstants;
 
 /**
  * @author acostescu

@@ -3,6 +3,9 @@ package com.servoy.mobile.client.util;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import org.timepedia.exporter.client.Export;
+import org.timepedia.exporter.client.ExportPackage;
+import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterBaseActual.JsArrayObject;
 
 import com.google.gwt.core.client.GWT;
@@ -10,7 +13,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.json.client.JSONObject;
-import com.servoy.j2db.scripting.BaseSolutionHelper;
+import com.servoy.j2db.scripting.solutionhelper.IPredefinedIconConstants;
 import com.sksamuel.jqm4gwt.DataIcon;
 
 /*
@@ -34,8 +37,28 @@ import com.sksamuel.jqm4gwt.DataIcon;
  * Utils class for various helper functions
  * @author jblok
  */
-public class Utils
+@ExportPackage("internal")
+public class Utils implements Exportable
 {
+
+	// add more here if more primitive types are used
+	@Export
+	public static Object wrapIfPrimitive(int i)
+	{
+		return Integer.valueOf(i);
+	}
+
+	@Export
+	public static Object wrapIfPrimitive(boolean b)
+	{
+		return Boolean.valueOf(b);
+	}
+
+	@Export
+	public static Object wrapIfPrimitive(Object o)
+	{
+		return o;
+	}
 
 	/**
 	 * Try to parse the given string as an integer
@@ -576,24 +599,24 @@ public class Utils
 	{
 		if (dataIcon != null)
 		{
-			if (dataIcon.equals(BaseSolutionHelper.ICON_GEAR)) return DataIcon.GEAR;
-			if (dataIcon.equals(BaseSolutionHelper.ICON_LEFT)) return DataIcon.LEFT;
-			if (dataIcon.equals(BaseSolutionHelper.ICON_RIGHT)) return DataIcon.RIGHT;
-			if (dataIcon.equals(BaseSolutionHelper.ICON_UP)) return DataIcon.UP;
-			if (dataIcon.equals(BaseSolutionHelper.ICON_DOWN)) return DataIcon.DOWN;
-			if (dataIcon.equals(BaseSolutionHelper.ICON_DELETE)) return DataIcon.DELETE;
-			if (dataIcon.equals(BaseSolutionHelper.ICON_PLUS)) return DataIcon.PLUS;
-			if (dataIcon.equals(BaseSolutionHelper.ICON_MINUS)) return DataIcon.MINUS;
-			if (dataIcon.equals(BaseSolutionHelper.ICON_CHECK)) return DataIcon.CHECK;
-			if (dataIcon.equals(BaseSolutionHelper.ICON_REFRESH)) return DataIcon.REFRESH;
-			if (dataIcon.equals(BaseSolutionHelper.ICON_FORWARD)) return DataIcon.FORWARD;
-			if (dataIcon.equals(BaseSolutionHelper.ICON_BACK)) return DataIcon.BACK;
-			if (dataIcon.equals(BaseSolutionHelper.ICON_GRID)) return DataIcon.GRID;
-			if (dataIcon.equals(BaseSolutionHelper.ICON_STAR)) return DataIcon.STAR;
-			if (dataIcon.equals(BaseSolutionHelper.ICON_ALERT)) return DataIcon.ALERT;
-			if (dataIcon.equals(BaseSolutionHelper.ICON_INFO)) return DataIcon.INFO;
-			if (dataIcon.equals(BaseSolutionHelper.ICON_HOME)) return DataIcon.HOME;
-			if (dataIcon.equals(BaseSolutionHelper.ICON_SEARCH)) return DataIcon.SEARCH;
+			if (dataIcon.equals(IPredefinedIconConstants.ICON_GEAR)) return DataIcon.GEAR;
+			if (dataIcon.equals(IPredefinedIconConstants.ICON_LEFT)) return DataIcon.LEFT;
+			if (dataIcon.equals(IPredefinedIconConstants.ICON_RIGHT)) return DataIcon.RIGHT;
+			if (dataIcon.equals(IPredefinedIconConstants.ICON_UP)) return DataIcon.UP;
+			if (dataIcon.equals(IPredefinedIconConstants.ICON_DOWN)) return DataIcon.DOWN;
+			if (dataIcon.equals(IPredefinedIconConstants.ICON_DELETE)) return DataIcon.DELETE;
+			if (dataIcon.equals(IPredefinedIconConstants.ICON_PLUS)) return DataIcon.PLUS;
+			if (dataIcon.equals(IPredefinedIconConstants.ICON_MINUS)) return DataIcon.MINUS;
+			if (dataIcon.equals(IPredefinedIconConstants.ICON_CHECK)) return DataIcon.CHECK;
+			if (dataIcon.equals(IPredefinedIconConstants.ICON_REFRESH)) return DataIcon.REFRESH;
+			if (dataIcon.equals(IPredefinedIconConstants.ICON_FORWARD)) return DataIcon.FORWARD;
+			if (dataIcon.equals(IPredefinedIconConstants.ICON_BACK)) return DataIcon.BACK;
+			if (dataIcon.equals(IPredefinedIconConstants.ICON_GRID)) return DataIcon.GRID;
+			if (dataIcon.equals(IPredefinedIconConstants.ICON_STAR)) return DataIcon.STAR;
+			if (dataIcon.equals(IPredefinedIconConstants.ICON_ALERT)) return DataIcon.ALERT;
+			if (dataIcon.equals(IPredefinedIconConstants.ICON_INFO)) return DataIcon.INFO;
+			if (dataIcon.equals(IPredefinedIconConstants.ICON_HOME)) return DataIcon.HOME;
+			if (dataIcon.equals(IPredefinedIconConstants.ICON_SEARCH)) return DataIcon.SEARCH;
 		}
 
 		return null;

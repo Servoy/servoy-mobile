@@ -22,8 +22,10 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasText;
+import com.servoy.j2db.scripting.solutionhelper.IMobileProperties;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
+import com.servoy.mobile.client.persistence.AbstractBase.MobileProperties;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.servoy.mobile.client.scripting.IRuntimeComponent;
 import com.servoy.mobile.client.scripting.RuntimeDataLabel;
@@ -53,7 +55,8 @@ public class DataLabel extends JQMWidget implements HasText, IDisplayData, IGrap
 		labelFor = new FormLabel();
 		labelFor.setFor(id);
 
-		label = new Heading(gc.getMobilePropertiesCopy() != null ? gc.getMobilePropertiesCopy().getHeaderSize() : 4,
+		MobileProperties mp = gc.getMobileProperties();
+		label = new Heading(mp != null ? mp.getPropertyValue(IMobileProperties.HEADER_SIZE).intValue() : 4,
 			application.getI18nProvider().getI18NMessageIfPrefixed(gc.getText() != null ? gc.getText() : "")); //$NON-NLS-1$
 		label.getElement().setId(id);
 

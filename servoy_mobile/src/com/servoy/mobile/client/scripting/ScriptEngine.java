@@ -20,7 +20,6 @@ package com.servoy.mobile.client.scripting;
 import java.util.HashMap;
 
 import com.servoy.mobile.client.MobileClient;
-import com.servoy.mobile.client.scripting.solutionmodel.JSSolutionModel;
 
 /**
  * Class responsible for setting up and managing the solution's javascript environment.
@@ -44,7 +43,6 @@ public class ScriptEngine
 		new JSApplication(application);
 		new PluginsScope(application);
 		new JSDatabaseManager(application.getFoundSetManager());
-		new JSSolutionModel(application);
 		new JSUtils(application);
 		new JSSecurity();
 		new JSI18N(application.getI18nProvider());

@@ -22,6 +22,7 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.Window;
+import com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.dataprocessing.FoundSetManager;
 import com.servoy.mobile.client.dataprocessing.OfflineDataProxy;
@@ -48,6 +49,7 @@ import com.servoy.mobile.client.scripting.ScriptEngine;
 import com.servoy.mobile.client.scripting.solutionmodel.JSSolutionModel;
 import com.servoy.mobile.client.ui.Executor;
 import com.servoy.mobile.client.util.Failure;
+import com.servoy.mobile.client.util.Utils;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.Mobile;
 
@@ -62,9 +64,11 @@ public class MobileClient implements EntryPoint
 	private FoundSetManager foundSetManager;
 	private OfflineDataProxy offlineDataProxy;
 	private FormManager formManager;
+	private JSSolutionModel solutionModel;
 	private ScriptEngine scriptEngine;
 	private Solution solution;
 	private SolutionI18nProvider i18nProvider;
+
 
 	@Override
 	public void onModuleLoad()
@@ -92,6 +96,8 @@ public class MobileClient implements EntryPoint
 		GWT.create(RuntimeDataTextArea.class);
 		GWT.create(RuntimeDataPassword.class);
 
+		// non solution related (internal) API
+		GWT.create(Utils.class);
 
 		solution = createSolution();
 		i18nProvider = new SolutionI18nProvider(solution, getLocale());
@@ -99,6 +105,7 @@ public class MobileClient implements EntryPoint
 		offlineDataProxy = new OfflineDataProxy(foundSetManager, getServerURL());
 		formManager = new FormManager(this);
 
+		solutionModel = new JSSolutionModel(this);
 		scriptEngine = new ScriptEngine(this);
 
 		addStartPageShowCallback();
@@ -336,6 +343,11 @@ public class MobileClient implements EntryPoint
 	public SolutionI18nProvider getI18nProvider()
 	{
 		return i18nProvider;
+	}
+
+	public IBaseSolutionModel getSolutionModel()
+	{
+		return solutionModel;
 	}
 
 }
