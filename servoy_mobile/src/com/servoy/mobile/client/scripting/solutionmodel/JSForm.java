@@ -30,7 +30,6 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
 import com.servoy.j2db.persistence.constants.IFieldConstants;
 import com.servoy.j2db.persistence.constants.IRepositoryConstants;
-import com.servoy.j2db.scripting.annotations.ServoyMobileFilterOut;
 import com.servoy.j2db.util.DataSourceUtilsBase;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Field;
@@ -265,7 +264,6 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	}
 
 	@Override
-	@ServoyMobileFilterOut
 	public JSTabPanel newTabPanel(String name, int x, int y, int width, int height)
 	{
 		TabPanel tabPanel = form.createNewTabPanel();
@@ -275,7 +273,6 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	}
 
 	@Override
-	@ServoyMobileFilterOut
 	public JSTabPanel getTabPanel(String name)
 	{
 		if (name != null)
@@ -295,14 +292,12 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	}
 
 	@Override
-	@ServoyMobileFilterOut
 	public boolean removeTabPanel(String name)
 	{
 		return removeComponent(name, IRepositoryConstants.TABPANELS);
 	}
 
 	@Override
-	@ServoyMobileFilterOut
 	public JSTabPanel[] getTabPanels()
 	{
 		List<JSTabPanel> tabPanels = new ArrayList<JSTabPanel>();
