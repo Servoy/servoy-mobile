@@ -26,7 +26,6 @@ import java.util.Set;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
-import com.servoy.j2db.scripting.api.IJSDataSet;
 import com.servoy.j2db.scripting.api.IJSFoundSet;
 import com.servoy.j2db.scripting.api.IJSRecord;
 import com.servoy.mobile.client.dto.DataProviderDescription;
@@ -221,14 +220,8 @@ public class Record extends Scope implements IJSRecord
 		this.getDataSource = function() {
 			return this.@com.servoy.mobile.client.dataprocessing.Record::getDataSource()();
 		}
-		this.getChangedData = function() {
-			return this.@com.servoy.mobile.client.dataprocessing.Record::getChangedData()();
-		}
 		this.getPKs = function() {
 			return this.@com.servoy.mobile.client.dataprocessing.Record::getPKs()();
-		}
-		this.hasChangedData = function() {
-			return this.@com.servoy.mobile.client.dataprocessing.Record::hasChangedData()();
 		}
 		this.isEditing = function() {
 			return this.@com.servoy.mobile.client.dataprocessing.Record::isEditing()();
@@ -236,9 +229,15 @@ public class Record extends Scope implements IJSRecord
 		this.isNew = function() {
 			return this.@com.servoy.mobile.client.dataprocessing.Record::isNew()();
 		}
-		this.revertChanges = function() {
-			return this.@com.servoy.mobile.client.dataprocessing.Record::revertChanges()();
-		}
+	//		this.revertChanges = function() {
+	//			return this.@com.servoy.mobile.client.dataprocessing.Record::revertChanges()();
+	//		}
+	//		this.getChangedData = function() {
+	//			return this.@com.servoy.mobile.client.dataprocessing.Record::getChangedData()();
+	//		}
+	//		this.hasChangedData = function() {
+	//			return this.@com.servoy.mobile.client.dataprocessing.Record::hasChangedData()();
+	//		}
 	}-*/;
 
 	@Override
@@ -247,52 +246,6 @@ public class Record extends Scope implements IJSRecord
 		return parent.getEntityName(); // TODO entity -> datasource??
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.IJSRecord#getChangedData()
-	 */
-	@Override
-	public IJSDataSet getChangedData()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.IJSRecord#hasChangedData()
-	 */
-	@Override
-	public boolean hasChangedData()
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.IJSRecord#revertChanges()
-	 */
-	@Override
-	public void revertChanges()
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.IJSRecord#getException()
-	 */
-	@Override
-	public Exception getException()
-	{
-		return null;
-	}
 
 	/*
 	 * (non-Javadoc)
