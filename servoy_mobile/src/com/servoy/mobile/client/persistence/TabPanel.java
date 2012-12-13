@@ -38,4 +38,13 @@ public class TabPanel extends Component
 	public final native JsArray<Tab> getTabs() /*-{
 		return this.items;
 	}-*/;
+
+	public final native Tab createTab(String name, String text, String formUUID) /*-{
+		var nt = {};
+		nt.name = name;
+		nt.text = text;
+		nt.containsFormID = formUUID;
+		this.items.push(nt);
+		return nt;
+	}-*/;
 }

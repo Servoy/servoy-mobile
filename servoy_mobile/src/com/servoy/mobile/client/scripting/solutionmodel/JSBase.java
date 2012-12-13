@@ -34,7 +34,7 @@ public class JSBase
 		this.model = model;
 	}
 
-	protected AbstractBase getBase()
+	public AbstractBase getBase()
 	{
 		return ab;
 	}

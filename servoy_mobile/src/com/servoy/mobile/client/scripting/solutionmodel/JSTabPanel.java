@@ -17,139 +17,50 @@
 
 package com.servoy.mobile.client.scripting.solutionmodel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 
+import com.google.gwt.core.client.JsArray;
+import com.servoy.j2db.scripting.annotations.ServoyMobileFilterOut;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMTabPanel;
+import com.servoy.mobile.client.persistence.Form;
+import com.servoy.mobile.client.persistence.Tab;
 import com.servoy.mobile.client.persistence.TabPanel;
 
 /**
  * @author acostescu
  *
  */
+@ServoyMobileFilterOut
 @Export
 public class JSTabPanel extends JSComponent implements IBaseSMTabPanel, Exportable
 {
 
-	/**
-	 * @param f
-	 * @param model
-	 */
 	public JSTabPanel(TabPanel tabPanel, String formName, JSSolutionModel model)
 	{
 		super(tabPanel, formName, model);
-		// TODO ac Auto-generated constructor stub
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMTabPanel#newTab(java.lang.String, java.lang.String,
-	 * com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm)
-	 */
 	@Override
 	public JSTab newTab(String name, String text, IBaseSMForm form)
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		Tab tab = ((TabPanel)getBase()).createTab(name, text, ((Form)((JSForm)form).getBase()).getUUID());
+		return new JSTab(tab, getSolutionModel());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMTabPanel#newTab(java.lang.String, java.lang.String,
-	 * com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm, java.lang.Object)
-	 */
-	@Override
-	public JSTab newTab(String name, String text, IBaseSMForm form, Object relation)
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMTabPanel#getTab(java.lang.String)
-	 */
-	@Override
-	public JSTab getTab(String name)
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMTabPanel#removeTab(java.lang.String)
-	 */
-	@Override
-	public void removeTab(String name)
-	{
-		// TODO ac Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMTabPanel#getTabs()
-	 */
 	@Override
 	public JSTab[] getTabs()
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		List<JSTab> tabs = new ArrayList<JSTab>();
+		JsArray<Tab> tabsArray = ((TabPanel)getBase()).getTabs();
+		for (int i = 0; i < tabsArray.length(); i++)
+		{
+			tabs.add(new JSTab(tabsArray.get(i), getSolutionModel()));
+		}
+		return tabs.toArray(new JSTab[0]);
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMTabPanel#getScrollTabs()
-	 */
-	@Override
-	public boolean getScrollTabs()
-	{
-		// TODO ac Auto-generated method stub
-		return false;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMTabPanel#getTabOrientation()
-	 */
-	@Override
-	public int getTabOrientation()
-	{
-		// TODO ac Auto-generated method stub
-		return 0;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMTabPanel#setScrollTabs(boolean)
-	 */
-	@Override
-	public void setScrollTabs(boolean arg)
-	{
-		// TODO ac Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMTabPanel#setTabOrientation(int)
-	 */
-	@Override
-	public void setTabOrientation(int arg)
-	{
-		// TODO ac Auto-generated method stub
-
-	}
-
 }

@@ -37,4 +37,12 @@ public class Tab extends AbstractBase
 	public final native String getRelationName() /*-{
 		return this.relationName;
 	}-*/;
+
+	public final native void setContainsFormID(String formID) /*-{
+		this.containsFormID = formID;
+	}-*/;
+
+	public final native void setRelationName(String relationName) /*-{
+		this.relationName = relationName;
+	}-*/;
 }

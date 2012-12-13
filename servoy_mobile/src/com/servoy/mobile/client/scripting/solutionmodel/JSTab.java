@@ -19,160 +19,54 @@ package com.servoy.mobile.client.scripting.solutionmodel;
 
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
+import org.timepedia.exporter.client.Getter;
+import org.timepedia.exporter.client.Setter;
 
-import com.google.gwt.core.client.JavaScriptObject;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMTab;
+import com.servoy.mobile.client.persistence.Form;
+import com.servoy.mobile.client.persistence.Tab;
 
 /**
  * @author acostescu
  */
 @Export
-public class JSTab implements IBaseSMTab, Exportable
+public class JSTab extends JSBase implements IBaseSMTab, Exportable
 {
+	public JSTab(Tab tab, JSSolutionModel model)
+	{
+		super(tab, model);
+	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMTab#getContainsForm()
-	 */
+	@Getter
 	@Override
 	public JSForm getContainsForm()
 	{
-		// TODO ac Auto-generated method stub
+		Form form = getSolutionModel().getApplication().getSolution().getFormByUUID(((Tab)getBase()).getContainsFormID());
+		if (form != null)
+		{
+			return new JSForm(form, getSolutionModel());
+		}
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMTab#setContainsForm(com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm)
-	 */
+	@Setter
 	@Override
 	public void setContainsForm(IBaseSMForm form)
 	{
-		// TODO ac Auto-generated method stub
-
+		((Tab)getBase()).setContainsFormID(((Form)((JSForm)form).getBase()).getUUID());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMTab#getX()
-	 */
-	@Override
-	public int getX()
-	{
-		// TODO ac Auto-generated method stub
-		return 0;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMTab#setX(int)
-	 */
-	@Override
-	public void setX(int x)
-	{
-		// TODO ac Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMTab#getY()
-	 */
-	@Override
-	public int getY()
-	{
-		// TODO ac Auto-generated method stub
-		return 0;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMTab#setY(int)
-	 */
-	@Override
-	public void setY(int y)
-	{
-		// TODO ac Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMTab#getName()
-	 */
-	@Override
-	public String getName()
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMTab#setName(java.lang.String)
-	 */
-	@Override
-	public void setName(String arg)
-	{
-		// TODO ac Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMTab#getRelationName()
-	 */
 	@Override
 	public String getRelationName()
 	{
-		// TODO ac Auto-generated method stub
-		return null;
+		return ((Tab)getBase()).getRelationName();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMTab#setRelationName(java.lang.String)
-	 */
 	@Override
 	public void setRelationName(String arg)
 	{
-		// TODO ac Auto-generated method stub
+		((Tab)getBase()).setRelationName(arg);
 
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMTab#getText()
-	 */
-	@Override
-	public String getText()
-	{
-		// TODO ac Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.solutionmodel.IBaseSMTab#setText(java.lang.String)
-	 */
-	@Override
-	public void setText(String arg)
-	{
-		// TODO ac Auto-generated method stub
-
-	}
-
 }
