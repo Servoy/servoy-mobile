@@ -53,6 +53,11 @@ public class Solution extends JavaScriptObject
 		return this.solutionName;
 	}-*/;
 
+	public final native String getOnSolutionOpen()
+	/*-{
+		return this.onSolutionOpen;
+	}-*/;
+
 	public final native String getServerUrl() /*-{
 		return this.serverURL;
 	}-*/;

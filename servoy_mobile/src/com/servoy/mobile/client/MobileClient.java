@@ -46,6 +46,7 @@ import com.servoy.mobile.client.scripting.RuntimeDataTextArea;
 import com.servoy.mobile.client.scripting.RuntimeDataTextField;
 import com.servoy.mobile.client.scripting.ScriptEngine;
 import com.servoy.mobile.client.scripting.solutionmodel.JSSolutionModel;
+import com.servoy.mobile.client.ui.Executor;
 import com.servoy.mobile.client.util.Failure;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.Mobile;
@@ -119,21 +120,17 @@ public class MobileClient implements EntryPoint
 		}
 	}
 
-	private native void addStartPageShowCallback()/*-{
-													var mobileClient = this;
-													if ($wnd.$.mobile.activePage
-													&& $wnd.$.mobile.activePage.attr("id") == 'start') {
-													mobileClient.@com.servoy.mobile.client.MobileClient::onStartPageShown()();
-													} else {
-													$wnd
-													.$('#start')
-													.live(
-													'pageshow',
-													function(event) {
+	private native void addStartPageShowCallback()
+	/*-{
+		var mobileClient = this;
+		if ($wnd.$.mobile.activePage && $wnd.$.mobile.activePage.attr("id") == 'start') {
+			mobileClient.@com.servoy.mobile.client.MobileClient::onStartPageShown()();
+		} else {
+			$wnd.$('#start').live('pageshow',function(event) {
 													mobileClient.@com.servoy.mobile.client.MobileClient::onStartPageShown()();
 													});
-													}
-													}-*/;
+		}
+	}-*/;
 
 	protected String getServerURL()
 	{
@@ -300,6 +297,11 @@ public class MobileClient implements EntryPoint
 	{
 		// first export all relations and dataproviders.
 		foundSetManager.exportDataproviders();
+
+		if (solution.getOnSolutionOpen() != null)
+		{
+			Executor.callFunction(solution.getOnSolutionOpen(), null, null, null);
+		}
 
 		// now show the first form.
 		formManager.showFirstForm();

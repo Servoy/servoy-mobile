@@ -20,20 +20,34 @@ public class Executor
 
 	public void fireEventCommand(String type, String command, Object source, Object[] args)
 	{
+		JSEvent event = new JSEvent(type, source, formController.getName(), null);
+
+		callFunction(command, args, formController.getName(), event);
+	}
+
+	/**
+	 * @param command
+	 * @param args
+	 * @param event
+	 */
+	@SuppressWarnings("nls")
+	public static void callFunction(String command, Object[] args, String formName, JSEvent event)
+	{
 		int index = command.indexOf('(');
 		String functionLookup = command.substring(0, index);
 		String argumentsString = command.substring(index + 1, command.length() - 1);
 		Object[] persistArgs = argumentsString.split(",");
 
-		JSEvent event = new JSEvent(type, source, formController.getName(), null);
+		Object[] argsTmp = args;
+		if (event != null) argsTmp = Utils.arrayJoin(argsTmp, new Object[] { ExporterUtil.wrap(event) });
 
-		Object[] functionArgs = Utils.arrayMerge(Utils.arrayJoin(args, new Object[] { ExporterUtil.wrap(event) }), persistArgs);
+		persistArgs = Utils.arrayMerge(argsTmp, persistArgs);
 
 		JavaScriptObject function = null;
 		if (!functionLookup.startsWith("scopes."))
 		{
-
-			function = getFunction("forms", formController.getName(), functionLookup);
+			if (formName == null) throw new RuntimeException("form name is not given, by calling a form method");
+			function = getFunction("forms", formName, functionLookup);
 		}
 		else
 		{
@@ -42,9 +56,9 @@ public class Executor
 		}
 
 		JsArrayMixed jsArray = JavaScriptObject.createArray().cast();
-		for (int i = 0; i < functionArgs.length; i++)
+		for (int i = 0; i < persistArgs.length; i++)
 		{
-			Object argument = functionArgs[i];
+			Object argument = persistArgs[i];
 			if (argument instanceof JavaScriptObject || argument == null)
 			{
 				jsArray.set(i, (JavaScriptObject)argument);
@@ -69,11 +83,13 @@ public class Executor
 		call(function, jsArray);
 	}
 
-	private native Object eval(Object param)
+	private static native Object eval(Object param)
 	/*-{
 		var evalled = $wnd.eval(param);
 		if (typeof evalled == "number")
 			evalled = new Number(evalled);
+		if (typeof evalled == "boolean")
+			evalled = new Boolean(evalled);
 		return evalled;
 	}-*/;
 
@@ -81,7 +97,7 @@ public class Executor
 	 * @param function
 	 * @param string
 	 */
-	private native void call(JavaScriptObject func, JsArrayMixed params)
+	private static native void call(JavaScriptObject func, JsArrayMixed params)
 	/*-{
 		func.apply(func, params);
 	}-*/;
@@ -90,7 +106,7 @@ public class Executor
 	 * @param functionName
 	 * @return
 	 */
-	private native JavaScriptObject getFunction(String topLevel, String scopeOrForm, String methodName)
+	private static native JavaScriptObject getFunction(String topLevel, String scopeOrForm, String methodName)
 	/*-{
 		return $wnd[topLevel][scopeOrForm][methodName];
 	}-*/;
