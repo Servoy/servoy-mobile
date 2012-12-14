@@ -20,6 +20,7 @@ package com.servoy.mobile.client.ui;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Widget;
 import com.servoy.j2db.scripting.api.IJSEvent;
 import com.servoy.j2db.scripting.solutionhelper.IMobileProperties;
 import com.servoy.j2db.util.ITagResolver;
@@ -34,7 +35,6 @@ import com.servoy.mobile.client.persistence.AbstractBase;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Relation;
 import com.sksamuel.jqm4gwt.list.JQMList;
-import com.sksamuel.jqm4gwt.list.JQMListDivider;
 import com.sksamuel.jqm4gwt.list.JQMListItem;
 
 /**
@@ -51,6 +51,7 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 	private String listItemStaticText, listItemStaticSubtext, listItemStaticHeader, listItemHeaderStyleclass;
 	private String listItemOnAction;
 	private String listItemDataIcon;
+	private String listItemStyleclass;
 
 	public FormList(FormController formController, DataAdapterList dal)
 	{
@@ -79,6 +80,7 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 						listItemOnAction = component.isGraphicalComponent().getOnActionMethodCall();
 						listItemStaticText = component.isGraphicalComponent().getText();
 						listItemDataIcon = mobileProperties.getPropertyValue(IMobileProperties.DATA_ICON);
+						listItemStyleclass = component.isGraphicalComponent().getStyleClass();
 					}
 					else if (mobileProperties.getPropertyValue(IMobileProperties.LIST_ITEM_SUBTEXT).booleanValue())
 					{
@@ -153,13 +155,9 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 		if (foundset != null)
 		{
 			int foundsetSize = foundset.getSize();
-			JQMListItem listItem;
-			Record listItemRecord;
-			Object dpValue;
-
 			int listWidgetCount = 0;
 
-			dpValue = dal.getRecordValue(null, listItemHeaderDP);
+			Object dpValue = dal.getRecordValue(null, listItemHeaderDP);
 			if (dpValue == null)
 			{
 				dpValue = TagParser.processTags(listItemStaticHeader, dal, formController.getApplication().getI18nProvider());
@@ -170,15 +168,13 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 			}
 			if (dpValue != null)
 			{
-				JQMListDivider divider = addDivider(dpValue.toString());
-				if (listItemHeaderStyleclass == null) divider.getElement().removeAttribute("data-theme");
-				else divider.getElement().setAttribute("data-theme", listItemHeaderStyleclass);
+				setWidgetTheme(addDivider(dpValue.toString()), listItemHeaderStyleclass);
 				listWidgetCount = 1;
 			}
 
 			for (int i = 0; i < foundsetSize; i++)
 			{
-				listItemRecord = foundset.getRecord(i);
+				Record listItemRecord = foundset.getRecord(i);
 				listItemTagResolver.setRecord(listItemRecord);
 
 				dpValue = dal.getRecordValue(listItemRecord, listItemTextDP);
@@ -190,7 +186,7 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 						dpValue = formController.getApplication().getI18nProvider().getI18NMessageIfPrefixed(listItemStaticText);
 					}
 				}
-				listItem = addItem(listWidgetCount, dpValue != null ? dpValue.toString() : ""); //$NON-NLS-1$
+				JQMListItem listItem = addItem(listWidgetCount, dpValue != null ? dpValue.toString() : ""); //$NON-NLS-1$
 				listWidgetCount++;
 
 				dpValue = dal.getRecordValue(listItemRecord, listItemCountDP);
@@ -223,25 +219,27 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 				if (dpValue != null) listItem.addText(dpValue.toString());
 
 				if (listItemDataIcon != null) listItem.getElement().setAttribute("data-icon", listItemDataIcon); //$NON-NLS-1$
+
+				setWidgetTheme(listItem, listItemStyleclass);
 			}
 		}
 	}
 
+	public static void setWidgetTheme(Widget widget, String styleClass)
+	{
+		if (styleClass == null) widget.getElement().removeAttribute("data-theme");
+		else widget.getElement().setAttribute("data-theme", styleClass);
+	}
+
 	class ListItemTagResolver implements ITagResolver
 	{
-
-		Record record;
+		private Record record;
 
 		void setRecord(Record rec)
 		{
 			record = rec;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see com.servoy.j2db.util.ITagResolver#getStringValue(java.lang.String)
-		 */
 		@Override
 		public String getStringValue(String name)
 		{
