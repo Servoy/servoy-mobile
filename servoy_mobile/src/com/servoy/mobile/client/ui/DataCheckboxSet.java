@@ -89,6 +89,16 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 		}
 	}
 
+	@Override
+	public void setTheme(String themeName)
+	{
+		super.setTheme(themeName);
+		for (DataCheckboxSetItem item : items)
+		{
+			item.updateTheme();
+		}
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -170,8 +180,8 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 	}
 
 	private native void refreshCheckbox(String id) /*-{
-													$wnd.$("#" + id).checkboxradio('refresh');
-													}-*/;
+		$wnd.$("#" + id).checkboxradio('refresh');
+	}-*/;
 
 	private EditProvider editProvider;
 
@@ -198,6 +208,14 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 		{
 			this.checkbox = checkbox;
 			this.realValue = realValue;
+			updateTheme();
+		}
+
+		public void updateTheme()
+		{
+			String theme = getTheme();
+			if (theme == null) checkbox.getInput().removeAttribute("data-theme");
+			else checkbox.getInput().setAttribute("data-theme", theme);
 		}
 	}
 
