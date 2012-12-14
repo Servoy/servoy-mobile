@@ -6,12 +6,14 @@ import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.Setter;
 
 import com.servoy.j2db.scripting.api.IJSController;
+import com.servoy.j2db.scripting.api.IJSEvent;
 import com.servoy.j2db.scripting.api.IJSFoundSet;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.dataprocessing.FoundSetManager;
 import com.servoy.mobile.client.dataprocessing.IFoundSetSelectionListener;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.scripting.FormScope;
+import com.servoy.mobile.client.scripting.JSEvent;
 import com.servoy.mobile.client.ui.ComponentFactory;
 import com.servoy.mobile.client.ui.Executor;
 import com.servoy.mobile.client.ui.FormPage;
@@ -30,6 +32,7 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 	private final Form form;
 	private final MobileClient mc;
 	private final Executor executor;
+	private boolean didOnShowOnce = false;
 
 	public FormController(MobileClient mc, Form form)
 	{
@@ -188,5 +191,15 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 		if (this.foundSet != null) this.foundSet.removeSelectionListener(this);
 		this.foundSet = foundset;
 		if (this.foundSet != null) this.foundSet.addSelectionListener(this);
+	}
+
+	public void executeOnShowMethod()
+	{
+		if (form.getOnShowCall() != null)
+		{
+			Object[] arguments = new Object[] { !didOnShowOnce };
+			didOnShowOnce = true;
+			Executor.callFunction(form.getOnShowCall(), arguments, getName(), new JSEvent(IJSEvent.FORM, getFormScope(), getName(), null));
+		}
 	}
 }

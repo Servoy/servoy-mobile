@@ -108,6 +108,7 @@ public class FormManager
 		formControllerMap.put(formController.getName(), formController);
 		currentForm = formController;
 		history.add(formController);
+		formController.executeOnShowMethod();
 		JQMContext.changePage(formController.getPage());
 	}
 

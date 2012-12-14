@@ -99,7 +99,7 @@ public class JSField extends JSComponent implements IMobileSMField, Exportable
 
 	public void setOnAction(JSMethod method)
 	{
-		((Field)getBase()).setActionMethodCall(method.getReferenceString());
+		((Field)getBase()).setActionMethodCall(method != null ? method.getReferenceString() : null);
 	}
 
 	@Getter
@@ -118,7 +118,7 @@ public class JSField extends JSComponent implements IMobileSMField, Exportable
 
 	public void setOnDataChange(JSMethod method)
 	{
-		((Field)getBase()).setDataChangeMethodCall(method.getReferenceString());
+		((Field)getBase()).setDataChangeMethodCall(method != null ? method.getReferenceString() : null);
 	}
 
 	@Getter

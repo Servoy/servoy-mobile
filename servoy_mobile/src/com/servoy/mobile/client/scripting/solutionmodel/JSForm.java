@@ -30,6 +30,7 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
 import com.servoy.j2db.persistence.constants.IFieldConstants;
 import com.servoy.j2db.persistence.constants.IRepositoryConstants;
+import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod;
 import com.servoy.j2db.util.DataSourceUtilsBase;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Field;
@@ -648,6 +649,26 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	public void setView(int viewType)
 	{
 		form.setView(viewType);
+	}
+
+	@Getter
+	@Override
+	public JSMethod getOnShow()
+	{
+		return JSMethod.getMethodFromString(((Form)getBase()).getOnShowCall(), getName(), getSolutionModel());
+	}
+
+	@Setter
+	@Override
+	public void setOnShow(IBaseSMMethod method)
+	{
+		setOnShow((JSMethod)method);
+
+	}
+
+	public void setOnShow(JSMethod method)
+	{
+		((Form)getBase()).setOnShowCall(method != null ? method.getReferenceString() : null);
 	}
 
 }

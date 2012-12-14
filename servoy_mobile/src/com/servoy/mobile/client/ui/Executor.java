@@ -74,6 +74,10 @@ public class Executor
 				{
 					jsArray.set(i, ((Number)evalled).doubleValue());
 				}
+				else if (evalled instanceof Boolean)
+				{
+					jsArray.set(i, ((Boolean)evalled).booleanValue());
+				}
 				else if (evalled instanceof JavaScriptObject)
 				{
 					jsArray.set(i, (JavaScriptObject)evalled);

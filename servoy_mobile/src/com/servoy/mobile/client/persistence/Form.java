@@ -111,4 +111,13 @@ public class Form extends AbstractBase
 		this.items.splice(index, 1);
 	}-*/;
 
+	public final String getOnShowCall()
+	{
+		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_ONSHOWMETHODID, null);
+	}
+
+	public final void setOnShowCall(String onShowCall)
+	{
+		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_ONSHOWMETHODID, onShowCall);
+	}
 }

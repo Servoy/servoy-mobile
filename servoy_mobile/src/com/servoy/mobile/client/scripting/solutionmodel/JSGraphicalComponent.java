@@ -87,7 +87,7 @@ public class JSGraphicalComponent extends JSComponent implements IBaseSMGraphica
 	@Setter
 	public void setOnAction(IBaseSMMethod method)
 	{
-		((GraphicalComponent)getBase()).setOnActionMethodCall(((JSMethod)method).getReferenceString());
+		((GraphicalComponent)getBase()).setOnActionMethodCall(method != null ? ((JSMethod)method).getReferenceString() : null);
 	}
 
 	public void setOnAction(JSMethod method)
