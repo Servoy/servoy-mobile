@@ -34,6 +34,7 @@ import com.servoy.mobile.client.persistence.AbstractBase;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Relation;
 import com.sksamuel.jqm4gwt.list.JQMList;
+import com.sksamuel.jqm4gwt.list.JQMListDivider;
 import com.sksamuel.jqm4gwt.list.JQMListItem;
 
 /**
@@ -47,7 +48,7 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 	private final DataAdapterList dal;
 	private final Relation relation;
 	private String listItemTextDP, listItemSubtextDP, listItemCountDP, listItemImageDP, listItemHeaderDP;
-	private String listItemStaticText, listItemStaticSubtext, listItemStaticHeader;
+	private String listItemStaticText, listItemStaticSubtext, listItemStaticHeader, listItemHeaderStyleclass;
 	private String listItemOnAction;
 	private String listItemDataIcon;
 
@@ -64,15 +65,12 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 
 		JsArray<Component> formComponents = formController.getForm().getComponents();
 
-		Component component;
-		AbstractBase.MobileProperties mobileProperties;
-
 		for (int i = 0; i < formComponents.length(); i++)
 		{
-			component = formComponents.get(i);
+			Component component = formComponents.get(i);
 			if (component != null)
 			{
-				mobileProperties = component.getMobileProperties();
+				AbstractBase.MobileProperties mobileProperties = component.getMobileProperties();
 				if (mobileProperties != null)
 				{
 					if (mobileProperties.getPropertyValue(IMobileProperties.LIST_ITEM_BUTTON).booleanValue())
@@ -99,6 +97,7 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 					{
 						listItemHeaderDP = component.isGraphicalComponent().getDataProviderID();
 						listItemStaticHeader = component.isGraphicalComponent().getText();
+						listItemHeaderStyleclass = component.isGraphicalComponent().getStyleClass();
 					}
 				}
 			}
@@ -106,7 +105,6 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 
 		setInset(true);
 	}
-
 
 	private FoundSet relatedFoundset;
 	private FoundSet foundSet;
@@ -172,7 +170,9 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 			}
 			if (dpValue != null)
 			{
-				addDivider(dpValue.toString());
+				JQMListDivider divider = addDivider(dpValue.toString());
+				if (listItemHeaderStyleclass == null) divider.getElement().removeAttribute("data-theme");
+				else divider.getElement().setAttribute("data-theme", listItemHeaderStyleclass);
 				listWidgetCount = 1;
 			}
 
