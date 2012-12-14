@@ -98,6 +98,7 @@ public class FormManager
 				formController = new FormController(application, form);
 				formControllerMap.put(name, formController);
 				initFormScope(name, formController.getFormScope(), null);
+				formController.executeOnLoadMethod();
 			}
 		}
 		return formController;

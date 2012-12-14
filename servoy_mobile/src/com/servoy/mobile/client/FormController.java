@@ -202,4 +202,15 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 			Executor.callFunction(form.getOnShowCall(), arguments, getName(), new JSEvent(IJSEvent.FORM, getFormScope(), getName(), null));
 		}
 	}
+
+	private boolean didOnload;
+
+	public void executeOnLoadMethod()
+	{
+		if (!didOnload && form.getOnLoadCall() != null)
+		{
+			didOnload = true;
+			Executor.callFunction(form.getOnLoadCall(), null, getName(), new JSEvent(IJSEvent.FORM, getFormScope(), getName(), null));
+		}
+	}
 }

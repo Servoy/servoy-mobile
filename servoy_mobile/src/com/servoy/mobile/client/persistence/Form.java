@@ -120,4 +120,14 @@ public class Form extends AbstractBase
 	{
 		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_ONSHOWMETHODID, onShowCall);
 	}
+
+	public final String getOnLoadCall()
+	{
+		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_ONLOADMETHODID, null);
+	}
+
+	public final void setOnLoadCall(String onLoadCall)
+	{
+		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_ONLOADMETHODID, onLoadCall);
+	}
 }

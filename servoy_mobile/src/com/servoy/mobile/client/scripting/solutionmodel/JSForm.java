@@ -671,4 +671,24 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 		((Form)getBase()).setOnShowCall(method != null ? method.getReferenceString() : null);
 	}
 
+	@Getter
+	@Override
+	public JSMethod getOnLoad()
+	{
+		return JSMethod.getMethodFromString(((Form)getBase()).getOnLoadCall(), getName(), getSolutionModel());
+	}
+
+	@Setter
+	@Override
+	public void setOnLoad(IBaseSMMethod method)
+	{
+		setOnLoad((JSMethod)method);
+
+	}
+
+	public void setOnLoad(JSMethod method)
+	{
+		((Form)getBase()).setOnLoadCall(method != null ? method.getReferenceString() : null);
+	}
+
 }
