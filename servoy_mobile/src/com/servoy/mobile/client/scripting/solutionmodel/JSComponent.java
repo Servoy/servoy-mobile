@@ -117,11 +117,17 @@ public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 	}
 
 	@Override
+	@Getter
+	public String getStyleClass()
+	{
+		return ((Component)getBase()).getStyleClass();
+	}
+
+	@Override
 	@Setter
 	public void setX(int x)
 	{
 		((Component)getBase()).setLocation(x, getY());
-
 	}
 
 	@Override
@@ -137,7 +143,6 @@ public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 	public void setName(String arg)
 	{
 		getBase().setName(arg);
-
 	}
 
 	@Override
@@ -145,7 +150,6 @@ public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 	public void setEnabled(boolean arg)
 	{
 		((Component)getBase()).setEnabled(arg);
-
 	}
 
 	@Override
@@ -153,7 +157,6 @@ public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 	public void setVisible(boolean arg)
 	{
 		((Component)getBase()).setVisible(arg);
-
 	}
 
 	@Override
@@ -161,7 +164,6 @@ public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 	public void setWidth(int width)
 	{
 		((Component)getBase()).setSize(width, getHeight());
-
 	}
 
 	@Override
@@ -169,7 +171,6 @@ public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 	public void setHeight(int height)
 	{
 		((Component)getBase()).setSize(getWidth(), height);
-
 	}
 
 	@Override
@@ -177,6 +178,13 @@ public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 	public void setGroupID(String id)
 	{
 		((Component)getBase()).setGroupID(id);
+	}
+
+	@Override
+	@Setter
+	public void setStyleClass(String arg)
+	{
+		((Component)getBase()).setStyleClass(arg);
 	}
 
 }
