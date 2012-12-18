@@ -3,12 +3,14 @@
 	{
 		width: 20%;
 		display: inline-block;
+		font-size: 16px;
 	}
 }
 
 label.label-labelfor
 {
 	display: block;
+	font-size: 16px;
 }
 
 @media all and (min-width: 28em) {
@@ -16,5 +18,11 @@ label.label-labelfor
 	{
 		width: 60%;
 		display: inline-block;
+		margin: 0;
 	}
+}
+
+.label-heading
+{
+	margin: 0;
 }
