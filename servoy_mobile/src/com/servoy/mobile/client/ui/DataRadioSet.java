@@ -83,9 +83,14 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 	@Override
 	public void valueChanged(ModificationEvent e)
 	{
-		// TODO remove the radio's
+		clear();
 		fillByValueList();
+		recreate(getId());
 	}
+
+	private native void recreate(String id) /*-{
+		$wnd.$("#" + id).trigger("create");
+	}-*/;
 
 	/*
 	 * (non-Javadoc)

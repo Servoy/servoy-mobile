@@ -76,12 +76,9 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 	@Override
 	public void valueChanged(ModificationEvent e)
 	{
-		// need a method to get the select/item count or just a clear method.
-//		for (int i = 0; i < getItemCount(); i++)
-//		{
-//			removeOption(getValue(i));
-//		}
+		clear();
 		fillByValueList();
+		refresh();
 	}
 
 	/*

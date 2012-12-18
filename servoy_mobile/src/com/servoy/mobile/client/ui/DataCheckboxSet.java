@@ -55,6 +55,7 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 
 	public DataCheckboxSet(Field field, ValueList valuelist, Executor executor, MobileClient application)
 	{
+		setId();
 		this.valuelist = valuelist;
 		this.executor = executor;
 		this.application = application;
@@ -89,16 +90,6 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 		}
 	}
 
-	@Override
-	public void setTheme(String themeName)
-	{
-		super.setTheme(themeName);
-		for (DataCheckboxSetItem item : items)
-		{
-			item.updateTheme();
-		}
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -107,13 +98,15 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 	@Override
 	public void valueChanged(ModificationEvent e)
 	{
-		for (DataCheckboxSetItem item : items)
-		{
-			removeCheck(item.checkbox.getId(), item.checkbox.getText());
-		}
+		clear();
 		items.clear();
 		fillByValueList();
+		recreate(getId());
 	}
+
+	private native void recreate(String id) /*-{
+		$wnd.$("#" + id).trigger("create");
+	}-*/;
 
 	/*
 	 * (non-Javadoc)
@@ -208,14 +201,6 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 		{
 			this.checkbox = checkbox;
 			this.realValue = realValue;
-			updateTheme();
-		}
-
-		public void updateTheme()
-		{
-			String theme = getTheme();
-			if (theme == null) checkbox.getInput().removeAttribute("data-theme");
-			else checkbox.getInput().setAttribute("data-theme", theme);
 		}
 	}
 
