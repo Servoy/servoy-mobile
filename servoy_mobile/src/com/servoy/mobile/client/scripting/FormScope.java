@@ -3,14 +3,11 @@ package com.servoy.mobile.client.scripting;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gwt.core.client.JsArray;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.dataprocessing.FoundSetManager;
 import com.servoy.mobile.client.dataprocessing.Record;
-import com.servoy.mobile.client.dto.DataProviderDescription;
-import com.servoy.mobile.client.dto.EntityDescription;
 
 /**
  * 
@@ -20,7 +17,7 @@ import com.servoy.mobile.client.dto.EntityDescription;
 @SuppressWarnings("nls")
 public class FormScope extends GlobalScope
 {
-	protected final Map<String, Integer> recordTypes = new HashMap<String, Integer>();
+	protected final Map<String, Integer> recordTypes;
 	private final FormController formController;
 
 	public FormScope(MobileClient application, FormController formController)
@@ -31,16 +28,9 @@ public class FormScope extends GlobalScope
 		String ds = formController.getForm().getDataSource();
 		if (ds != null)
 		{
-			EntityDescription ed = application.getFoundSetManager().getEntityDescription(FoundSetManager.getEntityFromDataSource(ds));
-			JsArray<DataProviderDescription> dataProviders = ed.getDataProviders();
-
-			for (int k = 0; k < dataProviders.length(); k++)
-			{
-				DataProviderDescription dataProviderDescription = dataProviders.get(k);
-				recordTypes.put(dataProviderDescription.getName(), Integer.valueOf(dataProviderDescription.getType()));
-				exportProperty(dataProviderDescription.getName());
-			}
+			recordTypes = application.getFoundSetManager().exportColumns(FoundSetManager.getEntityFromDataSource(ds), this, this);
 		}
+		else recordTypes = new HashMap<String, Integer>();
 		servoyProperties.put("elements", new ElementScope());
 		servoyProperties.put("controller", formController);
 	}

@@ -20,6 +20,7 @@ package com.servoy.mobile.client.dataprocessing;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import com.google.gwt.core.client.JsArray;
@@ -36,6 +37,7 @@ import com.servoy.mobile.client.dto.OfflineDataDescription;
 import com.servoy.mobile.client.dto.RecordDescription;
 import com.servoy.mobile.client.dto.RelationDescription;
 import com.servoy.mobile.client.dto.RowDescription;
+import com.servoy.mobile.client.scripting.Scope;
 import com.servoy.mobile.client.util.Utils;
 
 /**
@@ -563,4 +565,33 @@ public class FoundSetManager
 		// TODO Auto-generated method stub
 		return true;
 	}
+
+
+	public Map<String, Integer> exportColumns(String entityName, Scope scope, Object javascriptObject)
+	{
+		Map<String, Integer> variableTypes = new HashMap<String, Integer>();
+		EntityDescription entityDescription = getEntityDescription(entityName);
+		if (entityDescription != null)
+		{
+			// export all dataproviders
+			Set<String> exported = new HashSet<String>();
+			JsArray<DataProviderDescription> dataProviders = entityDescription.getDataProviders();
+			for (int i = 0; i < dataProviders.length(); i++)
+			{
+				DataProviderDescription dp = dataProviders.get(i);
+				variableTypes.put(dp.getName(), Integer.valueOf(dp.getType()));
+				if (exported.add(dp.getName())) scope.exportProperty(javascriptObject, dp.getName());
+			}
+			JsArray<RelationDescription> primaryRelations = entityDescription.getPrimaryRelations();
+			// export all relations
+			for (int i = 0; i < primaryRelations.length(); i++)
+			{
+				String name = primaryRelations.get(i).getName();
+				if (exported.add(name)) scope.exportProperty(javascriptObject, name);
+			}
+		}
+		return variableTypes;
+	}
+
+
 }

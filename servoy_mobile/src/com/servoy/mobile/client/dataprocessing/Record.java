@@ -52,7 +52,8 @@ public class Record extends Scope implements IJSRecord
 		parent = p;
 		recordDescription = rd;
 		relatedFoundSets = new HashMap<String, FoundSet>();
-		variableTypes = p.exportColumns(this);
+
+		variableTypes = p.getFoundSetManager().exportColumns(p.getEntityName(), this, this);
 		exportProperty("foundset");
 		export();
 	}

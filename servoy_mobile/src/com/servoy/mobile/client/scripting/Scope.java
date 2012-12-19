@@ -90,7 +90,7 @@ public abstract class Scope
 		$wnd._ServoyUtils_.defineVariable(this, name);
 	}-*/;
 
-	protected native void exportProperty(Object javascriptObject, String name) /*-{
+	public native void exportProperty(Object javascriptObject, String name) /*-{
 		$wnd._ServoyUtils_.defineRedirectVariable(this, javascriptObject, name);
 	}-*/;
 

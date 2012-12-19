@@ -19,23 +19,15 @@ package com.servoy.mobile.client.dataprocessing;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArray;
 import com.servoy.j2db.scripting.api.IJSFoundSet;
-import com.servoy.mobile.client.dto.DataProviderDescription;
-import com.servoy.mobile.client.dto.EntityDescription;
 import com.servoy.mobile.client.dto.FoundSetDescription;
 import com.servoy.mobile.client.dto.RecordDescription;
-import com.servoy.mobile.client.dto.RelationDescription;
 import com.servoy.mobile.client.dto.RowDescription;
 import com.servoy.mobile.client.scripting.Scope;
 import com.servoy.mobile.client.util.Utils;
@@ -62,7 +54,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		foundSetManager = fsm;
 		foundSetDescription = fsd;
 		javascriptInstance = ExporterUtil.wrap(this);
-		exportColumns(javascriptInstance);
+		getFoundSetManager().exportColumns(getEntityName(), this, javascriptInstance);
 	}
 
 
@@ -114,31 +106,6 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 			record.setValue(variable, value);
 		}
 	}
-
-	Map<String, Integer> exportColumns(Object javascriptObject)
-	{
-		Map<String, Integer> variableTypes = new HashMap<String, Integer>();
-		EntityDescription entityDescription = getFoundSetManager().getEntityDescription(getEntityName());
-		// export all dataproviders
-
-		Set<String> exported = new HashSet<String>();
-		JsArray<DataProviderDescription> dataProviders = entityDescription.getDataProviders();
-		for (int i = 0; i < dataProviders.length(); i++)
-		{
-			DataProviderDescription dp = dataProviders.get(i);
-			variableTypes.put(dp.getName(), Integer.valueOf(dp.getType()));
-			if (exported.add(dp.getName())) exportProperty(javascriptObject, dp.getName());
-		}
-		JsArray<RelationDescription> primaryRelations = entityDescription.getPrimaryRelations();
-		// export all relations
-		for (int i = 0; i < primaryRelations.length(); i++)
-		{
-			String name = primaryRelations.get(i).getName();
-			if (exported.add(name)) exportProperty(javascriptObject, name);
-		}
-		return variableTypes;
-	}
-
 
 	@Export("setSelectedIndex")
 	public void jsFunction_setSelectedIndex(int index)

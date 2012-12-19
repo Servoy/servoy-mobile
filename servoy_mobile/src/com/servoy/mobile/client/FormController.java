@@ -213,4 +213,10 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 			Executor.callFunction(form.getOnLoadCall(), null, getName(), new JSEvent(IJSEvent.FORM, getFormScope(), getName(), null));
 		}
 	}
+
+	@Override
+	public String toString()
+	{
+		return "FormController[" + getName() + "," + foundSet + "]";
+	}
 }
