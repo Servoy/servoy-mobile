@@ -20,9 +20,7 @@ package com.servoy.mobile.client.dataprocessing;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
@@ -31,7 +29,6 @@ import com.servoy.j2db.scripting.api.IJSRecord;
 import com.servoy.mobile.client.dto.DataProviderDescription;
 import com.servoy.mobile.client.dto.EntityDescription;
 import com.servoy.mobile.client.dto.RecordDescription;
-import com.servoy.mobile.client.dto.RelationDescription;
 import com.servoy.mobile.client.dto.RowDescription;
 import com.servoy.mobile.client.scripting.Scope;
 import com.servoy.mobile.client.util.Utils;
@@ -46,6 +43,8 @@ public class Record extends Scope implements IJSRecord
 	protected final RecordDescription recordDescription;
 	protected RowDescription rowDescription;
 	protected final HashMap<String, FoundSet> relatedFoundSets;
+	private final Map<String, Integer> variableTypes;
+
 
 	//existing record
 	public Record(FoundSet p, RecordDescription rd)
@@ -53,7 +52,7 @@ public class Record extends Scope implements IJSRecord
 		parent = p;
 		recordDescription = rd;
 		relatedFoundSets = new HashMap<String, FoundSet>();
-		exportColumns();
+		variableTypes = p.exportColumns(this);
 		exportProperty("foundset");
 		export();
 	}
@@ -183,36 +182,12 @@ public class Record extends Scope implements IJSRecord
 	{
 	}
 
-	private final Map<String, Integer> variableTypes = new HashMap<String, Integer>();
-
 	@Override
 	public int getVariableType(String variable)
 	{
 		Integer type = variableTypes.get(variable);
 		if (type != null) return type.intValue();
 		return -4; // IColumnTypes.MEDIA;
-	}
-
-	private void exportColumns()
-	{
-		EntityDescription entityDescription = parent.getFoundSetManager().getEntityDescription(parent.getEntityName());
-		// export all dataproviders
-
-		Set<String> exported = new HashSet<String>();
-		JsArray<DataProviderDescription> dataProviders = entityDescription.getDataProviders();
-		for (int i = 0; i < dataProviders.length(); i++)
-		{
-			DataProviderDescription dp = dataProviders.get(i);
-			variableTypes.put(dp.getName(), dp.getType());
-			if (exported.add(dp.getName())) exportProperty(dp.getName());
-		}
-		JsArray<RelationDescription> primaryRelations = entityDescription.getPrimaryRelations();
-		// export all relations
-		for (int i = 0; i < primaryRelations.length(); i++)
-		{
-			String name = primaryRelations.get(i).getName();
-			if (exported.add(name)) exportProperty(name);
-		}
 	}
 
 	public native void export()

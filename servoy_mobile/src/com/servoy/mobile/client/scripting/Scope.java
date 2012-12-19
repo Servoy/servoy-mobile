@@ -24,6 +24,7 @@ import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
 
 import com.google.gwt.core.client.JsDate;
+import com.servoy.mobile.client.dataprocessing.FoundSet;
 
 
 public abstract class Scope
@@ -69,7 +70,11 @@ public abstract class Scope
 	public Object getVariableValue(String variable)
 	{
 		Object value = getValue(variable);
-		if (value instanceof Exportable)
+		if (value instanceof FoundSet)
+		{
+			return ((FoundSet)value).getJavaScriptInstance();
+		}
+		else if (value instanceof Exportable)
 		{
 			return ExporterUtil.wrap(value);
 		}
@@ -85,13 +90,17 @@ public abstract class Scope
 		$wnd._ServoyUtils_.defineVariable(this, name);
 	}-*/;
 
+	protected native void exportProperty(Object javascriptObject, String name) /*-{
+		$wnd._ServoyUtils_.defineRedirectVariable(this, javascriptObject, name);
+	}-*/;
+
 	public abstract void setVariableType(String variable, int type);
 
 	public abstract int getVariableType(String variable);
 
 	public abstract Object getValue(String variable);
 
-	public abstract void setValue(String variable, Object vaue);
+	public abstract void setValue(String variable, Object value);
 
 	public void addModificationListener(IModificationListener listener)
 	{

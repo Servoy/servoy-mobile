@@ -39,6 +39,12 @@ if (typeof(_ServoyUtils_) == "undefined")
 		if (defaultValue != undefined) _ServoyUtils_.setScopeVariable(object, name, defaultValue); // set default value
 	}
 
+	_ServoyUtils_.defineRedirectVariable = function(object,javascriptObject, name) {
+		Object.defineProperty(javascriptObject, name, {get: function() { return _ServoyUtils_.getScopeVariable(object, name);},
+			set: function(val) { _ServoyUtils_.setScopeVariable(object, name, val);},
+			configurable : true });
+	}
+
 	_ServoyUtils_.defineWindowVariable = function(name) {
 		Object.defineProperty(window, name, {get: function() { return _ServoyUtils_.getValue(name);},
 			set: function(val) { _ServoyUtils_.setValue(name, val);},
