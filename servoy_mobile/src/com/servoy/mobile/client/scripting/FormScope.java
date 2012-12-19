@@ -38,6 +38,7 @@ public class FormScope extends GlobalScope
 			{
 				DataProviderDescription dataProviderDescription = dataProviders.get(k);
 				recordTypes.put(dataProviderDescription.getName(), Integer.valueOf(dataProviderDescription.getType()));
+				exportProperty(dataProviderDescription.getName());
 			}
 		}
 		servoyProperties.put("elements", new ElementScope());
