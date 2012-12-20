@@ -326,7 +326,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 			{
 				Component component = formComponents.get(i);
 				Field field = component.isField();
-				if (field != null)
+				if (field != null && name.equals(field.getName()))
 				{
 					return new JSField(field, getName(), getSolutionModel());
 				}
