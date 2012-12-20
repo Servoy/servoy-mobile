@@ -102,6 +102,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 			{
 				variables[i] = getVariable(names.get(i));
 			}
+			return variables;
 		}
 		return new JSVariable[0];
 	}
@@ -142,6 +143,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 			{
 				methods[i] = getMethod(names.get(i));
 			}
+			return methods;
 		}
 		return new JSMethod[0];
 	}
