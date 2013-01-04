@@ -130,7 +130,7 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 	@Override
 	public void showRecords(IJSFoundSet foundset) throws Exception
 	{
-		showRecords(foundSet);
+		showRecords((FoundSet)foundset);
 	}
 
 	/*

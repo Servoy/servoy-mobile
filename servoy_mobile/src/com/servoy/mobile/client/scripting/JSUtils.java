@@ -24,14 +24,19 @@ import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.servoy.j2db.scripting.api.IJSFoundSet;
+import com.servoy.j2db.scripting.api.IJSRecord;
+import com.servoy.j2db.scripting.api.IJSUtils;
 import com.servoy.mobile.client.MobileClient;
+import com.servoy.mobile.client.dataprocessing.FoundSet;
+import com.servoy.mobile.client.dataprocessing.Record;
 
 /**
  * @author jcompagner
  *
  */
 @Export
-public class JSUtils implements Exportable
+public class JSUtils implements Exportable, IJSUtils
 {
 	private final MobileClient application;
 
@@ -48,6 +53,46 @@ public class JSUtils implements Exportable
 			return DateTimeFormat.getFormat(format).format(date);
 		}
 		return ""; //$NON-NLS-1$
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.j2db.scripting.api.IJSUtils#hasRecords(com.servoy.j2db.scripting.api.IJSFoundSet)
+	 */
+	@Override
+	public boolean hasRecords(IJSFoundSet foundset)
+	{
+		if (foundset != null)
+		{
+			return foundset.getSize() > 0;
+		}
+		return false;
+	}
+
+	public boolean hasRecords(FoundSet foundset)
+	{
+		if (foundset != null)
+		{
+			return foundset.getSize() > 0;
+		}
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.j2db.scripting.api.IJSUtils#hasRecords(com.servoy.j2db.scripting.api.IJSRecord, java.lang.String)
+	 */
+	@Override
+	public boolean hasRecords(IJSRecord record, String relationString)
+	{
+		return JSDatabaseManager.hasRelatedRecords(record, relationString);
+	}
+
+	public boolean hasRecords(Record record, String relationString)
+	{
+		return JSDatabaseManager.hasRelatedRecords(record, relationString);
 	}
 
 	private native void export(Object object)
