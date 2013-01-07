@@ -65,7 +65,7 @@ public class Executor
 			}
 			else
 			{
-				Object evalled = eval(argument);
+				Object evalled = (args != null && i < args.length) ? argument : eval(argument);
 				if (evalled instanceof String)
 				{
 					jsArray.set(i, (String)evalled);

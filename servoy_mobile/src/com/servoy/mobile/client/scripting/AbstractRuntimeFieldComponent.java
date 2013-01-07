@@ -96,7 +96,7 @@ public class AbstractRuntimeFieldComponent extends AbstractRuntimeBaseComponent<
 	@Override
 	public void notifyLastNewValueWasChange(Object oldVal, Object newVal)
 	{
-		if (changeCommand != null) executor.fireEventCommand(IJSEvent.DATACHANGE, changeCommand, this, null);
+		if (changeCommand != null) executor.fireEventCommand(IJSEvent.DATACHANGE, changeCommand, this, new Object[] { oldVal, newVal });
 	}
 
 	@Override
