@@ -87,6 +87,29 @@ public class Record extends Scope implements IJSRecord
 				return rfs;
 			}
 		}
+
+		int index = dataProviderID.lastIndexOf('.');
+		if (index > 0) //check if is related value request
+		{
+			String partName = dataProviderID.substring(0, index);
+			String restName = dataProviderID.substring(index + 1);
+
+			FoundSet foundSet = getRelatedFoundSet(partName);
+			if (foundSet != null)
+			{
+				//related data
+				int selected = foundSet.getSelectedIndex();
+				if (selected == -1 && foundSet.getSize() > 0) selected = 0;
+
+				Record record = foundSet.getRecord(selected);
+				if (record != null)
+				{
+					return record.getValue(restName);
+				}
+			}
+			return null;
+		}
+
 		RowDescription rd = getRowDescription();
 		if (rd == null || rd.getValue(dataProviderID) == null) return null;
 		int type = getVariableType(dataProviderID);
@@ -205,15 +228,15 @@ public class Record extends Scope implements IJSRecord
 		this.isNew = function() {
 			return this.@com.servoy.mobile.client.dataprocessing.Record::isNew()();
 		}
-	//		this.revertChanges = function() {
-	//			return this.@com.servoy.mobile.client.dataprocessing.Record::revertChanges()();
-	//		}
-	//		this.getChangedData = function() {
-	//			return this.@com.servoy.mobile.client.dataprocessing.Record::getChangedData()();
-	//		}
-	//		this.hasChangedData = function() {
-	//			return this.@com.servoy.mobile.client.dataprocessing.Record::hasChangedData()();
-	//		}
+		//		this.revertChanges = function() {
+		//			return this.@com.servoy.mobile.client.dataprocessing.Record::revertChanges()();
+		//		}
+		//		this.getChangedData = function() {
+		//			return this.@com.servoy.mobile.client.dataprocessing.Record::getChangedData()();
+		//		}
+		//		this.hasChangedData = function() {
+		//			return this.@com.servoy.mobile.client.dataprocessing.Record::hasChangedData()();
+		//		}
 	}-*/;
 
 	@Override
