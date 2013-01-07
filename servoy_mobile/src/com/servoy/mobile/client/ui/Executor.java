@@ -31,7 +31,7 @@ public class Executor
 	 * @param event
 	 */
 	@SuppressWarnings("nls")
-	public static void callFunction(String command, Object[] args, String formName, JSEvent event)
+	public static Object callFunction(String command, Object[] args, String formName, JSEvent event)
 	{
 		int index = command.indexOf('(');
 		String functionLookup = command.substring(0, index);
@@ -84,7 +84,7 @@ public class Executor
 				}
 			}
 		}
-		call(function, jsArray);
+		return call(function, jsArray);
 	}
 
 	private static native Object eval(Object param)
@@ -101,9 +101,9 @@ public class Executor
 	 * @param function
 	 * @param string
 	 */
-	private static native void call(JavaScriptObject func, JsArrayMixed params)
+	private static native Object call(JavaScriptObject func, JsArrayMixed params)
 	/*-{
-		func.apply(func, params);
+		return $wnd.internal.Utils.wrapIfPrimitive(func.apply(func, params));
 	}-*/;
 
 	/**

@@ -130,4 +130,24 @@ public class Form extends AbstractBase
 	{
 		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_ONLOADMETHODID, onLoadCall);
 	}
+
+	public final String getOnHideCall()
+	{
+		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_ONHIDEMETHODID, null);
+	}
+
+	public final void setOnHideCall(String onHideCall)
+	{
+		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_ONHIDEMETHODID, onHideCall);
+	}
+
+	public final String getOnRecordSelectionCall()
+	{
+		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_ONRECORDSELECTIONMETHODID, null);
+	}
+
+	public final void setOnRecordSelectionCall(String onRecordSelectionCall)
+	{
+		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_ONRECORDSELECTIONMETHODID, onRecordSelectionCall);
+	}
 }

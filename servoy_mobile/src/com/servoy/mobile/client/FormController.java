@@ -108,6 +108,7 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 	public void selectionChanged()
 	{
 		if (foundSet != null) formDisplay.refreshRecord(foundSet.getSelectedRecord());
+		executeOnRecordSelect();
 	}
 
 	@Getter
@@ -203,6 +204,19 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 		}
 	}
 
+	public boolean executeOnHideMethod()
+	{
+		if (form.getOnHideCall() != null)
+		{
+			Object hide = Executor.callFunction(form.getOnHideCall(), null, getName(), new JSEvent(IJSEvent.FORM, getFormScope(), getName(), null));
+			if (hide instanceof Boolean && !((Boolean)hide).booleanValue())
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
 	private boolean didOnload;
 
 	public void executeOnLoadMethod()
@@ -211,6 +225,14 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 		{
 			didOnload = true;
 			Executor.callFunction(form.getOnLoadCall(), null, getName(), new JSEvent(IJSEvent.FORM, getFormScope(), getName(), null));
+		}
+	}
+
+	private void executeOnRecordSelect()
+	{
+		if (form.getOnRecordSelectionCall() != null && mc.getFormManager().isVisible(getName()))
+		{
+			Executor.callFunction(form.getOnRecordSelectionCall(), null, getName(), new JSEvent(IJSEvent.FORM, getFormScope(), getName(), null));
 		}
 	}
 

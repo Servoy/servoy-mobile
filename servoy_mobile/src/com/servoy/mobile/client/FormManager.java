@@ -107,6 +107,10 @@ public class FormManager
 	public void showForm(FormController formController)
 	{
 		formControllerMap.put(formController.getName(), formController);
+		if (currentForm != null && !currentForm.executeOnHideMethod())
+		{
+			return;
+		}
 		currentForm = formController;
 		history.add(formController);
 		formController.executeOnShowMethod();
@@ -136,7 +140,7 @@ public class FormManager
 
 	public boolean removeForm(String formName)
 	{
-		if (currentForm != null && currentForm.getName().equals(formName))
+		if (isVisible(formName))
 		{
 			return false;
 		}
@@ -147,6 +151,15 @@ public class FormManager
 			formControllerMap.remove(formName);
 		}
 		return true;
+	}
+
+	public boolean isVisible(String formName)
+	{
+		if (currentForm != null && currentForm.getName().equals(formName))
+		{
+			return true;
+		}
+		return false;
 	}
 
 	public void showFirstForm()

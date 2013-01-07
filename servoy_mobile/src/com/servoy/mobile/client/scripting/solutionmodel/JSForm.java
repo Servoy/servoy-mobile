@@ -693,4 +693,41 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 		((Form)getBase()).setOnLoadCall(method != null ? method.getReferenceString() : null);
 	}
 
+	@Getter
+	@Override
+	public JSMethod getOnHide()
+	{
+		return JSMethod.getMethodFromString(((Form)getBase()).getOnHideCall(), getName(), getSolutionModel());
+	}
+
+	@Setter
+	@Override
+	public void setOnHide(IBaseSMMethod method)
+	{
+		setOnHide((JSMethod)method);
+	}
+
+	public void setOnHide(JSMethod method)
+	{
+		((Form)getBase()).setOnHideCall(method != null ? method.getReferenceString() : null);
+	}
+
+	@Getter
+	@Override
+	public JSMethod getOnRecordSelection()
+	{
+		return JSMethod.getMethodFromString(((Form)getBase()).getOnRecordSelectionCall(), getName(), getSolutionModel());
+	}
+
+	@Setter
+	@Override
+	public void setOnRecordSelection(IBaseSMMethod method)
+	{
+		setOnRecordSelection((JSMethod)method);
+	}
+
+	public void setOnRecordSelection(JSMethod method)
+	{
+		((Form)getBase()).setOnRecordSelectionCall(method != null ? method.getReferenceString() : null);
+	}
 }
