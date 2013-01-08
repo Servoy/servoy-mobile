@@ -20,6 +20,8 @@ package com.servoy.mobile.client.ui;
 import org.timepedia.exporter.client.ExporterBaseActual.JsArrayObject;
 
 import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.servoy.j2db.util.IDestroyable;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
@@ -44,6 +46,7 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 {
 	private final ValueList valuelist;
 	private final RuntimeDataSelect scriptable;
+	private boolean hasEmptyOption;
 
 	public DataSelect(Field field, ValueList valuelist, Executor executor, MobileClient application)
 	{
@@ -54,15 +57,33 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 		if (valuelist != null)
 		{
 			valuelist.addModificationListener(this);
-			fillByValueList();
+			fillByValueList(true);
 		}
+
+		addChangeHandler(new ChangeHandler()
+		{
+			@Override
+			public void onChange(ChangeEvent event)
+			{
+				if (hasEmptyOption && getSelectedIndex() > 0)
+				{
+					removeOption(""); //$NON-NLS-1$
+					hasEmptyOption = false;
+				}
+			}
+		});
 	}
 
 	/**
 	 * @param valuelist
 	 */
-	private void fillByValueList()
+	private void fillByValueList(boolean addEmptyOption)
 	{
+		if (addEmptyOption)
+		{
+			addOption(""); //$NON-NLS-1$
+			hasEmptyOption = true;
+		}
 		JsArrayString displayValues = valuelist.getDiplayValues();
 		for (int i = 0; i < displayValues.length(); i++)
 			addOption(displayValues.get(i));
@@ -77,7 +98,7 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 	public void valueChanged(ModificationEvent e)
 	{
 		clear();
-		fillByValueList();
+		fillByValueList(true);
 		refresh();
 	}
 
@@ -98,6 +119,8 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 	@Override
 	public Object getValueObject()
 	{
+		if (hasEmptyOption && getSelectedIndex() == 0) return null;
+
 		if (valuelist != null)
 		{
 			if (valuelist.hasRealValues())
@@ -125,8 +148,22 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 			if (selectedIndex > -1)
 			{
 				setSelectedIndex(selectedIndex);
-				refresh();
+				if (hasEmptyOption)
+				{
+					removeOption(""); //$NON-NLS-1$
+					hasEmptyOption = false;
+				}
 			}
+			else
+			{
+				if (!hasEmptyOption)
+				{
+					clear();
+					fillByValueList(true);
+				}
+				setSelectedIndex(0);
+			}
+			refresh();
 		}
 	}
 

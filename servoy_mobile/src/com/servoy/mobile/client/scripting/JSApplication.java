@@ -98,7 +98,7 @@ public class JSApplication implements Exportable, IJSApplication
 				{
 					real.push(((Number)object).doubleValue());
 				}
-				else if (object instanceof JavaScriptObject)
+				else if (object == null || object instanceof JavaScriptObject)
 				{
 					real.push((JavaScriptObject)object);
 				}
