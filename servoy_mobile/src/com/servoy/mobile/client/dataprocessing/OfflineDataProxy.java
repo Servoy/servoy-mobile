@@ -264,6 +264,7 @@ public class OfflineDataProxy
 					if (Response.SC_OK == response.getStatusCode())
 					{
 						keys.remove(key);//remove current
+						foundSetManager.updateChangesInLocalStorage(); //update changes
 						postRowData(serverUrl, keys, callback);//process the next
 					}
 					else

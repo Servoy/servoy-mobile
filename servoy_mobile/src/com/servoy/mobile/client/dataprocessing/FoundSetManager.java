@@ -327,14 +327,19 @@ public class FoundSetManager
 
 		if (changes.size() != oldSize)
 		{
-			JSONArray jsona = new JSONArray();
-			for (int i = 0; i < changes.size(); i++)
-			{
-				String change = changes.get(i);
-				jsona.set(i, new JSONString(change));
-			}
-			localStorage.setItem(CHANGES_KEY, jsona.toString());
+			updateChangesInLocalStorage();
 		}
+	}
+
+	public void updateChangesInLocalStorage()
+	{
+		JSONArray jsona = new JSONArray();
+		for (int i = 0; i < changes.size(); i++)
+		{
+			String change = changes.get(i);
+			jsona.set(i, new JSONString(change));
+		}
+		localStorage.setItem(CHANGES_KEY, jsona.toString());
 	}
 
 	public static String getEntityFromDataSource(String dataSource)
