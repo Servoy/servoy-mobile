@@ -19,7 +19,9 @@ package com.servoy.mobile.client.scripting.solutionmodel;
 
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
+import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.NoExport;
+import org.timepedia.exporter.client.Setter;
 
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod;
 import com.servoy.mobile.client.scripting.ScriptEngine;
@@ -36,6 +38,7 @@ public class JSMethod extends JSScriptPart implements IBaseSMMethod, Exportable
 		super(parentScopeName, scopeName, name, model);
 	}
 
+	@Getter
 	@Override
 	public String getCode()
 	{
@@ -67,6 +70,7 @@ public class JSMethod extends JSScriptPart implements IBaseSMMethod, Exportable
 		return null;
 	}
 
+	@Setter
 	@Override
 	public void setCode(String content)
 	{

@@ -216,4 +216,18 @@ public class JSInsetList extends BaseSHInsetList implements Exportable
 		super.setDataIconDataProviderID(dataIconDataProviderID);
 	}
 
+	@Override
+	@Getter
+	public String getName()
+	{
+		return super.getName();
+	}
+
+	@Override
+	@Setter
+	public void setName(String name)
+	{
+		super.setName(name);
+	}
+
 }

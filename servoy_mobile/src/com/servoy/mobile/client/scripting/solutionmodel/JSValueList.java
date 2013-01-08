@@ -20,6 +20,7 @@ package com.servoy.mobile.client.scripting.solutionmodel;
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
+import org.timepedia.exporter.client.Getter;
 
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMValueList;
 import com.servoy.mobile.client.persistence.ValueList;
@@ -39,6 +40,7 @@ public class JSValueList /* extends JSBase */implements IBaseSMValueList, Export
 		this.vl = vl;
 	}
 
+	@Getter
 	@Override
 	public String getName()
 	{

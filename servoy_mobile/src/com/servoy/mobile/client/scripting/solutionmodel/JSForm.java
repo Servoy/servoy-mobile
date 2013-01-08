@@ -641,12 +641,14 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 		return method.remove();
 	}
 
+	@Getter
 	@Override
 	public int getView()
 	{
 		return form.getView();
 	}
 
+	@Setter
 	@Override
 	public void setView(int viewType)
 	{
@@ -660,7 +662,6 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 		return JSMethod.getMethodFromString(((Form)getBase()).getOnShowCall(), getName(), getSolutionModel());
 	}
 
-	@Setter
 	@Override
 	public void setOnShow(IBaseSMMethod method)
 	{
@@ -668,6 +669,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 
 	}
 
+	@Setter
 	public void setOnShow(JSMethod method)
 	{
 		((Form)getBase()).setOnShowCall(method != null ? method.getReferenceString() : null);
@@ -680,14 +682,13 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 		return JSMethod.getMethodFromString(((Form)getBase()).getOnLoadCall(), getName(), getSolutionModel());
 	}
 
-	@Setter
 	@Override
 	public void setOnLoad(IBaseSMMethod method)
 	{
 		setOnLoad((JSMethod)method);
-
 	}
 
+	@Setter
 	public void setOnLoad(JSMethod method)
 	{
 		((Form)getBase()).setOnLoadCall(method != null ? method.getReferenceString() : null);
@@ -700,13 +701,13 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 		return JSMethod.getMethodFromString(((Form)getBase()).getOnHideCall(), getName(), getSolutionModel());
 	}
 
-	@Setter
 	@Override
 	public void setOnHide(IBaseSMMethod method)
 	{
 		setOnHide((JSMethod)method);
 	}
 
+	@Setter
 	public void setOnHide(JSMethod method)
 	{
 		((Form)getBase()).setOnHideCall(method != null ? method.getReferenceString() : null);
@@ -719,13 +720,13 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 		return JSMethod.getMethodFromString(((Form)getBase()).getOnRecordSelectionCall(), getName(), getSolutionModel());
 	}
 
-	@Setter
 	@Override
 	public void setOnRecordSelection(IBaseSMMethod method)
 	{
 		setOnRecordSelection((JSMethod)method);
 	}
 
+	@Setter
 	public void setOnRecordSelection(JSMethod method)
 	{
 		((Form)getBase()).setOnRecordSelectionCall(method != null ? method.getReferenceString() : null);

@@ -117,6 +117,17 @@ public class SolutionHelper extends BaseSolutionHelper implements IMobilePredefi
 		return (JSList)super.createListForm(formName, dataSource, textDataProviderID);
 	}
 
+	public JSInsetList getInsetList(JSForm form, String name)
+	{
+		return (JSInsetList)super.getInsetList(form, name);
+	}
+
+	@Override
+	public JSList getListForm(String formName)
+	{
+		return (JSList)super.getListForm(formName);
+	}
+
 	@Override
 	protected IBaseSHInsetList instantiateInsetList(IBaseSMForm form, IBaseSMTabPanel tabPanel, IBaseSMForm listForm, BaseSolutionHelper baseSolutionHelper)
 	{

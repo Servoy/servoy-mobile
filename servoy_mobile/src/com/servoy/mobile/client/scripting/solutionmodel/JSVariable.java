@@ -20,7 +20,9 @@ package com.servoy.mobile.client.scripting.solutionmodel;
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
+import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.NoExport;
+import org.timepedia.exporter.client.Setter;
 
 import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMVariable;
 
@@ -38,12 +40,14 @@ public class JSVariable extends JSScriptPart implements IMobileSMVariable, Expor
 		super(parentScopeName, scopeName, name, model);
 	}
 
+	@Getter
 	@Override
 	public String getDefaultValue()
 	{
 		return getDefaultValueInternal(path[0], path[1], path[2]);
 	}
 
+	@Setter
 	@Override
 	public void setDefaultValue(String defValueStr)
 	{
@@ -51,12 +55,14 @@ public class JSVariable extends JSScriptPart implements IMobileSMVariable, Expor
 		setDefaultValueInternal(path[0], path[1], path[2], defValueStr);
 	}
 
+	@Getter
 	@Override
 	public int getVariableType()
 	{
 		return getVariableTypeInternal(path[0], path[1], path[2]);
 	}
 
+	@Setter
 	@Override
 	public void setVariableType(int type)
 	{

@@ -19,6 +19,7 @@ package com.servoy.mobile.client.scripting.solutionmodel;
 
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
+import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.NoExport;
 
 import com.servoy.mobile.client.scripting.ScriptEngine;
@@ -39,6 +40,7 @@ public abstract class JSScriptPart implements Exportable
 		path = new String[] { parentScopeName, scopeName, name };
 	}
 
+	@Getter
 	public String getName()
 	{
 		return path[2];
