@@ -68,7 +68,7 @@ public class GlobalScope extends Scope
 
 	public boolean hasVariable(String variable)
 	{
-		return scopeVariables.containsKey(variable);
+		return scopeVariables.containsKey(variable) || variableTypes.containsKey(variable);
 	}
 
 	/**
