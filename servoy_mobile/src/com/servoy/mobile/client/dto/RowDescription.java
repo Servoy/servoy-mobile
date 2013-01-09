@@ -38,13 +38,25 @@ public class RowDescription extends JavaScriptObject
 	{
 	}
 
-	public final native Object getValue(String dataProviderID) /*-{
-		var value = this[dataProviderID];
-		if (typeof (value) == 'number') {
-			//do manual boxing
-			return new Number(value);
+	public final Object getValue(String dataProviderID)
+	{
+		if (isNumber(dataProviderID))
+		{
+			return new Double(getNumberValue(dataProviderID));
 		}
-		return value;
+		return getValueImpl(dataProviderID);
+
+	}
+
+	private final native Object getValueImpl(String dataProviderID)
+	/*-{
+		return this[dataProviderID];
+	}-*/;
+
+	private final native boolean isNumber(String dataProviderID)
+	/*-{
+		var value = this[dataProviderID];
+		return typeof (value) == 'number'
 	}-*/;
 
 	public final void setValueInternal(String dataProviderID, Object obj)

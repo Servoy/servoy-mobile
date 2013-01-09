@@ -55,6 +55,11 @@ public class RecordDescription extends JavaScriptObject
 		return this.rfs;
 	}-*/;
 
+	public final native void clearRFS()
+	/*-{
+		this.rfs = null;
+	}-*/;
+
 	public static RecordDescription newInstance(int pk)
 	{
 		RecordDescription rd = JavaScriptObject.createObject().cast();

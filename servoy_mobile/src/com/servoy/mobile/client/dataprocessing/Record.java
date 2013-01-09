@@ -17,7 +17,6 @@ package com.servoy.mobile.client.dataprocessing;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -163,8 +162,11 @@ public class Record extends Scope implements IJSRecord
 					if (key.startsWith(relationID + "|"))
 					{
 						retval = parent.getRelatedFoundSet(this, relationName, key);
-						relatedFoundSets.put(relationName, retval);
-						return retval;
+						if (retval != null)
+						{
+							relatedFoundSets.put(relationName, retval);
+							return retval;
+						}
 					}
 				}
 			}
@@ -189,16 +191,10 @@ public class Record extends Scope implements IJSRecord
 		return rowDescription;
 	}
 
-	void linkupRelatedFoundSets()
+	void clearRelationCaches()
 	{
-		ArrayList<String> pRelNames = parent.getAllPrimaryRelationNames();
-		for (String relationName : pRelNames)
-		{
-			if (!relatedFoundSets.containsKey(relationName))
-			{
-				getRelatedFoundSet(relationName);
-			}
-		}
+		relatedFoundSets.clear();
+		recordDescription.clearRFS();
 	}
 
 	@Override

@@ -36,7 +36,7 @@ public class EditRecordList
 
 		for (Record rec : editedRecords)
 		{
-			//rec.linkupRelatedFoundSets();//prevent future seeks after this save, but this is too expensive
+			rec.clearRelationCaches();
 
 			FoundSet fs = rec.getParent();
 			toCheck.add(fs);
