@@ -20,6 +20,7 @@ package com.servoy.mobile.client.ui;
 import org.timepedia.exporter.client.ExporterBaseActual.JsArrayObject;
 
 import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.servoy.j2db.util.IDestroyable;
@@ -47,6 +48,7 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 	private final ValueList valuelist;
 	private final RuntimeDataSelect scriptable;
 	private boolean hasEmptyOption;
+	private final String id;
 
 	public DataSelect(Field field, ValueList valuelist, Executor executor, MobileClient application)
 	{
@@ -72,6 +74,9 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 				}
 			}
 		});
+
+		id = Document.get().createUniqueId();
+		getElement().setId(id);
 	}
 
 	/**
@@ -222,4 +227,18 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 	{
 		return getText();
 	}
+
+	@Override
+	public void refresh()
+	{
+		refreshIfPresent(id);
+	}
+
+	private native void refreshIfPresent(String dataSelectId) /*-{
+		var selectId = $wnd.$("#" + dataSelectId).find("select").attr("id");
+		var select = $wnd.$("select#" + selectId);
+		if ($wnd.$.data(select.get()[0], "selectmenu")) {
+			select.selectmenu("refresh");
+		}
+	}-*/;
 }
