@@ -126,7 +126,14 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 			if (valuelist.hasRealValues())
 			{
 				JsArrayObject objectArray = valuelist.getRealValues().cast();
-				return objectArray.getObject(getSelectedIndex());
+				try
+				{
+					return objectArray.getObject(getSelectedIndex());
+				}
+				catch (Exception e)
+				{
+					return objectArray.getNumberObject(getSelectedIndex());
+				}
 			}
 			else
 			{
