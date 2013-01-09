@@ -53,19 +53,13 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 	private String listItemDataIcon;
 	private String listItemStyleclass;
 
-	public FormList(FormController formController, DataAdapterList dal)
-	{
-		this(formController, dal, null);
-	}
-
-	public FormList(FormController formController, DataAdapterList dal, Relation relation)
+	public FormList(FormController formController, AbstractBase parent, DataAdapterList dal, Relation relation)
 	{
 		this.formController = formController;
 		this.dal = dal;
 		this.relation = relation;
 
-		JsArray<Component> formComponents = formController.getForm().getComponents();
-
+		JsArray<Component> formComponents = parent.getComponents();
 		for (int i = 0; i < formComponents.length(); i++)
 		{
 			Component component = formComponents.get(i);
@@ -76,7 +70,7 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 				{
 					if (mobileProperties.getPropertyValue(IMobileProperties.LIST_ITEM_BUTTON).booleanValue())
 					{
-						listItemTextDP = component.isGraphicalComponent().getDataProviderID();
+						listItemTextDP = fixRelatedDataproviderID(component.isGraphicalComponent().getDataProviderID());
 						listItemOnAction = component.isGraphicalComponent().getOnActionMethodCall();
 						listItemStaticText = component.isGraphicalComponent().getText();
 						listItemDataIcon = mobileProperties.getPropertyValue(IMobileProperties.DATA_ICON);
@@ -84,20 +78,20 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 					}
 					else if (mobileProperties.getPropertyValue(IMobileProperties.LIST_ITEM_SUBTEXT).booleanValue())
 					{
-						listItemSubtextDP = component.isGraphicalComponent().getDataProviderID();
+						listItemSubtextDP = fixRelatedDataproviderID(component.isGraphicalComponent().getDataProviderID());
 						listItemStaticSubtext = component.isGraphicalComponent().getText();
 					}
 					else if (mobileProperties.getPropertyValue(IMobileProperties.LIST_ITEM_COUNT).booleanValue())
 					{
-						listItemCountDP = component.isField().getDataProviderID();
+						listItemCountDP = fixRelatedDataproviderID(component.isField().getDataProviderID());
 					}
 					else if (mobileProperties.getPropertyValue(IMobileProperties.LIST_ITEM_IMAGE).booleanValue())
 					{
-						listItemImageDP = component.isField().getDataProviderID();
+						listItemImageDP = fixRelatedDataproviderID(component.isField().getDataProviderID());
 					}
 					else if (mobileProperties.getPropertyValue(IMobileProperties.LIST_ITEM_HEADER).booleanValue())
 					{
-						listItemHeaderDP = component.isGraphicalComponent().getDataProviderID();
+						listItemHeaderDP = fixRelatedDataproviderID(component.isGraphicalComponent().getDataProviderID());
 						listItemStaticHeader = component.isGraphicalComponent().getText();
 						listItemHeaderStyleclass = component.isGraphicalComponent().getStyleClass();
 					}
@@ -106,6 +100,15 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 		}
 
 		setInset(true);
+	}
+
+	private String fixRelatedDataproviderID(String dataProviderID)
+	{
+		if (relation != null && dataProviderID != null && dataProviderID.startsWith(relation.getName() + '.'))
+		{
+			return dataProviderID.substring(relation.getName().length() + 1);
+		}
+		return dataProviderID;
 	}
 
 	private FoundSet relatedFoundset;
@@ -120,16 +123,10 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 		if (relation != null)
 		{
 			relatedFoundset = relation.isSelfRef() ? parentRecord.getParent() : parentRecord.getRelatedFoundSet(relation.getName());
-			formController.setModel(relatedFoundset);
 			refreshList();
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.dataprocessing.IFoundSetListener#contentChanged()
-	 */
 	@Override
 	public void contentChanged()
 	{
@@ -196,13 +193,13 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 				dpValue = dal.getRecordValue(listItemRecord, listItemImageDP);
 				if (dpValue != null) listItem.setImage(dpValue.toString(), false);
 
-				final int selIndex = i + 1;
+				final int selIndex = i;
 				listItem.addClickHandler(new ClickHandler()
 				{
 					@Override
 					public void onClick(ClickEvent event)
 					{
-						formController.setSelectedIndex(selIndex);
+						foundSet.setSelectedIndexInternal(selIndex);
 						if (listItemOnAction != null) formController.getExecutor().fireEventCommand(IJSEvent.ACTION, listItemOnAction, null, null);
 					}
 				});

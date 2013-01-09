@@ -33,9 +33,9 @@ import com.servoy.mobile.client.persistence.Tab;
 @Export
 public class JSTab extends JSBase implements IBaseSMTab, Exportable
 {
-	public JSTab(Tab tab, JSSolutionModel model)
+	public JSTab(Tab tab, String formName, JSSolutionModel model)
 	{
-		super(tab, model);
+		super(tab, formName, model);
 	}
 
 	@Getter

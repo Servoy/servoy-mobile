@@ -1,9 +1,11 @@
 package com.servoy.mobile.client.persistence;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.servoy.j2db.persistence.constants.IContentSpecConstantsBase;
+import com.servoy.j2db.persistence.constants.IRepositoryConstants;
 import com.servoy.j2db.scripting.solutionhelper.IMobileProperties;
 import com.servoy.mobile.client.util.Utils;
 
@@ -16,6 +18,24 @@ public abstract class AbstractBase extends JavaScriptObject
 	protected AbstractBase()
 	{
 	}
+
+	protected final native Component createEmptyChildComponent(String uuid, int type) /*-{
+		var ei = {};
+		if (!this.items)
+			this.items = [];
+		ei.uuid = uuid;
+		ei.typeid = type;
+		this.items.push(ei);
+		return ei;
+	}-*/;
+
+	public final native JsArray<Component> getComponents() /*-{
+		return this.items;
+	}-*/;
+
+	public final native void removeComponent(int index) /*-{
+		this.items.splice(index, 1);
+	}-*/;
 
 	public final native String getName() /*-{
 		return this.name;
@@ -142,6 +162,20 @@ public abstract class AbstractBase extends JavaScriptObject
 	{
 		MobilePropertiesInternal mp = cp.getMobileInternal();
 		return mp == null ? null : new MobileProperties(this, cp, mp);
+	}
+
+	public final GraphicalComponent createNewGraphicalComponent(String viewType)
+	{
+		GraphicalComponent gc = createEmptyChildComponent(Utils.createStringUUID(), IRepositoryConstants.GRAPHICALCOMPONENTS).isGraphicalComponent();
+		gc.setViewType(viewType);
+		return gc;
+	}
+
+	public final Field createNewField(int type)
+	{
+		Field f = createEmptyChildComponent(Utils.createStringUUID(), IRepositoryConstants.FIELDS).isField();
+		f.setDisplayType(type);
+		return f;
 	}
 
 	private static class CustomProperties extends JavaScriptObject

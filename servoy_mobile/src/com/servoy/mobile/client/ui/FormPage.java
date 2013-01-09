@@ -54,7 +54,6 @@ public class FormPage extends JQMPage
 	private IFormPageHeaderDecorator headerDecorator;
 	private IFormPageFooterDecorator footerDecorator;
 
-
 	public FormPage(MobileClient application, FormController formController)
 	{
 		this.application = application;
@@ -68,13 +67,10 @@ public class FormPage extends JQMPage
 		ArrayList<Component> footerComponents = new ArrayList<Component>();
 		ArrayList<Component> contentComponents = new ArrayList<Component>();
 
-		Component component;
-		AbstractBase.MobileProperties mobileProperties;
-
 		for (int i = 0; i < formComponents.length(); i++)
 		{
-			component = formComponents.get(i);
-			mobileProperties = component.getMobileProperties();
+			Component component = formComponents.get(i);
+			AbstractBase.MobileProperties mobileProperties = component.getMobileProperties();
 			if (mobileProperties != null)
 			{
 				if (mobileProperties.getPropertyValue(IMobileProperties.HEADER_TEXT).booleanValue())
@@ -99,7 +95,6 @@ public class FormPage extends JQMPage
 				}
 			}
 			contentComponents.add(component);
-
 		}
 
 		JQMHeader componentHeader = createHeader(headerLabel, headerLeftButton, headerRightButton);
@@ -247,19 +242,17 @@ public class FormPage extends JQMPage
 		if (r != null) dal.setRecord(r);
 	}
 
-
 	@Override
 	protected void onPageBeforeShow()
 	{
 		FoundSet foundSet = formController.getFormModel();
 		if (foundSet != null) refreshRecord(foundSet.getSelectedRecord());
-
 	}
 
 	private Widget createWidget(Component component)
 	{
 		if (component == null) return null;
-		Widget w = ComponentFactory.createComponent(application, component, dal, formController.getExecutor());
+		Widget w = ComponentFactory.createComponent(application, component, dal, formController);
 		if (w != null) dal.addFormObject(w);
 		if (w instanceof IRuntimeComponentProvider)
 		{

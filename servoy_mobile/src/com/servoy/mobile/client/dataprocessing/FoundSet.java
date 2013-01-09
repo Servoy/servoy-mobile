@@ -107,12 +107,19 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		}
 	}
 
+	// 1-based
 	@Export("setSelectedIndex")
 	public void jsFunction_setSelectedIndex(int index)
 	{
-		if (index > 0 && index < getSize() + 1)
+		setSelectedIndexInternal(index - 1);
+	}
+
+	// 0-based
+	public void setSelectedIndexInternal(int index)
+	{
+		if (index >= 0 && index < getSize())
 		{
-			selectedIndex = index - 1;
+			selectedIndex = index;
 			fireSelectionChanged();
 		}
 	}

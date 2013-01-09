@@ -25,7 +25,6 @@ import org.timepedia.exporter.client.Setter;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm;
 import com.servoy.j2db.scripting.solutionhelper.BaseSHList;
 import com.servoy.j2db.scripting.solutionhelper.BaseSolutionHelper;
-import com.servoy.mobile.client.scripting.solutionmodel.JSForm;
 import com.servoy.mobile.client.scripting.solutionmodel.JSMethod;
 
 /**
@@ -38,26 +37,6 @@ public class JSList extends BaseSHList implements Exportable
 	protected JSList(IBaseSMForm listForm, BaseSolutionHelper baseSolutionHelper)
 	{
 		super(listForm, baseSolutionHelper);
-	}
-
-	@Override
-	public JSForm getListForm()
-	{
-		return (JSForm)super.getListForm();
-	}
-
-	@Override
-	@Getter
-	public String getDataSource()
-	{
-		return super.getDataSource();
-	}
-
-	@Override
-	@Setter
-	public void setDataSource(String dataSource)
-	{
-		super.setDataSource(dataSource);
 	}
 
 	@Override

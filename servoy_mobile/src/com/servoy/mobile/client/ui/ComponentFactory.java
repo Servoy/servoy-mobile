@@ -30,7 +30,7 @@ import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
-import com.servoy.mobile.client.persistence.Tab;
+import com.servoy.mobile.client.persistence.Portal;
 import com.servoy.mobile.client.persistence.TabPanel;
 import com.servoy.mobile.client.persistence.ValueList;
 import com.servoy.mobile.client.scripting.IRuntimeComponent;
@@ -86,28 +86,26 @@ public class ComponentFactory
 	 *
 	 * @return UI component
 	 */
-	public static Widget createComponent(MobileClient application, Component component, DataAdapterList dal, Executor executor)
+	public static Widget createComponent(MobileClient application, Component component, DataAdapterList dal, FormController formController)
 	{
 		Widget componentWidget = null;
 		GraphicalComponent gc = component.isGraphicalComponent();
-		AbstractBase.MobileProperties mobileProperties;
 		if (gc != null)
 		{
-			mobileProperties = gc.getMobileProperties();
-
+			AbstractBase.MobileProperties mobileProperties = gc.getMobileProperties();
 			if (mobileProperties != null)
 			{
 				if (mobileProperties.getPropertyValue(IMobileProperties.HEADER_TEXT).booleanValue())
 				{
-					componentWidget = new DataFormHeader(gc, executor, application);
+					componentWidget = new DataFormHeader(gc, formController.getExecutor(), application);
 				}
 				else if (mobileProperties.getPropertyValue(IMobileProperties.HEADER_LEFT_BUTTON).booleanValue())
 				{
-					componentWidget = new DataFormHeaderButton(gc, DataFormHeaderButton.ORIENTATION_LEFT, executor, application);
+					componentWidget = new DataFormHeaderButton(gc, DataFormHeaderButton.ORIENTATION_LEFT, formController.getExecutor(), application);
 				}
 				else if (mobileProperties.getPropertyValue(IMobileProperties.HEADER_RIGHT_BUTTON).booleanValue())
 				{
-					componentWidget = new DataFormHeaderButton(gc, DataFormHeaderButton.ORIENTATION_RIGHT, executor, application);
+					componentWidget = new DataFormHeaderButton(gc, DataFormHeaderButton.ORIENTATION_RIGHT, formController.getExecutor(), application);
 				}
 			}
 
@@ -115,11 +113,11 @@ public class ComponentFactory
 			{
 				if (gc.isButton())
 				{
-					componentWidget = new DataButton(gc, executor, application);
+					componentWidget = new DataButton(gc, formController.getExecutor(), application);
 				}
 				else
 				{
-					componentWidget = new DataLabel(gc, executor, application);
+					componentWidget = new DataLabel(gc, formController.getExecutor(), application);
 				}
 			}
 
@@ -140,25 +138,25 @@ public class ComponentFactory
 				switch (field.getDisplayType())
 				{
 					case IFieldConstants.TEXT_FIELD :
-						componentWidget = new DataTextField(field, executor, application);
+						componentWidget = new DataTextField(field, formController.getExecutor(), application);
 						break;
 					case IFieldConstants.TEXT_AREA :
-						componentWidget = new DataTextArea(field, executor, application);
+						componentWidget = new DataTextArea(field, formController.getExecutor(), application);
 						break;
 					case IFieldConstants.COMBOBOX :
-						componentWidget = new DataSelect(field, valuelist, executor, application);
+						componentWidget = new DataSelect(field, valuelist, formController.getExecutor(), application);
 						break;
 					case IFieldConstants.RADIOS :
-						componentWidget = new DataRadioSet(field, valuelist, executor, application);
+						componentWidget = new DataRadioSet(field, valuelist, formController.getExecutor(), application);
 						break;
 					case IFieldConstants.CHECKS :
-						componentWidget = new DataCheckboxSet(field, valuelist, executor, application);
+						componentWidget = new DataCheckboxSet(field, valuelist, formController.getExecutor(), application);
 						break;
 					case IFieldConstants.CALENDAR :
-						componentWidget = new DataTextField(field, executor, application);
+						componentWidget = new DataTextField(field, formController.getExecutor(), application);
 						break;
 					case IFieldConstants.PASSWORD :
-						componentWidget = new DataPassword(field, executor, application);
+						componentWidget = new DataPassword(field, formController.getExecutor(), application);
 						break;
 				}
 
@@ -171,20 +169,13 @@ public class ComponentFactory
 			}
 			else
 			{
-				TabPanel tabPanel = component.isTabPanel();
-				mobileProperties = component.getMobileProperties();
-				if (tabPanel != null && mobileProperties != null && mobileProperties.getPropertyValue(IMobileProperties.LIST_TAB_PANEL).booleanValue())
+				Portal portal = component.isPortal();
+				if (portal != null)
 				{
-					JsArray<Tab> tabs = tabPanel.getTabs();
-
-					if (tabs.length() > 0)
+					AbstractBase.MobileProperties mobileProperties = component.getMobileProperties();
+					if (mobileProperties != null && mobileProperties.getPropertyValue(IMobileProperties.LIST_COMPONENT).booleanValue())
 					{
-						Tab tab = tabs.get(0);
-						Form form = application.getSolution().getFormByUUID(tab.getContainsFormID());
-						FormController formController = application.getFormManager().getForm(form.getName());
-						String relationName = tab.getRelationName();
-
-						componentWidget = new FormList(formController, dal, application.getSolution().getRelation(relationName));
+						componentWidget = new FormList(formController, portal, dal, application.getSolution().getRelation(portal.getRelationName()));
 					}
 				}
 			}
@@ -198,7 +189,7 @@ public class ComponentFactory
 
 		if (componentWidget instanceof HasTheme)
 		{
-			((HasTheme)componentWidget).setTheme(component.getStyleClass());
+			((HasTheme< ? >)componentWidget).setTheme(component.getStyleClass());
 		}
 
 		return componentWidget;

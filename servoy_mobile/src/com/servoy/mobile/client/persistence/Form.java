@@ -17,7 +17,6 @@ package com.servoy.mobile.client.persistence;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
-import com.google.gwt.core.client.JsArray;
 import com.servoy.j2db.persistence.constants.IContentSpecConstantsBase;
 import com.servoy.j2db.persistence.constants.IRepositoryConstants;
 import com.servoy.mobile.client.util.Utils;
@@ -27,49 +26,21 @@ import com.servoy.mobile.client.util.Utils;
  */
 public class Form extends AbstractBase
 {
-
 	protected Form()
 	{
 	}
 
-	public final GraphicalComponent createNewGraphicalComponent(String viewType)
-	{
-		Component c = createEmptyChildComponent(Utils.createStringUUID(), IRepositoryConstants.GRAPHICALCOMPONENTS);
-		GraphicalComponent gc = c.isGraphicalComponent();
-		if (gc != null)
-		{
-			gc.setViewType(viewType);
-		}
-		return gc;
-	}
-
-	public final Field createNewField(int type)
-	{
-		Component c = createEmptyChildComponent(Utils.createStringUUID(), IRepositoryConstants.FIELDS);
-		Field f = c.isField();
-		if (f != null)
-		{
-			f.setDisplayType(type);
-		}
-		return f;
-	}
-
 	public final TabPanel createNewTabPanel()
 	{
-		Component c = createEmptyChildComponent(Utils.createStringUUID(), IRepositoryConstants.TABPANELS);
-		TabPanel tabPanel = c.isTabPanel();
-		return tabPanel;
+		return createEmptyChildComponent(Utils.createStringUUID(), IRepositoryConstants.TABPANELS).isTabPanel();
 	}
 
-	public final native Component createEmptyChildComponent(String uuid, int type) /*-{
-		var ei = {};
-		if (!this.items)
-			this.items = [];
-		ei.uuid = uuid;
-		ei.typeid = type;
-		this.items.push(ei);
-		return ei;
-	}-*/;
+	public final Portal createNewPortal(String name)
+	{
+		Portal portal = createEmptyChildComponent(Utils.createStringUUID(), IRepositoryConstants.PORTALS).isPortal();
+		portal.setName(name);
+		return portal;
+	}
 
 	public final void setDataSource(String dataSource)
 	{
@@ -101,14 +72,6 @@ public class Form extends AbstractBase
 
 	public final native String getBackground() /*-{
 		return this.background;
-	}-*/;
-
-	public final native JsArray<Component> getComponents() /*-{
-		return this.items;
-	}-*/;
-
-	public final native void removeComponent(int index) /*-{
-		this.items.splice(index, 1);
 	}-*/;
 
 	public final String getOnShowCall()

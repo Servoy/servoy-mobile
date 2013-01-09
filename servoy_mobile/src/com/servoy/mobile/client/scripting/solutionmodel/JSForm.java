@@ -31,11 +31,14 @@ import com.google.gwt.core.client.JsArrayString;
 import com.servoy.j2db.persistence.constants.IFieldConstants;
 import com.servoy.j2db.persistence.constants.IRepositoryConstants;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod;
+import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMPortal;
 import com.servoy.j2db.util.DataSourceUtilsBase;
+import com.servoy.mobile.client.dataprocessing.RelatedFoundSet;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
+import com.servoy.mobile.client.persistence.Portal;
 import com.servoy.mobile.client.persistence.TabPanel;
 import com.servoy.mobile.client.scripting.ScriptEngine;
 import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMForm;
@@ -52,7 +55,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 
 	public JSForm(Form form, JSSolutionModel model)
 	{
-		super(form, model);
+		super(form, form.getName(), model);
 		this.form = form;
 	}
 
@@ -61,7 +64,6 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	{
 		return form.getName();
 	}
-
 
 	@Override
 	public JSVariable newVariable(String name, int type)
@@ -267,6 +269,71 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	}
 
 	@Override
+	public IBaseSMPortal newPortal(String name, Object relation, int x, int y, int width, int height)
+	{
+		Portal portal = form.createNewPortal(name);
+		portal.setLocation(x, y);
+		portal.setSize(width, height);
+		String relationName = null;
+		if (relation instanceof RelatedFoundSet)
+		{
+			relationName = ((RelatedFoundSet)relation).getRelationName();
+		}
+		else if (relation instanceof String)
+		{
+			relationName = (String)relation;
+		}
+//			else if (relation instanceof JSRelation) // when we have relations in mobile solution model
+//			{
+//				relationName = ((JSRelation)relation).getName();
+//			}
+		portal.setRelationName(relationName);
+		return new JSPortal(portal, form.getName(), getSolutionModel());
+	}
+
+	@Override
+	public JSPortal getPortal(String name)
+	{
+		if (name != null)
+		{
+			JsArray<Component> formComponents = form.getComponents();
+			for (int i = 0; i < formComponents.length(); i++)
+			{
+				Component component = formComponents.get(i);
+				Portal portal = component.isPortal();
+				if (portal != null && name.equals(portal.getName()))
+				{
+					return new JSPortal(portal, form.getName(), getSolutionModel());
+				}
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public boolean removePortal(String name)
+	{
+		return removeComponent(name, IRepositoryConstants.PORTALS);
+	}
+
+	@Override
+	public JSPortal[] getPortals()
+	{
+		List<JSPortal> portals = new ArrayList<JSPortal>();
+		JsArray<Component> formComponents = form.getComponents();
+		for (int i = 0; i < formComponents.length(); i++)
+		{
+			Component component = formComponents.get(i);
+			Portal portal = component.isPortal();
+			if (portal != null)
+			{
+				portals.add(new JSPortal(portal, form.getName(), getSolutionModel()));
+			}
+		}
+		return portals.toArray(new JSPortal[0]);
+	}
+
+	@Override
 	public JSTabPanel newTabPanel(String name, int x, int y, int width, int height)
 	{
 		TabPanel tabPanel = form.createNewTabPanel();
@@ -415,34 +482,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 				Component component = formComponents.get(i);
 				if (name.equals(component.getName()))
 				{
-					GraphicalComponent graphicalComponent = component.isGraphicalComponent();
-					if (graphicalComponent != null)
-					{
-						if (graphicalComponent.isButton())
-						{
-							return new JSButton(graphicalComponent, getName(), getSolutionModel());
-						}
-						else
-						{
-							return new JSLabel(graphicalComponent, getName(), getSolutionModel());
-						}
-					}
-					else
-					{
-						Field field = component.isField();
-						if (field != null)
-						{
-							return new JSField(field, getName(), getSolutionModel());
-						}
-						else
-						{
-							TabPanel tabPanel = component.isTabPanel();
-							if (tabPanel != null)
-							{
-								return new JSTabPanel(tabPanel, getName(), getSolutionModel());
-							}
-						}
-					}
+					return getJSComponent(component);
 				}
 			}
 		}
@@ -458,41 +498,17 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	@Override
 	public JSComponent[] getComponents()
 	{
-		List<JSComponent> components = new ArrayList<JSComponent>();
 		JsArray<Component> formComponents = form.getComponents();
+		List<JSComponent> components = new ArrayList<JSComponent>(formComponents.length());
 		for (int i = 0; i < formComponents.length(); i++)
 		{
-			Component component = formComponents.get(i);
-			GraphicalComponent graphicalComponent = component.isGraphicalComponent();
-			if (graphicalComponent != null)
+			JSComponent jsComponent = getJSComponent(formComponents.get(i));
+			if (jsComponent != null)
 			{
-				if (graphicalComponent.isButton())
-				{
-					components.add(new JSButton(graphicalComponent, getName(), getSolutionModel()));
-				}
-				else
-				{
-					components.add(new JSLabel(graphicalComponent, getName(), getSolutionModel()));
-				}
-			}
-			else
-			{
-				Field field = component.isField();
-				if (field != null)
-				{
-					components.add(new JSField(field, getName(), getSolutionModel()));
-				}
-				else
-				{
-					TabPanel tabPanel = component.isTabPanel();
-					if (tabPanel != null)
-					{
-						components.add(new JSTabPanel(tabPanel, getName(), getSolutionModel()));
-					}
-				}
+				components.add(jsComponent);
 			}
 		}
-		return components.toArray(new JSComponent[0]);
+		return components.toArray(new JSComponent[components.size()]);
 	}
 
 	@Override
@@ -536,6 +552,10 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 				else if (componentType == IRepositoryConstants.FIELDS)
 				{
 					persistComponent = component.isField();
+				}
+				else if (componentType == IRepositoryConstants.PORTALS)
+				{
+					persistComponent = component.isPortal();
 				}
 				else if (componentType == IRepositoryConstants.TABPANELS)
 				{

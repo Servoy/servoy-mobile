@@ -64,7 +64,6 @@ public class JSGraphicalComponent extends JSComponent implements IBaseSMGraphica
 	public void setDataProviderID(String arg)
 	{
 		((GraphicalComponent)getBase()).setDataProviderID(arg);
-
 	}
 
 	@Override
@@ -72,7 +71,6 @@ public class JSGraphicalComponent extends JSComponent implements IBaseSMGraphica
 	public void setDisplaysTags(boolean arg)
 	{
 		((GraphicalComponent)getBase()).setDisplayTags(arg);
-
 	}
 
 	@Override
@@ -100,8 +98,6 @@ public class JSGraphicalComponent extends JSComponent implements IBaseSMGraphica
 	@Getter
 	public JSMethod getOnAction()
 	{
-		return JSMethod.getMethodFromString(((GraphicalComponent)getBase()).getOnActionMethodCall(), formName, getSolutionModel());
-
+		return JSMethod.getMethodFromString(((GraphicalComponent)getBase()).getOnActionMethodCall(), getFormName(), getSolutionModel());
 	}
-
 }

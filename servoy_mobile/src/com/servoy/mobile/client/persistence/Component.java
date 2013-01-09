@@ -1,6 +1,7 @@
 package com.servoy.mobile.client.persistence;
 
 import com.servoy.j2db.persistence.constants.IContentSpecConstantsBase;
+import com.servoy.j2db.persistence.constants.IRepositoryConstants;
 
 
 /*
@@ -26,10 +27,6 @@ import com.servoy.j2db.persistence.constants.IContentSpecConstantsBase;
  */
 public class Component extends AbstractBase
 {
-	private static final int TYPE_ID_GRAPHICALCOMPONENT = 7;
-	private static final int TYPE_ID_FIELD = 4;
-	private static final int TYPE_ID_TABPANEL = 16;
-
 	protected Component()
 	{
 	}
@@ -48,17 +45,22 @@ public class Component extends AbstractBase
 
 	public final GraphicalComponent isGraphicalComponent()
 	{
-		return getTypeID() == TYPE_ID_GRAPHICALCOMPONENT ? (GraphicalComponent)this.cast() : null;
+		return getTypeID() == IRepositoryConstants.GRAPHICALCOMPONENTS ? (GraphicalComponent)this.cast() : null;
 	}
 
 	public final Field isField()
 	{
-		return getTypeID() == TYPE_ID_FIELD ? (Field)this.cast() : null;
+		return getTypeID() == IRepositoryConstants.FIELDS ? (Field)this.cast() : null;
 	}
 
 	public final TabPanel isTabPanel()
 	{
-		return getTypeID() == TYPE_ID_TABPANEL ? (TabPanel)this.cast() : null;
+		return getTypeID() == IRepositoryConstants.TABPANELS ? (TabPanel)this.cast() : null;
+	}
+
+	public final Portal isPortal()
+	{
+		return getTypeID() == IRepositoryConstants.PORTALS ? (Portal)this.cast() : null;
 	}
 
 	public final String getSize()

@@ -20,19 +20,25 @@ package com.servoy.mobile.client.scripting.solutionmodel;
 import org.timepedia.exporter.client.NoExport;
 
 import com.servoy.mobile.client.persistence.AbstractBase;
+import com.servoy.mobile.client.persistence.Component;
+import com.servoy.mobile.client.persistence.Field;
+import com.servoy.mobile.client.persistence.GraphicalComponent;
+import com.servoy.mobile.client.persistence.Portal;
+import com.servoy.mobile.client.persistence.TabPanel;
 
 /**
  * @author acostescu
  */
 public class JSBase
 {
-
 	private final AbstractBase ab;
+	private final String formName;
 	private final JSSolutionModel model;
 
-	public JSBase(AbstractBase ab, JSSolutionModel model)
+	public JSBase(AbstractBase ab, String formName, JSSolutionModel model)
 	{
 		this.ab = ab;
+		this.formName = formName;
 		this.model = model;
 	}
 
@@ -47,4 +53,41 @@ public class JSBase
 		return model;
 	}
 
+	protected String getFormName()
+	{
+		return formName;
+	}
+
+	protected JSComponent getJSComponent(Component component)
+	{
+		GraphicalComponent graphicalComponent = component.isGraphicalComponent();
+		if (graphicalComponent != null)
+		{
+			if (graphicalComponent.isButton())
+			{
+				return new JSButton(graphicalComponent, getFormName(), getSolutionModel());
+			}
+			return new JSLabel(graphicalComponent, getFormName(), getSolutionModel());
+		}
+
+		Field field = component.isField();
+		if (field != null)
+		{
+			return new JSField(field, getFormName(), getSolutionModel());
+		}
+
+		Portal portal = component.isPortal();
+		if (portal != null)
+		{
+			return new JSPortal(portal, getFormName(), getSolutionModel());
+		}
+
+		TabPanel tabPanel = component.isTabPanel();
+		if (tabPanel != null)
+		{
+			return new JSTabPanel(tabPanel, getFormName(), getSolutionModel());
+		}
+
+		return null;
+	}
 }

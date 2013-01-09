@@ -32,12 +32,9 @@ import com.servoy.mobile.client.ui.PositionComparator;
 @Export
 public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 {
-	protected final String formName;
-
 	public JSComponent(Component c, String formName, JSSolutionModel model)
 	{
-		super(c, model);
-		this.formName = formName;
+		super(c, formName, model);
 	}
 
 	@Override

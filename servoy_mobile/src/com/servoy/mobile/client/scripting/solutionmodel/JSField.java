@@ -106,7 +106,7 @@ public class JSField extends JSComponent implements IMobileSMField, Exportable
 	@Override
 	public JSMethod getOnAction()
 	{
-		return JSMethod.getMethodFromString(((Field)getBase()).getActionMethodCall(), formName, getSolutionModel());
+		return JSMethod.getMethodFromString(((Field)getBase()).getActionMethodCall(), getFormName(), getSolutionModel());
 	}
 
 	@Setter
@@ -125,6 +125,6 @@ public class JSField extends JSComponent implements IMobileSMField, Exportable
 	@Override
 	public JSMethod getOnDataChange()
 	{
-		return JSMethod.getMethodFromString(((Field)getBase()).getDataChangeMethodCall(), formName, getSolutionModel());
+		return JSMethod.getMethodFromString(((Field)getBase()).getDataChangeMethodCall(), getFormName(), getSolutionModel());
 	}
 }

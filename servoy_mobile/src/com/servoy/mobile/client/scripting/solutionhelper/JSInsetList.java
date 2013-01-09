@@ -22,11 +22,9 @@ import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.Setter;
 
-import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm;
-import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMTabPanel;
+import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMPortal;
 import com.servoy.j2db.scripting.solutionhelper.BaseSHInsetList;
 import com.servoy.j2db.scripting.solutionhelper.BaseSolutionHelper;
-import com.servoy.mobile.client.scripting.solutionmodel.JSForm;
 import com.servoy.mobile.client.scripting.solutionmodel.JSMethod;
 
 /**
@@ -37,10 +35,9 @@ import com.servoy.mobile.client.scripting.solutionmodel.JSMethod;
 @Export
 public class JSInsetList extends BaseSHInsetList implements Exportable
 {
-
-	public JSInsetList(IBaseSMTabPanel tabPanel, IBaseSMForm listForm, BaseSolutionHelper solutionHelper)
+	public JSInsetList(IBaseSMPortal portal, BaseSolutionHelper solutionHelper)
 	{
-		super(tabPanel, listForm, solutionHelper);
+		super(portal, solutionHelper);
 	}
 
 	@Override
@@ -83,26 +80,6 @@ public class JSInsetList extends BaseSHInsetList implements Exportable
 	public void setHeaderDataProviderID(String headerDataProviderID)
 	{
 		super.setHeaderDataProviderID(headerDataProviderID);
-	}
-
-	@Override
-	public JSForm getListForm()
-	{
-		return (JSForm)super.getListForm();
-	}
-
-	@Override
-	@Getter
-	public String getDataSource()
-	{
-		return super.getDataSource();
-	}
-
-	@Override
-	@Setter
-	public void setDataSource(String dataSource)
-	{
-		super.setDataSource(dataSource);
 	}
 
 	@Override

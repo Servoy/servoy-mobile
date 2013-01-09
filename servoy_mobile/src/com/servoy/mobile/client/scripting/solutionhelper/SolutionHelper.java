@@ -21,7 +21,7 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm;
-import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMTabPanel;
+import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMPortal;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel;
 import com.servoy.j2db.scripting.solutionhelper.BaseSolutionHelper;
 import com.servoy.j2db.scripting.solutionhelper.IBaseSHInsetList;
@@ -106,9 +106,9 @@ public class SolutionHelper extends BaseSolutionHelper implements IMobilePredefi
 		return super.getIconType(button);
 	}
 
-	public JSInsetList createInsetList(JSForm form, int yLocation, String dataSource, String relationName, String headerText, String textDataProviderID)
+	public JSInsetList createInsetList(JSForm form, int yLocation, String relationName, String headerText, String textDataProviderID)
 	{
-		return (JSInsetList)super.createInsetList(form, yLocation, dataSource, relationName, headerText, textDataProviderID);
+		return (JSInsetList)super.createInsetList(form, yLocation, relationName, headerText, textDataProviderID);
 	}
 
 	@Override
@@ -123,15 +123,9 @@ public class SolutionHelper extends BaseSolutionHelper implements IMobilePredefi
 	}
 
 	@Override
-	public JSList getListForm(String formName)
+	protected IBaseSHInsetList instantiateInsetList(IBaseSMPortal portal, BaseSolutionHelper baseSolutionHelper)
 	{
-		return (JSList)super.getListForm(formName);
-	}
-
-	@Override
-	protected IBaseSHInsetList instantiateInsetList(IBaseSMForm form, IBaseSMTabPanel tabPanel, IBaseSMForm listForm, BaseSolutionHelper baseSolutionHelper)
-	{
-		return new JSInsetList(tabPanel, listForm, baseSolutionHelper);
+		return new JSInsetList(portal, baseSolutionHelper);
 	}
 
 	@Override
