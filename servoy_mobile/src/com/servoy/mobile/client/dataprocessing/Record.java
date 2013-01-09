@@ -88,13 +88,13 @@ public class Record extends Scope implements IJSRecord
 			}
 		}
 
-		int index = dataProviderID.lastIndexOf('.');
+		int index = dataProviderID.indexOf('.');
 		if (index > 0) //check if is related value request
 		{
-			String partName = dataProviderID.substring(0, index);
+			String relationName = dataProviderID.substring(0, index);
 			String restName = dataProviderID.substring(index + 1);
 
-			FoundSet foundSet = getRelatedFoundSet(partName);
+			FoundSet foundSet = getRelatedFoundSet(relationName);
 			if (foundSet != null)
 			{
 				//related data
