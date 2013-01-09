@@ -579,7 +579,16 @@ public class Utils implements Exportable
 		{
 			array = new Object[jsArray.length()];
 			for (int i = 0; i < jsArray.length(); i++)
-				array[i] = jsArray.getObject(i);
+			{
+				try
+				{
+					array[i] = jsArray.getObject(i);
+				}
+				catch (Exception e)
+				{
+					array[i] = jsArray.getNumberObject(i);
+				}
+			}
 		}
 
 		if (array == null || array.length < 1) return -1;
