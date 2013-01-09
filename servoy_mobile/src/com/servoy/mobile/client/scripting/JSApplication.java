@@ -20,6 +20,7 @@ package com.servoy.mobile.client.scripting;
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
+import org.timepedia.exporter.client.NoExport;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -64,17 +65,11 @@ public class JSApplication implements Exportable, IJSApplication
 	@Override
 	public void setValueListItems(String name, Object[] displayValues)
 	{
-		setValueListItems(name, displayValues, null);
+		setValueListItems(name, displayValues, (JsArrayMixed)null);
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.IJSApplication#setValueListItems(java.lang.String, java.lang.Object[], java.lang.Object[])
-	 */
-	@Override
-	public void setValueListItems(String name, Object[] displayValues, Object[] realValues)
+	public void setValueListItems(String name, Object[] displayValues, JsArrayMixed realValues)
 	{
 		ValueList list = application.getSolution().getValueList(name);
 		JsArrayString display = JavaScriptObject.createArray().cast();
@@ -85,27 +80,19 @@ public class JSApplication implements Exportable, IJSApplication
 				display.push(object.toString());
 			}
 		}
-		JsArrayMixed real = JavaScriptObject.createArray().cast();
-		if (realValues != null)
-		{
-			for (Object object : realValues)
-			{
-				if (object instanceof String)
-				{
-					real.push((String)object);
-				}
-				else if (object instanceof Number)
-				{
-					real.push(((Number)object).doubleValue());
-				}
-				else if (object == null || object instanceof JavaScriptObject)
-				{
-					real.push((JavaScriptObject)object);
-				}
-			}
-		}
-		list.setValues(display, real);
 
+		list.setValues(display, realValues == null ? (JsArrayMixed)JavaScriptObject.createArray().cast() : realValues);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.j2db.scripting.api.IJSApplication#setValueListItems(java.lang.String, java.lang.Object[], java.lang.Object[])
+	 */
+	@Override
+	@NoExport
+	public void setValueListItems(String name, Object[] displayValues, Object[] realValues)
+	{
 	}
 
 	private native void export(Object object)
