@@ -24,6 +24,7 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
+import com.servoy.j2db.persistence.constants.IColumnTypeConstants;
 
 /**
  * @author jblok
@@ -43,6 +44,22 @@ public class RowDescription extends JavaScriptObject
 		if (isNumber(dataProviderID))
 		{
 			return new Double(getNumberValue(dataProviderID));
+		}
+		return getValueImpl(dataProviderID);
+
+	}
+
+	public final Object getValue(String dataProviderID, int type)
+	{
+		switch (type)
+		{
+			case IColumnTypeConstants.INTEGER :
+				return new Integer((int)getNumberValue(dataProviderID));
+			case IColumnTypeConstants.NUMBER :
+				return new Double(getNumberValue(dataProviderID));
+			case IColumnTypeConstants.DATETIME :
+				return new Date((long)getNumberValue(dataProviderID));
+
 		}
 		return getValueImpl(dataProviderID);
 

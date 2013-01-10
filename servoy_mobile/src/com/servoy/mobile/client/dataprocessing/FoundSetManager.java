@@ -38,6 +38,7 @@ import com.servoy.mobile.client.dto.RecordDescription;
 import com.servoy.mobile.client.dto.RelationDescription;
 import com.servoy.mobile.client.dto.RowDescription;
 import com.servoy.mobile.client.scripting.Scope;
+import com.servoy.mobile.client.util.DataproviderIdAndTypeHolder;
 import com.servoy.mobile.client.util.Utils;
 
 /**
@@ -308,7 +309,7 @@ public class FoundSetManager
 
 	void storeRowData(String entityName, ArrayList<RowDescription> rowData, boolean local)
 	{
-		String dataProviderID = entities.getPKDataProviderID(entityName);
+		DataproviderIdAndTypeHolder dataProviderID = entities.getPKDataProviderID(entityName);
 		if (dataProviderID == null) throw new IllegalStateException(application.getMessages().cannotWorkWithoutPK());
 
 		int oldSize = changes.size();
@@ -316,7 +317,7 @@ public class FoundSetManager
 		//store data in offline db
 		for (RowDescription row : rowData)
 		{
-			Object pk = row.getValue(dataProviderID);
+			Object pk = row.getValue(dataProviderID.getDataproviderId(), dataProviderID.getType());
 			String key = entityName + '|' + pk;
 			if (local)
 			{
@@ -407,7 +408,7 @@ public class FoundSetManager
 	RowDescription createRowDescription(FoundSet fs, Object pkval)
 	{
 		RowDescription retval = RowDescription.newInstance();
-		retval.setValue(entities.getPKDataProviderID(fs.getEntityName()), pkval);
+		retval.setValue(entities.getPKDataProviderID(fs.getEntityName()).getDataproviderId(), pkval);
 		if (fs instanceof RelatedFoundSet)
 		{
 			RelatedFoundSet rfs = (RelatedFoundSet)fs;

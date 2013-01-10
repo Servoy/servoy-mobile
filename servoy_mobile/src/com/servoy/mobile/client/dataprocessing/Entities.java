@@ -25,6 +25,7 @@ import com.servoy.mobile.client.dto.DataProviderDescription;
 import com.servoy.mobile.client.dto.EntityDescription;
 import com.servoy.mobile.client.dto.RelationDescription;
 import com.servoy.mobile.client.dto.RowDescription;
+import com.servoy.mobile.client.util.DataproviderIdAndTypeHolder;
 
 /**
  * Helper class to do fast lookups on EntityDescriptions
@@ -94,11 +95,11 @@ public class Entities
 		}
 	}
 
-	private final HashMap<String, String> pks = new HashMap<String, String>();
+	private final HashMap<String, DataproviderIdAndTypeHolder> pks = new HashMap<String, DataproviderIdAndTypeHolder>();
 
-	String getPKDataProviderID(String entityName)
+	DataproviderIdAndTypeHolder getPKDataProviderID(String entityName)
 	{
-		String retval = pks.get(entityName);
+		DataproviderIdAndTypeHolder retval = pks.get(entityName);
 		if (retval == null)
 		{
 			EntityDescription ed = getDescription(entityName);
