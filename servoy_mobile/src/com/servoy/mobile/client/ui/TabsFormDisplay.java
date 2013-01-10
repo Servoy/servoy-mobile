@@ -159,6 +159,7 @@ public class TabsFormDisplay extends FormDisplay implements IFormPageHeaderDecor
 		if (tabPanel.getTabOrientation() == TabPanel.ORIENTATION_BOTTOM)
 		{
 			if (footerComponent == null) footerComponent = new JQMFooter();
+			footerComponent.setTheme("b"); //$NON-NLS-1$
 			footerComponent.add(getNavigatonBar());
 		}
 		return footerComponent;

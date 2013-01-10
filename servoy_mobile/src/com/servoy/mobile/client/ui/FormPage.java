@@ -200,6 +200,7 @@ public class FormPage extends JQMPage
 		if (footerComponents.size() < 1) return null;
 		Collections.sort(footerComponents, PositionComparator.XY_COMPARATOR);
 		JQMFooter footerComponent = new JQMFooter();
+		footerComponent.setTheme("b"); //$NON-NLS-1$
 		for (Component c : footerComponents)
 			footerComponent.add(createWidget(c));
 
