@@ -240,6 +240,11 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		return records.indexOf(record);
 	}
 
+	public void deleteRecord(Record record)
+	{
+		foundSetDescription.removeRecord(getRecordIndex(record));
+	}
+
 	public FoundSetManager getFoundSetManager()
 	{
 		return foundSetManager;

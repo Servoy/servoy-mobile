@@ -224,9 +224,9 @@ public class Record extends Scope implements IJSRecord
 		this.isNew = function() {
 			return this.@com.servoy.mobile.client.dataprocessing.Record::isNew()();
 		}
-		//		this.revertChanges = function() {
-		//			return this.@com.servoy.mobile.client.dataprocessing.Record::revertChanges()();
-		//		}
+		this.revertChanges = function() {
+			return this.@com.servoy.mobile.client.dataprocessing.Record::revertChanges()();
+		}
 		//		this.getChangedData = function() {
 		//			return this.@com.servoy.mobile.client.dataprocessing.Record::getChangedData()();
 		//		}
@@ -286,6 +286,23 @@ public class Record extends Scope implements IJSRecord
 	public boolean isNew()
 	{
 		return getRow().isCreatedOnDevice(); // TODO is created on device and is still editing??
+	}
+
+	@Override
+	public void revertChanges()
+	{
+		clearRelationCaches();
+
+		RowDescription storageDescription = parent.getRowDescription(getPK());
+		if (storageDescription != null)
+		{
+			rowDescription = storageDescription;
+		}
+		else
+		{
+			parent.deleteRecord(this);
+		}
+		parent.getFoundSetManager().getEditRecordList().stopEditing(this);
 	}
 
 	@Override

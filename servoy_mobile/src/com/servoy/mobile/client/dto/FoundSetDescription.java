@@ -132,6 +132,10 @@ public class FoundSetDescription extends JavaScriptObject
 		return this.records;
 	}-*/;
 
+	public final native void removeRecord(int index) /*-{
+		this.records.splice(index, 1);
+	}-*/;
+
 	public final ArrayList<Object> getPKs()
 	{
 		ArrayList<Object> retval = new ArrayList<Object>();

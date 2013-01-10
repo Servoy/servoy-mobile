@@ -79,4 +79,9 @@ public class EditRecordList
 	{
 		return editedRecords.contains(record);
 	}
+
+	public void stopEditing(Record record)
+	{
+		editedRecords.remove(record);
+	}
 }
