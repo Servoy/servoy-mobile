@@ -464,6 +464,7 @@ public class FoundSetManager
 		return null;
 	}
 
+	//seeks trough all data for matching rhs/foreign records and add these to rds arg
 	private void seek(String entityName, JsArrayString foreignColumns, Object[] coldata, JsArray<RecordDescription> rds)
 	{
 		String entityNamePlusPipe = entityName + '|';
