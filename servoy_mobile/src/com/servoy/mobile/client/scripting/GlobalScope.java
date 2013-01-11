@@ -3,6 +3,7 @@ package com.servoy.mobile.client.scripting;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.servoy.j2db.persistence.constants.IColumnTypeConstants;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.util.Utils;
 
@@ -42,7 +43,7 @@ public class GlobalScope extends Scope
 	{
 		Integer type = variableTypes.get(variable);
 		if (type != null) return type.intValue();
-		return -4; // IColumnTypes.MEDIA;
+		return IColumnTypeConstants.MEDIA;
 	}
 
 	@Override
