@@ -23,6 +23,7 @@ import java.util.Map;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
+import com.servoy.j2db.persistence.constants.IColumnTypeConstants;
 import com.servoy.j2db.scripting.api.IJSFoundSet;
 import com.servoy.j2db.scripting.api.IJSRecord;
 import com.servoy.mobile.client.dto.DataProviderDescription;
@@ -112,12 +113,12 @@ public class Record extends Scope implements IJSRecord
 		RowDescription rd = getRowDescription();
 		if (rd == null || rd.getValue(dataProviderID) == null) return null;
 		int type = getVariableType(dataProviderID);
-		if (type == 93)
+		if (type == IColumnTypeConstants.DATETIME)
 		{
 			double value = rd.getNumberValue(dataProviderID);
 			return new Date((long)value);
 		}
-		else if (type == 8 || type == 4)
+		else if (type == IColumnTypeConstants.NUMBER || type == IColumnTypeConstants.INTEGER)
 		{
 			double value = rd.getNumberValue(dataProviderID);
 			return new Double(value);
@@ -207,7 +208,7 @@ public class Record extends Scope implements IJSRecord
 	{
 		Integer type = variableTypes.get(variable);
 		if (type != null) return type.intValue();
-		return -4; // IColumnTypes.MEDIA;
+		return IColumnTypeConstants.MEDIA;
 	}
 
 	public native void export()

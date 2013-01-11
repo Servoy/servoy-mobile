@@ -21,6 +21,7 @@ import java.util.HashMap;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.json.client.JSONArray;
+import com.servoy.j2db.persistence.constants.IColumnTypeConstants;
 import com.servoy.mobile.client.dto.DataProviderDescription;
 import com.servoy.mobile.client.dto.EntityDescription;
 import com.servoy.mobile.client.dto.RelationDescription;
@@ -34,8 +35,8 @@ import com.servoy.mobile.client.util.DataproviderIdAndTypeHolder;
 @SuppressWarnings("nls")
 public class Entities
 {
-	private static final int MODIFICATION_DATE_TYPE = 93;//timestamp from java.sql.Types
-	private static final int CREATED_ON_DEVICE_TYPE = 4;//int from java.sql.Types
+	private static final int MODIFICATION_DATE_TYPE = IColumnTypeConstants.DATETIME;//timestamp from java.sql.Types
+	private static final int CREATED_ON_DEVICE_TYPE = IColumnTypeConstants.INTEGER;//int from java.sql.Types
 
 	private final JsArray<EntityDescription> entities;
 	private final HashMap<String, EntityDescription> eds = new HashMap<String, EntityDescription>();

@@ -25,6 +25,7 @@ import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.servoy.j2db.persistence.constants.IColumnTypeConstants;
 import com.servoy.j2db.scripting.api.IJSFoundSet;
 import com.servoy.mobile.client.dto.FoundSetDescription;
 import com.servoy.mobile.client.dto.RecordDescription;
@@ -73,7 +74,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		{
 			return record.getVariableType(variable);
 		}
-		return -4; // IColumnTypes.MEDIA;
+		return IColumnTypeConstants.MEDIA;
 	}
 
 	/*
