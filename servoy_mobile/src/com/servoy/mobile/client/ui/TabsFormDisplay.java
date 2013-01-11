@@ -25,6 +25,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.persistence.Form;
+import com.servoy.mobile.client.persistence.Part;
 import com.servoy.mobile.client.persistence.Solution;
 import com.servoy.mobile.client.persistence.Tab;
 import com.servoy.mobile.client.persistence.TabPanel;
@@ -153,13 +154,13 @@ public class TabsFormDisplay extends FormDisplay implements IFormPageHeaderDecor
 	 * @see com.servoy.mobile.client.ui.IFooterDecorator#decorateFooter(com.sksamuel.jqm4gwt.toolbar.JQMFooter)
 	 */
 	@Override
-	public JQMFooter decorateFooter(JQMFooter footer)
+	public JQMFooter decorateFooter(Part footerPart, JQMFooter footer)
 	{
 		JQMFooter footerComponent = footer;
 		if (tabPanel.getTabOrientation() == TabPanel.ORIENTATION_BOTTOM)
 		{
 			if (footerComponent == null) footerComponent = new JQMFooter();
-			footerComponent.setTheme("b"); //$NON-NLS-1$
+			if (footerPart != null) footerComponent.setTheme(footerPart.getStyleClass());
 			footerComponent.add(getNavigatonBar());
 		}
 		return footerComponent;
@@ -171,7 +172,7 @@ public class TabsFormDisplay extends FormDisplay implements IFormPageHeaderDecor
 	 * @see com.servoy.mobile.client.ui.IHeaderDecorator#decorateHeader(com.sksamuel.jqm4gwt.toolbar.JQMHeader)
 	 */
 	@Override
-	public JQMHeader decorateHeader(JQMHeader header)
+	public JQMHeader decorateHeader(Part headerPart, JQMHeader header)
 	{
 		JQMHeader headerComponent = header;
 		if (tabPanel.getTabOrientation() == TabPanel.ORIENTATION_TOP)
@@ -179,7 +180,7 @@ public class TabsFormDisplay extends FormDisplay implements IFormPageHeaderDecor
 			if (headerComponent == null)
 			{
 				headerComponent = new JQMHeader(""); //$NON-NLS-1$
-				headerComponent.setTheme("b"); //$NON-NLS-1$
+				if (headerPart != null) headerComponent.setTheme(headerPart.getStyleClass());
 			}
 			headerComponent.add(getNavigatonBar());
 		}

@@ -1,5 +1,5 @@
 /*
- This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
+ This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2013 Servoy BV
 
  This program is free software; you can redistribute it and/or modify it under
  the terms of the GNU Affero General Public License as published by the Free
@@ -15,17 +15,22 @@
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
-package com.servoy.mobile.client.ui;
+package com.servoy.mobile.client.persistence;
 
-import com.servoy.mobile.client.persistence.Part;
-import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
+import com.servoy.j2db.persistence.constants.IContentSpecConstantsBase;
 
 /**
- * Interface for form page header decorating
- * 
  * @author gboros
+ *
  */
-public interface IFormPageHeaderDecorator
+public class Part extends Component
 {
-	public JQMHeader decorateHeader(Part headerPart, JQMHeader header);
+	protected Part()
+	{
+	}
+
+	public final int getType()
+	{
+		return getAttributeValueInt(IContentSpecConstantsBase.PROPERTY_PARTTYPE, 0);
+	}
 }

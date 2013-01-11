@@ -22,6 +22,7 @@ import java.util.Collections;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.user.client.ui.Widget;
+import com.servoy.j2db.persistence.constants.IPartConstants;
 import com.servoy.j2db.scripting.solutionhelper.IMobileProperties;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
@@ -32,6 +33,7 @@ import com.servoy.mobile.client.persistence.AbstractBase;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
+import com.servoy.mobile.client.persistence.Part;
 import com.servoy.mobile.client.scripting.IRuntimeComponent;
 import com.servoy.mobile.client.scripting.IRuntimeComponentProvider;
 import com.sksamuel.jqm4gwt.JQMPage;
@@ -67,73 +69,78 @@ public class FormPage extends JQMPage
 		ArrayList<Component> footerComponents = new ArrayList<Component>();
 		ArrayList<Component> contentComponents = new ArrayList<Component>();
 
+		Part headerPart = null, footerPart = null;
+
 		for (int i = 0; i < formComponents.length(); i++)
 		{
 			Component component = formComponents.get(i);
-			AbstractBase.MobileProperties mobileProperties = component.getMobileProperties();
-			if (mobileProperties != null)
+			Part part = component.isPart();
+			if (part != null)
 			{
-				if (mobileProperties.getPropertyValue(IMobileProperties.HEADER_TEXT).booleanValue())
+				if (part.getType() == IPartConstants.HEADER)
 				{
-					headerLabel = component;
-					continue;
+					headerPart = part;
 				}
-				else if (mobileProperties.getPropertyValue(IMobileProperties.HEADER_LEFT_BUTTON).booleanValue())
+				else if (part.getType() == IPartConstants.FOOTER)
 				{
-					headerLeftButton = component;
-					continue;
-				}
-				else if (mobileProperties.getPropertyValue(IMobileProperties.HEADER_RIGHT_BUTTON).booleanValue())
-				{
-					headerRightButton = component;
-					continue;
-				}
-				else if (mobileProperties.getPropertyValue(IMobileProperties.FOOTER_ITEM).booleanValue())
-				{
-					footerComponents.add(component);
-					continue;
+					footerPart = part;
 				}
 			}
-			contentComponents.add(component);
+			else
+			{
+				AbstractBase.MobileProperties mobileProperties = component.getMobileProperties();
+				if (mobileProperties != null)
+				{
+					if (mobileProperties.getPropertyValue(IMobileProperties.HEADER_TEXT).booleanValue())
+					{
+						headerLabel = component;
+						continue;
+					}
+					else if (mobileProperties.getPropertyValue(IMobileProperties.HEADER_LEFT_BUTTON).booleanValue())
+					{
+						headerLeftButton = component;
+						continue;
+					}
+					else if (mobileProperties.getPropertyValue(IMobileProperties.HEADER_RIGHT_BUTTON).booleanValue())
+					{
+						headerRightButton = component;
+						continue;
+					}
+					else if (mobileProperties.getPropertyValue(IMobileProperties.FOOTER_ITEM).booleanValue())
+					{
+						footerComponents.add(component);
+						continue;
+					}
+				}
+
+				contentComponents.add(component);
+			}
 		}
 
-		JQMHeader componentHeader = createHeader(headerLabel, headerLeftButton, headerRightButton);
+		JQMHeader componentHeader = createHeader(headerPart, headerLabel, headerLeftButton, headerRightButton);
 		if (componentHeader != null) add(componentHeader);
 		createContent(contentComponents);
-		JQMFooter componentFooter = createFooter(footerComponents);
+		JQMFooter componentFooter = createFooter(footerPart, footerComponents);
 		if (componentFooter != null) add(componentFooter);
 	}
 
-	public JQMHeader createHeader(Component label, Component leftButton, Component rightButton)
+	public JQMHeader createHeader(Part headerPart, Component label, Component leftButton, Component rightButton)
 	{
 		JQMButton leftToolbarButton = (JQMButton)createWidget(leftButton);
 		JQMButton rightToolbarButton = (JQMButton)createWidget(rightButton);
 
 		JQMHeader headerComponent = null;
-		if (label != null)
-		{
-			headerComponent = (JQMHeader)createWidget(label);
-		}
+		if (label != null) headerComponent = (JQMHeader)createWidget(label);
 
 		if (leftToolbarButton != null || rightToolbarButton != null)
 		{
-			if (headerComponent == null)
-			{
-				headerComponent = new JQMHeader(""); //$NON-NLS-1$
-				headerComponent.setTheme("b"); //$NON-NLS-1$
-			}
-
-			if (leftToolbarButton != null)
-			{
-				headerComponent.setLeftButton(leftToolbarButton);
-			}
-			if (rightToolbarButton != null)
-			{
-				headerComponent.setRightButton(rightToolbarButton);
-			}
+			if (headerComponent == null) headerComponent = new JQMHeader(""); //$NON-NLS-1$
+			if (leftToolbarButton != null) headerComponent.setLeftButton(leftToolbarButton);
+			if (rightToolbarButton != null) headerComponent.setRightButton(rightToolbarButton);
 		}
 
-		if (headerDecorator != null) headerDecorator.decorateHeader(headerComponent);
+		if (headerPart != null) headerComponent.setTheme(headerPart.getStyleClass());
+		if (headerDecorator != null) headerDecorator.decorateHeader(headerPart, headerComponent);
 
 		return headerComponent;
 	}
@@ -195,16 +202,16 @@ public class FormPage extends JQMPage
 		}
 	}
 
-	public JQMFooter createFooter(ArrayList<Component> footerComponents)
+	public JQMFooter createFooter(Part footerPart, ArrayList<Component> footerComponents)
 	{
 		if (footerComponents.size() < 1) return null;
 		Collections.sort(footerComponents, PositionComparator.XY_COMPARATOR);
 		JQMFooter footerComponent = new JQMFooter();
-		footerComponent.setTheme("b"); //$NON-NLS-1$
+		if (footerPart != null) footerComponent.setTheme(footerPart.getStyleClass());
 		for (Component c : footerComponents)
 			footerComponent.add(createWidget(c));
 
-		if (footerDecorator != null) footerDecorator.decorateFooter(footerComponent);
+		if (footerDecorator != null) footerDecorator.decorateFooter(footerPart, footerComponent);
 
 		return footerComponent;
 	}

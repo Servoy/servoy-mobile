@@ -63,6 +63,11 @@ public class Component extends AbstractBase
 		return getTypeID() == IRepositoryConstants.PORTALS ? (Portal)this.cast() : null;
 	}
 
+	public final Part isPart()
+	{
+		return getTypeID() == IRepositoryConstants.PARTS ? (Part)this.cast() : null;
+	}
+
 	public final String getSize()
 	{
 		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_SIZE, null);

@@ -17,6 +17,7 @@
 
 package com.servoy.mobile.client.ui;
 
+import com.servoy.mobile.client.persistence.Part;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 
 /**
@@ -26,5 +27,5 @@ import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
  */
 public interface IFormPageFooterDecorator
 {
-	public JQMFooter decorateFooter(JQMFooter footer);
+	public JQMFooter decorateFooter(Part footerPart, JQMFooter footer);
 }
