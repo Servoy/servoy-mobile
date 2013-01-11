@@ -332,7 +332,7 @@ public class FoundSetManager
 		}
 	}
 
-	public void updateChangesInLocalStorage()
+	void updateChangesInLocalStorage()
 	{
 		JSONArray jsona = new JSONArray();
 		for (int i = 0; i < changes.size(); i++)
