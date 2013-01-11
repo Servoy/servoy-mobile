@@ -33,9 +33,9 @@ import com.servoy.mobile.client.persistence.Tab;
 @Export
 public class JSTab extends JSBase implements IBaseSMTab, Exportable
 {
-	public JSTab(Tab tab, String formName, JSSolutionModel model)
+	public JSTab(Tab tab, JSSolutionModel model, JSBase parent)
 	{
-		super(tab, formName, model);
+		super(tab, model, parent);
 	}
 
 	@Getter
@@ -54,6 +54,7 @@ public class JSTab extends JSBase implements IBaseSMTab, Exportable
 	@Override
 	public void setContainsForm(IBaseSMForm form)
 	{
+		cloneIfNeeded();
 		((Tab)getBase()).setContainsFormID(((Form)((JSForm)form).getBase()).getUUID());
 	}
 
@@ -66,6 +67,7 @@ public class JSTab extends JSBase implements IBaseSMTab, Exportable
 	@Override
 	public void setRelationName(String arg)
 	{
+		cloneIfNeeded();
 		((Tab)getBase()).setRelationName(arg);
 
 	}

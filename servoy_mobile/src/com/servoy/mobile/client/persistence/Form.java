@@ -30,6 +30,13 @@ public class Form extends AbstractBase
 	{
 	}
 
+	public final Form cloneDeep()
+	{
+		Form f = (Form)Utils.cloneDeep(this).cast();
+		f.markAsCopy();
+		return f;
+	}
+
 	public final TabPanel createNewTabPanel()
 	{
 		return createEmptyChildComponent(Utils.createStringUUID(), IRepositoryConstants.TABPANELS).isTabPanel();

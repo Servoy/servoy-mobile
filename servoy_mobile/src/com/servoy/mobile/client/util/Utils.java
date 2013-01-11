@@ -13,6 +13,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
 import com.servoy.j2db.scripting.solutionhelper.IPredefinedIconConstants;
 import com.sksamuel.jqm4gwt.DataIcon;
 
@@ -326,6 +327,12 @@ public class Utils implements Exportable
 			return numberToString.substring(0, i);
 		}
 		return numberToString;
+	}
+
+	// it will need a further .cast() to really be useable
+	public static JavaScriptObject cloneDeep(JavaScriptObject o)
+	{
+		return JSONParser.parseLenient(new JSONObject(o).toString()).isObject().getJavaScriptObject();
 	}
 
 	public static final double DEFAULT_EQUALS_PRECISION = 1e-7d;

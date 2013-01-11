@@ -24,6 +24,10 @@ import org.timepedia.exporter.client.Setter;
 
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMComponent;
 import com.servoy.mobile.client.persistence.Component;
+import com.servoy.mobile.client.persistence.Field;
+import com.servoy.mobile.client.persistence.GraphicalComponent;
+import com.servoy.mobile.client.persistence.Portal;
+import com.servoy.mobile.client.persistence.TabPanel;
 import com.servoy.mobile.client.ui.PositionComparator;
 
 /**
@@ -32,9 +36,52 @@ import com.servoy.mobile.client.ui.PositionComparator;
 @Export
 public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 {
-	public JSComponent(Component c, String formName, JSSolutionModel model)
+	protected final String formName;
+
+	public JSComponent(Component c, JSSolutionModel model, JSBase parent)
 	{
-		super(c, formName, model);
+		super(c, model, parent);
+		JSBase p = parent;
+		while (p != null)
+		{
+			if (p instanceof JSForm) break;
+			p = p.getParent();
+		}
+		if (p instanceof JSForm) formName = ((JSForm)p).getName();
+		else formName = null; // should never happen
+	}
+
+	protected static JSComponent getJSComponent(Component component, JSSolutionModel model, JSBase parent)
+	{
+		GraphicalComponent graphicalComponent = component.isGraphicalComponent();
+		if (graphicalComponent != null)
+		{
+			if (graphicalComponent.isButton())
+			{
+				return new JSButton(graphicalComponent, model, parent);
+			}
+			return new JSLabel(graphicalComponent, model, parent);
+		}
+
+		Field field = component.isField();
+		if (field != null)
+		{
+			return new JSField(field, model, parent);
+		}
+
+		Portal portal = component.isPortal();
+		if (portal != null)
+		{
+			return new JSPortal(portal, model, (JSForm)parent);
+		}
+
+		TabPanel tabPanel = component.isTabPanel();
+		if (tabPanel != null)
+		{
+			return new JSTabPanel(tabPanel, model, (JSForm)parent);
+		}
+
+		return null;
 	}
 
 	@Override
@@ -124,6 +171,7 @@ public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 	@Setter
 	public void setX(int x)
 	{
+		cloneIfNeeded();
 		((Component)getBase()).setLocation(x, getY());
 	}
 
@@ -131,14 +179,15 @@ public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 	@Setter
 	public void setY(int y)
 	{
+		cloneIfNeeded();
 		((Component)getBase()).setLocation(getX(), y);
-
 	}
 
 	@Override
 	@Setter
 	public void setName(String arg)
 	{
+		cloneIfNeeded();
 		getBase().setName(arg);
 	}
 
@@ -146,6 +195,7 @@ public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 	@Setter
 	public void setEnabled(boolean arg)
 	{
+		cloneIfNeeded();
 		((Component)getBase()).setEnabled(arg);
 	}
 
@@ -153,6 +203,7 @@ public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 	@Setter
 	public void setVisible(boolean arg)
 	{
+		cloneIfNeeded();
 		((Component)getBase()).setVisible(arg);
 	}
 
@@ -160,6 +211,7 @@ public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 	@Setter
 	public void setWidth(int width)
 	{
+		cloneIfNeeded();
 		((Component)getBase()).setSize(width, getHeight());
 	}
 
@@ -167,6 +219,7 @@ public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 	@Setter
 	public void setHeight(int height)
 	{
+		cloneIfNeeded();
 		((Component)getBase()).setSize(getWidth(), height);
 	}
 
@@ -174,6 +227,7 @@ public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 	@Setter
 	public void setGroupID(String id)
 	{
+		cloneIfNeeded();
 		((Component)getBase()).setGroupID(id);
 	}
 
@@ -181,6 +235,7 @@ public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 	@Setter
 	public void setStyleClass(String arg)
 	{
+		cloneIfNeeded();
 		((Component)getBase()).setStyleClass(arg);
 	}
 

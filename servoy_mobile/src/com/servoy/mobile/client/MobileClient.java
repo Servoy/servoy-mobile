@@ -26,6 +26,7 @@ import com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.dataprocessing.FoundSetManager;
 import com.servoy.mobile.client.dataprocessing.OfflineDataProxy;
+import com.servoy.mobile.client.persistence.FlattenedSolution;
 import com.servoy.mobile.client.persistence.Solution;
 import com.servoy.mobile.client.scripting.JSApplication;
 import com.servoy.mobile.client.scripting.JSDatabaseManager;
@@ -66,7 +67,7 @@ public class MobileClient implements EntryPoint
 	private FormManager formManager;
 	private JSSolutionModel solutionModel;
 	private ScriptEngine scriptEngine;
-	private Solution solution;
+	private FlattenedSolution solution;
 	private SolutionI18nProvider i18nProvider;
 
 
@@ -99,7 +100,7 @@ public class MobileClient implements EntryPoint
 		// non solution related (internal) API
 		GWT.create(Utils.class);
 
-		solution = createSolution();
+		solution = new FlattenedSolution(createSolution());
 		i18nProvider = new SolutionI18nProvider(solution, getLocale());
 		foundSetManager = new FoundSetManager(this);
 		offlineDataProxy = new OfflineDataProxy(foundSetManager, getServerURL());
@@ -295,7 +296,7 @@ public class MobileClient implements EntryPoint
 		return foundSetManager;
 	}
 
-	public Solution getSolution()
+	public FlattenedSolution getSolution()
 	{
 		return solution;
 	}

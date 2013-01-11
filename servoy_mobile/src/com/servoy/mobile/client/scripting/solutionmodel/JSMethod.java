@@ -33,9 +33,9 @@ import com.servoy.mobile.client.scripting.ScriptEngine;
 public class JSMethod extends JSScriptPart implements IBaseSMMethod, Exportable
 {
 
-	public JSMethod(String parentScopeName, String scopeName, String name, JSSolutionModel model)
+	public JSMethod(String parentScopeName, String scopeName, String name, JSSolutionModel model, JSForm parentForm)
 	{
-		super(parentScopeName, scopeName, name, model);
+		super(parentScopeName, scopeName, name, model, parentForm);
 	}
 
 	@Getter
@@ -75,6 +75,7 @@ public class JSMethod extends JSScriptPart implements IBaseSMMethod, Exportable
 	public void setCode(String content)
 	{
 		if (content == null) return;
+		cloneFormIfNeeded();
 		String[] sr = splitCodeFromName(content);
 		if (sr != null && sr.length == 2)
 		{
@@ -97,7 +98,7 @@ public class JSMethod extends JSScriptPart implements IBaseSMMethod, Exportable
 	}
 
 	@NoExport
-	public static JSMethod getMethodFromString(String methodCall, String formName, JSSolutionModel solutionModel)
+	public static JSMethod getMethodFromString(String methodCall, JSForm form, JSSolutionModel solutionModel)
 	{
 		if (methodCall != null && methodCall.contains("("))
 		{
@@ -105,16 +106,15 @@ public class JSMethod extends JSScriptPart implements IBaseSMMethod, Exportable
 			String[] callParts = methodCall.split("\\.");
 			if (callParts.length == 1)
 			{
-				return new JSMethod(ScriptEngine.FORMS, formName, callParts[0], solutionModel);
+				return new JSMethod(ScriptEngine.FORMS, form.getName(), callParts[0], solutionModel, form);
 			}
 			else
 			{
-				return new JSMethod(ScriptEngine.SCOPES, callParts[callParts.length - 2], callParts[callParts.length - 1], solutionModel);
+				return new JSMethod(ScriptEngine.SCOPES, callParts[callParts.length - 2], callParts[callParts.length - 1], solutionModel, null);
 			}
 		}
 		return null;
 	}
-
 
 	@Override
 	@NoExport

@@ -18,7 +18,7 @@
 package com.servoy.mobile.client;
 
 import com.servoy.j2db.util.I18NProvider;
-import com.servoy.mobile.client.persistence.Solution;
+import com.servoy.mobile.client.persistence.FlattenedSolution;
 
 /**
  * @author lvostinar
@@ -27,10 +27,10 @@ import com.servoy.mobile.client.persistence.Solution;
 public class SolutionI18nProvider implements I18NProvider
 {
 
-	private final Solution solution;
+	private final FlattenedSolution solution;
 	private String locale;
 
-	public SolutionI18nProvider(Solution solution, String locale)
+	public SolutionI18nProvider(FlattenedSolution solution, String locale)
 	{
 		this.solution = solution;
 		this.locale = locale;

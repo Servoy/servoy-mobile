@@ -26,7 +26,7 @@ import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.Part;
-import com.servoy.mobile.client.persistence.Solution;
+import com.servoy.mobile.client.persistence.FlattenedSolution;
 import com.servoy.mobile.client.persistence.Tab;
 import com.servoy.mobile.client.persistence.TabPanel;
 import com.sksamuel.jqm4gwt.JQMContext;
@@ -83,7 +83,7 @@ public class TabsFormDisplay extends FormDisplay implements IFormPageHeaderDecor
 		if (tabFormController == null)
 		{
 			JsArray<Tab> tabs = tabPanel.getTabs();
-			Solution solutionModel = application.getSolution();
+			FlattenedSolution solutionModel = application.getSolution();
 			for (int i = 0; i < tabs.length(); i++)
 			{
 				Form tabForm = solutionModel.getFormByUUID(tabs.get(i).getContainsFormID());
@@ -114,7 +114,7 @@ public class TabsFormDisplay extends FormDisplay implements IFormPageHeaderDecor
 		NavigationBar()
 		{
 			JsArray<Tab> tabs = tabPanel.getTabs();
-			Solution solutionModel = application.getSolution();
+			FlattenedSolution solutionModel = application.getSolution();
 			for (int i = 0; i < tabs.length(); i++)
 			{
 				String tabFormID = tabs.get(i).getContainsFormID();

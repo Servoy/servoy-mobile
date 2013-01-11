@@ -36,9 +36,9 @@ import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMField;
 public class JSField extends JSComponent implements IMobileSMField, Exportable
 {
 
-	public JSField(Field f, String formName, JSSolutionModel model)
+	public JSField(Field f, JSSolutionModel model, JSBase parent)
 	{
-		super(f, formName, model);
+		super(f, model, parent);
 	}
 
 	@Override
@@ -66,14 +66,15 @@ public class JSField extends JSComponent implements IMobileSMField, Exportable
 	@Override
 	public void setDataProviderID(String arg)
 	{
+		cloneIfNeeded();
 		((Field)getBase()).setDataProviderID(arg);
-
 	}
 
 	@Setter
 	@Override
 	public void setDisplayType(int arg)
 	{
+		cloneIfNeeded();
 		((Field)getBase()).setDisplayType(arg);
 	}
 
@@ -82,11 +83,11 @@ public class JSField extends JSComponent implements IMobileSMField, Exportable
 	public void setValuelist(IBaseSMValueList valuelist)
 	{
 		setValuelist((JSValueList)valuelist);
-
 	}
 
 	public void setValuelist(JSValueList valuelist)
 	{
+		cloneIfNeeded();
 		((Field)getBase()).setValueListID(valuelist.getUUID());
 	}
 
@@ -99,6 +100,7 @@ public class JSField extends JSComponent implements IMobileSMField, Exportable
 
 	public void setOnAction(JSMethod method)
 	{
+		cloneIfNeeded();
 		((Field)getBase()).setActionMethodCall(method != null ? method.getReferenceString() : null);
 	}
 
@@ -106,7 +108,7 @@ public class JSField extends JSComponent implements IMobileSMField, Exportable
 	@Override
 	public JSMethod getOnAction()
 	{
-		return JSMethod.getMethodFromString(((Field)getBase()).getActionMethodCall(), getFormName(), getSolutionModel());
+		return JSMethod.getMethodFromString(((Field)getBase()).getActionMethodCall(), (JSForm)getParent(), getSolutionModel());
 	}
 
 	@Setter
@@ -118,6 +120,7 @@ public class JSField extends JSComponent implements IMobileSMField, Exportable
 
 	public void setOnDataChange(JSMethod method)
 	{
+		cloneIfNeeded();
 		((Field)getBase()).setDataChangeMethodCall(method != null ? method.getReferenceString() : null);
 	}
 
@@ -125,6 +128,6 @@ public class JSField extends JSComponent implements IMobileSMField, Exportable
 	@Override
 	public JSMethod getOnDataChange()
 	{
-		return JSMethod.getMethodFromString(((Field)getBase()).getDataChangeMethodCall(), getFormName(), getSolutionModel());
+		return JSMethod.getMethodFromString(((Field)getBase()).getDataChangeMethodCall(), (JSForm)getParent(), getSolutionModel());
 	}
 }

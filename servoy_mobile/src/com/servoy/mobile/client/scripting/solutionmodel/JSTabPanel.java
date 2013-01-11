@@ -38,16 +38,18 @@ import com.servoy.mobile.client.persistence.TabPanel;
 @Export
 public class JSTabPanel extends JSComponent implements IBaseSMTabPanel, Exportable
 {
-	public JSTabPanel(TabPanel tabPanel, String formName, JSSolutionModel model)
+
+	public JSTabPanel(TabPanel tabPanel, JSSolutionModel model, JSForm form)
 	{
-		super(tabPanel, formName, model);
+		super(tabPanel, model, form);
 	}
 
 	@Override
 	public JSTab newTab(String name, String text, IBaseSMForm form)
 	{
+		cloneIfNeeded();
 		Tab tab = ((TabPanel)getBase()).createTab(name, text, ((Form)((JSForm)form).getBase()).getUUID());
-		return new JSTab(tab, getFormName(), getSolutionModel());
+		return new JSTab(tab, getSolutionModel(), this);
 	}
 
 	@Override
@@ -57,7 +59,7 @@ public class JSTabPanel extends JSComponent implements IBaseSMTabPanel, Exportab
 		JsArray<Tab> tabsArray = ((TabPanel)getBase()).getTabs();
 		for (int i = 0; i < tabsArray.length(); i++)
 		{
-			tabs.add(new JSTab(tabsArray.get(i), getFormName(), getSolutionModel()));
+			tabs.add(new JSTab(tabsArray.get(i), getSolutionModel(), this));
 		}
 		return tabs.toArray(new JSTab[0]);
 	}

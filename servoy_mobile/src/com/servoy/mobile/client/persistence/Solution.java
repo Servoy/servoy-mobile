@@ -20,9 +20,6 @@ package com.servoy.mobile.client.persistence;
 import org.timepedia.exporter.client.Export;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import com.servoy.j2db.persistence.constants.IRepositoryConstants;
-import com.servoy.j2db.scripting.solutionhelper.IMobileProperties;
-import com.servoy.mobile.client.util.Utils;
 
 /**
  * @author gboros
@@ -33,17 +30,27 @@ public class Solution extends JavaScriptObject
 	{
 	}
 
-	public final native int formCount() /*-{
-		return this.forms.length;
-	}-*/;
-
 	public final native int relationCount() /*-{
 		return this.relations.length;
+	}-*/;
+
+	public final native int formCount() /*-{
+		return this.forms.length;
 	}-*/;
 
 	public final native Form getForm(int i) /*-{
 		return this.forms[i];
 	}-*/;
+
+	@Export
+	public final Form getForm(String name)
+	{
+		for (int i = 0; i < formCount(); i++)
+		{
+			if (getForm(i).getName().equals(name)) return getForm(i);
+		}
+		return null;
+	}
 
 	public final native Relation getRelation(int i) /*-{
 		return this.relations[i];
@@ -74,49 +81,14 @@ public class Solution extends JavaScriptObject
 		return this.i18n[key];
 	}-*/;
 
-	public final native Form createForm(String name, String uuid, int typeId) /*-{
+	// this is a "clone" form, not original; it will not be referenced in "forms" member
+	public final native Form instantiateForm(String name, String uuid, int typeId) /*-{
 		var nf = {};
 		nf.uuid = uuid;
 		nf.name = name;
 		nf.typeid = typeId;
 		nf.items = [];
-		this.forms.push(nf);
 		return nf;
-	}-*/;
-
-	public final native void removeForm(int index) /*-{
-		this.forms.splice(index, 1);
-	}-*/;
-
-	public final Form newForm(String name, String dataSource, int width, int height)
-	{
-		// TODO ac use datasource and width/height
-		Form f = createForm(name, Utils.createStringUUID(), IRepositoryConstants.FORMS);
-//		f.setSize("380, 100"); //$NON-NLS-1$
-		f.getOrCreateMobileProperties().setPropertyValue(IMobileProperties.MOBILE_FORM, Boolean.TRUE);
-		f.setDataSource(dataSource);
-		f.setSize(width + "," + height);
-		prepareFormScopeLoading(f.getName());
-		setFormScopeInitialization(f.getName());
-		return f;
-	}
-
-	private final native void prepareFormScopeLoading(String formName) /*-{
-		Object.defineProperty($wnd.forms, formName, {
-			get : function() {
-				return $wnd._ServoyUtils_.getFormScope(formName);
-			},
-			configurable : false
-		});
-	}-*/;
-
-	private final native void setFormScopeInitialization(String formName) /*-{
-		if (!$wnd._ServoyInit_.forms[formName]) {
-			$wnd._ServoyInit_.forms[formName] = {
-				fncs : {},
-				vrbs : {}
-			};
-		}
 	}-*/;
 
 	public final native void setI18nValue(String key, String value)
@@ -125,30 +97,11 @@ public class Solution extends JavaScriptObject
 	}-*/;
 
 	@Export
-	public final Form getForm(String name)
-	{
-		for (int i = 0; i < formCount(); i++)
-		{
-			if (getForm(i).getName().equals(name)) return getForm(i);
-		}
-		return null;
-	}
-
-	@Export
 	public final Relation getRelation(String name)
 	{
 		for (int i = 0; i < relationCount(); i++)
 		{
 			if (getRelation(i).getName().equals(name)) return getRelation(i);
-		}
-		return null;
-	}
-
-	public final Form getFormByUUID(String uuid)
-	{
-		for (int i = 0; i < formCount(); i++)
-		{
-			if (getForm(i).getUUID().equals(uuid)) return getForm(i);
 		}
 		return null;
 	}
@@ -188,4 +141,5 @@ public class Solution extends JavaScriptObject
 	/*-{
 		return this.valuelists[i];
 	}-*/;
+
 }

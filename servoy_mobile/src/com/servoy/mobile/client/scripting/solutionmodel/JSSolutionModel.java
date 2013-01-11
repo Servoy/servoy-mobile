@@ -25,11 +25,12 @@ import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
 
 import com.google.gwt.core.client.JsArrayString;
+import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSolutionModel;
 import com.servoy.j2db.util.DataSourceUtilsBase;
 import com.servoy.mobile.client.MobileClient;
+import com.servoy.mobile.client.persistence.FlattenedSolution;
 import com.servoy.mobile.client.persistence.Form;
-import com.servoy.mobile.client.persistence.Solution;
 import com.servoy.mobile.client.persistence.ValueList;
 import com.servoy.mobile.client.scripting.ScriptEngine;
 import com.servoy.mobile.client.util.Utils;
@@ -42,7 +43,7 @@ import com.servoy.mobile.client.util.Utils;
 public class JSSolutionModel implements IBaseSolutionModel, Exportable
 {
 	private final MobileClient application;
-	private final Solution solution;
+	private final FlattenedSolution solution;
 
 	public JSSolutionModel(MobileClient application)
 	{
@@ -89,16 +90,23 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 	}
 
 	@Override
+	public IBaseSMForm revertForm(String formName)
+	{
+		application.getSolution().revertForm(formName);
+		return getForm(formName);
+	}
+
+	@Override
 	public boolean removeForm(String name)
 	{
-		if (name != null && application.getFormManager().removeForm(name))
+		if (name != null)
 		{
-			for (int i = 0; i < application.getSolution().formCount(); i++)
+			Form f = application.getSolution().getForm(name);
+			if (f != null)
 			{
-				Form form = application.getSolution().getForm(i);
-				if (form != null && name.equals(form.getName()))
+				if (application.getFormManager().removeForm(name))
 				{
-					application.getSolution().removeForm(i);
+					application.getSolution().removeFormOrCopy(f);
 					return true;
 				}
 			}
@@ -124,11 +132,11 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 	public JSForm[] getForms(String datasource)
 	{
 		List<JSForm> forms = new ArrayList<JSForm>();
-		for (int i = 0; i < application.getSolution().formCount(); i++)
+		for (Form f : application.getSolution().getForms())
 		{
-			if (datasource == null || datasource.equals(application.getSolution().getForm(i).getDataSource()))
+			if (datasource == null || datasource.equals(f.getDataSource()))
 			{
-				forms.add(new JSForm(application.getSolution().getForm(i), this));
+				forms.add(new JSForm(f, this));
 			}
 		}
 		return forms.toArray(new JSForm[0]);
@@ -169,7 +177,7 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 	{
 		String scope = (scopeName == null ? "globals" : scopeName); //$NON-NLS-1$
 
-		JSVariable gv = new JSVariable(ScriptEngine.SCOPES, scope, name, this);
+		JSVariable gv = new JSVariable(ScriptEngine.SCOPES, scope, name, this, null);
 
 		if (!gv.exists())
 		{
@@ -183,7 +191,7 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 	@Override
 	public JSVariable getGlobalVariable(String scopeName, String name)
 	{
-		JSVariable gv = new JSVariable(ScriptEngine.SCOPES, scopeName, name, this);
+		JSVariable gv = new JSVariable(ScriptEngine.SCOPES, scopeName, name, this, null);
 		return gv.exists() ? gv : null;
 	}
 
@@ -240,7 +248,7 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 		String[] codeAndName = JSMethod.splitCodeFromName(code);
 		if (codeAndName != null && codeAndName.length == 2)
 		{
-			JSMethod gm = new JSMethod(ScriptEngine.SCOPES, scope, codeAndName[1], this);
+			JSMethod gm = new JSMethod(ScriptEngine.SCOPES, scope, codeAndName[1], this, null);
 
 			if (!gm.exists())
 			{
@@ -270,7 +278,7 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 	@Override
 	public JSMethod getGlobalMethod(String scopeName, String name)
 	{
-		JSMethod gm = new JSMethod(ScriptEngine.SCOPES, scopeName, name, this);
+		JSMethod gm = new JSMethod(ScriptEngine.SCOPES, scopeName, name, this, null);
 		return gm.exists() ? gm : null;
 	}
 

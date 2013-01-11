@@ -46,8 +46,40 @@ public abstract class AbstractBase extends JavaScriptObject
 		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_NAME, name);
 	}
 
+	public final native JsArray<AbstractBase> getChildren() /*-{
+		return this.items;
+	}-*/;
+
+	public final AbstractBase getChild(String uuid)
+	{
+		JsArray<AbstractBase> children = getChildren();
+		for (int i = children.length() - 1; i >= 0; i--)
+		{
+			if (children.get(i).getUUID().equals(uuid)) return children.get(i);
+		}
+		return null;
+	}
+
+//	will be useful when you realy want to clone/copy stuff using solution model
+//	public void resetUUID()
+//	{
+//		setUUID(Utils.createStringUUID());
+//	}
+//
+//	private final native void setUUID(String newUUID) /*-{
+//		this.uuid = newUUID;
+//	}-*/;
+
 	public final native String getUUID() /*-{
 		return this.uuid;
+	}-*/;
+
+	public final native void markAsCopy() /*-{
+		this.clone = true;
+	}-*/;
+
+	public final native boolean isClone() /*-{
+		return this.clone ? true : false;
 	}-*/;
 
 	protected final native void setAttributeValueInt(String attrName, int value) /*-{

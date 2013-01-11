@@ -24,6 +24,7 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.Getter;
+import org.timepedia.exporter.client.NoExport;
 import org.timepedia.exporter.client.Setter;
 
 import com.google.gwt.core.client.JsArray;
@@ -51,12 +52,25 @@ import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMForm;
 public class JSForm extends JSBase implements IMobileSMForm, Exportable
 {
 
-	private final Form form;
+	private Form form;
 
 	public JSForm(Form form, JSSolutionModel model)
 	{
-		super(form, form.getName(), model);
+		super(form, model, null);
 		this.form = form;
+	}
+
+	@NoExport
+	@Override
+	protected boolean cloneIfNeeded()
+	{
+		if (!getBase().isClone())
+		{
+			form = getSolutionModel().getApplication().getSolution().cloneFormDeep(form);
+			setBase(form);
+			return true;
+		}
+		return false;
 	}
 
 	@Getter
@@ -65,10 +79,12 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 		return form.getName();
 	}
 
+
 	@Override
 	public JSVariable newVariable(String name, int type)
 	{
-		JSVariable fv = new JSVariable(ScriptEngine.FORMS, getName(), name, getSolutionModel());
+		cloneIfNeeded();
+		JSVariable fv = new JSVariable(ScriptEngine.FORMS, getName(), name, getSolutionModel(), this);
 
 		if (!fv.exists())
 		{
@@ -89,7 +105,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	@Override
 	public JSVariable getVariable(String name)
 	{
-		JSVariable fv = new JSVariable(ScriptEngine.FORMS, getName(), name, getSolutionModel());
+		JSVariable fv = new JSVariable(ScriptEngine.FORMS, getName(), name, getSolutionModel(), this);
 		return fv.exists() ? fv : null;
 	}
 
@@ -113,10 +129,11 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	public JSMethod newMethod(String code)
 	{
 		if (code == null) return null;
+		cloneIfNeeded();
 		String[] codeAndName = JSMethod.splitCodeFromName(code);
 		if (codeAndName != null && codeAndName.length == 2)
 		{
-			JSMethod fm = new JSMethod(ScriptEngine.FORMS, getName(), codeAndName[1], getSolutionModel());
+			JSMethod fm = new JSMethod(ScriptEngine.FORMS, getName(), codeAndName[1], getSolutionModel(), this);
 
 			if (!fm.exists())
 			{
@@ -130,7 +147,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	@Override
 	public JSMethod getMethod(String name)
 	{
-		JSMethod fm = new JSMethod(ScriptEngine.FORMS, getName(), name, getSolutionModel());
+		JSMethod fm = new JSMethod(ScriptEngine.FORMS, getName(), name, getSolutionModel(), this);
 		return fm.exists() ? fm : null;
 	}
 
@@ -153,11 +170,12 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	@Override
 	public JSField newField(Object dataprovider, int type, int x, int y, int width, int height)
 	{
+		cloneIfNeeded();
 		Field f = form.createNewField(type);
 		if (dataprovider instanceof String) f.setDataProviderID((String)dataprovider);
 		f.setSize(width, height);
 		f.setLocation(x, y);
-		return new JSField(f, form.getName(), getSolutionModel());
+		return new JSField(f, getSolutionModel(), this);
 	}
 
 	public JSField newField(JSVariable dataprovider, int type, int x, int y, int width, int height)
@@ -250,27 +268,30 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 
 	public JSButton newButton(String txt, int x, int y, int width, int height, JSMethod action)
 	{
+		cloneIfNeeded();
 		GraphicalComponent gc = form.createNewGraphicalComponent(GraphicalComponent.VIEW_TYPE_BUTTON);
 		gc.setText(txt);
 		gc.setSize(width, height);
 		gc.setLocation(x, y);
 		if (action != null) gc.setOnActionMethodCall(action.getReferenceString());
-		return new JSButton(gc, form.getName(), getSolutionModel());
+		return new JSButton(gc, getSolutionModel(), this);
 	}
 
 	@Override
 	public JSLabel newLabel(String txt, int x, int y, int width, int height)
 	{
+		cloneIfNeeded();
 		GraphicalComponent gc = form.createNewGraphicalComponent(GraphicalComponent.VIEW_TYPE_LABEL);
 		gc.setText(txt);
 		gc.setSize(width, height);
 		gc.setLocation(x, y);
-		return new JSLabel(gc, form.getName(), getSolutionModel());
+		return new JSLabel(gc, getSolutionModel(), this);
 	}
 
 	@Override
 	public IBaseSMPortal newPortal(String name, Object relation, int x, int y, int width, int height)
 	{
+		cloneIfNeeded();
 		Portal portal = form.createNewPortal(name);
 		portal.setLocation(x, y);
 		portal.setSize(width, height);
@@ -288,7 +309,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 //				relationName = ((JSRelation)relation).getName();
 //			}
 		portal.setRelationName(relationName);
-		return new JSPortal(portal, form.getName(), getSolutionModel());
+		return new JSPortal(portal, getSolutionModel(), this);
 	}
 
 	@Override
@@ -303,7 +324,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 				Portal portal = component.isPortal();
 				if (portal != null && name.equals(portal.getName()))
 				{
-					return new JSPortal(portal, form.getName(), getSolutionModel());
+					return new JSPortal(portal, getSolutionModel(), this);
 				}
 			}
 		}
@@ -313,6 +334,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	@Override
 	public boolean removePortal(String name)
 	{
+		cloneIfNeeded();
 		return removeComponent(name, IRepositoryConstants.PORTALS);
 	}
 
@@ -327,7 +349,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 			Portal portal = component.isPortal();
 			if (portal != null)
 			{
-				portals.add(new JSPortal(portal, form.getName(), getSolutionModel()));
+				portals.add(new JSPortal(portal, getSolutionModel(), this));
 			}
 		}
 		return portals.toArray(new JSPortal[0]);
@@ -336,10 +358,11 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	@Override
 	public JSTabPanel newTabPanel(String name, int x, int y, int width, int height)
 	{
+		cloneIfNeeded();
 		TabPanel tabPanel = form.createNewTabPanel();
 		tabPanel.setSize(width, height);
 		tabPanel.setLocation(x, y);
-		return new JSTabPanel(tabPanel, form.getName(), getSolutionModel());
+		return new JSTabPanel(tabPanel, getSolutionModel(), this);
 	}
 
 	@Override
@@ -354,7 +377,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 				TabPanel tabPanel = component.isTabPanel();
 				if (tabPanel != null && name.equals(tabPanel.getName()))
 				{
-					return new JSTabPanel(tabPanel, getName(), getSolutionModel());
+					return new JSTabPanel(tabPanel, getSolutionModel(), this);
 				}
 			}
 		}
@@ -378,7 +401,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 			TabPanel tabPanel = component.isTabPanel();
 			if (tabPanel != null)
 			{
-				JSTabPanel jsTabPanel = new JSTabPanel(tabPanel, getName(), getSolutionModel());
+				JSTabPanel jsTabPanel = new JSTabPanel(tabPanel, getSolutionModel(), this);
 				tabPanels.add(jsTabPanel);
 			}
 		}
@@ -397,7 +420,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 				Field field = component.isField();
 				if (field != null && name.equals(field.getName()))
 				{
-					return new JSField(field, getName(), getSolutionModel());
+					return new JSField(field, getSolutionModel(), this);
 				}
 			}
 		}
@@ -407,6 +430,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	@Override
 	public boolean removeField(String name)
 	{
+		cloneIfNeeded();
 		return removeComponent(name, IRepositoryConstants.FIELDS);
 	}
 
@@ -421,7 +445,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 			Field field = component.isField();
 			if (field != null)
 			{
-				JSField jsField = new JSField(field, getName(), getSolutionModel());
+				JSField jsField = new JSField(field, getSolutionModel(), this);
 				fields.add(jsField);
 			}
 		}
@@ -440,7 +464,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 				GraphicalComponent graphicalComponent = component.isGraphicalComponent();
 				if (graphicalComponent != null && graphicalComponent.isButton() && name.equals(graphicalComponent.getName()))
 				{
-					return new JSButton(graphicalComponent, getName(), getSolutionModel());
+					return new JSButton(graphicalComponent, getSolutionModel(), this);
 				}
 			}
 		}
@@ -464,7 +488,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 			GraphicalComponent graphicalComponent = component.isGraphicalComponent();
 			if (graphicalComponent != null && graphicalComponent.isButton())
 			{
-				JSButton jsButton = new JSButton(graphicalComponent, getName(), getSolutionModel());
+				JSButton jsButton = new JSButton(graphicalComponent, getSolutionModel(), this);
 				buttons.add(jsButton);
 			}
 		}
@@ -482,7 +506,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 				Component component = formComponents.get(i);
 				if (name.equals(component.getName()))
 				{
-					return getJSComponent(component);
+					return JSComponent.getJSComponent(component, getSolutionModel(), this);
 				}
 			}
 		}
@@ -502,7 +526,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 		List<JSComponent> components = new ArrayList<JSComponent>(formComponents.length());
 		for (int i = 0; i < formComponents.length(); i++)
 		{
-			JSComponent jsComponent = getJSComponent(formComponents.get(i));
+			JSComponent jsComponent = JSComponent.getJSComponent(formComponents.get(i), getSolutionModel(), this);
 			if (jsComponent != null)
 			{
 				components.add(jsComponent);
@@ -523,7 +547,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 				GraphicalComponent graphicalComponent = component.isGraphicalComponent();
 				if (graphicalComponent != null && !graphicalComponent.isButton() && name.equals(graphicalComponent.getName()))
 				{
-					return new JSLabel(graphicalComponent, getName(), getSolutionModel());
+					return new JSLabel(graphicalComponent, getSolutionModel(), this);
 				}
 			}
 		}
@@ -538,6 +562,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 
 	public boolean removeComponent(String name, int componentType)
 	{
+		cloneIfNeeded();
 		if (name != null)
 		{
 			JsArray<Component> formComponents = form.getComponents();
@@ -586,7 +611,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 			GraphicalComponent graphicalComponent = component.isGraphicalComponent();
 			if (graphicalComponent != null && !graphicalComponent.isButton())
 			{
-				JSLabel jsLabel = new JSLabel(graphicalComponent, getName(), getSolutionModel());
+				JSLabel jsLabel = new JSLabel(graphicalComponent, getSolutionModel(), this);
 				labels.add(jsLabel);
 			}
 		}
@@ -644,12 +669,14 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	@Override
 	public void setDataSource(String arg)
 	{
+		cloneIfNeeded();
 		form.setDataSource(arg);
 	}
 
 	@Override
 	public boolean removeVariable(String name)
 	{
+		cloneIfNeeded();
 		JSVariable variable = getVariable(name);
 		return variable.remove();
 	}
@@ -657,6 +684,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	@Override
 	public boolean removeMethod(String name)
 	{
+		cloneIfNeeded();
 		JSMethod method = getMethod(name);
 		return method.remove();
 	}
@@ -672,6 +700,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	@Override
 	public void setView(int viewType)
 	{
+		cloneIfNeeded();
 		form.setView(viewType);
 	}
 
@@ -679,19 +708,19 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	@Override
 	public JSMethod getOnShow()
 	{
-		return JSMethod.getMethodFromString(((Form)getBase()).getOnShowCall(), getName(), getSolutionModel());
+		return JSMethod.getMethodFromString(((Form)getBase()).getOnShowCall(), this, getSolutionModel());
 	}
 
 	@Override
 	public void setOnShow(IBaseSMMethod method)
 	{
 		setOnShow((JSMethod)method);
-
 	}
 
 	@Setter
 	public void setOnShow(JSMethod method)
 	{
+		cloneIfNeeded();
 		((Form)getBase()).setOnShowCall(method != null ? method.getReferenceString() : null);
 	}
 
@@ -699,7 +728,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	@Override
 	public JSMethod getOnLoad()
 	{
-		return JSMethod.getMethodFromString(((Form)getBase()).getOnLoadCall(), getName(), getSolutionModel());
+		return JSMethod.getMethodFromString(((Form)getBase()).getOnLoadCall(), this, getSolutionModel());
 	}
 
 	@Override
@@ -711,6 +740,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	@Setter
 	public void setOnLoad(JSMethod method)
 	{
+		cloneIfNeeded();
 		((Form)getBase()).setOnLoadCall(method != null ? method.getReferenceString() : null);
 	}
 
@@ -718,7 +748,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	@Override
 	public JSMethod getOnHide()
 	{
-		return JSMethod.getMethodFromString(((Form)getBase()).getOnHideCall(), getName(), getSolutionModel());
+		return JSMethod.getMethodFromString(((Form)getBase()).getOnHideCall(), this, getSolutionModel());
 	}
 
 	@Override
@@ -730,6 +760,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	@Setter
 	public void setOnHide(JSMethod method)
 	{
+		cloneIfNeeded();
 		((Form)getBase()).setOnHideCall(method != null ? method.getReferenceString() : null);
 	}
 
@@ -737,7 +768,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	@Override
 	public JSMethod getOnRecordSelection()
 	{
-		return JSMethod.getMethodFromString(((Form)getBase()).getOnRecordSelectionCall(), getName(), getSolutionModel());
+		return JSMethod.getMethodFromString(((Form)getBase()).getOnRecordSelectionCall(), this, getSolutionModel());
 	}
 
 	@Override
@@ -749,6 +780,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	@Setter
 	public void setOnRecordSelection(JSMethod method)
 	{
+		cloneIfNeeded();
 		((Form)getBase()).setOnRecordSelectionCall(method != null ? method.getReferenceString() : null);
 	}
 }

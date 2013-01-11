@@ -35,9 +35,9 @@ import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMVariable;
 public class JSVariable extends JSScriptPart implements IMobileSMVariable, Exportable
 {
 
-	public JSVariable(String parentScopeName, String scopeName, String name, JSSolutionModel model)
+	public JSVariable(String parentScopeName, String scopeName, String name, JSSolutionModel model, JSForm parentForm)
 	{
-		super(parentScopeName, scopeName, name, model);
+		super(parentScopeName, scopeName, name, model, parentForm);
 	}
 
 	@Getter
@@ -52,6 +52,7 @@ public class JSVariable extends JSScriptPart implements IMobileSMVariable, Expor
 	public void setDefaultValue(String defValueStr)
 	{
 		if (defValueStr == null) return;
+		cloneFormIfNeeded();
 		setDefaultValueInternal(path[0], path[1], path[2], defValueStr);
 	}
 
@@ -66,6 +67,7 @@ public class JSVariable extends JSScriptPart implements IMobileSMVariable, Expor
 	@Override
 	public void setVariableType(int type)
 	{
+		cloneFormIfNeeded();
 		setVariableTypeInternal(path[0], path[1], path[2], type);
 	}
 

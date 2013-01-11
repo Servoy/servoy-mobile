@@ -40,16 +40,15 @@ import com.servoy.mobile.client.persistence.Portal;
 public class JSPortal extends JSComponent implements IBaseSMPortal, Exportable
 {
 
-	public JSPortal(Portal portal, String formName, JSSolutionModel model)
+	public JSPortal(Portal portal, JSSolutionModel model, JSForm form)
 	{
-		super(portal, formName, model);
+		super(portal, model, form);
 	}
 
 	protected Portal getPortal()
 	{
 		return (Portal)getBase();
 	}
-
 
 	@Override
 	public JSButton newButton(String txt, int x, int y, int width, int height, Object action)
@@ -64,7 +63,7 @@ public class JSPortal extends JSComponent implements IBaseSMPortal, Exportable
 		gc.setSize(width, height);
 		gc.setLocation(x, y);
 		if (action != null) gc.setOnActionMethodCall(action.getReferenceString());
-		return new JSButton(gc, getFormName(), getSolutionModel());
+		return new JSButton(gc, getSolutionModel(), this);
 	}
 
 	@Override
@@ -74,7 +73,7 @@ public class JSPortal extends JSComponent implements IBaseSMPortal, Exportable
 		if (dataprovider instanceof String) f.setDataProviderID((String)dataprovider);
 		f.setSize(width, height);
 		f.setLocation(x, y);
-		return new JSField(f, getFormName(), getSolutionModel());
+		return new JSField(f, getSolutionModel(), this);
 	}
 
 	@Override
@@ -84,7 +83,7 @@ public class JSPortal extends JSComponent implements IBaseSMPortal, Exportable
 		gc.setText(txt);
 		gc.setSize(width, height);
 		gc.setLocation(x, y);
-		return new JSLabel(gc, getFormName(), getSolutionModel());
+		return new JSLabel(gc, getSolutionModel(), this);
 	}
 
 	@Override
@@ -106,7 +105,7 @@ public class JSPortal extends JSComponent implements IBaseSMPortal, Exportable
 		List<JSComponent> components = new ArrayList<JSComponent>(portalComponents.length());
 		for (int i = 0; i < portalComponents.length(); i++)
 		{
-			JSComponent jsComponent = getJSComponent(portalComponents.get(i));
+			JSComponent jsComponent = JSComponent.getJSComponent(portalComponents.get(i), getSolutionModel(), this);
 			if (jsComponent != null)
 			{
 				components.add(jsComponent);

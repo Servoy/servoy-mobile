@@ -33,9 +33,9 @@ import com.servoy.mobile.client.persistence.GraphicalComponent;
 public class JSGraphicalComponent extends JSComponent implements IBaseSMGraphicalComponent, Exportable
 {
 
-	public JSGraphicalComponent(GraphicalComponent gc, String formName, JSSolutionModel model)
+	public JSGraphicalComponent(GraphicalComponent gc, JSSolutionModel model, JSBase parent)
 	{
-		super(gc, formName, model);
+		super(gc, model, parent);
 	}
 
 	@Override
@@ -63,13 +63,16 @@ public class JSGraphicalComponent extends JSComponent implements IBaseSMGraphica
 	@Setter
 	public void setDataProviderID(String arg)
 	{
+		cloneIfNeeded();
 		((GraphicalComponent)getBase()).setDataProviderID(arg);
+
 	}
 
 	@Override
 	@Setter
 	public void setDisplaysTags(boolean arg)
 	{
+		cloneIfNeeded();
 		((GraphicalComponent)getBase()).setDisplayTags(arg);
 	}
 
@@ -77,14 +80,15 @@ public class JSGraphicalComponent extends JSComponent implements IBaseSMGraphica
 	@Setter
 	public void setText(String arg)
 	{
+		cloneIfNeeded();
 		((GraphicalComponent)getBase()).setText(arg);
-
 	}
 
 	@Override
 	@Setter
 	public void setOnAction(IBaseSMMethod method)
 	{
+		cloneIfNeeded();
 		((GraphicalComponent)getBase()).setOnActionMethodCall(method != null ? ((JSMethod)method).getReferenceString() : null);
 	}
 
@@ -98,6 +102,7 @@ public class JSGraphicalComponent extends JSComponent implements IBaseSMGraphica
 	@Getter
 	public JSMethod getOnAction()
 	{
-		return JSMethod.getMethodFromString(((GraphicalComponent)getBase()).getOnActionMethodCall(), getFormName(), getSolutionModel());
+		return JSMethod.getMethodFromString(((GraphicalComponent)getBase()).getOnActionMethodCall(), (JSForm)getParent(), getSolutionModel());
 	}
+
 }

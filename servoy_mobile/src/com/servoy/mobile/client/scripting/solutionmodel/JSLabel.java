@@ -30,9 +30,9 @@ import com.servoy.mobile.client.persistence.GraphicalComponent;
 public class JSLabel extends JSGraphicalComponent implements IBaseSMLabel, Exportable
 {
 
-	public JSLabel(GraphicalComponent gc, String formName, JSSolutionModel model)
+	public JSLabel(GraphicalComponent gc, JSSolutionModel model, JSBase parent)
 	{
-		super(gc, formName, model);
+		super(gc, model, parent);
 	}
 
 }

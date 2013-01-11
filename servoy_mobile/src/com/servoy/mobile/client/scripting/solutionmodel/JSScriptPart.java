@@ -33,10 +33,12 @@ public abstract class JSScriptPart implements Exportable
 
 	protected final String[] path;
 	protected final JSSolutionModel model;
+	private final JSForm parentForm;
 
-	public JSScriptPart(String parentScopeName, String scopeName, String name, JSSolutionModel model)
+	public JSScriptPart(String parentScopeName, String scopeName, String name, JSSolutionModel model, JSForm parentForm)
 	{
 		this.model = model;
+		this.parentForm = parentForm; // we need the exact instance which was used for getScript/createScript, so clone is done on that one so that the persist reference gets updated correctly
 		path = new String[] { parentScopeName, scopeName, name };
 	}
 
@@ -83,6 +85,11 @@ public abstract class JSScriptPart implements Exportable
 		{
 			model.getApplication().getFormManager().reloadScopeIfInitialized(path[1]);
 		}
+	}
+
+	protected void cloneFormIfNeeded()
+	{
+		if (parentForm != null) parentForm.cloneIfNeeded();
 	}
 
 }

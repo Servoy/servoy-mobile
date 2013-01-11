@@ -53,13 +53,12 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 	private String listItemDataIcon;
 	private String listItemStyleclass;
 
-	public FormList(FormController formController, AbstractBase parent, DataAdapterList dal, Relation relation)
+	public FormList(FormController formController, JsArray<Component> formComponents, DataAdapterList dal, Relation relation)
 	{
 		this.formController = formController;
 		this.dal = dal;
 		this.relation = relation;
 
-		JsArray<Component> formComponents = parent.getComponents();
 		for (int i = 0; i < formComponents.length(); i++)
 		{
 			Component component = formComponents.get(i);

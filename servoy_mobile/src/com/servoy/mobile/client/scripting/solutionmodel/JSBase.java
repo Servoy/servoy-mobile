@@ -20,26 +20,52 @@ package com.servoy.mobile.client.scripting.solutionmodel;
 import org.timepedia.exporter.client.NoExport;
 
 import com.servoy.mobile.client.persistence.AbstractBase;
-import com.servoy.mobile.client.persistence.Component;
-import com.servoy.mobile.client.persistence.Field;
-import com.servoy.mobile.client.persistence.GraphicalComponent;
-import com.servoy.mobile.client.persistence.Portal;
-import com.servoy.mobile.client.persistence.TabPanel;
 
 /**
  * @author acostescu
  */
 public class JSBase
 {
-	private final AbstractBase ab;
-	private final String formName;
-	private final JSSolutionModel model;
 
-	public JSBase(AbstractBase ab, String formName, JSSolutionModel model)
+	private AbstractBase ab;
+	private final JSSolutionModel model;
+	private final JSBase parent;
+
+	public JSBase(AbstractBase ab, JSSolutionModel model, JSBase parent)
 	{
 		this.ab = ab;
-		this.formName = formName;
 		this.model = model;
+		this.parent = parent;
+	}
+
+	protected JSBase getParent()
+	{
+		return parent;
+	}
+
+	/**
+	 * @return true if this call resulted in an actual cloning operation, false otherwise.
+	 */
+	@NoExport
+	protected boolean cloneIfNeeded()
+	{
+		boolean hasBeenClonedNow = false;
+		if (parent != null)
+		{
+			hasBeenClonedNow = parent.cloneIfNeeded();
+			if (hasBeenClonedNow)
+			{
+				ab = parent.ab.getChild(ab.getName());
+				ab.markAsCopy();
+			}
+		}
+		return hasBeenClonedNow;
+	}
+
+	@NoExport
+	protected void setBase(AbstractBase ab)
+	{
+		this.ab = ab;
 	}
 
 	@NoExport
@@ -53,41 +79,4 @@ public class JSBase
 		return model;
 	}
 
-	protected String getFormName()
-	{
-		return formName;
-	}
-
-	protected JSComponent getJSComponent(Component component)
-	{
-		GraphicalComponent graphicalComponent = component.isGraphicalComponent();
-		if (graphicalComponent != null)
-		{
-			if (graphicalComponent.isButton())
-			{
-				return new JSButton(graphicalComponent, getFormName(), getSolutionModel());
-			}
-			return new JSLabel(graphicalComponent, getFormName(), getSolutionModel());
-		}
-
-		Field field = component.isField();
-		if (field != null)
-		{
-			return new JSField(field, getFormName(), getSolutionModel());
-		}
-
-		Portal portal = component.isPortal();
-		if (portal != null)
-		{
-			return new JSPortal(portal, getFormName(), getSolutionModel());
-		}
-
-		TabPanel tabPanel = component.isTabPanel();
-		if (tabPanel != null)
-		{
-			return new JSTabPanel(tabPanel, getFormName(), getSolutionModel());
-		}
-
-		return null;
-	}
 }

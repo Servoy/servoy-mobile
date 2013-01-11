@@ -55,7 +55,7 @@ public class ListFormDisplay extends FormDisplay
 		@Override
 		public void createContent(ArrayList<Component> contentComponents)
 		{
-			formList = new FormList(formController, formController.getForm(), dal, null);
+			formList = new FormList(formController, formController.getForm().getComponents(), dal, null);
 			add(formList);
 		}
 

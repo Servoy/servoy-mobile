@@ -30,9 +30,9 @@ import com.servoy.mobile.client.persistence.GraphicalComponent;
 public class JSButton extends JSGraphicalComponent implements IBaseSMButton, Exportable
 {
 
-	public JSButton(GraphicalComponent gc, String formName, JSSolutionModel model)
+	public JSButton(GraphicalComponent gc, JSSolutionModel model, JSBase form)
 	{
-		super(gc, formName, model);
+		super(gc, model, form);
 	}
 
 }
