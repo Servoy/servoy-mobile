@@ -25,6 +25,7 @@ import org.timepedia.exporter.client.Setter;
 import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm;
 import com.servoy.j2db.scripting.solutionhelper.BaseSHList;
 import com.servoy.j2db.scripting.solutionhelper.BaseSolutionHelper;
+import com.servoy.j2db.scripting.solutionhelper.IBaseSHFormList;
 import com.servoy.mobile.client.scripting.solutionmodel.JSForm;
 import com.servoy.mobile.client.scripting.solutionmodel.JSMethod;
 
@@ -32,7 +33,7 @@ import com.servoy.mobile.client.scripting.solutionmodel.JSMethod;
  * @author acostescu
  */
 @Export
-public class JSList extends BaseSHList implements Exportable
+public class JSList extends BaseSHList implements IBaseSHFormList, Exportable
 {
 
 	protected JSList(IBaseSMForm listForm, BaseSolutionHelper baseSolutionHelper)
@@ -40,7 +41,7 @@ public class JSList extends BaseSHList implements Exportable
 		super(listForm, baseSolutionHelper);
 	}
 
-	public JSForm getListForm()
+	public JSForm getForm()
 	{
 		return (JSForm)super.getContainer();
 	}
