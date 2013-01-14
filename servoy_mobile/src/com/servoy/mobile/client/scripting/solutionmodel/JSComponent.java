@@ -53,7 +53,7 @@ public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 
 	protected static JSComponent getJSComponent(Component component, JSSolutionModel model, JSBase parent)
 	{
-		GraphicalComponent graphicalComponent = component.isGraphicalComponent();
+		GraphicalComponent graphicalComponent = GraphicalComponent.castIfPossible(component);
 		if (graphicalComponent != null)
 		{
 			if (graphicalComponent.isButton())
@@ -63,19 +63,19 @@ public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 			return new JSLabel(graphicalComponent, model, parent);
 		}
 
-		Field field = component.isField();
+		Field field = Field.castIfPossible(component);
 		if (field != null)
 		{
 			return new JSField(field, model, parent);
 		}
 
-		Portal portal = component.isPortal();
+		Portal portal = Portal.castIfPossible(component);
 		if (portal != null)
 		{
 			return new JSPortal(portal, model, (JSForm)parent);
 		}
 
-		TabPanel tabPanel = component.isTabPanel();
+		TabPanel tabPanel = TabPanel.castIfPossible(component);
 		if (tabPanel != null)
 		{
 			return new JSTabPanel(tabPanel, model, (JSForm)parent);

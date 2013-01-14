@@ -58,7 +58,7 @@ public class JSPortal extends JSComponent implements IBaseSMPortal, Exportable
 
 	public JSButton newButton(String txt, int x, int y, int width, int height, JSMethod action)
 	{
-		GraphicalComponent gc = getPortal().createNewGraphicalComponent(GraphicalComponent.VIEW_TYPE_BUTTON);
+		GraphicalComponent gc = GraphicalComponent.createNewGraphicalComponent(getPortal(), GraphicalComponent.VIEW_TYPE_BUTTON);
 		gc.setText(txt);
 		gc.setSize(width, height);
 		gc.setLocation(x, y);
@@ -69,7 +69,7 @@ public class JSPortal extends JSComponent implements IBaseSMPortal, Exportable
 	@Override
 	public JSField newField(Object dataprovider, int type, int x, int y, int width, int height)
 	{
-		Field f = getPortal().createNewField(type);
+		Field f = Field.createNewField(getPortal(), type);
 		if (dataprovider instanceof String) f.setDataProviderID((String)dataprovider);
 		f.setSize(width, height);
 		f.setLocation(x, y);
@@ -79,7 +79,7 @@ public class JSPortal extends JSComponent implements IBaseSMPortal, Exportable
 	@Override
 	public JSLabel newLabel(String txt, int x, int y, int width, int height)
 	{
-		GraphicalComponent gc = getPortal().createNewGraphicalComponent(GraphicalComponent.VIEW_TYPE_LABEL);
+		GraphicalComponent gc = GraphicalComponent.createNewGraphicalComponent(getPortal(), GraphicalComponent.VIEW_TYPE_LABEL);
 		gc.setText(txt);
 		gc.setSize(width, height);
 		gc.setLocation(x, y);

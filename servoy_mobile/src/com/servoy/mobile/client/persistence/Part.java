@@ -18,6 +18,7 @@
 package com.servoy.mobile.client.persistence;
 
 import com.servoy.j2db.persistence.constants.IContentSpecConstantsBase;
+import com.servoy.j2db.persistence.constants.IRepositoryConstants;
 
 /**
  * @author gboros
@@ -27,6 +28,11 @@ public class Part extends Component
 {
 	protected Part()
 	{
+	}
+
+	public final static Part castIfPossible(AbstractBase ab)
+	{
+		return ab.getTypeID() == IRepositoryConstants.PARTS ? (Part)ab.cast() : null;
 	}
 
 	public final int getType()

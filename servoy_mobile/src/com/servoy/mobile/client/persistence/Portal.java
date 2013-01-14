@@ -1,6 +1,8 @@
 package com.servoy.mobile.client.persistence;
 
+import com.google.gwt.core.client.JsArray;
 import com.servoy.j2db.persistence.constants.IContentSpecConstantsBase;
+import com.servoy.j2db.persistence.constants.IRepositoryConstants;
 
 /*
  This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2013 Servoy BV
@@ -29,6 +31,11 @@ public class Portal extends Component
 	{
 	}
 
+	public final static Portal castIfPossible(AbstractBase ab)
+	{
+		return ab.getTypeID() == IRepositoryConstants.PORTALS ? (Portal)ab.cast() : null;
+	}
+
 	public final void setRelationName(String relationName)
 	{
 		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_RELATIONNAME, relationName);
@@ -38,5 +45,12 @@ public class Portal extends Component
 	{
 		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_RELATIONNAME, null);
 	}
+
+	/**
+	 * Same as {@link AbstractBase#getChildren()}, but already cast to Components.
+	 */
+	public final native JsArray<Component> getComponents() /*-{
+		return this.items;
+	}-*/;
 
 }

@@ -1,6 +1,8 @@
 package com.servoy.mobile.client.persistence;
 
 import com.servoy.j2db.persistence.constants.IContentSpecConstantsBase;
+import com.servoy.j2db.persistence.constants.IRepositoryConstants;
+import com.servoy.mobile.client.util.Utils;
 
 /*
  This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
@@ -31,6 +33,18 @@ public class GraphicalComponent extends Component
 
 	protected GraphicalComponent()
 	{
+	}
+
+	public final static GraphicalComponent createNewGraphicalComponent(AbstractBase parent, String viewType)
+	{
+		GraphicalComponent gc = castIfPossible(createEmptyChildComponent(parent, Utils.createStringUUID(), IRepositoryConstants.GRAPHICALCOMPONENTS));
+		gc.setViewType(viewType);
+		return gc;
+	}
+
+	public final static GraphicalComponent castIfPossible(AbstractBase ab)
+	{
+		return ab.getTypeID() == IRepositoryConstants.GRAPHICALCOMPONENTS ? (GraphicalComponent)ab.cast() : null;
 	}
 
 	public final void setViewType(String viewType)

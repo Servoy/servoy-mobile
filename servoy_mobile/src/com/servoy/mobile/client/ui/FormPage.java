@@ -74,7 +74,7 @@ public class FormPage extends JQMPage
 		for (int i = 0; i < formComponents.length(); i++)
 		{
 			Component component = formComponents.get(i);
-			Part part = component.isPart();
+			Part part = Part.castIfPossible(component);
 			if (part != null)
 			{
 				if (part.getType() == IPartConstants.HEADER)
@@ -180,7 +180,7 @@ public class FormPage extends JQMPage
 			if (rd instanceof GroupDisplay)
 			{
 				GroupDisplay groupRow = (GroupDisplay)rd;
-				GraphicalComponent rowLabel = groupRow.component.isGraphicalComponent();
+				GraphicalComponent rowLabel = GraphicalComponent.castIfPossible(groupRow.component);
 				if (rowLabel != null)
 				{
 					Widget widget = createWidget(groupRow.rightComponent);

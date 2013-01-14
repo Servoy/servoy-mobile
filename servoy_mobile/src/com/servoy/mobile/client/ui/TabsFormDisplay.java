@@ -83,7 +83,7 @@ public class TabsFormDisplay extends FormDisplay implements IFormPageHeaderDecor
 		if (tabFormController == null)
 		{
 			JsArray<Tab> tabs = tabPanel.getTabs();
-			FlattenedSolution solutionModel = application.getSolution();
+			FlattenedSolution solutionModel = application.getFlattenedSolution();
 			for (int i = 0; i < tabs.length(); i++)
 			{
 				Form tabForm = solutionModel.getFormByUUID(tabs.get(i).getContainsFormID());
@@ -114,7 +114,7 @@ public class TabsFormDisplay extends FormDisplay implements IFormPageHeaderDecor
 		NavigationBar()
 		{
 			JsArray<Tab> tabs = tabPanel.getTabs();
-			FlattenedSolution solutionModel = application.getSolution();
+			FlattenedSolution solutionModel = application.getFlattenedSolution();
 			for (int i = 0; i < tabs.length(); i++)
 			{
 				String tabFormID = tabs.get(i).getContainsFormID();

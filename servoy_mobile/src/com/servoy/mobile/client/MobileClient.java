@@ -67,7 +67,7 @@ public class MobileClient implements EntryPoint
 	private FormManager formManager;
 	private JSSolutionModel solutionModel;
 	private ScriptEngine scriptEngine;
-	private FlattenedSolution solution;
+	private FlattenedSolution flattenedSolution;
 	private SolutionI18nProvider i18nProvider;
 
 
@@ -100,8 +100,8 @@ public class MobileClient implements EntryPoint
 		// non solution related (internal) API
 		GWT.create(Utils.class);
 
-		solution = new FlattenedSolution(createSolution());
-		i18nProvider = new SolutionI18nProvider(solution, getLocale());
+		flattenedSolution = new FlattenedSolution(createSolution());
+		i18nProvider = new SolutionI18nProvider(flattenedSolution, getLocale());
 		foundSetManager = new FoundSetManager(this);
 		offlineDataProxy = new OfflineDataProxy(foundSetManager, getServerURL());
 		formManager = new FormManager(this);
@@ -114,7 +114,7 @@ public class MobileClient implements EntryPoint
 
 	protected void onStartPageShown()
 	{
-		if (!getSolution().getSkipConnect())
+		if (!getFlattenedSolution().getSkipConnect())
 		{
 			JQMContext.changePage(new TrialModePage(this));
 		}
@@ -142,7 +142,7 @@ public class MobileClient implements EntryPoint
 
 	protected String getServerURL()
 	{
-		String serverURL = solution.getServerUrl();
+		String serverURL = flattenedSolution.getServerUrl();
 		if (serverURL == null)
 		{
 			serverURL = "http://127.0.0.1:8080";
@@ -158,7 +158,7 @@ public class MobileClient implements EntryPoint
 
 	protected String getSolutionName()
 	{
-		String solName = solution.getSolutionName();
+		String solName = flattenedSolution.getSolutionName();
 		if (solName == null)
 		{
 			solName = "MobileClient";
@@ -179,7 +179,7 @@ public class MobileClient implements EntryPoint
 			return;
 		}
 
-		if (solution.getMustAuthenticate() && !offlineDataProxy.hasCredentials())
+		if (flattenedSolution.getMustAuthenticate() && !offlineDataProxy.hasCredentials())
 		{
 			formManager.showLogin();
 		}
@@ -296,9 +296,9 @@ public class MobileClient implements EntryPoint
 		return foundSetManager;
 	}
 
-	public FlattenedSolution getSolution()
+	public FlattenedSolution getFlattenedSolution()
 	{
-		return solution;
+		return flattenedSolution;
 	}
 
 	public void showFirstForm()
@@ -306,9 +306,9 @@ public class MobileClient implements EntryPoint
 		// first export all relations and dataproviders.
 		foundSetManager.exportDataproviders();
 
-		if (solution.getOnSolutionOpen() != null)
+		if (flattenedSolution.getOnSolutionOpen() != null)
 		{
-			Executor.callFunction(solution.getOnSolutionOpen(), null, null, null);
+			Executor.callFunction(flattenedSolution.getOnSolutionOpen(), null, null, null);
 		}
 
 		// now show the first form.

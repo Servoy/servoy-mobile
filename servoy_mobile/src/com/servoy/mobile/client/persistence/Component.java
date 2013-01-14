@@ -1,7 +1,6 @@
 package com.servoy.mobile.client.persistence;
 
 import com.servoy.j2db.persistence.constants.IContentSpecConstantsBase;
-import com.servoy.j2db.persistence.constants.IRepositoryConstants;
 
 
 /*
@@ -31,8 +30,14 @@ public class Component extends AbstractBase
 	{
 	}
 
-	public final native int getTypeID() /*-{
-		return this.typeid;
+	protected final static native Component createEmptyChildComponent(AbstractBase parent, String uuid, int type) /*-{
+		var ei = {};
+		if (!parent.items)
+			parent.items = [];
+		ei.uuid = uuid;
+		ei.typeid = type;
+		parent.items.push(ei);
+		return ei;
 	}-*/;
 
 	public final native String getGroupID() /*-{
@@ -42,31 +47,6 @@ public class Component extends AbstractBase
 	public final native void setGroupID(String id) /*-{
 		this.groupID = id;
 	}-*/;
-
-	public final GraphicalComponent isGraphicalComponent()
-	{
-		return getTypeID() == IRepositoryConstants.GRAPHICALCOMPONENTS ? (GraphicalComponent)this.cast() : null;
-	}
-
-	public final Field isField()
-	{
-		return getTypeID() == IRepositoryConstants.FIELDS ? (Field)this.cast() : null;
-	}
-
-	public final TabPanel isTabPanel()
-	{
-		return getTypeID() == IRepositoryConstants.TABPANELS ? (TabPanel)this.cast() : null;
-	}
-
-	public final Portal isPortal()
-	{
-		return getTypeID() == IRepositoryConstants.PORTALS ? (Portal)this.cast() : null;
-	}
-
-	public final Part isPart()
-	{
-		return getTypeID() == IRepositoryConstants.PARTS ? (Part)this.cast() : null;
-	}
 
 	public final String getSize()
 	{

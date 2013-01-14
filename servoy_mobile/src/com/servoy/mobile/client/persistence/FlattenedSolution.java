@@ -21,8 +21,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
-import org.timepedia.exporter.client.Export;
-
 import com.google.gwt.core.client.JavaScriptObject;
 import com.servoy.j2db.persistence.constants.IRepositoryConstants;
 import com.servoy.j2db.scripting.solutionhelper.IMobileProperties;
@@ -50,7 +48,6 @@ public class FlattenedSolution
 		return formCacheByName.values();
 	}
 
-	@Export
 	public Form getForm(String name)
 	{
 		if (formCacheByName == null) refreshFormCache();
@@ -278,7 +275,6 @@ public class FlattenedSolution
 		solution.setI18nValue(key, value);
 	}
 
-	@Export
 	public Relation getRelation(String name)
 	{
 		return solution.getRelation(name);

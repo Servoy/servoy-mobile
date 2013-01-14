@@ -33,6 +33,8 @@ import com.servoy.mobile.client.dataprocessing.IFoundSetListener;
 import com.servoy.mobile.client.dataprocessing.Record;
 import com.servoy.mobile.client.persistence.AbstractBase;
 import com.servoy.mobile.client.persistence.Component;
+import com.servoy.mobile.client.persistence.Field;
+import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.servoy.mobile.client.persistence.Relation;
 import com.sksamuel.jqm4gwt.list.JQMList;
 import com.sksamuel.jqm4gwt.list.JQMListItem;
@@ -69,30 +71,30 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 				{
 					if (mobileProperties.getPropertyValue(IMobileProperties.LIST_ITEM_BUTTON).booleanValue())
 					{
-						listItemTextDP = fixRelatedDataproviderID(component.isGraphicalComponent().getDataProviderID());
-						listItemOnAction = component.isGraphicalComponent().getOnActionMethodCall();
-						listItemStaticText = component.isGraphicalComponent().getText();
+						listItemTextDP = fixRelatedDataproviderID(GraphicalComponent.castIfPossible(component).getDataProviderID());
+						listItemOnAction = GraphicalComponent.castIfPossible(component).getOnActionMethodCall();
+						listItemStaticText = GraphicalComponent.castIfPossible(component).getText();
 						listItemDataIcon = mobileProperties.getPropertyValue(IMobileProperties.DATA_ICON);
-						listItemStyleclass = component.isGraphicalComponent().getStyleClass();
+						listItemStyleclass = GraphicalComponent.castIfPossible(component).getStyleClass();
 					}
 					else if (mobileProperties.getPropertyValue(IMobileProperties.LIST_ITEM_SUBTEXT).booleanValue())
 					{
-						listItemSubtextDP = fixRelatedDataproviderID(component.isGraphicalComponent().getDataProviderID());
-						listItemStaticSubtext = component.isGraphicalComponent().getText();
+						listItemSubtextDP = fixRelatedDataproviderID(GraphicalComponent.castIfPossible(component).getDataProviderID());
+						listItemStaticSubtext = GraphicalComponent.castIfPossible(component).getText();
 					}
 					else if (mobileProperties.getPropertyValue(IMobileProperties.LIST_ITEM_COUNT).booleanValue())
 					{
-						listItemCountDP = fixRelatedDataproviderID(component.isField().getDataProviderID());
+						listItemCountDP = fixRelatedDataproviderID(Field.castIfPossible(component).getDataProviderID());
 					}
 					else if (mobileProperties.getPropertyValue(IMobileProperties.LIST_ITEM_IMAGE).booleanValue())
 					{
-						listItemImageDP = fixRelatedDataproviderID(component.isField().getDataProviderID());
+						listItemImageDP = fixRelatedDataproviderID(Field.castIfPossible(component).getDataProviderID());
 					}
 					else if (mobileProperties.getPropertyValue(IMobileProperties.LIST_ITEM_HEADER).booleanValue())
 					{
-						listItemHeaderDP = fixRelatedDataproviderID(component.isGraphicalComponent().getDataProviderID());
-						listItemStaticHeader = component.isGraphicalComponent().getText();
-						listItemHeaderStyleclass = component.isGraphicalComponent().getStyleClass();
+						listItemHeaderDP = fixRelatedDataproviderID(GraphicalComponent.castIfPossible(component).getDataProviderID());
+						listItemStaticHeader = GraphicalComponent.castIfPossible(component).getText();
+						listItemHeaderStyleclass = GraphicalComponent.castIfPossible(component).getStyleClass();
 					}
 				}
 			}

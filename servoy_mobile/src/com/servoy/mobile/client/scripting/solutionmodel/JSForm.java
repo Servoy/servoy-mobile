@@ -66,7 +66,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	{
 		if (!getBase().isClone())
 		{
-			form = getSolutionModel().getApplication().getSolution().cloneFormDeep(form);
+			form = getSolutionModel().getApplication().getFlattenedSolution().cloneFormDeep(form);
 			setBase(form);
 			return true;
 		}
@@ -171,7 +171,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	public JSField newField(Object dataprovider, int type, int x, int y, int width, int height)
 	{
 		cloneIfNeeded();
-		Field f = form.createNewField(type);
+		Field f = Field.createNewField(form, type);
 		if (dataprovider instanceof String) f.setDataProviderID((String)dataprovider);
 		f.setSize(width, height);
 		f.setLocation(x, y);
@@ -269,7 +269,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	public JSButton newButton(String txt, int x, int y, int width, int height, JSMethod action)
 	{
 		cloneIfNeeded();
-		GraphicalComponent gc = form.createNewGraphicalComponent(GraphicalComponent.VIEW_TYPE_BUTTON);
+		GraphicalComponent gc = GraphicalComponent.createNewGraphicalComponent(form, GraphicalComponent.VIEW_TYPE_BUTTON);
 		gc.setText(txt);
 		gc.setSize(width, height);
 		gc.setLocation(x, y);
@@ -281,7 +281,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	public JSLabel newLabel(String txt, int x, int y, int width, int height)
 	{
 		cloneIfNeeded();
-		GraphicalComponent gc = form.createNewGraphicalComponent(GraphicalComponent.VIEW_TYPE_LABEL);
+		GraphicalComponent gc = GraphicalComponent.createNewGraphicalComponent(form, GraphicalComponent.VIEW_TYPE_LABEL);
 		gc.setText(txt);
 		gc.setSize(width, height);
 		gc.setLocation(x, y);
@@ -321,7 +321,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 			for (int i = 0; i < formComponents.length(); i++)
 			{
 				Component component = formComponents.get(i);
-				Portal portal = component.isPortal();
+				Portal portal = Portal.castIfPossible(component);
 				if (portal != null && name.equals(portal.getName()))
 				{
 					return new JSPortal(portal, getSolutionModel(), this);
@@ -346,7 +346,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 		for (int i = 0; i < formComponents.length(); i++)
 		{
 			Component component = formComponents.get(i);
-			Portal portal = component.isPortal();
+			Portal portal = Portal.castIfPossible(component);
 			if (portal != null)
 			{
 				portals.add(new JSPortal(portal, getSolutionModel(), this));
@@ -374,7 +374,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 			for (int i = 0; i < formComponents.length(); i++)
 			{
 				Component component = formComponents.get(i);
-				TabPanel tabPanel = component.isTabPanel();
+				TabPanel tabPanel = TabPanel.castIfPossible(component);
 				if (tabPanel != null && name.equals(tabPanel.getName()))
 				{
 					return new JSTabPanel(tabPanel, getSolutionModel(), this);
@@ -398,7 +398,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 		for (int i = 0; i < formComponents.length(); i++)
 		{
 			Component component = formComponents.get(i);
-			TabPanel tabPanel = component.isTabPanel();
+			TabPanel tabPanel = TabPanel.castIfPossible(component);
 			if (tabPanel != null)
 			{
 				JSTabPanel jsTabPanel = new JSTabPanel(tabPanel, getSolutionModel(), this);
@@ -417,7 +417,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 			for (int i = 0; i < formComponents.length(); i++)
 			{
 				Component component = formComponents.get(i);
-				Field field = component.isField();
+				Field field = Field.castIfPossible(component);
 				if (field != null && name.equals(field.getName()))
 				{
 					return new JSField(field, getSolutionModel(), this);
@@ -442,7 +442,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 		for (int i = 0; i < formComponents.length(); i++)
 		{
 			Component component = formComponents.get(i);
-			Field field = component.isField();
+			Field field = Field.castIfPossible(component);
 			if (field != null)
 			{
 				JSField jsField = new JSField(field, getSolutionModel(), this);
@@ -461,7 +461,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 			for (int i = 0; i < formComponents.length(); i++)
 			{
 				Component component = formComponents.get(i);
-				GraphicalComponent graphicalComponent = component.isGraphicalComponent();
+				GraphicalComponent graphicalComponent = GraphicalComponent.castIfPossible(component);
 				if (graphicalComponent != null && graphicalComponent.isButton() && name.equals(graphicalComponent.getName()))
 				{
 					return new JSButton(graphicalComponent, getSolutionModel(), this);
@@ -485,7 +485,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 		for (int i = 0; i < formComponents.length(); i++)
 		{
 			Component component = formComponents.get(i);
-			GraphicalComponent graphicalComponent = component.isGraphicalComponent();
+			GraphicalComponent graphicalComponent = GraphicalComponent.castIfPossible(component);
 			if (graphicalComponent != null && graphicalComponent.isButton())
 			{
 				JSButton jsButton = new JSButton(graphicalComponent, getSolutionModel(), this);
@@ -544,7 +544,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 			for (int i = 0; i < formComponents.length(); i++)
 			{
 				Component component = formComponents.get(i);
-				GraphicalComponent graphicalComponent = component.isGraphicalComponent();
+				GraphicalComponent graphicalComponent = GraphicalComponent.castIfPossible(component);
 				if (graphicalComponent != null && !graphicalComponent.isButton() && name.equals(graphicalComponent.getName()))
 				{
 					return new JSLabel(graphicalComponent, getSolutionModel(), this);
@@ -572,19 +572,19 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 				Component persistComponent = null;
 				if (componentType == IRepositoryConstants.GRAPHICALCOMPONENTS)
 				{
-					persistComponent = component.isGraphicalComponent();
+					persistComponent = GraphicalComponent.castIfPossible(component);
 				}
 				else if (componentType == IRepositoryConstants.FIELDS)
 				{
-					persistComponent = component.isField();
+					persistComponent = Field.castIfPossible(component);
 				}
 				else if (componentType == IRepositoryConstants.PORTALS)
 				{
-					persistComponent = component.isPortal();
+					persistComponent = Portal.castIfPossible(component);
 				}
 				else if (componentType == IRepositoryConstants.TABPANELS)
 				{
-					persistComponent = component.isTabPanel();
+					persistComponent = TabPanel.castIfPossible(component);
 				}
 				else
 				{
@@ -592,7 +592,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 				}
 				if (persistComponent != null && name.equals(persistComponent.getName()))
 				{
-					form.removeComponent(i);
+					form.removeChild(i);
 					return true;
 				}
 			}
@@ -608,7 +608,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 		for (int i = 0; i < formComponents.length(); i++)
 		{
 			Component component = formComponents.get(i);
-			GraphicalComponent graphicalComponent = component.isGraphicalComponent();
+			GraphicalComponent graphicalComponent = GraphicalComponent.castIfPossible(component);
 			if (graphicalComponent != null && !graphicalComponent.isButton())
 			{
 				JSLabel jsLabel = new JSLabel(graphicalComponent, getSolutionModel(), this);

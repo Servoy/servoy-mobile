@@ -48,7 +48,7 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 	public JSSolutionModel(MobileClient application)
 	{
 		this.application = application;
-		this.solution = application.getSolution();
+		this.solution = application.getFlattenedSolution();
 		export(ExporterUtil.wrap(this));
 	}
 
@@ -92,7 +92,8 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 	@Override
 	public IBaseSMForm revertForm(String formName)
 	{
-		application.getSolution().revertForm(formName);
+		application.getFlattenedSolution().revertForm(formName);
+		application.getFormManager().removeForm(formName); // so that it will reload the correct form into the map when accessed
 		return getForm(formName);
 	}
 
@@ -101,12 +102,12 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 	{
 		if (name != null)
 		{
-			Form f = application.getSolution().getForm(name);
+			Form f = application.getFlattenedSolution().getForm(name);
 			if (f != null)
 			{
 				if (application.getFormManager().removeForm(name))
 				{
-					application.getSolution().removeFormOrCopy(f);
+					application.getFlattenedSolution().removeFormOrCopy(f);
 					return true;
 				}
 			}
@@ -132,7 +133,7 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 	public JSForm[] getForms(String datasource)
 	{
 		List<JSForm> forms = new ArrayList<JSForm>();
-		for (Form f : application.getSolution().getForms())
+		for (Form f : application.getFlattenedSolution().getForms())
 		{
 			if (datasource == null || datasource.equals(f.getDataSource()))
 			{
@@ -157,7 +158,7 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 	@Override
 	public JSValueList getValueList(String name)
 	{
-		ValueList vl = application.getSolution().getValueList(name);
+		ValueList vl = application.getFlattenedSolution().getValueList(name);
 		return vl != null ? new JSValueList(vl) : null;
 	}
 
@@ -165,9 +166,9 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 	public JSValueList[] getValueLists()
 	{
 		List<JSValueList> valuelists = new ArrayList<JSValueList>();
-		for (int i = 0; i < application.getSolution().valuelistCount(); i++)
+		for (int i = 0; i < application.getFlattenedSolution().valuelistCount(); i++)
 		{
-			valuelists.add(new JSValueList(application.getSolution().getValueList(i)));
+			valuelists.add(new JSValueList(application.getFlattenedSolution().getValueList(i)));
 		}
 		return valuelists.toArray(new JSValueList[0]);
 	}

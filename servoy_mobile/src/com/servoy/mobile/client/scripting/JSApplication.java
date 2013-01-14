@@ -71,7 +71,7 @@ public class JSApplication implements Exportable, IJSApplication
 
 	public void setValueListItems(String name, Object[] displayValues, JsArrayMixed realValues)
 	{
-		ValueList list = application.getSolution().getValueList(name);
+		ValueList list = application.getFlattenedSolution().getValueList(name);
 		JsArrayString display = JavaScriptObject.createArray().cast();
 		if (displayValues != null)
 		{

@@ -42,7 +42,7 @@ public class JSTab extends JSBase implements IBaseSMTab, Exportable
 	@Override
 	public JSForm getContainsForm()
 	{
-		Form form = getSolutionModel().getApplication().getSolution().getFormByUUID(((Tab)getBase()).getContainsFormID());
+		Form form = getSolutionModel().getApplication().getFlattenedSolution().getFormByUUID(((Tab)getBase()).getContainsFormID());
 		if (form != null)
 		{
 			return new JSForm(form, getSolutionModel());

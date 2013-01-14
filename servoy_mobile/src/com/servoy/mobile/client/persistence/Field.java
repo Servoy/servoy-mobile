@@ -2,6 +2,8 @@ package com.servoy.mobile.client.persistence;
 
 import com.servoy.j2db.persistence.constants.IContentSpecConstantsBase;
 import com.servoy.j2db.persistence.constants.IFieldConstants;
+import com.servoy.j2db.persistence.constants.IRepositoryConstants;
+import com.servoy.mobile.client.util.Utils;
 
 /*
  This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
@@ -27,6 +29,18 @@ public class Field extends Component
 {
 	protected Field()
 	{
+	}
+
+	public final static Field createNewField(AbstractBase parent, int type)
+	{
+		Field f = castIfPossible(createEmptyChildComponent(parent, Utils.createStringUUID(), IRepositoryConstants.FIELDS));
+		f.setDisplayType(type);
+		return f;
+	}
+
+	public final static Field castIfPossible(AbstractBase ab)
+	{
+		return ab.getTypeID() == IRepositoryConstants.FIELDS ? (Field)ab.cast() : null;
 	}
 
 	public final native String getActionMethodCall() /*-{

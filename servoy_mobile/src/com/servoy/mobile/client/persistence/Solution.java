@@ -17,8 +17,6 @@ package com.servoy.mobile.client.persistence;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
-import org.timepedia.exporter.client.Export;
-
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
@@ -42,7 +40,6 @@ public class Solution extends JavaScriptObject
 		return this.forms[i];
 	}-*/;
 
-	@Export
 	public final Form getForm(String name)
 	{
 		for (int i = 0; i < formCount(); i++)
@@ -96,7 +93,6 @@ public class Solution extends JavaScriptObject
 		this.i18n[key] = value;
 	}-*/;
 
-	@Export
 	public final Relation getRelation(String name)
 	{
 		for (int i = 0; i < relationCount(); i++)

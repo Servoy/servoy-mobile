@@ -17,6 +17,7 @@ package com.servoy.mobile.client.persistence;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
+import com.google.gwt.core.client.JsArray;
 import com.servoy.j2db.persistence.constants.IContentSpecConstantsBase;
 import com.servoy.j2db.persistence.constants.IRepositoryConstants;
 import com.servoy.mobile.client.util.Utils;
@@ -37,14 +38,21 @@ public class Form extends AbstractBase
 		return f;
 	}
 
+	/**
+	 * Same as {@link AbstractBase#getChildren()}, but already cast to Components.
+	 */
+	public final native JsArray<Component> getComponents() /*-{
+		return this.items;
+	}-*/;
+
 	public final TabPanel createNewTabPanel()
 	{
-		return createEmptyChildComponent(Utils.createStringUUID(), IRepositoryConstants.TABPANELS).isTabPanel();
+		return TabPanel.castIfPossible(Component.createEmptyChildComponent(this, Utils.createStringUUID(), IRepositoryConstants.TABPANELS));
 	}
 
 	public final Portal createNewPortal(String name)
 	{
-		Portal portal = createEmptyChildComponent(Utils.createStringUUID(), IRepositoryConstants.PORTALS).isPortal();
+		Portal portal = Portal.castIfPossible(Component.createEmptyChildComponent(this, Utils.createStringUUID(), IRepositoryConstants.PORTALS));
 		portal.setName(name);
 		return portal;
 	}
@@ -120,4 +128,5 @@ public class Form extends AbstractBase
 	{
 		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_ONRECORDSELECTIONMETHODID, onRecordSelectionCall);
 	}
+
 }

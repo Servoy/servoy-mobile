@@ -70,7 +70,7 @@ public class ComponentFactory
 			component = formComponents.get(i);
 			mobileProperties = component.getMobileProperties();
 			if (mobileProperties != null && mobileProperties.getPropertyValue(IMobileProperties.FORM_TAB_PANEL).booleanValue() &&
-				(tabPanel = component.isTabPanel()) != null)
+				(tabPanel = TabPanel.castIfPossible(component)) != null)
 			{
 				return new TabsFormDisplay(application, form, tabPanel);
 			}
@@ -89,7 +89,7 @@ public class ComponentFactory
 	public static Widget createComponent(MobileClient application, Component component, DataAdapterList dal, FormController formController)
 	{
 		Widget componentWidget = null;
-		GraphicalComponent gc = component.isGraphicalComponent();
+		GraphicalComponent gc = GraphicalComponent.castIfPossible(component);
 		if (gc != null)
 		{
 			AbstractBase.MobileProperties mobileProperties = gc.getMobileProperties();
@@ -126,14 +126,14 @@ public class ComponentFactory
 		}
 		else
 		{
-			Field field = component.isField();
+			Field field = Field.castIfPossible(component);
 			if (field != null)
 			{
 				ValueList valuelist = null;
 				String valuelistID = field.getValuelistID();
 				if (valuelistID != null)
 				{
-					valuelist = application.getSolution().getValueListByUUID(valuelistID);
+					valuelist = application.getFlattenedSolution().getValueListByUUID(valuelistID);
 				}
 				switch (field.getDisplayType())
 				{
@@ -169,13 +169,13 @@ public class ComponentFactory
 			}
 			else
 			{
-				Portal portal = component.isPortal();
+				Portal portal = Portal.castIfPossible(component);
 				if (portal != null)
 				{
 					AbstractBase.MobileProperties mobileProperties = component.getMobileProperties();
 					if (mobileProperties != null && mobileProperties.getPropertyValue(IMobileProperties.LIST_COMPONENT).booleanValue())
 					{
-						componentWidget = new FormList(formController, portal.getComponents(), dal, application.getSolution().getRelation(
+						componentWidget = new FormList(formController, portal.getComponents(), dal, application.getFlattenedSolution().getRelation(
 							portal.getRelationName()));
 					}
 				}

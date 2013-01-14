@@ -18,6 +18,7 @@ package com.servoy.mobile.client.persistence;
  */
 
 import com.google.gwt.core.client.JsArray;
+import com.servoy.j2db.persistence.constants.IRepositoryConstants;
 
 /**
  * @author gboros
@@ -29,6 +30,11 @@ public class TabPanel extends Component
 
 	protected TabPanel()
 	{
+	}
+
+	public final static TabPanel castIfPossible(AbstractBase ab)
+	{
+		return ab.getTypeID() == IRepositoryConstants.TABPANELS ? (TabPanel)ab.cast() : null;
 	}
 
 	public final native int getTabOrientation() /*-{
