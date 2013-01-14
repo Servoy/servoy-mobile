@@ -72,4 +72,9 @@ public class DataText implements IDisplayData
 
 		parentComponent.setDataText(txt);
 	}
+
+	public String getDataProviderID()
+	{
+		return textComponent.getDataProviderID();
+	}
 }

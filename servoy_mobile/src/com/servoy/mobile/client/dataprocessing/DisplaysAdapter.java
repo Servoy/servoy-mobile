@@ -26,6 +26,7 @@ import com.servoy.mobile.client.scripting.IRuntimeComponentProvider;
 import com.servoy.mobile.client.scripting.IRuntimeField;
 import com.servoy.mobile.client.scripting.IRuntimeGraphicalComponent;
 import com.servoy.mobile.client.scripting.ModificationEvent;
+import com.servoy.mobile.client.ui.DataText;
 import com.servoy.mobile.client.util.Utils;
 
 /**
@@ -68,8 +69,8 @@ public class DisplaysAdapter implements IDataAdapter, IEditListener
 		Object value = dal.getRecordValue(record, dataproviderID);
 		for (IDisplayData d : displays)
 		{
-			if (d instanceof IRuntimeComponentProvider &&
-				(((IRuntimeComponentProvider)d).getRuntimeComponent().needEntireState() || ((IRuntimeComponentProvider)d).getRuntimeComponent().getDataProviderID() != null)) d.setValueObject(value);
+			if ((d instanceof IRuntimeComponentProvider && (((IRuntimeComponentProvider)d).getRuntimeComponent().needEntireState() || ((IRuntimeComponentProvider)d).getRuntimeComponent().getDataProviderID() != null)) ||
+				(d instanceof DataText && ((DataText)d).getDataProviderID() != null)) d.setValueObject(value);
 		}
 	}
 

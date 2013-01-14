@@ -30,6 +30,7 @@ import com.servoy.mobile.client.scripting.GlobalScope;
 import com.servoy.mobile.client.scripting.IModificationListener;
 import com.servoy.mobile.client.scripting.IRuntimeComponentProvider;
 import com.servoy.mobile.client.scripting.ModificationEvent;
+import com.servoy.mobile.client.ui.DataText;
 
 /**
  * This class encapsulates all the dataproviders for a form page, it does the creation and setup of dataAdapters.
@@ -61,7 +62,8 @@ public class DataAdapterList implements IModificationListener, ITagResolver
 		{
 			IDisplayData displayData = (IDisplayData)obj;
 			String dataproviderID = displayData instanceof IRuntimeComponentProvider
-				? ((IRuntimeComponentProvider)displayData).getRuntimeComponent().getDataProviderID() : null;
+				? ((IRuntimeComponentProvider)displayData).getRuntimeComponent().getDataProviderID() : displayData instanceof DataText
+					? ((DataText)displayData).getDataProviderID() : null;
 
 			IDataAdapter dataAdapter = dataAdapters.get(dataproviderID);
 			if (dataAdapter == null)
