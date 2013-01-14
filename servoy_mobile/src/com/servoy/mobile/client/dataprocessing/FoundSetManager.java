@@ -389,7 +389,7 @@ public class FoundSetManager
 				{
 					String pk = deletedRecord.substring(idx + 1);
 					JsArray<RecordDescription> recs = desc.getRecords();
-					for (int i = 0; i < recs.length(); i++)
+					for (int i = recs.length() - 1; i >= 0; i--)
 					{
 						RecordDescription rec = recs.get(i);
 						if (rec.getPK() != null && rec.getPK().toString().equals(pk))
