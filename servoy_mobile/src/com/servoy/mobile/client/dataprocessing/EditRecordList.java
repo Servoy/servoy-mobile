@@ -80,7 +80,7 @@ public class EditRecordList
 		return editedRecords.contains(record);
 	}
 
-	public void stopEditing(Record record)
+	public void removeEditedRecord(Record record)
 	{
 		editedRecords.remove(record);
 	}

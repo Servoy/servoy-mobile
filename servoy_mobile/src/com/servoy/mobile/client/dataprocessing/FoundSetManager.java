@@ -20,6 +20,7 @@ package com.servoy.mobile.client.dataprocessing;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -49,6 +50,7 @@ import com.servoy.mobile.client.util.Utils;
 public class FoundSetManager
 {
 	private static final String CHANGES_KEY = "changes";
+	private static final String DELETES_KEY = "deletes";
 	private static final String ENTITY_PREFIX_KEY = "entityPrefix";
 	private static final String ENTITIES_KEY = "entities";
 	private static final String STORAGE_VERSION_KEY = "storage_version";
@@ -64,6 +66,8 @@ public class FoundSetManager
 	private String entityPrefix;
 	private final int storage_version;
 	private ArrayList<String> changes;
+	private ArrayList<String> deletes;
+	HashMap<String, HashSet<FoundSet>> entitiesToFoundsets;
 
 	public FoundSetManager(MobileClient mc)
 	{
@@ -89,7 +93,17 @@ public class FoundSetManager
 		}
 		entityPrefix = localStorage.getItem(ENTITY_PREFIX_KEY);
 		changes = new ArrayList<String>();
-		String cjson = localStorage.getItem(CHANGES_KEY);
+		addItems(localStorage.getItem(CHANGES_KEY), changes);
+
+		deletes = new ArrayList<String>();
+		addItems(localStorage.getItem(DELETES_KEY), deletes);
+
+		entitiesToFoundsets = new HashMap<String, HashSet<FoundSet>>();
+
+	}
+
+	private void addItems(String cjson, List<String> list)
+	{
 		if (cjson != null)
 		{
 			JSONArray ca = JSONParser.parseStrict(cjson).isArray();
@@ -98,7 +112,7 @@ public class FoundSetManager
 				JsArrayString jca = ca.getJavaScriptObject().cast();
 				for (int i = 0; i < jca.length(); i++)
 				{
-					changes.add(jca.get(i));
+					list.add(jca.get(i));
 				}
 			}
 		}
@@ -163,7 +177,10 @@ public class FoundSetManager
 		FoundSetDescription fsd = JSONParser.parseStrict(json).isObject().getJavaScriptObject().cast();
 		RelationDescription rd = entities.getPrimaryRelation(entityName, relationName);
 		if (fsd.needsInfoFromKey()) fsd.setInfoFromKey(key, relationName, rd.getForeignEntityName());
-		return new RelatedFoundSet(this, rec, fsd, relationName);
+		removeDeletedRecords(fsd);
+		FoundSet foundset = new RelatedFoundSet(this, rec, fsd, relationName);
+		addFoundsetInList(foundset);
+		return foundset;
 	}
 
 
@@ -332,15 +349,78 @@ public class FoundSetManager
 		}
 	}
 
+	void deleteRowData(String entityName, RowDescription rowData)
+	{
+		DataproviderIdAndTypeHolder dataProviderID = entities.getPKDataProviderID(entityName);
+		if (dataProviderID == null) throw new IllegalStateException(application.getMessages().cannotWorkWithoutPK());
+
+		Object pk = rowData.getValue(dataProviderID.getDataproviderId(), dataProviderID.getType());
+		String key = entityName + '|' + pk;
+
+		if (localStorage.getItem(key) != null)
+		{
+			localStorage.removeItem(key);
+
+			if (!deletes.contains(key)) deletes.add(key);
+
+			updateDeletesInLocalStorage();
+		}
+
+		HashSet<FoundSet> set = entitiesToFoundsets.get(entityName);
+		if (set != null)
+		{
+			for (FoundSet foundset : set)
+			{
+				foundset.removeRecord(pk);
+			}
+		}
+
+	}
+
+	private void removeDeletedRecords(FoundSetDescription desc)
+	{
+		if (deletes != null && deletes.size() > 0)
+		{
+			for (String deletedRecord : deletes)
+			{
+				int idx = deletedRecord.indexOf('|');
+				String entityName = deletedRecord.substring(0, idx);
+				if (entityName.equals(desc.getEntityName()))
+				{
+					String pk = deletedRecord.substring(idx + 1);
+					JsArray<RecordDescription> recs = desc.getRecords();
+					for (int i = 0; i < recs.length(); i++)
+					{
+						RecordDescription rec = recs.get(i);
+						if (rec.getPK() != null && rec.getPK().toString().equals(pk))
+						{
+							desc.removeRecord(i);
+						}
+					}
+				}
+			}
+		}
+	}
+
 	void updateChangesInLocalStorage()
 	{
+		updateListInLocalStorage(CHANGES_KEY, changes);
+	}
+
+	void updateDeletesInLocalStorage()
+	{
+		updateListInLocalStorage(DELETES_KEY, deletes);
+	}
+
+	private void updateListInLocalStorage(String key, List<String> list)
+	{
 		JSONArray jsona = new JSONArray();
-		for (int i = 0; i < changes.size(); i++)
+		for (int i = 0; i < list.size(); i++)
 		{
-			String change = changes.get(i);
-			jsona.set(i, new JSONString(change));
+			String item = list.get(i);
+			jsona.set(i, new JSONString(item));
 		}
-		localStorage.setItem(CHANGES_KEY, jsona.toString());
+		localStorage.setItem(key, jsona.toString());
 	}
 
 	public static String getEntityFromDataSource(String dataSource)
@@ -354,7 +434,21 @@ public class FoundSetManager
 		String json = localStorage.getItem(entityName);
 		if (json == null) return null;
 		FoundSetDescription fsd = JSONParser.parseStrict(json).isObject().getJavaScriptObject().cast();
-		return new FoundSet(this, fsd);
+		removeDeletedRecords(fsd);
+		FoundSet foundset = new FoundSet(this, fsd);
+		addFoundsetInList(foundset);
+		return foundset;
+	}
+
+	private void addFoundsetInList(FoundSet foundset)
+	{
+		HashSet<FoundSet> set = entitiesToFoundsets.get(foundset.getEntityName());
+		if (set == null)
+		{
+			set = new HashSet<FoundSet>();
+			entitiesToFoundsets.put(foundset.getEntityName(), set);
+		}
+		set.add(foundset);
 	}
 
 	//delete all local data
@@ -365,6 +459,7 @@ public class FoundSetManager
 
 		editRecordList = new EditRecordList(this);
 		changes = new ArrayList<String>();
+		deletes = new ArrayList<String>();
 	}
 
 	//from mem/obj to store
@@ -381,12 +476,17 @@ public class FoundSetManager
 	//has changes for the server
 	public boolean hasChanges()
 	{
-		return (changes.size() != 0);
+		return (changes.size() != 0 || deletes.size() > 0);
 	}
 
 	ArrayList<String> getChanges()
 	{
 		return changes;
+	}
+
+	ArrayList<String> getDeletes()
+	{
+		return deletes;
 	}
 
 	public int getFoundSetSize(FoundSet fs)
@@ -599,6 +699,5 @@ public class FoundSetManager
 		}
 		return variableTypes;
 	}
-
 
 }

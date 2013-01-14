@@ -27,6 +27,7 @@ import org.timepedia.exporter.client.ExporterUtil;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.servoy.j2db.persistence.constants.IColumnTypeConstants;
 import com.servoy.j2db.scripting.api.IJSFoundSet;
+import com.servoy.j2db.scripting.api.IJSRecord;
 import com.servoy.mobile.client.dto.FoundSetDescription;
 import com.servoy.mobile.client.dto.RecordDescription;
 import com.servoy.mobile.client.dto.RowDescription;
@@ -167,6 +168,31 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		return -1;
 	}
 
+	@Override
+	@Export("deleteRecord")
+	public boolean js_deleteRecord() throws Exception
+	{
+		return deleteRecord(getSelectedRecord());
+	}
+
+	@Override
+	@Export("deleteRecord")
+	public boolean js_deleteRecord(IJSRecord record) throws Exception
+	{
+		return deleteRecord((Record)record);
+	}
+
+	@Override
+	@Export("deleteRecord")
+	public boolean js_deleteRecord(Number index) throws Exception
+	{
+		if (index != null)
+		{
+			return deleteRecord(getRecord(index.intValue() - 1));
+		}
+		return false;
+	}
+
 	/*
 	 * @see com.servoy.j2db.scripting.api.IJSFoundSet#sort(java.lang.Object)
 	 */
@@ -241,9 +267,37 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		return records.indexOf(record);
 	}
 
-	public void deleteRecord(Record record)
+	public boolean deleteRecord(Record record)
 	{
-		foundSetDescription.removeRecord(getRecordIndex(record));
+		int recordIndex = getRecordIndex(record);
+		if (recordIndex >= 0)
+		{
+			records.remove(record);
+			foundSetDescription.removeRecord(recordIndex);
+			getFoundSetManager().getEditRecordList().removeEditedRecord(record);
+			if (!record.isNew())
+			{
+				getFoundSetManager().deleteRowData(getEntityName(), record.getRow());
+			}
+			return true;
+		}
+		return false;
+	}
+
+	public void removeRecord(Object pk)
+	{
+		for (int i = 0; i < getSize(); i++)
+		{
+			RecordDescription rd = foundSetDescription.getRecords().get(i);
+			if (rd != null && rd.getPK().toString().equals(pk.toString()))
+			{
+				foundSetDescription.removeRecord(i);
+				if (i < records.size())
+				{
+					records.remove(i);
+				}
+			}
+		}
 	}
 
 	public FoundSetManager getFoundSetManager()

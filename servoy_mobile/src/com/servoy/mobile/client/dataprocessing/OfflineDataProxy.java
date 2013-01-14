@@ -221,7 +221,61 @@ public class OfflineDataProxy
 	public void saveOfflineData(final String serverUrl, final Callback<Integer, Failure> callback)
 	{
 		totalLength = 0;
+		deleteRowData(serverUrl, foundSetManager.getDeletes(), callback);
 		postRowData(serverUrl, foundSetManager.getChanges(), callback);
+	}
+
+	private void deleteRowData(final String serverUrl, final ArrayList<String> keys, final Callback<Integer, Failure> callback)
+	{
+		final String key = getNextItem(keys);
+		if (key == null)
+		{
+			if (foundSetManager.getChanges().size() == 0)
+			{
+				//when no updates stop
+				callback.onSuccess(totalLength);
+			}
+			return;
+		}
+
+		int idx = key.indexOf('|');
+		final String entityName = key.substring(0, idx);
+		String pk = key.substring(idx + 1, key.length());
+
+		//DELETE server side
+		RequestBuilder builder = new RequestBuilder(RequestBuilder.DELETE, serverURL + "/" + foundSetManager.getEntityPrefix() + entityName + "/" + version +
+			"/" + URL.encode(pk));
+		setRequestCredentials(builder);
+		builder.setHeader("Access-Control-Request-Method", "DELETE");
+
+		try
+		{
+			builder.sendRequest("", new RequestCallback()
+			{
+				public void onError(Request request, Throwable exception)
+				{
+					callback.onFailure(new Failure(foundSetManager.getApplication().getMessages().cannotDeleteRecord(), exception));
+				}
+
+				public void onResponseReceived(Request request, Response response)
+				{
+					if (Response.SC_OK == response.getStatusCode())
+					{
+						keys.remove(key);//remove current
+						foundSetManager.updateDeletesInLocalStorage(); //update deletes
+						deleteRowData(serverUrl, keys, callback);
+					}
+					else
+					{
+						callback.onFailure(new Failure(foundSetManager.getApplication().getMessages().cannotDeleteRecord(), response.getStatusCode()));
+					}
+				}
+			});
+		}
+		catch (RequestException e)
+		{
+			callback.onFailure(new Failure(foundSetManager.getApplication().getMessages().cannotDeleteRecord(), e));
+		}
 	}
 
 	private void postRowData(final String serverUrl, final ArrayList<String> keys, final Callback<Integer, Failure> callback)

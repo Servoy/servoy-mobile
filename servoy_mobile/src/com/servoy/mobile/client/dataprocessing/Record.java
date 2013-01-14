@@ -303,7 +303,7 @@ public class Record extends Scope implements IJSRecord
 		{
 			parent.deleteRecord(this);
 		}
-		parent.getFoundSetManager().getEditRecordList().stopEditing(this);
+		parent.getFoundSetManager().getEditRecordList().removeEditedRecord(this);
 	}
 
 	@Override

@@ -1,8 +1,8 @@
 package com.servoy.mobile.client;
 
-import com.google.gwt.i18n.client.Messages;
 import com.google.gwt.i18n.client.LocalizableResource.DefaultLocale;
 import com.google.gwt.i18n.client.LocalizableResource.Generate;
+import com.google.gwt.i18n.client.Messages;
 
 @Generate(format = "com.google.gwt.i18n.rebind.format.PropertiesFormat")
 @DefaultLocale("en_US")
@@ -22,6 +22,9 @@ public interface I18NMessages extends Messages
 
 	@DefaultMessage("Couldn`t put JSON")
 	String cannotSaveJSON();
+
+	@DefaultMessage("Couldn`t delete record")
+	String cannotDeleteRecord();
 
 	@DefaultMessage("Cannot work without a primary key")
 	String cannotWorkWithoutPK();
