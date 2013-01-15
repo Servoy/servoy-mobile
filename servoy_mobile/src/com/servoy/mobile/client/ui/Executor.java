@@ -5,6 +5,7 @@ import org.timepedia.exporter.client.ExporterUtil;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.servoy.mobile.client.FormController;
+import com.servoy.mobile.client.scripting.IRuntimeComponent;
 import com.servoy.mobile.client.scripting.JSEvent;
 import com.servoy.mobile.client.util.Utils;
 
@@ -20,7 +21,7 @@ public class Executor
 
 	public void fireEventCommand(String type, String command, Object source, Object[] args)
 	{
-		JSEvent event = new JSEvent(type, source, formController.getName(), null);
+		JSEvent event = new JSEvent(type, source, formController.getName(), source instanceof IRuntimeComponent ? ((IRuntimeComponent)source).getName() : null);
 
 		callFunction(command, args, formController.getName(), event);
 	}
