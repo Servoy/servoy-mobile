@@ -22,7 +22,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasText;
-import com.servoy.j2db.scripting.solutionhelper.IMobileProperties;
+import com.servoy.base.persistence.IMobileProperties;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.persistence.AbstractBase.MobileProperties;

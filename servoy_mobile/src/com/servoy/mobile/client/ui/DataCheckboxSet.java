@@ -22,7 +22,7 @@ import java.util.List;
 
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
-import com.servoy.j2db.util.IDestroyable;
+import com.servoy.base.util.IDestroyable;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;

@@ -21,7 +21,7 @@ import java.util.HashMap;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.json.client.JSONArray;
-import com.servoy.j2db.persistence.constants.IColumnTypeConstants;
+import com.servoy.base.persistence.constants.IColumnTypeConstants;
 import com.servoy.mobile.client.dto.DataProviderDescription;
 import com.servoy.mobile.client.dto.EntityDescription;
 import com.servoy.mobile.client.dto.RelationDescription;

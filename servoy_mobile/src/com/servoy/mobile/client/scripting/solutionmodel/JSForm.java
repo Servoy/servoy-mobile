@@ -29,11 +29,11 @@ import org.timepedia.exporter.client.Setter;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
-import com.servoy.j2db.persistence.constants.IFieldConstants;
-import com.servoy.j2db.persistence.constants.IRepositoryConstants;
-import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod;
-import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMPortal;
-import com.servoy.j2db.util.DataSourceUtilsBase;
+import com.servoy.base.persistence.constants.IFieldConstants;
+import com.servoy.base.persistence.constants.IRepositoryConstants;
+import com.servoy.base.scripting.api.solutionmodel.IBaseSMMethod;
+import com.servoy.base.scripting.api.solutionmodel.IBaseSMPortal;
+import com.servoy.base.util.DataSourceUtilsBase;
 import com.servoy.mobile.client.dataprocessing.RelatedFoundSet;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Field;

@@ -24,7 +24,7 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
 
-import com.servoy.j2db.scripting.api.IJSHistory;
+import com.servoy.base.scripting.api.IJSHistory;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.FormManager;
 

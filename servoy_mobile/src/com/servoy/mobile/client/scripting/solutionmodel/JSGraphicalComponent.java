@@ -22,8 +22,8 @@ import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.Setter;
 
-import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMGraphicalComponent;
-import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMMethod;
+import com.servoy.base.scripting.api.solutionmodel.IBaseSMGraphicalComponent;
+import com.servoy.base.scripting.api.solutionmodel.IBaseSMMethod;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 
 /**

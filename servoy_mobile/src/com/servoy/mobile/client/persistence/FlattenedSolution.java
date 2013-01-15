@@ -22,8 +22,8 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import com.servoy.j2db.persistence.constants.IRepositoryConstants;
-import com.servoy.j2db.scripting.solutionhelper.IMobileProperties;
+import com.servoy.base.persistence.IMobileProperties;
+import com.servoy.base.persistence.constants.IRepositoryConstants;
 import com.servoy.mobile.client.util.Utils;
 
 /**

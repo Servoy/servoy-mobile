@@ -4,8 +4,8 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
-import com.servoy.j2db.persistence.constants.IContentSpecConstantsBase;
-import com.servoy.j2db.scripting.solutionhelper.IMobileProperties;
+import com.servoy.base.persistence.IMobileProperties;
+import com.servoy.base.persistence.constants.IContentSpecConstantsBase;
 import com.servoy.mobile.client.util.Utils;
 
 /**

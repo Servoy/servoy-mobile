@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
-import com.servoy.j2db.util.IDestroyable;
-import com.servoy.j2db.util.ITagResolver;
+import com.servoy.base.util.IDestroyable;
+import com.servoy.base.util.ITagResolver;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.scripting.FormScope;

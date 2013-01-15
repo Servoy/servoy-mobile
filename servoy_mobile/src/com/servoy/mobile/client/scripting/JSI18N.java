@@ -21,7 +21,7 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
 
-import com.servoy.j2db.scripting.api.IJSI18N;
+import com.servoy.base.scripting.api.IJSI18N;
 import com.servoy.mobile.client.SolutionI18nProvider;
 
 @Export

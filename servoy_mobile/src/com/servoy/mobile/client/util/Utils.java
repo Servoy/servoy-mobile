@@ -14,7 +14,7 @@ import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
-import com.servoy.j2db.scripting.solutionhelper.IPredefinedIconConstants;
+import com.servoy.base.scripting.solutionhelper.IPredefinedIconConstants;
 import com.sksamuel.jqm4gwt.DataIcon;
 
 /*

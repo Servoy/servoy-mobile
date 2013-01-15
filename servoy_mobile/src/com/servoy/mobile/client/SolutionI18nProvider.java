@@ -17,7 +17,7 @@
 
 package com.servoy.mobile.client;
 
-import com.servoy.j2db.util.I18NProvider;
+import com.servoy.base.util.I18NProvider;
 import com.servoy.mobile.client.persistence.FlattenedSolution;
 
 /**

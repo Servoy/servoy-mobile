@@ -24,9 +24,9 @@ import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.servoy.j2db.scripting.api.IJSFoundSet;
-import com.servoy.j2db.scripting.api.IJSRecord;
-import com.servoy.j2db.scripting.api.IJSUtils;
+import com.servoy.base.scripting.api.IJSFoundSet;
+import com.servoy.base.scripting.api.IJSRecord;
+import com.servoy.base.scripting.api.IJSUtils;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.dataprocessing.Record;

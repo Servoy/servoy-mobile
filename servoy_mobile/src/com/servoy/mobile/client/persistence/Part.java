@@ -17,8 +17,8 @@
 
 package com.servoy.mobile.client.persistence;
 
-import com.servoy.j2db.persistence.constants.IContentSpecConstantsBase;
-import com.servoy.j2db.persistence.constants.IRepositoryConstants;
+import com.servoy.base.persistence.constants.IContentSpecConstantsBase;
+import com.servoy.base.persistence.constants.IRepositoryConstants;
 
 /**
  * @author gboros

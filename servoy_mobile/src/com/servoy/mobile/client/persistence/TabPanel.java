@@ -18,7 +18,7 @@ package com.servoy.mobile.client.persistence;
  */
 
 import com.google.gwt.core.client.JsArray;
-import com.servoy.j2db.persistence.constants.IRepositoryConstants;
+import com.servoy.base.persistence.constants.IRepositoryConstants;
 
 /**
  * @author gboros

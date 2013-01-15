@@ -25,9 +25,9 @@ import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import com.servoy.j2db.persistence.constants.IColumnTypeConstants;
-import com.servoy.j2db.scripting.api.IJSFoundSet;
-import com.servoy.j2db.scripting.api.IJSRecord;
+import com.servoy.base.persistence.constants.IColumnTypeConstants;
+import com.servoy.base.scripting.api.IJSFoundSet;
+import com.servoy.base.scripting.api.IJSRecord;
 import com.servoy.mobile.client.dto.FoundSetDescription;
 import com.servoy.mobile.client.dto.RecordDescription;
 import com.servoy.mobile.client.dto.RowDescription;

@@ -22,8 +22,8 @@ import java.util.Collections;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.user.client.ui.Widget;
-import com.servoy.j2db.persistence.constants.IPartConstants;
-import com.servoy.j2db.scripting.solutionhelper.IMobileProperties;
+import com.servoy.base.persistence.IMobileProperties;
+import com.servoy.base.persistence.constants.IPartConstants;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.DataAdapterList;

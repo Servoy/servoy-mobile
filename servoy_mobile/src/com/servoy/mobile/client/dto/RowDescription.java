@@ -24,7 +24,7 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
-import com.servoy.j2db.persistence.constants.IColumnTypeConstants;
+import com.servoy.base.persistence.constants.IColumnTypeConstants;
 
 /**
  * @author jblok

@@ -19,9 +19,9 @@ package com.servoy.mobile.client.scripting;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.servoy.j2db.scripting.api.IJSEvent;
-import com.servoy.j2db.util.ITagResolver;
-import com.servoy.j2db.util.TagParser;
+import com.servoy.base.scripting.api.IJSEvent;
+import com.servoy.base.util.ITagResolver;
+import com.servoy.base.util.TagParser;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.servoy.mobile.client.ui.Executor;

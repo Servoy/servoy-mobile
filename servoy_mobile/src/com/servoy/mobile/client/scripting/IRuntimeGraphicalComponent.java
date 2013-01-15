@@ -17,7 +17,7 @@
 
 package com.servoy.mobile.client.scripting;
 
-import com.servoy.j2db.util.ITagResolver;
+import com.servoy.base.util.ITagResolver;
 
 /**
  * @author gboros

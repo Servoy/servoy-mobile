@@ -19,7 +19,7 @@ package com.servoy.mobile.client.scripting;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.servoy.j2db.scripting.api.IJSEvent;
+import com.servoy.base.scripting.api.IJSEvent;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.ui.DataSelect;

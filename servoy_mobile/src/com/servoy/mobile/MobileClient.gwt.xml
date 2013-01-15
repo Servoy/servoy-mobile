@@ -13,7 +13,7 @@
   <inherits name='com.google.gwt.user.User'/>
   <inherits name='com.google.gwt.json.JSON'/>
 
-  <inherits name="com.servoy.j2db.ServoyBase" />
+  <inherits name="com.servoy.base.ServoyBase" />
   
   <!-- Inherit the default GWT style sheet.  You can change       -->
   <!-- the theme of your GWT application by uncommenting          -->

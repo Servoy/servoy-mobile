@@ -19,9 +19,9 @@ package com.servoy.mobile.client.ui;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.user.client.ui.Widget;
-import com.servoy.j2db.persistence.constants.IFieldConstants;
-import com.servoy.j2db.persistence.constants.IFormConstants;
-import com.servoy.j2db.scripting.solutionhelper.IMobileProperties;
+import com.servoy.base.persistence.IMobileProperties;
+import com.servoy.base.persistence.constants.IFieldConstants;
+import com.servoy.base.persistence.constants.IFormConstants;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.DataAdapterList;

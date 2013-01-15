@@ -22,8 +22,8 @@ import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.Setter;
 
-import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMForm;
-import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMTab;
+import com.servoy.base.scripting.api.solutionmodel.IBaseSMForm;
+import com.servoy.base.scripting.api.solutionmodel.IBaseSMTab;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.Tab;
 

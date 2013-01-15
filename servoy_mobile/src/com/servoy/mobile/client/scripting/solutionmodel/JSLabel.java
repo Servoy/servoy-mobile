@@ -20,7 +20,7 @@ package com.servoy.mobile.client.scripting.solutionmodel;
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 
-import com.servoy.j2db.scripting.api.solutionmodel.IBaseSMLabel;
+import com.servoy.base.scripting.api.solutionmodel.IBaseSMLabel;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 
 /**

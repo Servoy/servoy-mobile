@@ -5,9 +5,9 @@ import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.Setter;
 
-import com.servoy.j2db.scripting.api.IJSController;
-import com.servoy.j2db.scripting.api.IJSEvent;
-import com.servoy.j2db.scripting.api.IJSFoundSet;
+import com.servoy.base.scripting.api.IJSController;
+import com.servoy.base.scripting.api.IJSEvent;
+import com.servoy.base.scripting.api.IJSFoundSet;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.dataprocessing.FoundSetManager;
 import com.servoy.mobile.client.dataprocessing.IFoundSetSelectionListener;

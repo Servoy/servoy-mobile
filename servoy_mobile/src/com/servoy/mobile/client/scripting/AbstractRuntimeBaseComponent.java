@@ -22,9 +22,9 @@ import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.Setter;
 
-import com.servoy.j2db.scripting.api.ui.HasRuntimeEnabled;
-import com.servoy.j2db.scripting.api.ui.HasRuntimeName;
-import com.servoy.j2db.scripting.api.ui.HasRuntimeVisible;
+import com.servoy.base.scripting.api.ui.HasRuntimeEnabled;
+import com.servoy.base.scripting.api.ui.HasRuntimeName;
+import com.servoy.base.scripting.api.ui.HasRuntimeVisible;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.ui.Executor;

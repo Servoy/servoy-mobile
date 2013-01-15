@@ -17,8 +17,8 @@
 
 package com.servoy.mobile.client.ui;
 
-import com.servoy.j2db.util.ITagResolver;
-import com.servoy.j2db.util.TagParser;
+import com.servoy.base.util.ITagResolver;
+import com.servoy.base.util.TagParser;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.persistence.GraphicalComponent;

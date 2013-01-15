@@ -22,10 +22,10 @@ import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
 import org.timepedia.exporter.client.NoExport;
 
-import com.servoy.j2db.scripting.api.IJSDatabaseManager;
-import com.servoy.j2db.scripting.api.IJSFoundSet;
-import com.servoy.j2db.scripting.api.IJSRecord;
-import com.servoy.j2db.util.DataSourceUtilsBase;
+import com.servoy.base.scripting.api.IJSDatabaseManager;
+import com.servoy.base.scripting.api.IJSFoundSet;
+import com.servoy.base.scripting.api.IJSRecord;
+import com.servoy.base.util.DataSourceUtilsBase;
 import com.servoy.mobile.client.dataprocessing.EditRecordList;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.dataprocessing.FoundSetManager;

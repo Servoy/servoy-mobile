@@ -17,7 +17,7 @@
 
 package com.servoy.mobile.client.ui;
 
-import com.servoy.j2db.scripting.solutionhelper.IMobileProperties;
+import com.servoy.base.persistence.IMobileProperties;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.persistence.AbstractBase.MobileProperties;

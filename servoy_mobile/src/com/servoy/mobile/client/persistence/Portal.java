@@ -1,8 +1,8 @@
 package com.servoy.mobile.client.persistence;
 
 import com.google.gwt.core.client.JsArray;
-import com.servoy.j2db.persistence.constants.IContentSpecConstantsBase;
-import com.servoy.j2db.persistence.constants.IRepositoryConstants;
+import com.servoy.base.persistence.constants.IContentSpecConstantsBase;
+import com.servoy.base.persistence.constants.IRepositoryConstants;
 
 /*
  This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2013 Servoy BV

@@ -20,8 +20,8 @@ package com.servoy.mobile.client.ui;
 import org.timepedia.exporter.client.ExporterBaseActual.JsArrayObject;
 
 import com.google.gwt.core.client.JsArrayString;
-import com.servoy.j2db.scripting.solutionhelper.IMobileProperties;
-import com.servoy.j2db.util.IDestroyable;
+import com.servoy.base.persistence.IMobileProperties;
+import com.servoy.base.util.IDestroyable;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
