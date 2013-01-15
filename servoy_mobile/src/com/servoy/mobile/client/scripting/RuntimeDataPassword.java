@@ -50,7 +50,7 @@ public class RuntimeDataPassword extends AbstractRuntimeFieldComponent
 				{
 					if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
 					{
-						executor.fireEventCommand(IJSEvent.ACTION, command, this, null);
+						executor.fireEventCommand(IJSEvent.ACTION, command, RuntimeDataPassword.this, null);
 					}
 				}
 			});

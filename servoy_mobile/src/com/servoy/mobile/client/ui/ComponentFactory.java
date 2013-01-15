@@ -175,8 +175,7 @@ public class ComponentFactory
 					AbstractBase.MobileProperties mobileProperties = component.getMobileProperties();
 					if (mobileProperties != null && mobileProperties.getPropertyValue(IMobileProperties.LIST_COMPONENT).booleanValue())
 					{
-						componentWidget = new FormList(formController, portal.getComponents(), dal, application.getFlattenedSolution().getRelation(
-							portal.getRelationName()));
+						componentWidget = new FormListComponent(portal, formController, dal, application);
 					}
 				}
 			}

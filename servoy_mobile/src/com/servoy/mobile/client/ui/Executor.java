@@ -19,10 +19,9 @@ public class Executor
 		this.formController = formController;
 	}
 
-	public void fireEventCommand(String type, String command, Object source, Object[] args)
+	public void fireEventCommand(String type, String command, IRuntimeComponent source, Object[] args)
 	{
-		JSEvent event = new JSEvent(type, source, formController.getName(), source instanceof IRuntimeComponent ? ((IRuntimeComponent)source).getName() : null);
-
+		JSEvent event = new JSEvent(type, source, formController.getName(), source == null ? null : source.getName());
 		callFunction(command, args, formController.getName(), event);
 	}
 

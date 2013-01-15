@@ -36,6 +36,7 @@ import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.servoy.mobile.client.persistence.Relation;
+import com.servoy.mobile.client.scripting.IRuntimeComponent;
 import com.sksamuel.jqm4gwt.list.JQMList;
 import com.sksamuel.jqm4gwt.list.JQMListItem;
 
@@ -201,7 +202,8 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 					public void onClick(ClickEvent event)
 					{
 						foundSet.setSelectedIndexInternal(selIndex);
-						if (listItemOnAction != null) formController.getExecutor().fireEventCommand(IJSEvent.ACTION, listItemOnAction, null, null);
+						if (listItemOnAction != null) formController.getExecutor().fireEventCommand(IJSEvent.ACTION, listItemOnAction, getRuntimeComponent(),
+							null);
 					}
 				});
 
@@ -221,6 +223,11 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 				setWidgetTheme(listItem, listItemStyleclass);
 			}
 		}
+	}
+
+	public IRuntimeComponent getRuntimeComponent()
+	{
+		return null; // overridden in when FormList is used as component
 	}
 
 	public static void setWidgetTheme(Widget widget, String styleClass)

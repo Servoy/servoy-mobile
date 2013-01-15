@@ -46,7 +46,7 @@ public class RuntimeDataTextArea extends AbstractRuntimeFieldComponent
 				@Override
 				public void onValueChange(ValueChangeEvent<String> event)
 				{
-					executor.fireEventCommand(IJSEvent.ACTION, command, this, null);
+					executor.fireEventCommand(IJSEvent.ACTION, command, RuntimeDataTextArea.this, null);
 				}
 			});
 		}

@@ -69,7 +69,7 @@ public class AbstractRuntimeFieldComponent extends AbstractRuntimeBaseComponent<
 				@Override
 				public void onClick(ClickEvent event)
 				{
-					executor.fireEventCommand(IJSEvent.ACTION, command, this, null);
+					executor.fireEventCommand(IJSEvent.ACTION, command, AbstractRuntimeFieldComponent.this, null);
 				}
 			});
 		}

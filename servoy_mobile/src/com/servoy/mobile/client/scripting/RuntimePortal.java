@@ -1,5 +1,5 @@
 /*
- This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
+ This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2013 Servoy BV
 
  This program is free software; you can redistribute it and/or modify it under
  the terms of the GNU Affero General Public License as published by the Free
@@ -17,43 +17,38 @@
 
 package com.servoy.mobile.client.scripting;
 
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.servoy.base.scripting.api.IJSEvent;
 import com.servoy.mobile.client.MobileClient;
-import com.servoy.mobile.client.persistence.Field;
-import com.servoy.mobile.client.ui.DataTextField;
+import com.servoy.mobile.client.persistence.Portal;
 import com.servoy.mobile.client.ui.Executor;
+import com.servoy.mobile.client.ui.FormListComponent;
 
 /**
- * @author gboros
+ * Portal (inset list) exposed in scripting.
+ * 
+ * @author rgansevles
  *
  */
-public class RuntimeDataTextField extends AbstractRuntimeFieldComponent
+public class RuntimePortal extends AbstractRuntimeBaseComponent<FormListComponent, Portal>
 {
-	public RuntimeDataTextField(MobileClient application, Executor executor, DataTextField component, Field componentPersist)
+	public RuntimePortal(MobileClient application, Executor executor, FormListComponent component, Portal componentPersist)
 	{
 		super(application, executor, component, componentPersist);
 	}
 
 	@Override
+	public boolean needEntireState()
+	{
+		return false;
+	}
+
+	@Override
+	public String getDataProviderID()
+	{
+		return null;
+	}
+
 	public void setActionCommand(final String command)
 	{
-		if (command != null)
-		{
-			((DataTextField)component).addKeyUpHandler(new KeyUpHandler()
-			{
-
-				@Override
-				public void onKeyUp(KeyUpEvent event)
-				{
-					if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
-					{
-						executor.fireEventCommand(IJSEvent.ACTION, command, RuntimeDataTextField.this, null);
-					}
-				}
-			});
-		}
+		// is handled in FormList
 	}
 }

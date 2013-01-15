@@ -13,7 +13,7 @@
  You should have received a copy of the GNU Affero General Public License along
  with this program; if not, see http://www.gnu.org/licenses or write to the Free
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
-*/
+ */
 
 package com.servoy.mobile.client.scripting;
 
@@ -31,7 +31,8 @@ import com.servoy.mobile.client.ui.IGraphicalComponent;
  * @author gboros
  *
  */
-public class AbstractRuntimeGraphicalComponent extends AbstractRuntimeBaseComponent<IGraphicalComponent, GraphicalComponent> implements IRuntimeGraphicalComponent
+public class AbstractRuntimeGraphicalComponent extends AbstractRuntimeBaseComponent<IGraphicalComponent, GraphicalComponent> implements
+	IRuntimeGraphicalComponent
 {
 	protected ITagResolver tagResolver;
 
@@ -46,7 +47,9 @@ public class AbstractRuntimeGraphicalComponent extends AbstractRuntimeBaseCompon
 		return componentPersist.isDisplaysTags();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.scripting.IScriptable#getDataProviderID()
 	 */
 	@Override
@@ -55,7 +58,9 @@ public class AbstractRuntimeGraphicalComponent extends AbstractRuntimeBaseCompon
 		return componentPersist.getDataProviderID();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.servoy.mobile.client.scripting.IScriptable#setTagResolver(com.servoy.j2db.util.ITagResolver)
 	 */
 	@Override
@@ -88,7 +93,7 @@ public class AbstractRuntimeGraphicalComponent extends AbstractRuntimeBaseCompon
 				@Override
 				public void onClick(ClickEvent event)
 				{
-					executor.fireEventCommand(IJSEvent.ACTION, command, this, null);
+					executor.fireEventCommand(IJSEvent.ACTION, command, AbstractRuntimeGraphicalComponent.this, null);
 				}
 			});
 		}
