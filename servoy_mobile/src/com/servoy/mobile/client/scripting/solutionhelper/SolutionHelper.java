@@ -17,6 +17,8 @@
 
 package com.servoy.mobile.client.scripting.solutionhelper;
 
+import java.util.Arrays;
+
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 
@@ -75,9 +77,54 @@ public class SolutionHelper extends BaseSolutionHelper implements IMobilePredefi
 		super.markRightHeaderButton(button);
 	}
 
+
+	@Override
+	public JSButton getLeftHeaderButton(IBaseSMForm form)
+	{
+		return getLeftHeaderButton((JSForm)form);
+	}
+
+	public JSButton getLeftHeaderButton(JSForm form)
+	{
+		return (JSButton)super.getLeftHeaderButton(form);
+	}
+
+	@Override
+	public JSButton getRightHeaderButton(IBaseSMForm form)
+	{
+		return getRightHeaderButton((JSForm)form);
+	}
+
+	public JSButton getRightHeaderButton(JSForm form)
+	{
+		return (JSButton)super.getRightHeaderButton(form);
+	}
+
 	public void markHeaderText(JSLabel button)
 	{
 		super.markHeaderText(button);
+	}
+
+	@Override
+	public JSLabel getHeaderLabel(IBaseSMForm form)
+	{
+		return getHeaderLabel((JSForm)form);
+	}
+
+	public JSLabel getHeaderLabel(JSForm form)
+	{
+		return (JSLabel)super.getHeaderLabel(form);
+	}
+
+	@Override
+	public JSComponent[] getAllFooterComponents(IBaseSMForm form)
+	{
+		return getAllFooterComponents((JSForm)form);
+	}
+
+	public JSComponent[] getAllFooterComponents(JSForm form)
+	{
+		return Arrays.asList(super.getAllFooterComponents(form)).toArray(new JSComponent[0]);
 	}
 
 	public void markFooterItem(JSComponent button)
@@ -122,10 +169,33 @@ public class SolutionHelper extends BaseSolutionHelper implements IMobilePredefi
 		return (JSInsetList)super.getInsetList(form, name);
 	}
 
+
+	@Override
+	public JSInsetList[] getAllInsetLists(IBaseSMForm form)
+	{
+		return getAllInsetLists((JSForm)form);
+	}
+
+	public JSInsetList[] getAllInsetLists(JSForm form)
+	{
+		return Arrays.asList(super.getAllInsetLists(form)).toArray(new JSInsetList[0]);
+	}
+
+	public boolean removeInsetList(JSForm form, String name)
+	{
+		return super.removeInsetList(form, name);
+	}
+
 	@Override
 	public JSList getListForm(String formName)
 	{
 		return (JSList)super.getListForm(formName);
+	}
+
+	@Override
+	public JSList[] getAllListForms()
+	{
+		return Arrays.asList(super.getAllListForms()).toArray(new JSList[0]);
 	}
 
 	@Override
