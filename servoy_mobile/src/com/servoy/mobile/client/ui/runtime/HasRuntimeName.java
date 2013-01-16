@@ -14,18 +14,27 @@
  with this program; if not, see http://www.gnu.org/licenses or write to the Free
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
+package com.servoy.mobile.client.ui.runtime;
 
-package com.servoy.mobile.client.scripting.solutionmodel.i;
-
-import org.timepedia.exporter.client.Exportable;
-
-import com.servoy.base.solutionmodel.IBaseSMVariable;
+import com.servoy.base.scripting.annotations.ServoyMobile;
 
 /**
- * @author acostescu
+ * Basic interface for the components name
+ *  
+ * @author jcompagner
+ * @since 7.0
  */
-//workaround to have constants automatically exported without re-defining them
-public interface IMobileSMVariable extends IBaseSMVariable, Exportable
+@ServoyMobile
+public interface HasRuntimeName
 {
+	/**
+	 * Returns the name of an element. (may be null as well)
+	 *
+	 * @sample 
+	 * var name = %%prefix%%%%elementName%%.getName();
+	 * 
+	 * @return The name of the element.
+	 */
+	public String getName();
 
 }

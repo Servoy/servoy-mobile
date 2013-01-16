@@ -23,8 +23,8 @@ import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.Setter;
 
-import com.servoy.base.scripting.api.solutionmodel.IBaseSMMethod;
-import com.servoy.base.scripting.api.solutionmodel.IBaseSMValueList;
+import com.servoy.base.solutionmodel.IBaseSMMethod;
+import com.servoy.base.solutionmodel.IBaseSMValueList;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMField;
 

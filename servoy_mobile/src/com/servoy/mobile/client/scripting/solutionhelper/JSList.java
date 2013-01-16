@@ -22,10 +22,10 @@ import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.Setter;
 
-import com.servoy.base.scripting.api.solutionmodel.IBaseSMForm;
 import com.servoy.base.scripting.solutionhelper.BaseSHList;
 import com.servoy.base.scripting.solutionhelper.BaseSolutionHelper;
 import com.servoy.base.scripting.solutionhelper.IBaseSHFormList;
+import com.servoy.base.solutionmodel.IBaseSMForm;
 import com.servoy.mobile.client.scripting.solutionmodel.JSForm;
 import com.servoy.mobile.client.scripting.solutionmodel.JSMethod;
 

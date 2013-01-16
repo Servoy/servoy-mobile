@@ -24,8 +24,8 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 
 import com.google.gwt.core.client.JsArray;
-import com.servoy.base.scripting.api.solutionmodel.IBaseSMComponent;
-import com.servoy.base.scripting.api.solutionmodel.IBaseSMPortal;
+import com.servoy.base.solutionmodel.IBaseSMComponent;
+import com.servoy.base.solutionmodel.IBaseSMPortal;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.GraphicalComponent;

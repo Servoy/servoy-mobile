@@ -22,7 +22,6 @@ import java.util.List;
 
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
-import com.servoy.base.util.IDestroyable;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
@@ -33,6 +32,7 @@ import com.servoy.mobile.client.scripting.IModificationListener;
 import com.servoy.mobile.client.scripting.IRuntimeComponent;
 import com.servoy.mobile.client.scripting.ModificationEvent;
 import com.servoy.mobile.client.scripting.RuntimeDataCheckboxSet;
+import com.servoy.mobile.client.util.IDestroyable;
 import com.servoy.mobile.client.util.Utils;
 import com.sksamuel.jqm4gwt.form.elements.JQMCheckbox;
 import com.sksamuel.jqm4gwt.form.elements.JQMCheckset;

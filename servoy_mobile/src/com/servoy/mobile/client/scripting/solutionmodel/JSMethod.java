@@ -23,7 +23,7 @@ import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.NoExport;
 import org.timepedia.exporter.client.Setter;
 
-import com.servoy.base.scripting.api.solutionmodel.IBaseSMMethod;
+import com.servoy.base.solutionmodel.IBaseSMMethod;
 import com.servoy.mobile.client.scripting.ScriptEngine;
 
 /**

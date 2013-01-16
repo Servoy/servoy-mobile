@@ -22,13 +22,13 @@ import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.Setter;
 
-import com.servoy.base.scripting.api.ui.HasRuntimeEnabled;
-import com.servoy.base.scripting.api.ui.HasRuntimeName;
-import com.servoy.base.scripting.api.ui.HasRuntimeVisible;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.ui.Executor;
 import com.servoy.mobile.client.ui.IComponent;
+import com.servoy.mobile.client.ui.runtime.HasRuntimeEnabled;
+import com.servoy.mobile.client.ui.runtime.HasRuntimeName;
+import com.servoy.mobile.client.ui.runtime.HasRuntimeVisible;
 
 /**
  * @author gboros

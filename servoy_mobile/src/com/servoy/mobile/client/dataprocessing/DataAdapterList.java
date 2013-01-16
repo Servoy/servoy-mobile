@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
-import com.servoy.base.util.IDestroyable;
 import com.servoy.base.util.ITagResolver;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
@@ -31,6 +30,7 @@ import com.servoy.mobile.client.scripting.IModificationListener;
 import com.servoy.mobile.client.scripting.IRuntimeComponentProvider;
 import com.servoy.mobile.client.scripting.ModificationEvent;
 import com.servoy.mobile.client.ui.DataText;
+import com.servoy.mobile.client.util.IDestroyable;
 
 /**
  * This class encapsulates all the dataproviders for a form page, it does the creation and setup of dataAdapters.

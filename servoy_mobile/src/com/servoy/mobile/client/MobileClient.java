@@ -22,7 +22,7 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.Window;
-import com.servoy.base.scripting.api.solutionmodel.IBaseSolutionModel;
+import com.servoy.base.solutionmodel.IBaseSolutionModel;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.dataprocessing.FoundSetManager;
 import com.servoy.mobile.client.dataprocessing.OfflineDataProxy;

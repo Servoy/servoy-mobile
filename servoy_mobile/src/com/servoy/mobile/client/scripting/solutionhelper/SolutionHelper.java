@@ -23,12 +23,12 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 
 import com.servoy.base.persistence.IMobileProperties;
-import com.servoy.base.scripting.api.solutionmodel.IBaseSMForm;
-import com.servoy.base.scripting.api.solutionmodel.IBaseSMPortal;
-import com.servoy.base.scripting.api.solutionmodel.IBaseSolutionModel;
 import com.servoy.base.scripting.solutionhelper.BaseSolutionHelper;
 import com.servoy.base.scripting.solutionhelper.IBaseSHInsetList;
 import com.servoy.base.scripting.solutionhelper.IBaseSHList;
+import com.servoy.base.solutionmodel.IBaseSMForm;
+import com.servoy.base.solutionmodel.IBaseSMPortal;
+import com.servoy.base.solutionmodel.IBaseSolutionModel;
 import com.servoy.mobile.client.scripting.solutionmodel.JSBase;
 import com.servoy.mobile.client.scripting.solutionmodel.JSButton;
 import com.servoy.mobile.client.scripting.solutionmodel.JSComponent;
