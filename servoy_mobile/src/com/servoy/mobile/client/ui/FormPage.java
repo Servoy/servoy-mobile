@@ -30,6 +30,7 @@ import com.servoy.mobile.client.dataprocessing.DataAdapterList;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.dataprocessing.Record;
 import com.servoy.mobile.client.persistence.AbstractBase;
+import com.servoy.mobile.client.persistence.AbstractBase.MobileProperties;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
@@ -166,7 +167,16 @@ public class FormPage extends JQMPage
 						break;
 					}
 				}
-				if (groupRow != null) groupRow.setRightComponent(c);
+				if (groupRow != null)
+				{
+					MobileProperties mp = c.getMobileProperties();
+					if (mp != null && mp.getPropertyValue(IMobileProperties.COMPONENT_TITLE).booleanValue())
+					{
+						groupRow.setRightComponent(groupRow.component);
+						groupRow.component = c;
+					}
+					else groupRow.setRightComponent(c);
+				}
 				else rowsDisplay.add(new GroupDisplay(groupID, c));
 			}
 			else
