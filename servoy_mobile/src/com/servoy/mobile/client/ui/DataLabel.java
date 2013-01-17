@@ -156,4 +156,15 @@ public class DataLabel extends JQMWidget implements HasText, IDisplayData, IGrap
 	{
 		return labelFor.getText();
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.ui.ISupportTitleText#setTitleTextVisible(boolean)
+	 */
+	@Override
+	public void setTitleTextVisible(boolean visible)
+	{
+		labelFor.setVisible(visible);
+	}
 }

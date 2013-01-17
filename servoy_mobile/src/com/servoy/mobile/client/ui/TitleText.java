@@ -43,6 +43,7 @@ public class TitleText implements IDisplayData
 
 		parentComponent.setTitleText(textComponent.isVisible() ? application.getI18nProvider().getI18NMessageIfPrefixed(
 			textComponent.getText() != null ? textComponent.getText() : "") : ""); //$NON-NLS-1$ //$NON-NLS-2$);
+		parentComponent.setTitleTextVisible(textComponent.isVisible());
 	}
 
 	/*

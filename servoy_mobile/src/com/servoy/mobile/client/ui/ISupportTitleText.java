@@ -27,4 +27,6 @@ public interface ISupportTitleText
 	void setTitleText(String titleText);
 
 	String getTitleText();
+
+	void setTitleTextVisible(boolean visible);
 }

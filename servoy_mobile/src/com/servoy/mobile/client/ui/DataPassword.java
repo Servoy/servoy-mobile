@@ -108,4 +108,15 @@ public class DataPassword extends JQMPassword implements IDisplayData, ISupportT
 	{
 		return getText();
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.ui.ISupportTitleText#setTitleTextVisible(boolean)
+	 */
+	@Override
+	public void setTitleTextVisible(boolean visible)
+	{
+		// not supported
+	}
 }

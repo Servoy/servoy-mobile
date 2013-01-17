@@ -229,6 +229,17 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 		return getText();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.ui.ISupportTitleText#setTitleTextVisible(boolean)
+	 */
+	@Override
+	public void setTitleTextVisible(boolean visible)
+	{
+		// not supported
+	}
+
 	@Override
 	public void refresh()
 	{
