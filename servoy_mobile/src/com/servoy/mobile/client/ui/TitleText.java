@@ -27,21 +27,21 @@ import com.servoy.mobile.client.persistence.GraphicalComponent;
  * @author gboros
  *
  */
-public class DataText implements IDisplayData
+public class TitleText implements IDisplayData
 {
-	private final ISupportDataText parentComponent;
+	private final ISupportTitleText parentComponent;
 	private final GraphicalComponent textComponent;
 	private final ITagResolver tagResolver;
 	private final MobileClient application;
 
-	public DataText(ISupportDataText parentComponent, GraphicalComponent textComponent, ITagResolver tagResolver, MobileClient application)
+	public TitleText(ISupportTitleText parentComponent, GraphicalComponent textComponent, ITagResolver tagResolver, MobileClient application)
 	{
 		this.parentComponent = parentComponent;
 		this.textComponent = textComponent;
 		this.tagResolver = tagResolver;
 		this.application = application;
 
-		parentComponent.setDataText(textComponent.isVisible() ? application.getI18nProvider().getI18NMessageIfPrefixed(
+		parentComponent.setTitleText(textComponent.isVisible() ? application.getI18nProvider().getI18NMessageIfPrefixed(
 			textComponent.getText() != null ? textComponent.getText() : "") : ""); //$NON-NLS-1$ //$NON-NLS-2$);
 	}
 
@@ -51,7 +51,7 @@ public class DataText implements IDisplayData
 	@Override
 	public Object getValueObject()
 	{
-		return parentComponent.getDataText();
+		return parentComponent.getTitleText();
 	}
 
 	/*
@@ -70,7 +70,7 @@ public class DataText implements IDisplayData
 			txt = data != null ? data.toString() : ""; //$NON-NLS-1$
 		}
 
-		parentComponent.setDataText(txt);
+		parentComponent.setTitleText(txt);
 	}
 
 	public String getDataProviderID()

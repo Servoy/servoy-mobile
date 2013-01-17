@@ -41,7 +41,7 @@ import com.sksamuel.jqm4gwt.form.elements.JQMRadioset;
  *
  * @author gboros
  */
-public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldComponent, ISupportDataText, IEditListenerSubject, IModificationListener,
+public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldComponent, ISupportTitleText, IEditListenerSubject, IModificationListener,
 	IDestroyable
 {
 	private static final int HORIZONTAL = 1;
@@ -190,21 +190,21 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.servoy.mobile.client.ui.ISupportDataText#setDataText(java.lang.String)
+	 * @see com.servoy.mobile.client.ui.ISupportDataText#setTitleText(java.lang.String)
 	 */
 	@Override
-	public void setDataText(String dataText)
+	public void setTitleText(String titleText)
 	{
-		setText(dataText);
+		setText(titleText);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.servoy.mobile.client.ui.ISupportDataText#getDataText()
+	 * @see com.servoy.mobile.client.ui.ISupportTitleText#getTitleText()
 	 */
 	@Override
-	public String getDataText()
+	public String getTitleText()
 	{
 		return getText();
 	}

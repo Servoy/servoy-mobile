@@ -22,9 +22,9 @@ package com.servoy.mobile.client.ui;
  * @author gboros
  *
  */
-public interface ISupportDataText
+public interface ISupportTitleText
 {
-	void setDataText(String dataText);
+	void setTitleText(String titleText);
 
-	String getDataText();
+	String getTitleText();
 }

@@ -29,7 +29,7 @@ import com.servoy.mobile.client.scripting.GlobalScope;
 import com.servoy.mobile.client.scripting.IModificationListener;
 import com.servoy.mobile.client.scripting.IRuntimeComponentProvider;
 import com.servoy.mobile.client.scripting.ModificationEvent;
-import com.servoy.mobile.client.ui.DataText;
+import com.servoy.mobile.client.ui.TitleText;
 import com.servoy.mobile.client.util.IDestroyable;
 
 /**
@@ -62,8 +62,8 @@ public class DataAdapterList implements IModificationListener, ITagResolver
 		{
 			IDisplayData displayData = (IDisplayData)obj;
 			String dataproviderID = displayData instanceof IRuntimeComponentProvider
-				? ((IRuntimeComponentProvider)displayData).getRuntimeComponent().getDataProviderID() : displayData instanceof DataText
-					? ((DataText)displayData).getDataProviderID() : null;
+				? ((IRuntimeComponentProvider)displayData).getRuntimeComponent().getDataProviderID() : displayData instanceof TitleText
+					? ((TitleText)displayData).getDataProviderID() : null;
 
 			IDataAdapter dataAdapter = dataAdapters.get(dataproviderID);
 			if (dataAdapter == null)

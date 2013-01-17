@@ -38,7 +38,7 @@ import com.sksamuel.jqm4gwt.html.Heading;
  *
  * @author gboros
  */
-public class DataLabel extends JQMWidget implements HasText, IDisplayData, IGraphicalComponent, ISupportDataText
+public class DataLabel extends JQMWidget implements HasText, IDisplayData, IGraphicalComponent, ISupportTitleText
 {
 	private final FormLabel labelFor;
 	private final Heading label;
@@ -138,21 +138,21 @@ public class DataLabel extends JQMWidget implements HasText, IDisplayData, IGrap
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.servoy.mobile.client.ui.ISupportDataText#setDataText(java.lang.String)
+	 * @see com.servoy.mobile.client.ui.ISupportTitleText#setTitleText(java.lang.String)
 	 */
 	@Override
-	public void setDataText(String dataText)
+	public void setTitleText(String titleText)
 	{
-		labelFor.setText(dataText);
+		labelFor.setText(titleText);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.servoy.mobile.client.ui.ISupportDataText#getDataText()
+	 * @see com.servoy.mobile.client.ui.ISupportTitleText#getTitleText()
 	 */
 	@Override
-	public String getDataText()
+	public String getTitleText()
 	{
 		return labelFor.getText();
 	}

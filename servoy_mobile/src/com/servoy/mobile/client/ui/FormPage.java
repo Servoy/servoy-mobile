@@ -196,9 +196,9 @@ public class FormPage extends JQMPage
 					Widget widget = createWidget(groupRow.rightComponent);
 					if (widget != null)
 					{
-						if (widget instanceof ISupportDataText)
+						if (widget instanceof ISupportTitleText)
 						{
-							dal.addFormObject(new DataText((ISupportDataText)widget, rowLabel, dal, application));
+							dal.addFormObject(new TitleText((ISupportTitleText)widget, rowLabel, dal, application));
 						}
 						add(widget);
 					}
