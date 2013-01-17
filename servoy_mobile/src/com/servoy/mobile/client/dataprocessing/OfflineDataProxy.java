@@ -290,8 +290,8 @@ public class OfflineDataProxy
 
 		int idx = key.indexOf('|');
 		final String entityName = key.substring(0, idx);
-		String pk = key.substring(idx + 1, key.length());
-		RowDescription row = foundSetManager.getRowDescription(entityName, pk);
+		final String pk = key.substring(idx + 1, key.length());
+		final RowDescription row = foundSetManager.getRowDescription(entityName, pk);
 		String remotepk = foundSetManager.getRemotePK(entityName, pk, row);
 
 		String json = foundSetManager.toRemoteJSON(entityName, row);
@@ -319,6 +319,10 @@ public class OfflineDataProxy
 					{
 						keys.remove(key);//remove current
 						foundSetManager.updateChangesInLocalStorage(); //update changes
+						if (row.isCreatedOnDevice())
+						{
+							foundSetManager.recordPushedToServer(entityName, pk); //is present on server, reset flag
+						}
 						postRowData(serverUrl, keys, callback);//process the next
 					}
 					else

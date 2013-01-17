@@ -275,10 +275,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 			records.remove(record);
 			foundSetDescription.removeRecord(recordIndex);
 			getFoundSetManager().getEditRecordList().removeEditedRecord(record);
-			if (!record.isNew())
-			{
-				getFoundSetManager().deleteRowData(getEntityName(), record.getRow());
-			}
+			getFoundSetManager().deleteRowData(getEntityName(), record.getRow(), record.isNew());
 			return true;
 		}
 		return false;
@@ -296,6 +293,23 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 				{
 					records.remove(i);
 				}
+				break;
+			}
+		}
+	}
+
+	public void recordPushedToServer(String pk)
+	{
+		for (int i = 0; i < getSize(); i++)
+		{
+			RecordDescription rd = foundSetDescription.getRecords().get(i);
+			if (rd != null && rd.getPK().toString().equals(pk))
+			{
+				if (i < records.size())
+				{
+					records.get(i).pushedToServer();
+				}
+				break;
 			}
 		}
 	}

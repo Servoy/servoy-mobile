@@ -349,7 +349,7 @@ public class FoundSetManager
 		}
 	}
 
-	void deleteRowData(String entityName, RowDescription rowData)
+	void deleteRowData(String entityName, RowDescription rowData, boolean createdOnClient)
 	{
 		DataproviderIdAndTypeHolder dataProviderID = entities.getPKDataProviderID(entityName);
 		if (dataProviderID == null) throw new IllegalStateException(application.getMessages().cannotWorkWithoutPK());
@@ -361,9 +361,12 @@ public class FoundSetManager
 		{
 			localStorage.removeItem(key);
 
-			if (!deletes.contains(key)) deletes.add(key);
+			if (!createdOnClient)
+			{
+				if (!deletes.contains(key)) deletes.add(key);
 
-			updateDeletesInLocalStorage();
+				updateDeletesInLocalStorage();
+			}
 		}
 
 		HashSet<FoundSet> set = entitiesToFoundsets.get(entityName);
@@ -372,6 +375,25 @@ public class FoundSetManager
 			for (FoundSet foundset : set)
 			{
 				foundset.removeRecord(pk);
+			}
+		}
+
+		if (changes.contains(key))
+		{
+			changes.remove(key);
+			updateChangesInLocalStorage();
+		}
+
+	}
+
+	public void recordPushedToServer(String entityName, String pk)
+	{
+		HashSet<FoundSet> set = entitiesToFoundsets.get(entityName);
+		if (set != null)
+		{
+			for (FoundSet foundset : set)
+			{
+				foundset.recordPushedToServer(pk);
 			}
 		}
 

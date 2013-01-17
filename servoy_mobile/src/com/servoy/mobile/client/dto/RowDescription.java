@@ -51,15 +51,19 @@ public class RowDescription extends JavaScriptObject
 
 	public final Object getValue(String dataProviderID, int type)
 	{
-		switch (type)
+		// we check if really a number because created record will always have string pk
+		if (isNumber(dataProviderID))
 		{
-			case IColumnTypeConstants.INTEGER :
-				return new Integer((int)getNumberValue(dataProviderID));
-			case IColumnTypeConstants.NUMBER :
-				return new Double(getNumberValue(dataProviderID));
-			case IColumnTypeConstants.DATETIME :
-				return new Date((long)getNumberValue(dataProviderID));
+			switch (type)
+			{
+				case IColumnTypeConstants.INTEGER :
+					return new Integer((int)getNumberValue(dataProviderID));
+				case IColumnTypeConstants.NUMBER :
+					return new Double(getNumberValue(dataProviderID));
+				case IColumnTypeConstants.DATETIME :
+					return new Date((long)getNumberValue(dataProviderID));
 
+			}
 		}
 		return getValueImpl(dataProviderID);
 
@@ -168,7 +172,7 @@ public class RowDescription extends JavaScriptObject
 		return retval;
 	}
 
-	private final native void setCreatedOnDevice(boolean createdOnDevice)/*-{
+	public final native void setCreatedOnDevice(boolean createdOnDevice)/*-{
 		this[@com.servoy.mobile.client.dto.RowDescription::CREATED_ON_DEVICE] = createdOnDevice;
 	}-*/;
 

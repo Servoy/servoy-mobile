@@ -289,6 +289,11 @@ public class Record extends Scope implements IJSRecord
 		return getRow().isCreatedOnDevice(); // TODO is created on device and is still editing??
 	}
 
+	public void pushedToServer()
+	{
+		getRow().setCreatedOnDevice(false);
+	}
+
 	@Override
 	public void revertChanges()
 	{
