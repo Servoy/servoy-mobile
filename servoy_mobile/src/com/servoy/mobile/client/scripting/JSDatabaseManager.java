@@ -57,30 +57,6 @@ public class JSDatabaseManager implements Exportable, IJSDatabaseManager
 		return manager.saveData() == EditRecordList.STOPPED;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.IJSDatabaseManager#saveData(com.servoy.j2db.scripting.api.IJSFoundSet)
-	 */
-	@Override
-	public boolean saveData(IJSFoundSet foundset) throws Exception
-	{
-		// TODO just save all record from only that foundset
-		return manager.saveData() == EditRecordList.STOPPED;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.IJSDatabaseManager#saveData(com.servoy.j2db.scripting.api.IJSRecord)
-	 */
-	@Override
-	public boolean saveData(IJSRecord record) throws Exception
-	{
-		// TODO just save that record
-		return manager.saveData() == EditRecordList.STOPPED;
-	}
-
 	public boolean setAutoSave(boolean b)
 	{
 		return manager.setAutoSave(b);
