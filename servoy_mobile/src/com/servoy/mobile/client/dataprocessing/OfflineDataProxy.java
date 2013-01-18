@@ -222,7 +222,6 @@ public class OfflineDataProxy
 	{
 		totalLength = 0;
 		deleteRowData(serverUrl, foundSetManager.getDeletes(), callback);
-		postRowData(serverUrl, foundSetManager.getChanges(), callback);
 	}
 
 	private void deleteRowData(final String serverUrl, final ArrayList<String> keys, final Callback<Integer, Failure> callback)
@@ -234,6 +233,10 @@ public class OfflineDataProxy
 			{
 				//when no updates stop
 				callback.onSuccess(totalLength);
+			}
+			else
+			{
+				postRowData(serverUrl, foundSetManager.getChanges(), callback);
 			}
 			return;
 		}

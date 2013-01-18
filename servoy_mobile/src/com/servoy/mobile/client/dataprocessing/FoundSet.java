@@ -224,7 +224,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		RecordDescription recd = RecordDescription.newInstance(pk);
 		RowDescription rowd = foundSetManager.createRowDescription(this, pk);
 		Record retval = new Record(this, recd, rowd);
-		foundSetDescription.getRecords().push(recd);
+		foundSetDescription.insertRecord(index, recd);
 		needToSaveFoundSetDescription = true;
 		records.add(index, retval);
 		if (changeSelection)

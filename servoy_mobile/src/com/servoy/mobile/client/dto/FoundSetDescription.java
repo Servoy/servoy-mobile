@@ -136,6 +136,14 @@ public class FoundSetDescription extends JavaScriptObject
 		this.records.splice(index, 1);
 	}-*/;
 
+	public final native void insertRecord(int index, RecordDescription record) /*-{
+		if (index == this.records.length) {
+			this.records.push(record);
+		} else {
+			this.records.splice(index, 0, record);
+		}
+	}-*/;
+
 	public final ArrayList<Object> getPKs()
 	{
 		ArrayList<Object> retval = new ArrayList<Object>();
