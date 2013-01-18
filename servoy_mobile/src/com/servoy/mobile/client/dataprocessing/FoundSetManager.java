@@ -49,11 +49,11 @@ import com.servoy.mobile.client.util.Utils;
 @SuppressWarnings("nls")
 public class FoundSetManager
 {
-	private static final String CHANGES_KEY = "changes";
-	private static final String DELETES_KEY = "deletes";
-	private static final String ENTITY_PREFIX_KEY = "entityPrefix";
-	private static final String ENTITIES_KEY = "entities";
-	private static final String STORAGE_VERSION_KEY = "storage_version";
+	private static final String CHANGES_KEY = "_svy_changes";
+	private static final String DELETES_KEY = "_svy_deletes";
+	private static final String ENTITY_PREFIX_KEY = "_svy_entityPrefix";
+	private static final String ENTITIES_KEY = "_svy_entities";
+	private static final String STORAGE_VERSION_KEY = "_svy_storage_version";
 	private static final int STORAGE_VERSION = 1;
 
 	private final Storage localStorage = Storage.getLocalStorageIfSupported();

@@ -29,6 +29,8 @@ import com.servoy.mobile.client.util.Utils;
 @SuppressWarnings("nls")
 public class ValueStore
 {
+	private static final String LAST_VALUE_KEY = "_svy_lastVal";
+
 	private transient HashMap<String, Integer> uid_to_id = new HashMap<String, Integer>();//temp storage for fast lookups 
 	private final Storage localStorage;
 
@@ -60,9 +62,9 @@ public class ValueStore
 
 	int getNextVal()
 	{
-		int lastVal = Utils.getAsInteger(localStorage.getItem("_lastVal"));
+		int lastVal = Utils.getAsInteger(localStorage.getItem(LAST_VALUE_KEY));
 		lastVal++;
-		localStorage.setItem("_lastVal", String.valueOf(lastVal));
+		localStorage.setItem(LAST_VALUE_KEY, String.valueOf(lastVal));
 		return lastVal;
 	}
 }
