@@ -209,6 +209,8 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 			}
 
 			Collections.sort(records, new RecordComparater((JavaScriptObject)comparator));
+
+			foundSetDescription.updateRecordDescriptions(records);
 			fireContentChanged();
 		}
 	}

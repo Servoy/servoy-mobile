@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.json.client.JSONObject;
+import com.servoy.mobile.client.dataprocessing.Record;
 
 /**
  * @author jblok
@@ -164,4 +165,30 @@ public class FoundSetDescription extends JavaScriptObject
 		fd.setWhereArgsHash(whereArgsHash);
 		return fd;
 	}
+
+	/**
+	 * @param records
+	 */
+	public final void updateRecordDescriptions(ArrayList<Record> records)
+	{
+		JsArray<RecordDescription> recordDescriptions = getRecords();
+		JsArray<RecordDescription> newArray = JavaScriptObject.createArray().cast();
+		for (Record record : records)
+		{
+			for (int i = 0; i < recordDescriptions.length(); i++)
+			{
+				RecordDescription desc = recordDescriptions.get(i);
+				if (desc.getPK().toString().equals(record.getPK().toString()))
+				{
+					newArray.set(i, desc);
+					break;
+				}
+			}
+		}
+		setRecordDescriptions(newArray);
+	}
+
+	private final native void setRecordDescriptions(JsArray<RecordDescription> newArray) /*-{
+		this.records = newArray;
+	}-*/;
 }
