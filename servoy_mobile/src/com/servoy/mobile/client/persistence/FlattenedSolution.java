@@ -192,7 +192,6 @@ public class FlattenedSolution
 		}
 		if ($wnd._ServoyInit_.smForms) {
 			if ($wnd._ServoyInit_.forms[formName]) {
-				alert($wnd._ServoyInit_.smForms[formName]);
 				if ($wnd._ServoyInit_.smForms[formName]) {
 					// so it's an original form with backup; restore scripts methods and vars
 					$wnd._ServoyInit_.forms[formName] = $wnd._ServoyInit_.smForms[formName];
