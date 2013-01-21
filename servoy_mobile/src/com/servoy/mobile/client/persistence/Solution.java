@@ -18,6 +18,7 @@ package com.servoy.mobile.client.persistence;
  */
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.servoy.mobile.client.dto.RelationDescription;
 
 /**
  * @author gboros
@@ -49,6 +50,9 @@ public class Solution extends JavaScriptObject
 		return null;
 	}
 
+	/**
+	 * This one shouldn't be called from here normally for the ui, you have to use {@link RelationDescription} instances
+	 */
 	public final native Relation getRelation(int i) /*-{
 		return this.relations[i];
 	}-*/;
@@ -93,6 +97,9 @@ public class Solution extends JavaScriptObject
 		this.i18n[key] = value;
 	}-*/;
 
+	/**
+	 * This one shouldn't be called from here normally for the ui, you have to use {@link RelationDescription} instances
+	 */
 	public final Relation getRelation(String name)
 	{
 		for (int i = 0; i < relationCount(); i++)

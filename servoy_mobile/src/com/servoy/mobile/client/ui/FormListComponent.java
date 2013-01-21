@@ -41,7 +41,7 @@ public class FormListComponent extends FormList implements IPortalComponent
 	 */
 	public FormListComponent(Portal portal, FormController formController, DataAdapterList dal, MobileClient application)
 	{
-		super(formController, portal.getComponents(), dal, application.getFlattenedSolution().getRelation(portal.getRelationName()));
+		super(formController, portal.getComponents(), dal, portal.getRelationName());
 		this.scriptable = new RuntimePortal(application, formController.getExecutor(), this, portal);
 	}
 

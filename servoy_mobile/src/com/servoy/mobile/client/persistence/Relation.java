@@ -32,4 +32,12 @@ public class Relation extends AbstractBase
 				|| this.items.length == 0;
 	}-*/;
 
+	public final native String getPrimaryDataSource() /*-{
+		return this.primaryDataSource;
+	}-*/;
+
+	public final native String getForeignDataSource() /*-{
+		return this.foreignDataSource;
+	}-*/;
+
 }

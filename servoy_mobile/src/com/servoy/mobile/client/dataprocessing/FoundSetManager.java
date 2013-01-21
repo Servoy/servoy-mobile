@@ -38,6 +38,7 @@ import com.servoy.mobile.client.dto.OfflineDataDescription;
 import com.servoy.mobile.client.dto.RecordDescription;
 import com.servoy.mobile.client.dto.RelationDescription;
 import com.servoy.mobile.client.dto.RowDescription;
+import com.servoy.mobile.client.persistence.Relation;
 import com.servoy.mobile.client.scripting.Scope;
 import com.servoy.mobile.client.util.DataproviderIdAndTypeHolder;
 import com.servoy.mobile.client.util.Utils;
@@ -197,6 +198,21 @@ public class FoundSetManager
 
 		//store data in offline db
 		entities = new Entities(offlineData.getEntities(), valueStore);
+		// first sync up Relations -> RelationDescription
+		for (int i = 0; i < application.getFlattenedSolution().relationCount(); i++)
+		{
+			Relation relation = application.getFlattenedSolution().getRelation(i);
+			String entity = FoundSetManager.getEntityFromDataSource(relation.getPrimaryDataSource());
+			EntityDescription entityDescription = getEntityDescription(entity);
+			RelationDescription primaryRelation = entityDescription.getPrimaryRelation(relation.getName());
+			if (primaryRelation == null)
+			{
+				primaryRelation = RelationDescription.newInstance(relation.getName(), entity,
+					FoundSetManager.getEntityFromDataSource(relation.getForeignDataSource()));
+				entityDescription.addPrimaryRelation(primaryRelation);
+			}
+			primaryRelation.setSelfRef(relation.isSelfRef());
+		}
 		localStorage.setItem(ENTITIES_KEY, entities.toJSONArray());
 
 		entityPrefix = offlineData.getEntityPrefix();

@@ -92,4 +92,27 @@ public class EntityDescription extends JavaScriptObject
 		}
 		return false;
 	}
+
+	public final native void addPrimaryRelation(RelationDescription rd) /*-{
+		this.primaryRelations.push(rd);
+	}-*/;
+
+
+	/**
+	 * @param relationName
+	 * @return 
+	 */
+	public final RelationDescription getPrimaryRelation(String relationName)
+	{
+		if (relationName == null) return null;
+		JsArray<RelationDescription> primaryRelations = getPrimaryRelations();
+		for (int i = 0; i < primaryRelations.length(); i++)
+		{
+			if (primaryRelations.get(i).getName().equals(relationName))
+			{
+				return primaryRelations.get(i);
+			}
+		}
+		return null;
+	}
 }

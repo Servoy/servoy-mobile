@@ -28,14 +28,16 @@ import com.servoy.base.util.TagParser;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.dataprocessing.DataAdapterList;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
+import com.servoy.mobile.client.dataprocessing.FoundSetManager;
 import com.servoy.mobile.client.dataprocessing.IDisplayRelatedData;
 import com.servoy.mobile.client.dataprocessing.IFoundSetListener;
 import com.servoy.mobile.client.dataprocessing.Record;
+import com.servoy.mobile.client.dto.EntityDescription;
+import com.servoy.mobile.client.dto.RelationDescription;
 import com.servoy.mobile.client.persistence.AbstractBase;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
-import com.servoy.mobile.client.persistence.Relation;
 import com.servoy.mobile.client.scripting.IRuntimeComponent;
 import com.sksamuel.jqm4gwt.list.JQMList;
 import com.sksamuel.jqm4gwt.list.JQMListItem;
@@ -49,19 +51,27 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 {
 	private final FormController formController;
 	private final DataAdapterList dal;
-	private final Relation relation;
+	private final RelationDescription relation;
 	private String listItemTextDP, listItemSubtextDP, listItemCountDP, listItemImageDP, listItemHeaderDP;
 	private String listItemStaticText, listItemStaticSubtext, listItemStaticHeader, listItemHeaderStyleclass;
 	private String listItemOnAction;
 	private String listItemDataIcon;
 	private String listItemStyleclass;
 
-	public FormList(FormController formController, JsArray<Component> formComponents, DataAdapterList dal, Relation relation)
+	public FormList(FormController formController, JsArray<Component> formComponents, DataAdapterList dal, String relationName)
 	{
 		this.formController = formController;
 		this.dal = dal;
-		this.relation = relation;
-
+		if (relationName != null && formController.getForm().getDataSource() != null)
+		{
+			String entity = FoundSetManager.getEntityFromDataSource(formController.getForm().getDataSource());
+			EntityDescription entityDescription = formController.getApplication().getFoundSetManager().getEntityDescription(entity);
+			relation = entityDescription.getPrimaryRelation(relationName);
+		}
+		else
+		{
+			relation = null;
+		}
 		for (int i = 0; i < formComponents.length(); i++)
 		{
 			Component component = formComponents.get(i);

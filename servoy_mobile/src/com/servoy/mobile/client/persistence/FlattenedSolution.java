@@ -24,6 +24,7 @@ import java.util.HashMap;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.servoy.base.persistence.IMobileProperties;
 import com.servoy.base.persistence.constants.IRepositoryConstants;
+import com.servoy.mobile.client.dto.RelationDescription;
 import com.servoy.mobile.client.util.Utils;
 
 /**
@@ -234,6 +235,9 @@ public class FlattenedSolution
 		return solution.relationCount();
 	}
 
+	/**
+	 * This one shouldn't be called from here normally for the ui, you have to use {@link RelationDescription} instances
+	 */
 	public Relation getRelation(int i)
 	{
 		return solution.getRelation(i);
@@ -274,6 +278,9 @@ public class FlattenedSolution
 		solution.setI18nValue(key, value);
 	}
 
+	/**
+	 * This one shouldn't be called from here normally for the ui, you have to use {@link RelationDescription} instances
+	 */
 	public Relation getRelation(String name)
 	{
 		return solution.getRelation(name);
