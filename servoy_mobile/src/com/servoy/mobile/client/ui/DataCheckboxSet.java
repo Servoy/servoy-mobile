@@ -105,8 +105,8 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 	}
 
 	private native void recreate(String id) /*-{
-		$wnd.$("#" + id).trigger("create");
-	}-*/;
+											$wnd.$("#" + id).trigger("create");
+											}-*/;
 
 	/*
 	 * (non-Javadoc)
@@ -173,8 +173,11 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 	}
 
 	private native void refreshCheckbox(String id) /*-{
-		$wnd.$("#" + id).checkboxradio('refresh');
-	}-*/;
+													var cbr = $wnd.$("#" + id);
+													if ($wnd.$.data(cbr, "checkboxradio")) {
+													cbr.checkboxradio("refresh");
+													}
+													}-*/;
 
 	private EditProvider editProvider;
 
