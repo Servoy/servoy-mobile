@@ -153,6 +153,16 @@ public class SolutionHelper extends BaseSolutionHelper implements IMobilePredefi
 		return super.getIconType(button);
 	}
 
+	public void setHeaderSize(JSLabel label, int headerSize)
+	{
+		super.setHeaderSize(label, headerSize);
+	}
+
+	public int getHeaderSize(JSLabel label)
+	{
+		return super.getHeaderSize(label);
+	}
+
 	public JSInsetList createInsetList(JSForm form, int yLocation, String relationName, String headerText, String textDataProviderID)
 	{
 		return (JSInsetList)super.createInsetList(form, yLocation, relationName, headerText, textDataProviderID);
