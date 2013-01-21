@@ -193,6 +193,16 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		return false;
 	}
 
+	@Export("deleteRecord")
+	public boolean js_deleteRecord(int index) throws Exception
+	{
+		if (index >= 1 && index <= getSize())
+		{
+			return deleteRecord(getRecord(index - 1));
+		}
+		return false;
+	}
+
 	/*
 	 * @see com.servoy.j2db.scripting.api.IJSFoundSet#sort(java.lang.Object)
 	 */
