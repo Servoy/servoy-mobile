@@ -70,6 +70,14 @@ public class Record extends Scope implements IJSRecord
 		return recordDescription.getPK();
 	}
 
+	/**
+	 * @return the recordDescription
+	 */
+	public RecordDescription getRecordDescription()
+	{
+		return recordDescription;
+	}
+
 	@Override
 	public Object getValue(String dataProviderID)
 	{

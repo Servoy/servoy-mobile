@@ -171,19 +171,10 @@ public class FoundSetDescription extends JavaScriptObject
 	 */
 	public final void updateRecordDescriptions(ArrayList<Record> records)
 	{
-		JsArray<RecordDescription> recordDescriptions = getRecords();
 		JsArray<RecordDescription> newArray = JavaScriptObject.createArray().cast();
 		for (Record record : records)
 		{
-			for (int i = 0; i < recordDescriptions.length(); i++)
-			{
-				RecordDescription desc = recordDescriptions.get(i);
-				if (desc.getPK().toString().equals(record.getPK().toString()))
-				{
-					newArray.set(i, desc);
-					break;
-				}
-			}
+			newArray.push(record.getRecordDescription());
 		}
 		setRecordDescriptions(newArray);
 	}
