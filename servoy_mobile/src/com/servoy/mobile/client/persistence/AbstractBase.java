@@ -32,7 +32,7 @@ public abstract class AbstractBase extends JavaScriptObject
 	}-*/;
 
 	public final native JsArray<AbstractBase> getChildren() /*-{
-		return this.items;
+		return this.items ? this.items : [];
 	}-*/;
 
 	public final AbstractBase getChild(String uuid)
@@ -46,7 +46,8 @@ public abstract class AbstractBase extends JavaScriptObject
 	}
 
 	public final native void removeChild(int index) /*-{
-		this.items.splice(index, 1);
+		if (this.items)
+			this.items.splice(index, 1);
 	}-*/;
 
 //	will be useful when you realy want to clone/copy stuff using solution model

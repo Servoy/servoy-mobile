@@ -42,7 +42,7 @@ public class Form extends AbstractBase
 	 * Same as {@link AbstractBase#getChildren()}, but already cast to Components.
 	 */
 	public final native JsArray<Component> getComponents() /*-{
-		return this.items;
+		return this.items ? this.items : [];
 	}-*/;
 
 	public final TabPanel createNewTabPanel()
