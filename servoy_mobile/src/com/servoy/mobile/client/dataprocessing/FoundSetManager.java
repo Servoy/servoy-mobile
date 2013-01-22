@@ -204,14 +204,17 @@ public class FoundSetManager
 			Relation relation = application.getFlattenedSolution().getRelation(i);
 			String entity = FoundSetManager.getEntityFromDataSource(relation.getPrimaryDataSource());
 			EntityDescription entityDescription = getEntityDescription(entity);
-			RelationDescription primaryRelation = entityDescription.getPrimaryRelation(relation.getName());
-			if (primaryRelation == null)
+			if (entityDescription != null)
 			{
-				primaryRelation = RelationDescription.newInstance(relation.getName(), entity,
-					FoundSetManager.getEntityFromDataSource(relation.getForeignDataSource()));
-				entityDescription.addPrimaryRelation(primaryRelation);
+				RelationDescription primaryRelation = entityDescription.getPrimaryRelation(relation.getName());
+				if (primaryRelation == null)
+				{
+					primaryRelation = RelationDescription.newInstance(relation.getName(), entity,
+						FoundSetManager.getEntityFromDataSource(relation.getForeignDataSource()));
+					entityDescription.addPrimaryRelation(primaryRelation);
+				}
+				primaryRelation.setSelfRef(relation.isSelfRef());
 			}
-			primaryRelation.setSelfRef(relation.isSelfRef());
 		}
 		localStorage.setItem(ENTITIES_KEY, entities.toJSONArray());
 
