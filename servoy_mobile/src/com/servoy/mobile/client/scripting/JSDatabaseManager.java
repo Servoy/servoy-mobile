@@ -124,6 +124,17 @@ public class JSDatabaseManager implements Exportable, IJSDatabaseManager
 		return JSDatabaseManager.hasRelatedRecords(record, relationString);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.base.scripting.api.IJSDatabaseManager#getFoundSet(java.lang.String)
+	 */
+	@Override
+	public FoundSet getFoundSet(String dataSource) throws Exception
+	{
+		return manager.getFoundSet(FoundSetManager.getEntityFromDataSource(dataSource));
+	}
+
 	private native void export(Object object)
 	/*-{
 		$wnd.databaseManager = object;

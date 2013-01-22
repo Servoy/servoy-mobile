@@ -184,6 +184,18 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 		if (foundSet != null) foundSet.jsFunction_setSelectedIndex(index);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.base.scripting.api.IJSController#getDataSource()
+	 */
+	@Override
+	@Export
+	public String getDataSource()
+	{
+		return form.getDataSource();
+	}
+
 	/**
 	 * @param relatedFoundset
 	 */

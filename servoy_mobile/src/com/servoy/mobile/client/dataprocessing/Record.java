@@ -24,7 +24,6 @@ import java.util.Map;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
 import com.servoy.base.persistence.constants.IColumnTypeConstants;
-import com.servoy.base.scripting.api.IJSFoundSet;
 import com.servoy.base.scripting.api.IJSRecord;
 import com.servoy.mobile.client.dto.DataProviderDescription;
 import com.servoy.mobile.client.dto.EntityDescription;
@@ -257,7 +256,7 @@ public class Record extends Scope implements IJSRecord
 	 * @see com.servoy.j2db.scripting.api.IJSRecord#getFoundset()
 	 */
 	@Override
-	public IJSFoundSet getFoundset()
+	public FoundSet getFoundset()
 	{
 		return parent;
 	}
