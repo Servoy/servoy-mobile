@@ -44,9 +44,10 @@ public class Utils implements Exportable
 
 	// add more here if more primitive types are used
 	@Export
-	public static Object wrapIfPrimitive(int i)
+	public static Number wrapIfPrimitive(double i)
 	{
-		return Integer.valueOf(i);
+		// this will get called for all numeric types (it would be useless to have separate methods for int/byte for example cause in JS all are numbers so they won't map correctly)
+		return Double.valueOf(i);
 	}
 
 	@Export

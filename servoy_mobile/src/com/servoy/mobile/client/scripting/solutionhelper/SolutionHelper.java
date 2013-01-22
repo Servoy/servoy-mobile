@@ -32,6 +32,7 @@ import com.servoy.base.solutionmodel.IBaseSolutionModel;
 import com.servoy.mobile.client.scripting.solutionmodel.JSBase;
 import com.servoy.mobile.client.scripting.solutionmodel.JSButton;
 import com.servoy.mobile.client.scripting.solutionmodel.JSComponent;
+import com.servoy.mobile.client.scripting.solutionmodel.JSField;
 import com.servoy.mobile.client.scripting.solutionmodel.JSForm;
 import com.servoy.mobile.client.scripting.solutionmodel.JSLabel;
 import com.servoy.mobile.client.scripting.solutionmodel.i.IMobilePredefinedIconConstants;
@@ -161,6 +162,16 @@ public class SolutionHelper extends BaseSolutionHelper implements IMobilePredefi
 	public int getHeaderSize(JSLabel label)
 	{
 		return super.getHeaderSize(label);
+	}
+
+	public void setRadioFieldHorizontal(JSField radioField, boolean horizontal)
+	{
+		super.setRadioFieldHorizontal(radioField, horizontal);
+	}
+
+	public boolean isRadioFieldHorizontal(JSField radioField)
+	{
+		return super.isRadioFieldHorizontal(radioField);
 	}
 
 	public JSInsetList createInsetList(JSForm form, int yLocation, String relationName, String headerText, String textDataProviderID)

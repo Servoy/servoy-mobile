@@ -44,8 +44,6 @@ import com.sksamuel.jqm4gwt.form.elements.JQMRadioset;
 public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldComponent, ISupportTitleText, IEditListenerSubject, IModificationListener,
 	IDestroyable
 {
-	private static final int HORIZONTAL = 1;
-
 	private final ValueList valuelist;
 	private final RuntimeDataRadioSet scriptable;
 
@@ -55,7 +53,7 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 		this.scriptable = new RuntimeDataRadioSet(application, executor, this, field);
 
 		MobileProperties mp = field.getMobileProperties();
-		if (mp != null && mp.getPropertyValue(IMobileProperties.RADIO_STYLE).intValue() == HORIZONTAL) setHorizontal();
+		if (mp != null && mp.getPropertyValue(IMobileProperties.RADIO_STYLE).intValue() == IMobileProperties.RADIO_STYLE_HORIZONTAL) setHorizontal();
 
 		setText(field.getText());
 		if (valuelist != null)
