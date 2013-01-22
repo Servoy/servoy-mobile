@@ -89,12 +89,7 @@ public class Executor
 
 	private static native Object eval(Object param)
 	/*-{
-		var evalled = $wnd.eval(param);
-		if (typeof evalled == "number")
-			evalled = new Number(evalled);
-		if (typeof evalled == "boolean")
-			evalled = new Boolean(evalled);
-		return evalled;
+		return $wnd.internal.Utils.wrapIfPrimitive($wnd.eval(param));
 	}-*/;
 
 	/**
