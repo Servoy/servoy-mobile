@@ -204,7 +204,8 @@ public class FoundSetManager
 			Relation relation = application.getFlattenedSolution().getRelation(i);
 			String entity = FoundSetManager.getEntityFromDataSource(relation.getPrimaryDataSource());
 			EntityDescription entityDescription = getEntityDescription(entity);
-			if (entityDescription != null)
+			EntityDescription foreign = getEntityDescription(FoundSetManager.getEntityFromDataSource(relation.getForeignDataSource()));
+			if (entityDescription != null && foreign != null)
 			{
 				RelationDescription primaryRelation = entityDescription.getPrimaryRelation(relation.getName());
 				if (primaryRelation == null)
@@ -214,6 +215,10 @@ public class FoundSetManager
 					entityDescription.addPrimaryRelation(primaryRelation);
 				}
 				primaryRelation.setSelfRef(relation.isSelfRef());
+			}
+			else
+			{
+				// TODO log this to the user for example: http://code.google.com/p/gwt-log/
 			}
 		}
 		localStorage.setItem(ENTITIES_KEY, entities.toJSONArray());
