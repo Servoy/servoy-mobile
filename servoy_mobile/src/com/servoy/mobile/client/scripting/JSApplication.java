@@ -22,6 +22,7 @@ import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
 import org.timepedia.exporter.client.NoExport;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
@@ -48,6 +49,7 @@ public class JSApplication implements Exportable, IJSApplication
 
 	public void output(Object output)
 	{
+		Log.info(output == null ? "<null>" : output.toString()); //$NON-NLS-1$
 		GWT.log(output == null ? "<null>" : output.toString()); //$NON-NLS-1$
 	}
 

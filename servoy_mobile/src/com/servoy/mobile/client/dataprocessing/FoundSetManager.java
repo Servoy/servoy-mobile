@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.json.client.JSONArray;
@@ -218,7 +219,8 @@ public class FoundSetManager
 			}
 			else
 			{
-				// TODO log this to the user for example: http://code.google.com/p/gwt-log/
+				Log.error("A relation was defined: " + relation.getName() + " on primary: " + relation.getPrimaryDataSource() + " and foreign: " +
+					relation.getForeignDataSource() + " where no Entities/Tables where given by the service solution");
 			}
 		}
 		localStorage.setItem(ENTITIES_KEY, entities.toJSONArray());

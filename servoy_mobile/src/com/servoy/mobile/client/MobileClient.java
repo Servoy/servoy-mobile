@@ -17,6 +17,8 @@ package com.servoy.mobile.client;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
+import com.allen_sauer.gwt.log.client.DivLogger;
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -75,6 +77,18 @@ public class MobileClient implements EntryPoint
 	@Override
 	public void onModuleLoad()
 	{
+		/*
+		 * Install an UncaughtExceptionHandler which will produce <code>FATAL</code> log messages
+		 */
+		Log.setUncaughtExceptionHandler();
+
+		if (Window.Location.getParameter("showdivlogger") != null) //$NON-NLS-1$
+		{
+			DivLogger divLogger = new DivLogger();
+			divLogger.setCurrentLogLevel(Log.getLowestLogLevel());
+			Log.addLogger(divLogger);
+		}
+
 		GWT.create(JSDatabaseManager.class);
 		GWT.create(PluginsScope.class);
 		GWT.create(JSApplication.class);

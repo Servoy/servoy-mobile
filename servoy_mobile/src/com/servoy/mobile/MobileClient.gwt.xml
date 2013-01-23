@@ -27,6 +27,23 @@
   <inherits name='org.timepedia.exporter.Exporter'/>
   <!-- <inherits name='com.google.gwt.modernizr.Gwtmodernizr' /> -->
 
+  <!-- 
+     Default to `ERROR`, but allow selection of a specific log level,
+     say `DEBUG`, via the `log_level` URL parameter:
+     http[s]://localhost:8888/mobileclient.html?log_level=DEBUG
+  -->
+  <inherits name="com.allen_sauer.gwt.log.gwt-log-ERROR" />
+  <extend-property name="log_level" values="DEBUG"/>
+  <set-property name="log_ConsoleLogger" value="ENABLED" />
+  <set-property name="log_DivLogger" value="DISABLED" />
+  <set-property name="log_FirebugLogger" value="DISABLED" />
+  <set-property name="log_GWTLogger" value="DISABLED" />
+  <set-property name="log_SystemLogger" value="DISABLED" />
+  
+   <!-- In gwt-log-3.0.3 or later, enable this if you want to have the remote logger enabled
+  <inherits name="com.allen_sauer.gwt.log.gwt-log-RemoteLogger" />
+  -->
+  
   <set-property name="export" value="yes"/>
   <set-configuration-property name="locale.useragent" value="Y"/>
   <set-configuration-property name="locale.searchorder" value="queryparam,cookie,meta,useragent"/>
