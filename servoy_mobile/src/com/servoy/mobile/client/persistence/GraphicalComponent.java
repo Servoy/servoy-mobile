@@ -1,5 +1,6 @@
 package com.servoy.mobile.client.persistence;
 
+import com.servoy.base.persistence.constants.IComponentConstants;
 import com.servoy.base.persistence.constants.IContentSpecConstantsBase;
 import com.servoy.base.persistence.constants.IRepositoryConstants;
 import com.servoy.mobile.client.util.Utils;
@@ -26,11 +27,6 @@ import com.servoy.mobile.client.util.Utils;
  */
 public class GraphicalComponent extends Component
 {
-
-	public static final String VIEW_TYPE_BUTTON = "button"; //$NON-NLS-1$
-	public static final String VIEW_TYPE_LABEL = "label"; //$NON-NLS-1$
-	public static final String VIEW_TYPE_ATTR = "viewType"; //$NON-NLS-1$
-
 	protected GraphicalComponent()
 	{
 	}
@@ -49,12 +45,12 @@ public class GraphicalComponent extends Component
 
 	public final void setViewType(String viewType)
 	{
-		setAttributeValueString(VIEW_TYPE_ATTR, viewType);
+		setAttributeValueString(IComponentConstants.VIEW_TYPE_ATTR, viewType);
 	}
 
 	public final String getViewType()
 	{
-		return getAttributeValueString(VIEW_TYPE_ATTR, null);
+		return getAttributeValueString(IComponentConstants.VIEW_TYPE_ATTR, null);
 	}
 
 	public final void setOnActionMethodCall(String methodCall)
@@ -97,6 +93,6 @@ public class GraphicalComponent extends Component
 
 	public final boolean isButton()
 	{
-		return VIEW_TYPE_BUTTON.equals(getViewType());
+		return IComponentConstants.VIEW_TYPE_BUTTON.equals(getViewType());
 	}
 }

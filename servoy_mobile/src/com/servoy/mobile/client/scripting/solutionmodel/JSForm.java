@@ -29,6 +29,7 @@ import org.timepedia.exporter.client.Setter;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
+import com.servoy.base.persistence.constants.IComponentConstants;
 import com.servoy.base.persistence.constants.IFieldConstants;
 import com.servoy.base.persistence.constants.IRepositoryConstants;
 import com.servoy.base.solutionmodel.IBaseSMMethod;
@@ -85,7 +86,6 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	{
 		cloneIfNeeded();
 		JSVariable fv = new JSVariable(ScriptEngine.FORMS, getName(), name, getSolutionModel(), this);
-
 		if (!fv.exists())
 		{
 			fv.create(type);
@@ -134,7 +134,6 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 		if (codeAndName != null && codeAndName.length == 2)
 		{
 			JSMethod fm = new JSMethod(ScriptEngine.FORMS, getName(), codeAndName[1], getSolutionModel(), this);
-
 			if (!fm.exists())
 			{
 				fm.create(codeAndName[0]);
@@ -269,7 +268,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	public JSButton newButton(String txt, int x, int y, int width, int height, JSMethod action)
 	{
 		cloneIfNeeded();
-		GraphicalComponent gc = GraphicalComponent.createNewGraphicalComponent(form, GraphicalComponent.VIEW_TYPE_BUTTON);
+		GraphicalComponent gc = GraphicalComponent.createNewGraphicalComponent(form, IComponentConstants.VIEW_TYPE_BUTTON);
 		gc.setText(txt);
 		gc.setSize(width, height);
 		gc.setLocation(x, y);
@@ -281,7 +280,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	public JSLabel newLabel(String txt, int x, int y, int width, int height)
 	{
 		cloneIfNeeded();
-		GraphicalComponent gc = GraphicalComponent.createNewGraphicalComponent(form, GraphicalComponent.VIEW_TYPE_LABEL);
+		GraphicalComponent gc = GraphicalComponent.createNewGraphicalComponent(form, IComponentConstants.VIEW_TYPE_LABEL);
 		gc.setText(txt);
 		gc.setSize(width, height);
 		gc.setLocation(x, y);
@@ -401,8 +400,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 			TabPanel tabPanel = TabPanel.castIfPossible(component);
 			if (tabPanel != null)
 			{
-				JSTabPanel jsTabPanel = new JSTabPanel(tabPanel, getSolutionModel(), this);
-				tabPanels.add(jsTabPanel);
+				tabPanels.add(new JSTabPanel(tabPanel, getSolutionModel(), this));
 			}
 		}
 		return tabPanels.toArray(new JSTabPanel[0]);
@@ -445,8 +443,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 			Field field = Field.castIfPossible(component);
 			if (field != null)
 			{
-				JSField jsField = new JSField(field, getSolutionModel(), this);
-				fields.add(jsField);
+				fields.add(new JSField(field, getSolutionModel(), this));
 			}
 		}
 		return fields.toArray(new JSField[0]);
@@ -488,8 +485,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 			GraphicalComponent graphicalComponent = GraphicalComponent.castIfPossible(component);
 			if (graphicalComponent != null && graphicalComponent.isButton())
 			{
-				JSButton jsButton = new JSButton(graphicalComponent, getSolutionModel(), this);
-				buttons.add(jsButton);
+				buttons.add(new JSButton(graphicalComponent, getSolutionModel(), this));
 			}
 		}
 		return buttons.toArray(new JSButton[0]);
@@ -611,8 +607,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 			GraphicalComponent graphicalComponent = GraphicalComponent.castIfPossible(component);
 			if (graphicalComponent != null && !graphicalComponent.isButton())
 			{
-				JSLabel jsLabel = new JSLabel(graphicalComponent, getSolutionModel(), this);
-				labels.add(jsLabel);
+				labels.add(new JSLabel(graphicalComponent, getSolutionModel(), this));
 			}
 		}
 		return labels.toArray(new JSLabel[0]);

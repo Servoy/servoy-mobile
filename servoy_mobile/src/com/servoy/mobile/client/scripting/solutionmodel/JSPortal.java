@@ -24,6 +24,7 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 
 import com.google.gwt.core.client.JsArray;
+import com.servoy.base.persistence.constants.IComponentConstants;
 import com.servoy.base.solutionmodel.IBaseSMComponent;
 import com.servoy.base.solutionmodel.IBaseSMPortal;
 import com.servoy.mobile.client.persistence.Component;
@@ -58,7 +59,7 @@ public class JSPortal extends JSComponent implements IBaseSMPortal, Exportable
 
 	public JSButton newButton(String txt, int x, int y, int width, int height, JSMethod action)
 	{
-		GraphicalComponent gc = GraphicalComponent.createNewGraphicalComponent(getPortal(), GraphicalComponent.VIEW_TYPE_BUTTON);
+		GraphicalComponent gc = GraphicalComponent.createNewGraphicalComponent(getPortal(), IComponentConstants.VIEW_TYPE_BUTTON);
 		gc.setText(txt);
 		gc.setSize(width, height);
 		gc.setLocation(x, y);
@@ -79,7 +80,7 @@ public class JSPortal extends JSComponent implements IBaseSMPortal, Exportable
 	@Override
 	public JSLabel newLabel(String txt, int x, int y, int width, int height)
 	{
-		GraphicalComponent gc = GraphicalComponent.createNewGraphicalComponent(getPortal(), GraphicalComponent.VIEW_TYPE_LABEL);
+		GraphicalComponent gc = GraphicalComponent.createNewGraphicalComponent(getPortal(), IComponentConstants.VIEW_TYPE_LABEL);
 		gc.setText(txt);
 		gc.setSize(width, height);
 		gc.setLocation(x, y);
