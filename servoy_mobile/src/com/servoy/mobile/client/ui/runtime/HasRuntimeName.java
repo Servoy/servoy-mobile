@@ -16,7 +16,6 @@
  */
 package com.servoy.mobile.client.ui.runtime;
 
-import com.servoy.base.scripting.annotations.ServoyMobile;
 
 /**
  * Basic interface for the components name
@@ -24,17 +23,7 @@ import com.servoy.base.scripting.annotations.ServoyMobile;
  * @author jcompagner
  * @since 7.0
  */
-@ServoyMobile
 public interface HasRuntimeName
 {
-	/**
-	 * Returns the name of an element. (may be null as well)
-	 *
-	 * @sample 
-	 * var name = %%prefix%%%%elementName%%.getName();
-	 * 
-	 * @return The name of the element.
-	 */
 	public String getName();
-
 }

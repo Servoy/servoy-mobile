@@ -17,7 +17,6 @@
 
 package com.servoy.mobile.client.ui.runtime;
 
-import com.servoy.base.scripting.annotations.ServoyMobile;
 
 /**
  * Runtime property interface for visibility.
@@ -25,27 +24,9 @@ import com.servoy.base.scripting.annotations.ServoyMobile;
  * @author gboros
  * @since 7.0
  */
-@ServoyMobile
 public interface HasRuntimeVisible
 {
-
-	/**
-	 * Gets or sets the visibility of an element; true - visible; false - not visible; ! - the visibility state is inverted (the opposite).
-	 * 
-	 * NOTE: The visibility of an element is not persistent; the state of visibility only applies to the current user in his/her current session.
-	 *
-	 * @sample
-	 * //sets the element as visible
-	 * forms.company.elements.faxBtn.visible = true;
-	 * 
-	 * //gets the visibility of the element
-	 * var currentState = forms.company.elements.faxBtn.visible;
-	 * 
-	 * //sets the element as not visible when the current state is visible
-	 * forms.company.elements.faxBtn.visible = !currentState;
-	 */
 	public boolean isVisible();
 
 	public void setVisible(boolean b);
-
 }

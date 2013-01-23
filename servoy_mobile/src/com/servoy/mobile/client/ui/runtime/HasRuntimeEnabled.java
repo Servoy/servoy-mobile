@@ -16,7 +16,6 @@
  */
 package com.servoy.mobile.client.ui.runtime;
 
-import com.servoy.base.scripting.annotations.ServoyMobile;
 
 /**
  * Basic interface for enabled properties
@@ -24,29 +23,9 @@ import com.servoy.base.scripting.annotations.ServoyMobile;
  * @author jcompagner
  * @since 7.0
  */
-@ServoyMobile
 public interface HasRuntimeEnabled
 {
-
-	/**
-	 * Gets or sets the enabled state of a specified field, also known as "grayed".
-	 * true - enabled; false - not enabled; ! - the enabled state is inverted (the opposite).
-	 * 
-	 * NOTE: A disabled element cannot be selected by clicking the element (or by pressing the TAB key even if this option is supported by the operating system).
-	 *
-	 * NOTE: A label or button element will not disable if the "displayType" design time property for a field is set to HTML_AREA.
-	 * 
-	 * NOTE: The disabled "grayed" color is dependent on the LAF set in the Servoy Client Application Preferences. For more information see Preferences: Look And Feel in the Servoy Developer User's Guide.
-	 *
-	 * @sample
-	 * //gets the enabled state of the field
-	 * var currState = %%prefix%%%%elementName%%.enabled;
-	 * 
-	 * //sets the enabled state of the field
-	 * %%prefix%%%%elementName%%.enabled = !currentState;
-	 */
 	public boolean isEnabled();
 
 	public void setEnabled(boolean b);
-
 }
