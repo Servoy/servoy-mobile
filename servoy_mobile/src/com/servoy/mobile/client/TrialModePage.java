@@ -57,5 +57,8 @@ public class TrialModePage extends JQMPage
 			}
 		});
 		add(next);
+		htmlText = new HTML();
+		htmlText.setHTML("<img src='http://www.servoy.com/img/servoymobile.gif' alt=''/>");
+		add(htmlText);
 	}
 }
