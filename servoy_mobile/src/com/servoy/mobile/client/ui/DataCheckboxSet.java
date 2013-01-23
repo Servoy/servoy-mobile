@@ -251,4 +251,18 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 	{
 		// not supported
 	}
+
+	private String placeholderText = null;
+
+	@Override
+	public String getPlaceholderText()
+	{
+		return placeholderText;
+	}
+
+	@Override
+	public void setPlaceholderText(String placeholder)
+	{
+		this.placeholderText = placeholder;
+	}
 }

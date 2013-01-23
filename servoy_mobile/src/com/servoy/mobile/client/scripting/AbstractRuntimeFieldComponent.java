@@ -18,6 +18,8 @@
 package com.servoy.mobile.client.scripting;
 
 import org.timepedia.exporter.client.Export;
+import org.timepedia.exporter.client.Getter;
+import org.timepedia.exporter.client.Setter;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -105,5 +107,19 @@ public class AbstractRuntimeFieldComponent extends AbstractRuntimeBaseComponent<
 	{
 		String name = super.getName();
 		return name != null ? name : componentPersist.getGroupID();
+	}
+
+	@Override
+	@Getter
+	public String getPlaceholderText()
+	{
+		return component.getPlaceholderText();
+	}
+
+	@Override
+	@Setter
+	public void setPlaceholderText(String placeholder)
+	{
+		component.setPlaceholderText(placeholder);
 	}
 }

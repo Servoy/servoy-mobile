@@ -164,7 +164,11 @@ public class ComponentFactory
 				{
 					IRuntimeComponent scriptable = ((IRuntimeComponentProvider)componentWidget).getRuntimeComponent();
 					scriptable.setActionCommand(field.getActionMethodCall());
-					if (scriptable instanceof IRuntimeField) ((IRuntimeField)scriptable).setChangeCommand(field.getDataChangeMethodCall());
+					if (scriptable instanceof IRuntimeField)
+					{
+						((IRuntimeField)scriptable).setChangeCommand(field.getDataChangeMethodCall());
+						((IRuntimeField)scriptable).setPlaceholderText(application.getI18nProvider().getI18NMessageIfPrefixed(field.getPlaceholderText()));
+					}
 				}
 			}
 			else

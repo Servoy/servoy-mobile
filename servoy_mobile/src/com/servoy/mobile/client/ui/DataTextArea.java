@@ -20,6 +20,7 @@ package com.servoy.mobile.client.ui;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Element;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
@@ -126,5 +127,28 @@ public class DataTextArea extends JQMTextArea implements IDisplayData, ISupportT
 	public HandlerRegistration addClickHandler(ClickHandler handler)
 	{
 		return addDomHandler(handler, ClickEvent.getType());
+	}
+
+	private String placeholderText = null;
+
+	@Override
+	public String getPlaceholderText()
+	{
+		return placeholderText;
+	}
+
+	@Override
+	public void setPlaceholderText(String placeholder)
+	{
+		this.placeholderText = placeholder;
+		Element element = flow.getWidget(1).getElement();
+		if (placeholder != null)
+		{
+			element.setAttribute("placeholder", placeholder); //$NON-NLS-1$
+		}
+		else
+		{
+			element.removeAttribute("placeholder"); //$NON-NLS-1$
+		}
 	}
 }

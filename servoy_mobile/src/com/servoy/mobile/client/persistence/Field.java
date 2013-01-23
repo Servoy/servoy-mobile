@@ -94,4 +94,14 @@ public class Field extends Component
 		return getAttributeValueInt(IContentSpecConstantsBase.PROPERTY_DISPLAYTYPE, IFieldConstants.TEXT_FIELD);
 	}
 
+	public final void setPlaceholderText(String placeholder)
+	{
+		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_PLACEHOLDERTEXT, placeholder);
+	}
+
+	public final String getPlaceholderText()
+	{
+		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_PLACEHOLDERTEXT, null);
+	}
+
 }

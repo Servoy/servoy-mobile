@@ -13,7 +13,7 @@
  You should have received a copy of the GNU Affero General Public License along
  with this program; if not, see http://www.gnu.org/licenses or write to the Free
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
-*/
+ */
 
 package com.servoy.mobile.client.scripting;
 
@@ -26,4 +26,8 @@ public interface IRuntimeField extends IRuntimeComponent
 	void setChangeCommand(String command);
 
 	public void notifyLastNewValueWasChange(Object oldVal, Object newVal);
+
+	String getPlaceholderText();
+
+	void setPlaceholderText(String placeholder);
 }

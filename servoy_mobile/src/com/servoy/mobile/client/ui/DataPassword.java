@@ -19,104 +19,30 @@ package com.servoy.mobile.client.ui;
 
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
-import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.dataprocessing.IEditListenerSubject;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.scripting.IRuntimeComponent;
 import com.servoy.mobile.client.scripting.RuntimeDataPassword;
-import com.sksamuel.jqm4gwt.form.elements.JQMPassword;
 
 /**
  * Password field UI
  *  
  * @author gboros
  */
-public class DataPassword extends JQMPassword implements IDisplayData, ISupportTitleText, IFieldComponent, IEditListenerSubject
+public class DataPassword extends DataTextField implements IDisplayData, ISupportTitleText, IFieldComponent, IEditListenerSubject
 {
-	protected final Executor executor;
 	private final RuntimeDataPassword scriptable;
 
 	public DataPassword(Field field, Executor executor, MobileClient application)
 	{
-		this.executor = executor;
+		super(field, executor, application);
 		this.scriptable = new RuntimeDataPassword(application, executor, this, field);
 	}
 
-	/*
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#getValueObject()
-	 */
-	@Override
-	public Object getValueObject()
-	{
-		return getValue();
-	}
 
-	/*
-	 * @see com.servoy.mobile.client.dataprocessing.IDisplayData#setValueObject(java.lang.Object)
-	 */
-	@Override
-	public void setValueObject(Object data)
-	{
-		setValue(data != null ? data.toString() : ""); //$NON-NLS-1$
-	}
-
-	private EditProvider editProvider;
-
-	/*
-	 * @see com.servoy.mobile.client.dataprocessing.IEditListenerSubject#addEditListener(com.servoy.mobile.client.dataprocessing.IEditListener)
-	 */
-	@Override
-	public void addEditListener(IEditListener editListener)
-	{
-		if (editProvider == null)
-		{
-			editProvider = new EditProvider(this);
-			editProvider.addEditListener(editListener);
-			addBlurHandler(editProvider);
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.scripting.IScriptableProvider#getScriptObject()
-	 */
 	@Override
 	public IRuntimeComponent getRuntimeComponent()
 	{
 		return scriptable;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.ui.ISupportTitleText#setTitleText(java.lang.String)
-	 */
-	@Override
-	public void setTitleText(String titleText)
-	{
-		setText(titleText);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.ui.ISupportTitleText#getTitleText()
-	 */
-	@Override
-	public String getTitleText()
-	{
-		return getText();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.ui.ISupportTitleText#setTitleTextVisible(boolean)
-	 */
-	@Override
-	public void setTitleTextVisible(boolean visible)
-	{
-		// not supported
 	}
 }

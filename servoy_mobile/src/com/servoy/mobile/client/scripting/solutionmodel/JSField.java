@@ -48,6 +48,14 @@ public class JSField extends JSComponent implements IMobileSMField, Exportable
 		return ((Field)getBase()).getDataProviderID();
 	}
 
+	@Override
+	@Getter
+	public String getPlaceholderText()
+	{
+		return ((Field)getBase()).getPlaceholderText();
+	}
+
+
 	@Getter
 	@Override
 	public int getDisplayType()
@@ -68,6 +76,14 @@ public class JSField extends JSComponent implements IMobileSMField, Exportable
 	{
 		cloneIfNeeded();
 		((Field)getBase()).setDataProviderID(arg);
+	}
+
+	@Setter
+	@Override
+	public void setPlaceholderText(String placeholder)
+	{
+		cloneIfNeeded();
+		((Field)getBase()).setPlaceholderText(placeholder);
 	}
 
 	@Setter

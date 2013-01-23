@@ -119,4 +119,37 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 	{
 		// not supported
 	}
+
+	private String placeholderText = null;
+
+	@Override
+	public String getPlaceholderText()
+	{
+		return placeholderText;
+	}
+
+	@Override
+	public void setPlaceholderText(String placeholder)
+	{
+		this.placeholderText = placeholder;
+		if (isOrWasAttached())
+		{
+			setPlaceholder(getId(), placeholderText);
+		}
+	}
+
+	@Override
+	protected void onLoad()
+	{
+		super.onLoad();
+		setPlaceholder(getId(), placeholderText);
+	}
+
+	private native void setPlaceholder(String inputId, String placeholder) /*-{
+		if (placeholder != null) {
+			$wnd.$("#" + inputId).attr("placeholder", placeholder);
+		} else {
+			$wnd.$("#" + inputId).removeAttr("placeholder");
+		}
+	}-*/;
 }
