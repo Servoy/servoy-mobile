@@ -95,26 +95,10 @@ public class Record extends Scope implements IJSRecord
 			}
 		}
 
-		int index = dataProviderID.indexOf('.');
-		if (index > 0) //check if is related value request
+		Record relatedRecord = getRelatedRecord(dataProviderID);
+		if (relatedRecord != null)
 		{
-			String relationName = dataProviderID.substring(0, index);
-			String restName = dataProviderID.substring(index + 1);
-
-			FoundSet foundSet = getRelatedFoundSet(relationName);
-			if (foundSet != null)
-			{
-				//related data
-				int selected = foundSet.getSelectedIndex();
-				if (selected == -1 && foundSet.getSize() > 0) selected = 0;
-
-				Record record = foundSet.getRecord(selected);
-				if (record != null)
-				{
-					return record.getValue(restName);
-				}
-			}
-			return null;
+			return relatedRecord.getValue(getRelatedDataprovideID(dataProviderID));
 		}
 
 		RowDescription rd = getRowDescription();
@@ -136,14 +120,53 @@ public class Record extends Scope implements IJSRecord
 	@Override
 	public void setValue(String dataProviderID, Object obj)
 	{
-		RowDescription rd = getRowDescription();
-		if (rd == null) return;
-		parent.startEdit(this);
+		Record relatedRecord = getRelatedRecord(dataProviderID);
+		if (relatedRecord != null)
+		{
+			relatedRecord.setValue(getRelatedDataprovideID(dataProviderID), obj);
+		}
+		else
+		{
+			RowDescription rd = getRowDescription();
+			if (rd == null) return;
+			parent.startEdit(this);
 
-		Object oldObj = rd.getValue(dataProviderID);
-		rd.setValue(dataProviderID, obj);
+			Object oldObj = rd.getValue(dataProviderID);
+			rd.setValue(dataProviderID, obj);
 
-		if (!Utils.equalObjects(oldObj, obj)) fireModificationEvent(dataProviderID, obj);
+			if (!Utils.equalObjects(oldObj, obj)) fireModificationEvent(dataProviderID, obj);
+		}
+	}
+
+	private Record getRelatedRecord(String dataProviderID)
+	{
+		int index = dataProviderID.indexOf('.');
+		if (index > 0) //check if is related value request
+		{
+			String relationName = dataProviderID.substring(0, index);
+
+			FoundSet foundSet = getRelatedFoundSet(relationName);
+			if (foundSet != null)
+			{
+				//related data
+				int selected = foundSet.getSelectedIndex();
+				if (selected == -1 && foundSet.getSize() > 0) selected = 0;
+
+				return foundSet.getRecord(selected);
+			}
+			return null;
+		}
+		return null;
+	}
+
+	private String getRelatedDataprovideID(String dataProviderID)
+	{
+		int index = dataProviderID.indexOf('.');
+		if (index > 0)
+		{
+			return dataProviderID.substring(index + 1);
+		}
+		return dataProviderID;
 	}
 
 	private RowDescription getRowDescription()
@@ -306,7 +329,7 @@ public class Record extends Scope implements IJSRecord
 	{
 		clearRelationCaches();
 
-		RowDescription storageDescription = parent.getRowDescription(getPK());
+		RowDescription storageDescription = parent.getLocalStorageRowDescription(getPK());
 		if (storageDescription != null)
 		{
 			rowDescription = storageDescription;

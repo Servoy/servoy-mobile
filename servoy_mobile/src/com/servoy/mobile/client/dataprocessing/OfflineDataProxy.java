@@ -294,7 +294,7 @@ public class OfflineDataProxy
 		int idx = key.indexOf('|');
 		final String entityName = key.substring(0, idx);
 		final String pk = key.substring(idx + 1, key.length());
-		final RowDescription row = foundSetManager.getRowDescription(entityName, pk);
+		final RowDescription row = foundSetManager.getLocalStorageRowDescription(entityName, pk);
 		String remotepk = foundSetManager.getRemotePK(entityName, pk, row);
 
 		String json = foundSetManager.toRemoteJSON(entityName, row);

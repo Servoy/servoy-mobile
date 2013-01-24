@@ -363,6 +363,12 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		return foundSetManager.getRowDescription(getEntityName(), pk);
 	}
 
+	RowDescription getLocalStorageRowDescription(Object pk)
+	{
+		return foundSetManager.getLocalStorageRowDescription(getEntityName(), pk);
+	}
+
+
 	FoundSet getRelatedFoundSet(Record rec, String name, String key)
 	{
 		return foundSetManager.getRelatedFoundSet(rec, getEntityName(), name, key);

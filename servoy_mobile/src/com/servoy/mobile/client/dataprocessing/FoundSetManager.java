@@ -70,6 +70,7 @@ public class FoundSetManager
 	private ArrayList<String> changes;
 	private ArrayList<String> deletes;
 	HashMap<String, HashSet<FoundSet>> entitiesToFoundsets;
+	HashMap<String, RowDescription> keyToRowDescription;
 
 	public FoundSetManager(MobileClient mc)
 	{
@@ -101,6 +102,7 @@ public class FoundSetManager
 		addItems(localStorage.getItem(DELETES_KEY), deletes);
 
 		entitiesToFoundsets = new HashMap<String, HashSet<FoundSet>>();
+		keyToRowDescription = new HashMap<String, RowDescription>();
 
 	}
 
@@ -159,9 +161,30 @@ public class FoundSetManager
 		return entities.getDescription(entityName);
 	}
 
+	/**
+	 * Returns the cached, in memory, row description, that is shared among more instances of same db record.
+	 */
 	RowDescription getRowDescription(String entityName, Object pk)
 	{
-		//load data from offline db
+		String key = entityName + '|' + pk;
+		if (keyToRowDescription.containsKey(key))
+		{
+			return keyToRowDescription.get(key);
+		}
+
+		RowDescription rd = getLocalStorageRowDescription(entityName, pk);
+		if (rd != null)
+		{
+			keyToRowDescription.put(key, rd);
+		}
+		return rd;
+	}
+
+	/**
+	 * Returns a new instance for local storage row description (saved data).
+	 */
+	RowDescription getLocalStorageRowDescription(String entityName, Object pk)
+	{
 		String json = localStorage.getItem(entityName + '|' + pk);
 		if (json == null) return null;
 
@@ -410,6 +433,8 @@ public class FoundSetManager
 			updateChangesInLocalStorage();
 		}
 
+		keyToRowDescription.remove(key);
+
 	}
 
 	public void recordPushedToServer(String entityName, String pk)
@@ -508,6 +533,9 @@ public class FoundSetManager
 		editRecordList = new EditRecordList(this);
 		changes = new ArrayList<String>();
 		deletes = new ArrayList<String>();
+
+		entitiesToFoundsets.clear();
+		keyToRowDescription.clear();
 	}
 
 	//from mem/obj to store
@@ -576,6 +604,7 @@ public class FoundSetManager
 				}
 			}
 		}
+		keyToRowDescription.put(fs.getEntityName() + '|' + pkval, retval);
 		return retval;
 	}
 
