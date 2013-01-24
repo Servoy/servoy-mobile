@@ -101,7 +101,7 @@ public class Record extends Scope implements IJSRecord
 			return relatedRecord.getValue(getRelatedDataprovideID(dataProviderID));
 		}
 
-		RowDescription rd = getRowDescription();
+		RowDescription rd = getRow();
 		if (rd == null || rd.getValue(dataProviderID) == null) return null;
 		int type = getVariableType(dataProviderID);
 		if (type == IColumnTypeConstants.DATETIME)
@@ -127,7 +127,7 @@ public class Record extends Scope implements IJSRecord
 		}
 		else
 		{
-			RowDescription rd = getRowDescription();
+			RowDescription rd = getRow();
 			if (rd == null) return;
 			parent.startEdit(this);
 
@@ -167,15 +167,6 @@ public class Record extends Scope implements IJSRecord
 			return dataProviderID.substring(index + 1);
 		}
 		return dataProviderID;
-	}
-
-	private RowDescription getRowDescription()
-	{
-		if (rowDescription == null)
-		{
-			rowDescription = parent.getRowDescription(getPK());
-		}
-		return rowDescription;
 	}
 
 	public FoundSet getRelatedFoundSet(String relationName)
@@ -219,6 +210,10 @@ public class Record extends Scope implements IJSRecord
 
 	public RowDescription getRow()
 	{
+		if (rowDescription == null)
+		{
+			rowDescription = parent.getRowDescription(getPK());
+		}
 		return rowDescription;
 	}
 
