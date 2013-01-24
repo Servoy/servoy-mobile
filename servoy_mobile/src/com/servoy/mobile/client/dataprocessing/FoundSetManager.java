@@ -624,6 +624,11 @@ public class FoundSetManager
 		if (rd != null)
 		{
 			JsArrayString pdp = rd.getPrimaryDataProviders();
+			if (pdp.length() == 0)
+			{
+				Log.info("relation: " + relationName + " is asked for but had no primarydataproviders, entity: " + entityName);
+				return null;
+			}
 			Object[] coldata = new Object[pdp.length()];
 			for (int j = 0; j < coldata.length; j++)
 			{
@@ -637,6 +642,10 @@ public class FoundSetManager
 			JsArray<RecordDescription> rds = fsd.getRecords();
 			seek(foreignEntityName, rd.getForeignColumns(), coldata, rds);
 			return new RelatedFoundSet(this, record, fsd, relationName);
+		}
+		else
+		{
+			Log.info("relation: " + relationName + " is asked for but now RelationDescription found for it with entity: " + entityName);
 		}
 		return null;
 	}

@@ -24,10 +24,14 @@ public class RelationDescription extends JavaScriptObject
 	}-*/;
 
 	public final native JsArrayString getPrimaryDataProviders() /*-{
+		if (!this.primaryDataProviders)
+			return new Array();
 		return this.primaryDataProviders;
 	}-*/;
 
 	public final native JsArrayString getForeignColumns() /*-{
+		if (!this.foreignColumns)
+			return new Array();
 		return this.foreignColumns;
 	}-*/;
 
