@@ -255,19 +255,20 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		{
 			retval = records.get(index);
 		}
-		else
+		else if (index < getSize())
 		{
-			RecordDescription rd = foundSetDescription.getRecords().get(index);
-			if (rd != null)
+			for (int i = records.size(); i <= index; i++)
 			{
-				retval = new Record(this, rd);
-				if (index == records.size())
+				RecordDescription rd = foundSetDescription.getRecords().get(i);
+				if (rd != null)
 				{
+					retval = new Record(this, rd);
 					records.add(retval);
 				}
 				else
 				{
-					records.set(index, retval);
+					retval = null;
+					records.add(null);
 				}
 			}
 		}
