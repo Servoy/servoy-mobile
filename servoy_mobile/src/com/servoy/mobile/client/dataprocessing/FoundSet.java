@@ -161,11 +161,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 	public int js_newRecord(Number index, Boolean changeSelection)
 	{
 		int integer = Utils.getAsInteger(index, 1);
-		if (newRecord(integer - 1, Utils.getAsBoolean(changeSelection, true)) != null)
-		{
-			return integer;
-		}
-		return -1;
+		return newRecord(integer - 1, Utils.getAsBoolean(changeSelection, true)) + 1;
 	}
 
 	@Override
@@ -230,14 +226,17 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		return selectedIndex;
 	}
 
-	public Record newRecord(int index, boolean changeSelection)
+	public int newRecord(int index, boolean changeSelection)
 	{
 		String pk = foundSetManager.getNewPrimaryKey();
 		RecordDescription recd = RecordDescription.newInstance(pk);
 		RowDescription rowd = foundSetManager.createRowDescription(this, pk);
 		Record retval = new Record(this, recd, rowd);
+		int size = getSize();
+		index = (index < 0) ? 0 : (index > size) ? size : index;
 		foundSetDescription.insertRecord(index, recd);
 		needToSaveFoundSetDescription = true;
+		fillNotLoadedRecordsWithNull(index);
 		records.add(index, retval);
 		if (changeSelection)
 		{
@@ -245,34 +244,49 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 			fireSelectionChanged();
 		}
 		startEdit(retval);
-		return retval;
+		return index;
 	}
 
 	public Record getRecord(int index)
 	{
 		Record retval = null;
-		if (index < records.size())
+		if (index >= 0)
 		{
-			retval = records.get(index);
-		}
-		else if (index < getSize())
-		{
-			for (int i = records.size(); i <= index; i++)
+			if (index < records.size())
 			{
-				RecordDescription rd = foundSetDescription.getRecords().get(i);
+				retval = records.get(index);
+			}
+			if (retval == null && index < getSize())
+			{
+				RecordDescription rd = foundSetDescription.getRecords().get(index);
 				if (rd != null)
 				{
 					retval = new Record(this, rd);
-					records.add(retval);
+				}
+				fillNotLoadedRecordsWithNull(index);
+				if (index == records.size())
+				{
+					records.add(index, retval);
 				}
 				else
 				{
-					retval = null;
-					records.add(null);
+					records.set(index, retval);
 				}
 			}
 		}
 		return retval;
+	}
+
+	private void fillNotLoadedRecordsWithNull(int index)
+	{
+		if (index > records.size() && index < getSize())
+		{
+			// fill arraylist up to index with null values
+			for (int i = records.size(); i <= index - 1; i++)
+			{
+				records.add(null);
+			}
+		}
 	}
 
 	public int getRecordIndex(Record record)
