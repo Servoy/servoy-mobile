@@ -81,7 +81,7 @@ public class MobilePlugin implements Exportable
 		return unescape(encodeURIComponent(JSON.stringify(localStorage))).length * 2;
 	}-*/;
 
-	public native void getCurrentPosition(JavaScriptObject successCallback, JavaScriptObject errorHandler, String options)
+	public native void getCurrentPosition(JavaScriptObject successCallback, JavaScriptObject errorHandler, Object options)
 	/*-{
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(successCallback,
