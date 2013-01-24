@@ -231,18 +231,4 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 			cbr.checkboxradio("refresh");
 		}
 	}-*/;
-
-	private String placeholderText = null;
-
-	@Override
-	public String getPlaceholderText()
-	{
-		return placeholderText;
-	}
-
-	@Override
-	public void setPlaceholderText(String placeholder)
-	{
-		this.placeholderText = placeholder;
-	}
 }

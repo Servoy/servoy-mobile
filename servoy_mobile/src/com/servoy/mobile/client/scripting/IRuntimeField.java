@@ -17,17 +17,15 @@
 
 package com.servoy.mobile.client.scripting;
 
+import com.servoy.mobile.client.ui.runtime.HasRuntimePlaceholder;
+
 /**
  * @author gboros
  *
  */
-public interface IRuntimeField extends IRuntimeComponent
+public interface IRuntimeField extends IRuntimeComponent, HasRuntimePlaceholder
 {
 	void setChangeCommand(String command);
 
 	public void notifyLastNewValueWasChange(Object oldVal, Object newVal);
-
-	String getPlaceholderText();
-
-	void setPlaceholderText(String placeholder);
 }

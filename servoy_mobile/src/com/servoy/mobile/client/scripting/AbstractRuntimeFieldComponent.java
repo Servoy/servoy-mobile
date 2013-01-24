@@ -28,6 +28,7 @@ import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.ui.Executor;
 import com.servoy.mobile.client.ui.IFieldComponent;
+import com.servoy.mobile.client.ui.ISupportsPlaceholderComponent;
 
 /**
  * @author gboros
@@ -109,17 +110,23 @@ public class AbstractRuntimeFieldComponent extends AbstractRuntimeBaseComponent<
 		return name != null ? name : componentPersist.getGroupID();
 	}
 
+	private String placeholderText = null;
+
 	@Override
 	@Getter
 	public String getPlaceholderText()
 	{
-		return component.getPlaceholderText();
+		return placeholderText;
 	}
 
 	@Override
 	@Setter
 	public void setPlaceholderText(String placeholder)
 	{
-		component.setPlaceholderText(placeholder);
+		this.placeholderText = placeholder;
+		if (component instanceof ISupportsPlaceholderComponent)
+		{
+			((ISupportsPlaceholderComponent)component).setPlaceholderText(application.getI18nProvider().getI18NMessageIfPrefixed(placeholder));
+		}
 	}
 }

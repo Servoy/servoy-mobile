@@ -26,7 +26,5 @@ import com.servoy.mobile.client.scripting.IRuntimeComponentProvider;
  */
 public interface IFieldComponent extends IComponent, IRuntimeComponentProvider, HasClickHandlers
 {
-	public String getPlaceholderText();
 
-	public void setPlaceholderText(String placeholder);
 }

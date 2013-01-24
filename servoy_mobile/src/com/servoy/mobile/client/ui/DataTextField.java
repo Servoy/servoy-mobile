@@ -22,7 +22,7 @@ import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.dataprocessing.IEditListenerSubject;
 import com.servoy.mobile.client.persistence.Field;
-import com.servoy.mobile.client.scripting.IRuntimeComponent;
+import com.servoy.mobile.client.scripting.IRuntimeField;
 import com.servoy.mobile.client.scripting.RuntimeDataTextField;
 import com.sksamuel.jqm4gwt.form.elements.JQMText;
 
@@ -31,7 +31,7 @@ import com.sksamuel.jqm4gwt.form.elements.JQMText;
  *
  * @author gboros
  */
-public class DataTextField extends JQMText implements IDisplayData, ISupportTitleText, IFieldComponent, IEditListenerSubject
+public class DataTextField extends JQMText implements IDisplayData, ISupportTitleText, IFieldComponent, IEditListenerSubject, ISupportsPlaceholderComponent
 {
 	protected final Executor executor;
 	private final RuntimeDataTextField scriptable;
@@ -82,7 +82,7 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 	 * @see com.servoy.mobile.client.scripting.IScriptableProvider#getScriptObject()
 	 */
 	@Override
-	public IRuntimeComponent getRuntimeComponent()
+	public IRuntimeField getRuntimeComponent()
 	{
 		return scriptable;
 	}
@@ -120,21 +120,11 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 		// not supported
 	}
 
-	private String placeholderText = null;
-
-	@Override
-	public String getPlaceholderText()
-	{
-		return placeholderText;
-	}
-
-	@Override
 	public void setPlaceholderText(String placeholder)
 	{
-		this.placeholderText = placeholder;
 		if (isOrWasAttached())
 		{
-			setPlaceholder(getId(), placeholderText);
+			setPlaceholder(getId(), getRuntimeComponent().getPlaceholderText());
 		}
 	}
 
@@ -142,7 +132,7 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 	protected void onLoad()
 	{
 		super.onLoad();
-		setPlaceholder(getId(), placeholderText);
+		setPlaceholder(getId(), getRuntimeComponent().getPlaceholderText());
 	}
 
 	private native void setPlaceholder(String inputId, String placeholder) /*-{

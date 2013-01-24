@@ -35,7 +35,7 @@ import com.sksamuel.jqm4gwt.form.elements.JQMTextArea;
  * 
  * @author gboros
  */
-public class DataTextArea extends JQMTextArea implements IDisplayData, ISupportTitleText, IFieldComponent, IEditListenerSubject
+public class DataTextArea extends JQMTextArea implements IDisplayData, ISupportTitleText, IFieldComponent, IEditListenerSubject, ISupportsPlaceholderComponent
 {
 	protected final Executor executor;
 	private final RuntimeDataTextArea scriptable;
@@ -129,18 +129,8 @@ public class DataTextArea extends JQMTextArea implements IDisplayData, ISupportT
 		return addDomHandler(handler, ClickEvent.getType());
 	}
 
-	private String placeholderText = null;
-
-	@Override
-	public String getPlaceholderText()
-	{
-		return placeholderText;
-	}
-
-	@Override
 	public void setPlaceholderText(String placeholder)
 	{
-		this.placeholderText = placeholder;
 		Element element = flow.getWidget(1).getElement();
 		if (placeholder != null)
 		{

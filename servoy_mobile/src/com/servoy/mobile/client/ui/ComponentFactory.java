@@ -167,7 +167,7 @@ public class ComponentFactory
 					if (scriptable instanceof IRuntimeField)
 					{
 						((IRuntimeField)scriptable).setChangeCommand(field.getDataChangeMethodCall());
-						((IRuntimeField)scriptable).setPlaceholderText(application.getI18nProvider().getI18NMessageIfPrefixed(field.getPlaceholderText()));
+						((IRuntimeField)scriptable).setPlaceholderText(field.getPlaceholderText());
 					}
 				}
 			}
