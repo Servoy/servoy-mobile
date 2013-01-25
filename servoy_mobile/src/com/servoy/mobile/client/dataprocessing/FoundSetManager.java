@@ -53,6 +53,7 @@ public class FoundSetManager
 {
 	private static final String CHANGES_KEY = "_svy_changes";
 	private static final String DELETES_KEY = "_svy_deletes";
+	private static final String CLIENT_DELETES_KEY = "_svy_client_deletes";
 	private static final String ENTITY_PREFIX_KEY = "_svy_entityPrefix";
 	private static final String ENTITIES_KEY = "_svy_entities";
 	private static final String STORAGE_VERSION_KEY = "_svy_storage_version";
@@ -68,7 +69,11 @@ public class FoundSetManager
 	private String entityPrefix;
 	private final int storage_version;
 	private ArrayList<String> changes;
-	private ArrayList<String> deletes;
+	// deletes of records that exist server side
+	private ArrayList<String> serverRecordsDeletes;
+	// deletes of records that were created client side, then deleted without existing on server; 
+	// we have to keep track of these also as not all references to these records are deleted, we filter them out at foundset creation
+	private ArrayList<String> clientDeletes;
 	HashMap<String, HashSet<FoundSet>> entitiesToFoundsets;
 	HashMap<String, RowDescription> keyToRowDescription;
 
@@ -98,8 +103,11 @@ public class FoundSetManager
 		changes = new ArrayList<String>();
 		addItems(localStorage.getItem(CHANGES_KEY), changes);
 
-		deletes = new ArrayList<String>();
-		addItems(localStorage.getItem(DELETES_KEY), deletes);
+		serverRecordsDeletes = new ArrayList<String>();
+		addItems(localStorage.getItem(DELETES_KEY), serverRecordsDeletes);
+
+		clientDeletes = new ArrayList<String>();
+		addItems(localStorage.getItem(CLIENT_DELETES_KEY), clientDeletes);
 
 		entitiesToFoundsets = new HashMap<String, HashSet<FoundSet>>();
 		keyToRowDescription = new HashMap<String, RowDescription>();
@@ -412,9 +420,15 @@ public class FoundSetManager
 
 			if (!createdOnClient)
 			{
-				if (!deletes.contains(key)) deletes.add(key);
+				if (!serverRecordsDeletes.contains(key)) serverRecordsDeletes.add(key);
 
 				updateDeletesInLocalStorage();
+			}
+			else
+			{
+				if (!clientDeletes.contains(key)) clientDeletes.add(key);
+
+				updateListInLocalStorage(CLIENT_DELETES_KEY, clientDeletes);
 			}
 		}
 
@@ -452,23 +466,30 @@ public class FoundSetManager
 
 	private void removeDeletedRecords(FoundSetDescription desc)
 	{
-		if (deletes != null && deletes.size() > 0)
+		List<String> allDeletes = new ArrayList<String>();
+		if (serverRecordsDeletes != null)
 		{
-			for (String deletedRecord : deletes)
+			allDeletes.addAll(serverRecordsDeletes);
+		}
+		if (clientDeletes != null)
+		{
+			allDeletes.addAll(clientDeletes);
+		}
+
+		for (String deletedRecord : allDeletes)
+		{
+			int idx = deletedRecord.indexOf('|');
+			String entityName = deletedRecord.substring(0, idx);
+			if (entityName.equals(desc.getEntityName()))
 			{
-				int idx = deletedRecord.indexOf('|');
-				String entityName = deletedRecord.substring(0, idx);
-				if (entityName.equals(desc.getEntityName()))
+				String pk = deletedRecord.substring(idx + 1);
+				JsArray<RecordDescription> recs = desc.getRecords();
+				for (int i = recs.length() - 1; i >= 0; i--)
 				{
-					String pk = deletedRecord.substring(idx + 1);
-					JsArray<RecordDescription> recs = desc.getRecords();
-					for (int i = recs.length() - 1; i >= 0; i--)
+					RecordDescription rec = recs.get(i);
+					if (rec.getPK() != null && rec.getPK().toString().equals(pk))
 					{
-						RecordDescription rec = recs.get(i);
-						if (rec.getPK() != null && rec.getPK().toString().equals(pk))
-						{
-							desc.removeRecord(i);
-						}
+						desc.removeRecord(i);
 					}
 				}
 			}
@@ -482,7 +503,7 @@ public class FoundSetManager
 
 	void updateDeletesInLocalStorage()
 	{
-		updateListInLocalStorage(DELETES_KEY, deletes);
+		updateListInLocalStorage(DELETES_KEY, serverRecordsDeletes);
 	}
 
 	private void updateListInLocalStorage(String key, List<String> list)
@@ -532,7 +553,8 @@ public class FoundSetManager
 
 		editRecordList = new EditRecordList(this);
 		changes = new ArrayList<String>();
-		deletes = new ArrayList<String>();
+		serverRecordsDeletes = new ArrayList<String>();
+		clientDeletes = new ArrayList<String>();
 
 		entitiesToFoundsets.clear();
 		keyToRowDescription.clear();
@@ -552,7 +574,7 @@ public class FoundSetManager
 	//has changes for the server
 	public boolean hasChanges()
 	{
-		return (changes.size() != 0 || deletes.size() > 0);
+		return (changes.size() != 0 || serverRecordsDeletes.size() > 0);
 	}
 
 	ArrayList<String> getChanges()
@@ -562,7 +584,7 @@ public class FoundSetManager
 
 	ArrayList<String> getDeletes()
 	{
-		return deletes;
+		return serverRecordsDeletes;
 	}
 
 	public int getFoundSetSize(FoundSet fs)
@@ -641,7 +663,10 @@ public class FoundSetManager
 			FoundSetDescription fsd = FoundSetDescription.newInstance(foreignEntityName, relationName, whereArgsHash);
 			JsArray<RecordDescription> rds = fsd.getRecords();
 			seek(foreignEntityName, rd.getForeignColumns(), coldata, rds);
-			return new RelatedFoundSet(this, record, fsd, relationName);
+			removeDeletedRecords(fsd);
+			FoundSet foundset = new RelatedFoundSet(this, record, fsd, relationName);
+			addFoundsetInList(foundset);
+			return foundset;
 		}
 		else
 		{
