@@ -241,17 +241,6 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	}
 
 	@Override
-	public JSField newCalendar(Object dataprovider, int x, int y, int width, int height)
-	{
-		return newField(dataprovider, IFieldConstants.CALENDAR, x, y, width, height);
-	}
-
-	public JSField newCalendar(JSVariable dataprovider, int x, int y, int width, int height)
-	{
-		return newCalendar(dataprovider.getReferenceString(), x, y, width, height);
-	}
-
-	@Override
 	public JSField newPassword(Object dataprovider, int x, int y, int width, int height)
 	{
 		return newField(dataprovider, IFieldConstants.PASSWORD, x, y, width, height);
