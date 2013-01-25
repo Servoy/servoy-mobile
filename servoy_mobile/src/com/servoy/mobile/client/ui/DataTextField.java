@@ -35,11 +35,13 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 {
 	protected final Executor executor;
 	private final RuntimeDataTextField scriptable;
+	protected final MobileClient application;
 
 	public DataTextField(Field field, Executor executor, MobileClient application)
 	{
 		this.executor = executor;
 		this.scriptable = new RuntimeDataTextField(application, executor, this, field);
+		this.application = application;
 	}
 
 	/*
@@ -124,7 +126,7 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 	{
 		if (isOrWasAttached())
 		{
-			setPlaceholder(getId(), getRuntimeComponent().getPlaceholderText());
+			setPlaceholder(getId(), placeholder);
 		}
 	}
 
@@ -132,7 +134,7 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 	protected void onLoad()
 	{
 		super.onLoad();
-		setPlaceholder(getId(), getRuntimeComponent().getPlaceholderText());
+		setPlaceholder(getId(), application.getI18nProvider().getI18NMessageIfPrefixed(getRuntimeComponent().getPlaceholderText()));
 	}
 
 	private native void setPlaceholder(String inputId, String placeholder) /*-{
