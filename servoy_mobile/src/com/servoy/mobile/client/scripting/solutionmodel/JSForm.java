@@ -18,6 +18,7 @@
 package com.servoy.mobile.client.scripting.solutionmodel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.timepedia.exporter.client.Export;
@@ -29,6 +30,7 @@ import org.timepedia.exporter.client.Setter;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
+import com.servoy.base.persistence.IMobileProperties;
 import com.servoy.base.persistence.constants.IComponentConstants;
 import com.servoy.base.persistence.constants.IFieldConstants;
 import com.servoy.base.persistence.constants.IRepositoryConstants;
@@ -36,6 +38,7 @@ import com.servoy.base.solutionmodel.IBaseSMMethod;
 import com.servoy.base.solutionmodel.IBaseSMPortal;
 import com.servoy.base.util.DataSourceUtilsBase;
 import com.servoy.mobile.client.dataprocessing.RelatedFoundSet;
+import com.servoy.mobile.client.persistence.AbstractBase.MobileProperties;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.Form;
@@ -428,7 +431,6 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	@Override
 	public boolean removeField(String name)
 	{
-		cloneIfNeeded();
 		return removeComponent(name, IRepositoryConstants.FIELDS);
 	}
 
@@ -518,16 +520,43 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	@Override
 	public JSComponent[] getComponents()
 	{
+		return getComponentsInternal(false);
+	}
+
+	@Override
+	@NoExport
+	public JSComponent[] getComponentsInternal(boolean showInternals)
+	{
 		JsArray<Component> formComponents = form.getComponents();
+
 		List<JSComponent> components = new ArrayList<JSComponent>(formComponents.length());
+		HashMap<String, JSLabel> titleLabels = showInternals ? null : new HashMap<String, JSLabel>();
+
 		for (int i = 0; i < formComponents.length(); i++)
 		{
 			JSComponent jsComponent = JSComponent.getJSComponent(formComponents.get(i), getSolutionModel(), this);
 			if (jsComponent != null)
 			{
 				components.add(jsComponent);
+
+				if (!showInternals)
+				{
+					String groupID = jsComponent.getGroupID();
+					if (groupID != null && jsComponent instanceof JSLabel)
+					{
+						// a grouped label is a title label for a component, except for the case where it's grouped with another label
+						MobileProperties mp = jsComponent.getBase().getMobileProperties();
+						JSLabel l = titleLabels.get(groupID);
+						if (l == null || (mp != null && Boolean.TRUE.equals(mp.getPropertyValue(IMobileProperties.COMPONENT_TITLE))) ||
+							(jsComponent.getY() < l.getY() || (jsComponent.getY() == l.getY() && jsComponent.getX() < l.getX())))
+						{
+							titleLabels.put(groupID, (JSLabel)jsComponent);
+						}
+					}
+				}
 			}
 		}
+		if (!showInternals) components.removeAll(titleLabels.values());
 		return components.toArray(new JSComponent[components.size()]);
 	}
 
@@ -565,30 +594,33 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 			for (int i = 0; i < formComponents.length(); i++)
 			{
 				Component component = formComponents.get(i);
-				Component persistComponent = null;
-				if (componentType == IRepositoryConstants.GRAPHICALCOMPONENTS)
-				{
-					persistComponent = GraphicalComponent.castIfPossible(component);
-				}
-				else if (componentType == IRepositoryConstants.FIELDS)
-				{
-					persistComponent = Field.castIfPossible(component);
-				}
-				else if (componentType == IRepositoryConstants.PORTALS)
-				{
-					persistComponent = Portal.castIfPossible(component);
-				}
-				else if (componentType == IRepositoryConstants.TABPANELS)
-				{
-					persistComponent = TabPanel.castIfPossible(component);
-				}
-				else
-				{
-					persistComponent = component;
-				}
-				if (persistComponent != null && name.equals(persistComponent.getName()))
+				if (component.getTypeID() == componentType && name.equals(component.getName()))
 				{
 					form.removeChild(i);
+
+					if (componentType == IRepositoryConstants.GRAPHICALCOMPONENTS || componentType == IRepositoryConstants.FIELDS)
+					{
+						// remove title label if it has one
+						String group = component.getGroupID();
+						if (group != null)
+						{
+							formComponents = form.getComponents(); // an item was deleted from it natively and remove by index must be in sync
+							for (int j = 0; j < formComponents.length(); j++)
+							{
+								// search for labels with the same groupID
+								component = formComponents.get(j);
+								if (group.equals(component.getGroupID()))
+								{
+									GraphicalComponent gc = GraphicalComponent.castIfPossible(component);
+									if (gc != null && !gc.isButton())
+									{
+										form.removeChild(j);
+										break;
+									}
+								}
+							}
+						}
+					}
 					return true;
 				}
 			}
@@ -599,7 +631,16 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	@Override
 	public JSLabel[] getLabels()
 	{
+		return getLabelsInternal(false);
+	}
+
+	@Override
+	@NoExport
+	public JSLabel[] getLabelsInternal(boolean showInternals)
+	{
 		List<JSLabel> labels = new ArrayList<JSLabel>();
+		HashMap<String, JSLabel> titleLabels = showInternals ? null : new HashMap<String, JSLabel>();
+
 		JsArray<Component> formComponents = form.getComponents();
 		for (int i = 0; i < formComponents.length(); i++)
 		{
@@ -607,9 +648,27 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 			GraphicalComponent graphicalComponent = GraphicalComponent.castIfPossible(component);
 			if (graphicalComponent != null && !graphicalComponent.isButton())
 			{
-				labels.add(new JSLabel(graphicalComponent, getSolutionModel(), this));
+				JSLabel jsLabel = new JSLabel(graphicalComponent, getSolutionModel(), this);
+				labels.add(jsLabel);
+
+				if (!showInternals)
+				{
+				String groupID = jsLabel.getGroupID();
+				if (groupID != null)
+				{
+					// a grouped label is a title label for a component, except for the case where it's grouped with another label
+					MobileProperties mp = graphicalComponent.getMobileProperties();
+					JSLabel l = titleLabels.get(groupID);
+					if (l == null || (mp != null && Boolean.TRUE.equals(mp.getPropertyValue(IMobileProperties.COMPONENT_TITLE))) ||
+						(jsLabel.getY() < l.getY() || (jsLabel.getY() == l.getY() && jsLabel.getX() < l.getX())))
+					{
+						titleLabels.put(groupID, jsLabel);
+					}
+				}
+				}
 			}
 		}
+		if (!showInternals)	labels.removeAll(titleLabels.values());
 		return labels.toArray(new JSLabel[0]);
 	}
 

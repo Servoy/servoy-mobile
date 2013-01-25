@@ -38,7 +38,7 @@ public class JSBase
 		this.parent = parent;
 	}
 
-	protected JSBase getParent()
+	public JSBase getParent()
 	{
 		return parent;
 	}

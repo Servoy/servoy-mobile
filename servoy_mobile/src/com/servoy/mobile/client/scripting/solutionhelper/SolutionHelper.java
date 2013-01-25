@@ -26,6 +26,8 @@ import com.servoy.base.persistence.IMobileProperties;
 import com.servoy.base.scripting.solutionhelper.BaseSolutionHelper;
 import com.servoy.base.scripting.solutionhelper.IBaseSHInsetList;
 import com.servoy.base.scripting.solutionhelper.IBaseSHList;
+import com.servoy.base.scripting.solutionhelper.IBaseSMFormInternal;
+import com.servoy.base.solutionmodel.IBaseSMComponent;
 import com.servoy.base.solutionmodel.IBaseSMForm;
 import com.servoy.base.solutionmodel.IBaseSMPortal;
 import com.servoy.base.solutionmodel.IBaseSolutionModel;
@@ -133,6 +135,47 @@ public class SolutionHelper extends BaseSolutionHelper implements IMobilePredefi
 		super.markFooterItem(button);
 	}
 
+	public void setTitleDisplaysTags(JSComponent c, boolean displaysTags)
+	{
+		super.setTitleDisplaysTags(c, displaysTags);
+	}
+
+	public boolean getTitleDisplaysTags(JSComponent c)
+	{
+		return super.getTitleDisplaysTags(c);
+	}
+
+	public void setTitleDataProvider(JSComponent c, String dataProvider)
+	{
+		super.setTitleDataProvider(c, dataProvider);
+	}
+
+	public String getTitleDataProvider(JSComponent c)
+	{
+		return super.getTitleDataProvider(c);
+	}
+
+	public void setTitleText(JSComponent c, String titleText)
+	{
+		super.setTitleText(c, titleText);
+	}
+
+	public String getTitleText(JSComponent c)
+	{
+		return super.getTitleText(c);
+	}
+
+	public void setTitleVisible(JSLabel l, boolean titleVisible)
+	{
+		super.setTitleVisible(l, titleVisible);
+	}
+
+	public boolean isTitleVisible(JSLabel l)
+	{
+		return super.isTitleVisible(l);
+	}
+
+	@Deprecated
 	public void groupComponents(JSComponent c1, JSComponent c2)
 	{
 		super.groupComponents(c1, c2);
@@ -229,6 +272,14 @@ public class SolutionHelper extends BaseSolutionHelper implements IMobilePredefi
 	protected IBaseSHList instantiateList(IBaseSMForm listForm, BaseSolutionHelper baseSolutionHelper)
 	{
 		return new JSList(listForm, baseSolutionHelper);
+	}
+
+	@Override
+	protected IBaseSMFormInternal getParentForm(IBaseSMComponent c)
+	{
+		JSBase p = null;
+		if (c instanceof JSBase) p = ((JSBase)c).getParent();
+		return (p instanceof IBaseSMFormInternal ? (IBaseSMFormInternal)p : null);
 	}
 
 }

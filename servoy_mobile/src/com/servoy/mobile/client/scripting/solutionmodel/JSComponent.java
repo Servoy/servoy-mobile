@@ -154,7 +154,6 @@ public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 	}
 
 	@Override
-	@Getter
 	public String getGroupID()
 	{
 		return ((Component)getBase()).getGroupID();
@@ -224,7 +223,6 @@ public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 	}
 
 	@Override
-	@Setter
 	public void setGroupID(String id)
 	{
 		cloneIfNeeded();
