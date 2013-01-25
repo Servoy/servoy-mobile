@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to='mobileclient'>
-  <script src="../jquery.js"/>
+  <script src="../jquery-1.6.4.js"/>
   <script src="../jquery.mobile-1.0.1.min.js"/>
   <stylesheet src="../jquery.mobile-1.0.1.min.css"/>
   
