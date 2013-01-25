@@ -37,12 +37,10 @@ import com.sksamuel.jqm4gwt.form.elements.JQMTextArea;
  */
 public class DataTextArea extends JQMTextArea implements IDisplayData, ISupportTitleText, IFieldComponent, IEditListenerSubject, ISupportsPlaceholderComponent
 {
-	protected final Executor executor;
 	private final RuntimeDataTextArea scriptable;
 
 	public DataTextArea(Field field, Executor executor, MobileClient application)
 	{
-		this.executor = executor;
 		this.scriptable = new RuntimeDataTextArea(application, executor, this, field);
 	}
 

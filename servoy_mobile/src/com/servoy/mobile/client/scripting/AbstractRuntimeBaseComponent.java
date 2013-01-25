@@ -52,6 +52,14 @@ public abstract class AbstractRuntimeBaseComponent<C extends IComponent, P exten
 	}
 
 	/**
+	 * @return the application
+	 */
+	public MobileClient getApplication()
+	{
+		return application;
+	}
+
+	/**
 	 * @return the component
 	 */
 	public C getComponent()

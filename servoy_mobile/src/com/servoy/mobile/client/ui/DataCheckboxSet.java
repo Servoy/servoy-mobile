@@ -46,20 +46,14 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 	IDestroyable
 {
 	private final ValueList valuelist;
-	private final Executor executor;
-	private final MobileClient application;
 
 	private final List<DataCheckboxSetItem> items = new ArrayList<DataCheckboxSetItem>();
 	private final RuntimeDataCheckboxSet scriptable;
-	private final Field field;
 
 	public DataCheckboxSet(Field field, ValueList valuelist, Executor executor, MobileClient application)
 	{
 		setId();
 		this.valuelist = valuelist;
-		this.executor = executor;
-		this.application = application;
-		this.field = field;
 		this.scriptable = new RuntimeDataCheckboxSet(application, executor, this, field);
 
 		if (valuelist != null)
@@ -85,8 +79,8 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 		for (int i = 0; i < displayValues.length(); i++)
 		{
 			displayValue = displayValues.get(i);
-			items.add(new DataCheckboxSetItem(addCheck(field.getUUID() + Integer.toString(i), displayValue), realValues != null ? realValues.getString(i)
-				: displayValue));
+			items.add(new DataCheckboxSetItem(addCheck(scriptable.getComponentPersist().getUUID() + Integer.toString(i), displayValue), realValues != null
+				? realValues.getString(i) : displayValue));
 		}
 	}
 

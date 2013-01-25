@@ -33,15 +33,11 @@ import com.sksamuel.jqm4gwt.form.elements.JQMText;
  */
 public class DataTextField extends JQMText implements IDisplayData, ISupportTitleText, IFieldComponent, IEditListenerSubject, ISupportsPlaceholderComponent
 {
-	protected final Executor executor;
 	private final RuntimeDataTextField scriptable;
-	protected final MobileClient application;
 
 	public DataTextField(Field field, Executor executor, MobileClient application)
 	{
-		this.executor = executor;
 		this.scriptable = new RuntimeDataTextField(application, executor, this, field);
-		this.application = application;
 	}
 
 	/*
@@ -134,7 +130,7 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 	protected void onLoad()
 	{
 		super.onLoad();
-		setPlaceholder(getId(), application.getI18nProvider().getI18NMessageIfPrefixed(getRuntimeComponent().getPlaceholderText()));
+		setPlaceholder(getId(), scriptable.getApplication().getI18nProvider().getI18NMessageIfPrefixed(getRuntimeComponent().getPlaceholderText()));
 	}
 
 	private native void setPlaceholder(String inputId, String placeholder) /*-{
