@@ -204,9 +204,9 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 	 */
 	@Override
 	@Export
-	public void sort(Object comparator)
+	public void sort(Object recordComparisonFunction)
 	{
-		if (comparator instanceof JavaScriptObject)
+		if (recordComparisonFunction instanceof JavaScriptObject)
 		{
 			// first load all records;
 			for (int i = 0; i < getSize(); i++)
@@ -214,7 +214,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 				getRecord(i);
 			}
 
-			Collections.sort(records, new RecordComparater((JavaScriptObject)comparator));
+			Collections.sort(records, new RecordComparater((JavaScriptObject)recordComparisonFunction));
 
 			foundSetDescription.updateRecordDescriptions(records);
 			fireContentChanged();
