@@ -69,6 +69,8 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 		return form;
 	}
 
+	@Override
+	@Export
 	public String getName()
 	{
 		return form.getName();
