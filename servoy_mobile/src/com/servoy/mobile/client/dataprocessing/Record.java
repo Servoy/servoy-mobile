@@ -346,9 +346,9 @@ public class Record extends Scope implements IJSRecord
 		for (int i = 0; i < dataProviders.length(); i++)
 		{
 			DataProviderDescription dp = dataProviders.get(i);
-			sb.append(dp.getName());
+			sb.append(dp.getDataProviderID());
 			sb.append(":");
-			sb.append(getValue(dp.getName()));
+			sb.append(getValue(dp.getDataProviderID()));
 			sb.append(",");
 		}
 		sb.setLength(sb.length() - 1);

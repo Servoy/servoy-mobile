@@ -36,12 +36,12 @@ public class DataProviderDescription extends JavaScriptObject
 	{
 	}
 
-	public final native String getName() /*-{
-		return this.name;
+	public final native String getDataProviderID() /*-{
+		return this.dataProviderID;
 	}-*/;
 
-	private final native void setName(String n) /*-{
-		this.name = n;
+	private final native void setDataProviderID(String dp) /*-{
+		this.dataProviderID = dp;
 	}-*/;
 
 	public final native int getFlags() /*-{
@@ -79,10 +79,10 @@ public class DataProviderDescription extends JavaScriptObject
 		return ((getFlags() & UUID_COLUMN) == UUID_COLUMN);
 	}
 
-	public static DataProviderDescription newInstance(String name, int t)
+	public static DataProviderDescription newInstance(String dataProviderID, int t)
 	{
 		DataProviderDescription dpd = JavaScriptObject.createObject().cast();
-		dpd.setName(name);
+		dpd.setDataProviderID(dataProviderID);
 		dpd.setType(t);
 		return dpd;
 	}

@@ -57,7 +57,7 @@ public class EntityDescription extends JavaScriptObject
 			if (dpd.isPK() || dpd.isRowIdent())
 			{
 				//is pk or row_ident
-				return new DataproviderIdAndTypeHolder(dpd.getName(), dpd.getType());
+				return new DataproviderIdAndTypeHolder(dpd.getDataProviderID(), dpd.getType());
 			}
 		}
 		return null;
@@ -72,7 +72,7 @@ public class EntityDescription extends JavaScriptObject
 			DataProviderDescription dpd = dps.get(i);
 			if (dpd.isUUID())
 			{
-				retval.add(dpd.getName());
+				retval.add(dpd.getDataProviderID());
 			}
 		}
 		if (retval.size() == 0) return null;

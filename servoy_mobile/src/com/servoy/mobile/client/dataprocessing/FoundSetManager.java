@@ -147,7 +147,7 @@ public class FoundSetManager
 				JsArray<DataProviderDescription> dataProviders = ed.getDataProviders();
 				for (int k = 0; k < dataProviders.length(); k++)
 				{
-					String name = dataProviders.get(k).getName();
+					String name = dataProviders.get(k).getDataProviderID();
 					if (exported.add(name)) export(name);
 				}
 				JsArray<RelationDescription> primaryRelations = ed.getPrimaryRelations();
@@ -809,8 +809,9 @@ public class FoundSetManager
 			for (int i = 0; i < dataProviders.length(); i++)
 			{
 				DataProviderDescription dp = dataProviders.get(i);
-				variableTypes.put(dp.getName(), Integer.valueOf(dp.getType()));
-				if (exported.add(dp.getName())) scope.exportProperty(javascriptObject, dp.getName());
+				String dpn = dp.getDataProviderID();
+				variableTypes.put(dpn, Integer.valueOf(dp.getType()));
+				if (exported.add(dpn)) scope.exportProperty(javascriptObject, dpn);
 			}
 			JsArray<RelationDescription> primaryRelations = entityDescription.getPrimaryRelations();
 			// export all relations

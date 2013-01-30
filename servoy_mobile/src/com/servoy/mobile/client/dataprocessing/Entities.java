@@ -75,11 +75,11 @@ public class Entities
 		for (int i = 0; i < dps.length(); i++)
 		{
 			DataProviderDescription dpd = dps.get(i);
-			if (RowDescription.MODIFICATION_DATE.equals(dpd.getName()))
+			if (RowDescription.MODIFICATION_DATE.equals(dpd.getDataProviderID()))
 			{
 				mod_date = dpd;
 			}
-			if (RowDescription.CREATED_ON_DEVICE.equals(dpd.getName()))
+			if (RowDescription.CREATED_ON_DEVICE.equals(dpd.getDataProviderID()))
 			{
 				mod_date = dpd;
 			}
@@ -168,7 +168,7 @@ public class Entities
 				retval = new String[dps.length()];
 				for (int i = 0; i < retval.length; i++)
 				{
-					retval[i] = dps.get(i).getName();
+					retval[i] = dps.get(i).getDataProviderID();
 				}
 				dataproviders.put(entityName, retval);
 			}
