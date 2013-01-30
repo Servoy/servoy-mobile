@@ -160,7 +160,19 @@ public class FoundSetManager
 		}
 	}
 
-	private native void export(String name) /*-{
+	private void export(String name)
+	{
+		try
+		{
+			exportImpl(name);
+		}
+		catch (Exception e)
+		{
+			Log.error("cannot export property/dataprovider: " + name + " on the window object", e);
+		}
+	}
+
+	private native void exportImpl(String name) /*-{
 		$wnd._ServoyUtils_.defineWindowVariable(name);
 	}-*/;
 
