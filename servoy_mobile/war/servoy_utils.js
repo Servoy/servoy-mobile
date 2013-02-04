@@ -44,11 +44,17 @@ if (typeof(_ServoyUtils_) == "undefined")
 			set: function(val) { _ServoyUtils_.setScopeVariable(object, name, val);},
 			configurable : true });
 	}
-
+	_ServoyUtils_.definedWindowVariables = new Array();
 	_ServoyUtils_.defineWindowVariable = function(name) {
-		Object.defineProperty(window, name, {get: function() { return _ServoyUtils_.getValue(name);},
-			set: function(val) { _ServoyUtils_.setValue(name, val);},
-			configurable : true });
+	    if (!(name in window)) {
+	       _ServoyUtils_.definedWindowVariables.push(name);
+			Object.defineProperty(window, name, {get: function() { return _ServoyUtils_.getValue(name);},
+				set: function(val) { _ServoyUtils_.setValue(name, val);},
+				configurable : false});
+		}
+		else if (_ServoyUtils_.definedWindowVariables.indexOf(name) == -1){
+			_ServoyUtils_.error("window variable: " + name + " is already defined, skipping this dataprovider/relationname");
+		}
 	}
 
 	_ServoyUtils_.simulateClick = function (target, options) {
