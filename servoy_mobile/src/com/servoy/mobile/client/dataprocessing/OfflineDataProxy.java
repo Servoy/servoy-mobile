@@ -249,7 +249,7 @@ public class OfflineDataProxy
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.DELETE, serverURL + "/" + foundSetManager.getEntityPrefix() + entityName + "/" + version +
 			"/" + URL.encode(pk));
 		setRequestCredentials(builder);
-		builder.setHeader("Access-Control-Request-Method", "DELETE");
+		//builder.setHeader("Access-Control-Request-Method", "DELETE");
 
 		try
 		{
@@ -304,7 +304,7 @@ public class OfflineDataProxy
 		RequestBuilder builder = new RequestBuilder(row.isCreatedOnDevice() ? RequestBuilder.POST : RequestBuilder.PUT, serverURL + "/" +
 			foundSetManager.getEntityPrefix() + entityName + "/" + version + "/" + URL.encode(remotepk));
 		setRequestCredentials(builder);
-		builder.setHeader("Access-Control-Request-Method", row.isCreatedOnDevice() ? "POST" : "PUT");
+		//builder.setHeader("Access-Control-Request-Method", row.isCreatedOnDevice() ? "POST" : "PUT");
 
 		builder.setHeader("Content-Type", "application/json");
 		try
