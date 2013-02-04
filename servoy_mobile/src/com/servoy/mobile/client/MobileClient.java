@@ -88,6 +88,7 @@ public class MobileClient implements EntryPoint
 			divLogger.setCurrentLogLevel(Log.getLowestLogLevel());
 			Log.addLogger(divLogger);
 		}
+		exportLog();
 
 		GWT.create(JSDatabaseManager.class);
 		GWT.create(PluginsScope.class);
@@ -365,6 +366,15 @@ public class MobileClient implements EntryPoint
 	public IBaseSolutionModel getSolutionModel()
 	{
 		return solutionModel;
+
 	}
+
+	private native void exportLog()
+	/*-{
+		$wnd._ServoyUtils_.error = function(output) {
+		    output = output.toString();
+			return @com.allen_sauer.gwt.log.client.Log::error(Ljava/lang/String;)(output);
+		}
+	}-*/;
 
 }
