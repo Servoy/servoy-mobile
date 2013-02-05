@@ -24,6 +24,7 @@ import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.servoy.base.scripting.api.IJSFoundSet;
 import com.servoy.base.scripting.api.IJSRecord;
 import com.servoy.base.scripting.api.IJSUtils;
@@ -99,4 +100,46 @@ public class JSUtils implements Exportable, IJSUtils
 	/*-{
 		$wnd.utils = object;
 	}-*/;
+
+	public String numberFormat(Number number, Number digits)
+	{
+		if (number != null)
+		{
+			if (digits == null)
+			{
+				return number.toString();
+			}
+			return numberFormat(number.doubleValue(), digits.doubleValue());
+		}
+		return ""; //$NON-NLS-1$
+	}
+
+	public String numberFormat(double number, double digits)
+	{
+		NumberFormat nf = NumberFormat.getDecimalFormat();
+		nf.overrideFractionDigits(Double.valueOf(digits).intValue());
+		return nf.format(number);
+	}
+
+	public String numberFormat(Number number, String format)
+	{
+		if (number != null)
+		{
+			if (format == null)
+			{
+				return number.toString();
+			}
+			return numberFormat(number.doubleValue(), format);
+		}
+		return ""; //$NON-NLS-1$
+	}
+
+	public String numberFormat(double number, String format)
+	{
+		if (format == null)
+		{
+			return Double.toString(number);
+		}
+		return NumberFormat.getFormat(format).format(number);
+	}
 }
