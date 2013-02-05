@@ -78,4 +78,9 @@ public class TitleText implements IDisplayData
 	{
 		return textComponent.getDataProviderID();
 	}
+
+	public boolean needEntireState()
+	{
+		return textComponent.isDisplaysTags();
+	}
 }

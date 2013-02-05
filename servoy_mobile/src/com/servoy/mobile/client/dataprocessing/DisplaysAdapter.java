@@ -69,9 +69,14 @@ public class DisplaysAdapter implements IDataAdapter, IEditListener
 		Object value = dal.getRecordValue(record, dataproviderID);
 		for (IDisplayData d : displays)
 		{
-			if ((d instanceof IRuntimeComponentProvider && (((IRuntimeComponentProvider)d).getRuntimeComponent().needEntireState() || ((IRuntimeComponentProvider)d).getRuntimeComponent().getDataProviderID() != null)) ||
-				(d instanceof TitleText && ((TitleText)d).getDataProviderID() != null)) d.setValueObject(value);
+			if (needEntireState(d)) d.setValueObject(value);
 		}
+	}
+
+	private boolean needEntireState(IDisplayData d)
+	{
+		return (d instanceof IRuntimeComponentProvider && (((IRuntimeComponentProvider)d).getRuntimeComponent().needEntireState() || ((IRuntimeComponentProvider)d).getRuntimeComponent().getDataProviderID() != null)) ||
+			(d instanceof TitleText && (((TitleText)d).getDataProviderID() != null || ((TitleText)d).needEntireState()));
 	}
 
 	/*
@@ -154,13 +159,23 @@ public class DisplaysAdapter implements IDataAdapter, IEditListener
 	@Override
 	public void valueChanged(ModificationEvent e)
 	{
-		if (Utils.equalObjects(getDataproviderSimpleName(), e.getName()))
+		if (Utils.equalObjects(getDataproviderSimpleName(), e.getName()) || dataproviderID == null)
 		{
 			Object value = e.getValue();
 			for (IDisplayData d : displays)
 			{
 				Object oldValue = d.getValueObject();
-				if (!Utils.equalObjects(oldValue, value)) d.setValueObject(value);
+				if (dataproviderID == null)
+				{
+					if (needEntireState(d))
+					{
+						d.setValueObject(oldValue);
+					}
+				}
+				else if (!Utils.equalObjects(oldValue, value))
+				{
+					d.setValueObject(value);
+				}
 			}
 		}
 	}
