@@ -44,4 +44,15 @@ public class DialogPlugin implements Exportable
 		Window.alert(dialogMessage == null ? "<null>" : dialogMessage.toString()); //$NON-NLS-1$
 		return (buttonsText != null && buttonsText.length > 0 ? buttonsText[0] : null);
 	}
+
+	public String showQuestionDialog(String dialogTitle, String dialogMessage)
+	{
+		return showQuestionDialog(dialogTitle, dialogMessage, (String[])null);
+	}
+
+	public String showQuestionDialog(String dialogTitle, String dialogMessage, String... buttonsText)
+	{
+		boolean result = Window.confirm(dialogMessage == null ? "<null>" : dialogMessage.toString()); //$NON-NLS-1$
+		return (result ? "Ok" : "Cancel"); //$NON-NLS-1$ //$NON-NLS-2$
+	}
 }
