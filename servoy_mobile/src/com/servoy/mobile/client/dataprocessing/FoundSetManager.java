@@ -173,8 +173,8 @@ public class FoundSetManager
 	}
 
 	private native void exportImpl(String name) /*-{
-		$wnd._ServoyUtils_.defineWindowVariable(name);
-	}-*/;
+												$wnd._ServoyUtils_.defineWindowVariable(name);
+												}-*/;
 
 	public EntityDescription getEntityDescription(String entityName)
 	{
@@ -682,7 +682,7 @@ public class FoundSetManager
 		}
 		else
 		{
-			Log.info("relation: " + relationName + " is asked for but now RelationDescription found for it with entity: " + entityName);
+			Log.info("relation: " + relationName + " is asked for but no RelationDescription found for it with entity: " + entityName);
 		}
 		return null;
 	}
