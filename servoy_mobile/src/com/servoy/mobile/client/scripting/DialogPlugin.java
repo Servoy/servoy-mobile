@@ -36,23 +36,13 @@ public class DialogPlugin implements Exportable
 
 	public String showWarningDialog(String dialogTitle, String dialogMessage)
 	{
-		return showWarningDialog(dialogTitle, dialogMessage, (String[])null);
-	}
-
-	public String showWarningDialog(String dialogTitle, String dialogMessage, String... buttonsText)
-	{
 		Window.alert(dialogMessage == null ? "<null>" : dialogMessage.toString()); //$NON-NLS-1$
-		return (buttonsText != null && buttonsText.length > 0 ? buttonsText[0] : null);
+		return "OK"; //$NON-NLS-1$
 	}
 
 	public String showQuestionDialog(String dialogTitle, String dialogMessage)
 	{
-		return showQuestionDialog(dialogTitle, dialogMessage, (String[])null);
-	}
-
-	public String showQuestionDialog(String dialogTitle, String dialogMessage, String... buttonsText)
-	{
 		boolean result = Window.confirm(dialogMessage == null ? "<null>" : dialogMessage.toString()); //$NON-NLS-1$
-		return (result ? "Ok" : "Cancel"); //$NON-NLS-1$ //$NON-NLS-2$
+		return (result ? "OK" : "Cancel"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 }
