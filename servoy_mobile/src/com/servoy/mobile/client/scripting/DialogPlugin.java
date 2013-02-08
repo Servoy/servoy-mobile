@@ -21,17 +21,17 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 
 import com.google.gwt.user.client.Window;
+import com.servoy.base.plugins.IMobileDialogProvider;
 
 /**
  * @author lvostinar
  *
  */
 @Export
-public class DialogPlugin implements Exportable
+public class DialogPlugin implements IMobileDialogProvider, Exportable
 {
 	public DialogPlugin()
 	{
-
 	}
 
 	public String showWarningDialog(String dialogTitle, String dialogMessage)
