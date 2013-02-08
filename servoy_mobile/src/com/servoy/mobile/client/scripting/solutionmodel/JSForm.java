@@ -526,7 +526,21 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 			JSComponent jsComponent = JSComponent.getJSComponent(formComponents.get(i), getSolutionModel(), this);
 			if (jsComponent != null)
 			{
-				components.add(jsComponent);
+				boolean isFormListComponent = false;
+				if (!showInternals)
+				{
+					MobileProperties mp = jsComponent.getBase().getMobileProperties();
+					isFormListComponent = Boolean.TRUE.equals(mp.getPropertyValue(IMobileProperties.LIST_ITEM_BUTTON)) ||
+						Boolean.TRUE.equals(mp.getPropertyValue(IMobileProperties.LIST_ITEM_COUNT)) ||
+						Boolean.TRUE.equals(mp.getPropertyValue(IMobileProperties.LIST_ITEM_HEADER)) ||
+						Boolean.TRUE.equals(mp.getPropertyValue(IMobileProperties.LIST_ITEM_IMAGE)) ||
+						Boolean.TRUE.equals(mp.getPropertyValue(IMobileProperties.LIST_ITEM_SUBTEXT));
+				}
+
+				if (showInternals || (!(jsComponent instanceof JSPortal) && !isFormListComponent))
+				{
+					components.add(jsComponent);
+				}
 
 				if (!showInternals)
 				{
@@ -642,22 +656,22 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 
 				if (!showInternals)
 				{
-				String groupID = jsLabel.getGroupID();
-				if (groupID != null)
-				{
-					// a grouped label is a title label for a component, except for the case where it's grouped with another label
-					MobileProperties mp = graphicalComponent.getMobileProperties();
-					JSLabel l = titleLabels.get(groupID);
-					if (l == null || (mp != null && Boolean.TRUE.equals(mp.getPropertyValue(IMobileProperties.COMPONENT_TITLE))) ||
-						(jsLabel.getY() < l.getY() || (jsLabel.getY() == l.getY() && jsLabel.getX() < l.getX())))
+					String groupID = jsLabel.getGroupID();
+					if (groupID != null)
 					{
-						titleLabels.put(groupID, jsLabel);
+						// a grouped label is a title label for a component, except for the case where it's grouped with another label
+						MobileProperties mp = graphicalComponent.getMobileProperties();
+						JSLabel l = titleLabels.get(groupID);
+						if (l == null || (mp != null && Boolean.TRUE.equals(mp.getPropertyValue(IMobileProperties.COMPONENT_TITLE))) ||
+							(jsLabel.getY() < l.getY() || (jsLabel.getY() == l.getY() && jsLabel.getX() < l.getX())))
+						{
+							titleLabels.put(groupID, jsLabel);
+						}
 					}
-				}
 				}
 			}
 		}
-		if (!showInternals)	labels.removeAll(titleLabels.values());
+		if (!showInternals) labels.removeAll(titleLabels.values());
 		return labels.toArray(new JSLabel[0]);
 	}
 
