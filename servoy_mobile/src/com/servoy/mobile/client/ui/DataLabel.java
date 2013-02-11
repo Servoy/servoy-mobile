@@ -166,5 +166,13 @@ public class DataLabel extends JQMWidget implements HasText, IDisplayData, IGrap
 	public void setTitleTextVisible(boolean visible)
 	{
 		labelFor.setVisible(visible);
+		if (visible)
+		{
+			setDataRole("fieldcontain");
+		}
+		else
+		{
+			removeDataRole();
+		}
 	}
 }
