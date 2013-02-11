@@ -22,6 +22,7 @@ import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.Setter;
 
+import com.servoy.base.persistence.constants.IRepositoryConstants;
 import com.servoy.base.solutionmodel.IBaseSMComponent;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Field;
@@ -51,36 +52,47 @@ public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 		else formName = null; // should never happen
 	}
 
-	protected static JSComponent getJSComponent(Component component, JSSolutionModel model, JSBase parent)
+	protected static JSComponent getJSComponent(Component component, JSSolutionModel model, JSBase parent, Integer componentType)
 	{
-		GraphicalComponent graphicalComponent = GraphicalComponent.castIfPossible(component);
-		if (graphicalComponent != null)
+		if (componentType == null || componentType.intValue() == IRepositoryConstants.GRAPHICALCOMPONENTS)
 		{
-			if (graphicalComponent.isButton())
+			GraphicalComponent graphicalComponent = GraphicalComponent.castIfPossible(component);
+			if (graphicalComponent != null)
 			{
-				return new JSButton(graphicalComponent, model, parent);
+				if (graphicalComponent.isButton())
+				{
+					return new JSButton(graphicalComponent, model, parent);
+				}
+				return new JSLabel(graphicalComponent, model, parent);
 			}
-			return new JSLabel(graphicalComponent, model, parent);
 		}
 
-		Field field = Field.castIfPossible(component);
-		if (field != null)
+		if (componentType == null || componentType.intValue() == IRepositoryConstants.FIELDS)
 		{
-			return new JSField(field, model, parent);
+			Field field = Field.castIfPossible(component);
+			if (field != null)
+			{
+				return new JSField(field, model, parent);
+			}
 		}
 
-		Portal portal = Portal.castIfPossible(component);
-		if (portal != null)
+		if (componentType == null || componentType.intValue() == IRepositoryConstants.PORTALS)
 		{
-			return new JSPortal(portal, model, (JSForm)parent);
+			Portal portal = Portal.castIfPossible(component);
+			if (portal != null)
+			{
+				return new JSPortal(portal, model, (JSForm)parent);
+			}
 		}
 
-		TabPanel tabPanel = TabPanel.castIfPossible(component);
-		if (tabPanel != null)
+		if (componentType == null || componentType.intValue() == IRepositoryConstants.TABPANELS)
 		{
-			return new JSTabPanel(tabPanel, model, (JSForm)parent);
+			TabPanel tabPanel = TabPanel.castIfPossible(component);
+			if (tabPanel != null)
+			{
+				return new JSTabPanel(tabPanel, model, (JSForm)parent);
+			}
 		}
-
 		return null;
 	}
 

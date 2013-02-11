@@ -18,6 +18,7 @@
 package com.servoy.mobile.client.scripting.solutionmodel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -279,6 +280,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 		return new JSLabel(gc, getSolutionModel(), this);
 	}
 
+	@NoExport
 	@Override
 	public IBaseSMPortal newPortal(String name, Object relation, int x, int y, int width, int height)
 	{
@@ -303,6 +305,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 		return new JSPortal(portal, getSolutionModel(), this);
 	}
 
+	@NoExport
 	@Override
 	public JSPortal getPortal(String name)
 	{
@@ -322,6 +325,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 		return null;
 	}
 
+	@NoExport
 	@Override
 	public boolean removePortal(String name)
 	{
@@ -329,6 +333,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 		return removeComponent(name, IRepositoryConstants.PORTALS);
 	}
 
+	@NoExport
 	@Override
 	public JSPortal[] getPortals()
 	{
@@ -346,6 +351,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 		return portals.toArray(new JSPortal[0]);
 	}
 
+	@NoExport
 	@Override
 	public JSTabPanel newTabPanel(String name, int x, int y, int width, int height)
 	{
@@ -356,46 +362,37 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 		return new JSTabPanel(tabPanel, getSolutionModel(), this);
 	}
 
+	@NoExport
 	@Override
 	public JSTabPanel getTabPanel(String name)
 	{
 		if (name != null)
 		{
-			JsArray<Component> formComponents = form.getComponents();
-			for (int i = 0; i < formComponents.length(); i++)
+			JSComponent[] tabPanels = getComponentsInternal(false, Integer.valueOf(IRepositoryConstants.TABPANELS));
+			for (JSComponent tabPanel : tabPanels)
 			{
-				Component component = formComponents.get(i);
-				TabPanel tabPanel = TabPanel.castIfPossible(component);
 				if (tabPanel != null && name.equals(tabPanel.getName()))
 				{
-					return new JSTabPanel(tabPanel, getSolutionModel(), this);
+					return (JSTabPanel)tabPanel;
 				}
 			}
 		}
 		return null;
 	}
 
+	@NoExport
 	@Override
 	public boolean removeTabPanel(String name)
 	{
 		return removeComponent(name, IRepositoryConstants.TABPANELS);
 	}
 
+	@NoExport
 	@Override
 	public JSTabPanel[] getTabPanels()
 	{
-		List<JSTabPanel> tabPanels = new ArrayList<JSTabPanel>();
-		JsArray<Component> formComponents = form.getComponents();
-		for (int i = 0; i < formComponents.length(); i++)
-		{
-			Component component = formComponents.get(i);
-			TabPanel tabPanel = TabPanel.castIfPossible(component);
-			if (tabPanel != null)
-			{
-				tabPanels.add(new JSTabPanel(tabPanel, getSolutionModel(), this));
-			}
-		}
-		return tabPanels.toArray(new JSTabPanel[0]);
+		JSComponent[] components = getComponentsInternal(false, Integer.valueOf(IRepositoryConstants.TABPANELS));
+		return Arrays.asList(components).toArray(new JSTabPanel[0]);
 	}
 
 	@Override
@@ -403,14 +400,12 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	{
 		if (name != null)
 		{
-			JsArray<Component> formComponents = form.getComponents();
-			for (int i = 0; i < formComponents.length(); i++)
+			JSComponent[] fields = getComponentsInternal(false, Integer.valueOf(IRepositoryConstants.FIELDS));
+			for (JSComponent field : fields)
 			{
-				Component component = formComponents.get(i);
-				Field field = Field.castIfPossible(component);
 				if (field != null && name.equals(field.getName()))
 				{
-					return new JSField(field, getSolutionModel(), this);
+					return (JSField)field;
 				}
 			}
 		}
@@ -426,18 +421,8 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	@Override
 	public JSField[] getFields()
 	{
-		List<JSField> fields = new ArrayList<JSField>();
-		JsArray<Component> formComponents = form.getComponents();
-		for (int i = 0; i < formComponents.length(); i++)
-		{
-			Component component = formComponents.get(i);
-			Field field = Field.castIfPossible(component);
-			if (field != null)
-			{
-				fields.add(new JSField(field, getSolutionModel(), this));
-			}
-		}
-		return fields.toArray(new JSField[0]);
+		JSComponent[] components = getComponentsInternal(false, Integer.valueOf(IRepositoryConstants.FIELDS));
+		return Arrays.asList(components).toArray(new JSField[0]);
 	}
 
 	@Override
@@ -445,14 +430,12 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	{
 		if (name != null)
 		{
-			JsArray<Component> formComponents = form.getComponents();
-			for (int i = 0; i < formComponents.length(); i++)
+			JSComponent[] buttons = getComponentsInternal(false, Integer.valueOf(IRepositoryConstants.GRAPHICALCOMPONENTS));
+			for (JSComponent button : buttons)
 			{
-				Component component = formComponents.get(i);
-				GraphicalComponent graphicalComponent = GraphicalComponent.castIfPossible(component);
-				if (graphicalComponent != null && graphicalComponent.isButton() && name.equals(graphicalComponent.getName()))
+				if (button != null && name.equals(button.getName()) && button instanceof JSButton)
 				{
-					return new JSButton(graphicalComponent, getSolutionModel(), this);
+					return (JSButton)button;
 				}
 			}
 		}
@@ -468,15 +451,13 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	@Override
 	public JSButton[] getButtons()
 	{
+		JSComponent[] components = getComponentsInternal(false, Integer.valueOf(IRepositoryConstants.GRAPHICALCOMPONENTS));
 		List<JSButton> buttons = new ArrayList<JSButton>();
-		JsArray<Component> formComponents = form.getComponents();
-		for (int i = 0; i < formComponents.length(); i++)
+		for (JSComponent component : components)
 		{
-			Component component = formComponents.get(i);
-			GraphicalComponent graphicalComponent = GraphicalComponent.castIfPossible(component);
-			if (graphicalComponent != null && graphicalComponent.isButton())
+			if (component instanceof JSButton)
 			{
-				buttons.add(new JSButton(graphicalComponent, getSolutionModel(), this));
+				buttons.add((JSButton)component);
 			}
 		}
 		return buttons.toArray(new JSButton[0]);
@@ -487,13 +468,12 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	{
 		if (name != null)
 		{
-			JsArray<Component> formComponents = form.getComponents();
-			for (int i = 0; i < formComponents.length(); i++)
+			JSComponent[] components = getComponentsInternal(false, null);
+			for (JSComponent comp : components)
 			{
-				Component component = formComponents.get(i);
-				if (name.equals(component.getName()))
+				if (comp != null && name.equals(comp.getName()))
 				{
-					return JSComponent.getJSComponent(component, getSolutionModel(), this);
+					return comp;
 				}
 			}
 		}
@@ -509,12 +489,12 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	@Override
 	public JSComponent[] getComponents()
 	{
-		return getComponentsInternal(false);
+		return getComponentsInternal(false, null);
 	}
 
 	@Override
 	@NoExport
-	public JSComponent[] getComponentsInternal(boolean showInternals)
+	public JSComponent[] getComponentsInternal(boolean showInternals, Integer componentType)
 	{
 		JsArray<Component> formComponents = form.getComponents();
 
@@ -523,7 +503,7 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 
 		for (int i = 0; i < formComponents.length(); i++)
 		{
-			JSComponent jsComponent = JSComponent.getJSComponent(formComponents.get(i), getSolutionModel(), this);
+			JSComponent jsComponent = JSComponent.getJSComponent(formComponents.get(i), getSolutionModel(), this, componentType);
 			if (jsComponent != null)
 			{
 				boolean isFormListComponent = false;
@@ -568,14 +548,12 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	{
 		if (name != null)
 		{
-			JsArray<Component> formComponents = form.getComponents();
-			for (int i = 0; i < formComponents.length(); i++)
+			JSComponent[] labels = getComponentsInternal(false, Integer.valueOf(IRepositoryConstants.GRAPHICALCOMPONENTS));
+			for (JSComponent label : labels)
 			{
-				Component component = formComponents.get(i);
-				GraphicalComponent graphicalComponent = GraphicalComponent.castIfPossible(component);
-				if (graphicalComponent != null && !graphicalComponent.isButton() && name.equals(graphicalComponent.getName()))
+				if (label != null && name.equals(label.getName()) && label instanceof JSLabel)
 				{
-					return new JSLabel(graphicalComponent, getSolutionModel(), this);
+					return (JSLabel)label;
 				}
 			}
 		}
@@ -634,44 +612,15 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	@Override
 	public JSLabel[] getLabels()
 	{
-		return getLabelsInternal(false);
-	}
-
-	@Override
-	@NoExport
-	public JSLabel[] getLabelsInternal(boolean showInternals)
-	{
+		JSComponent[] components = getComponentsInternal(false, Integer.valueOf(IRepositoryConstants.GRAPHICALCOMPONENTS));
 		List<JSLabel> labels = new ArrayList<JSLabel>();
-		HashMap<String, JSLabel> titleLabels = showInternals ? null : new HashMap<String, JSLabel>();
-
-		JsArray<Component> formComponents = form.getComponents();
-		for (int i = 0; i < formComponents.length(); i++)
+		for (JSComponent component : components)
 		{
-			Component component = formComponents.get(i);
-			GraphicalComponent graphicalComponent = GraphicalComponent.castIfPossible(component);
-			if (graphicalComponent != null && !graphicalComponent.isButton())
+			if (component instanceof JSLabel)
 			{
-				JSLabel jsLabel = new JSLabel(graphicalComponent, getSolutionModel(), this);
-				labels.add(jsLabel);
-
-				if (!showInternals)
-				{
-					String groupID = jsLabel.getGroupID();
-					if (groupID != null)
-					{
-						// a grouped label is a title label for a component, except for the case where it's grouped with another label
-						MobileProperties mp = graphicalComponent.getMobileProperties();
-						JSLabel l = titleLabels.get(groupID);
-						if (l == null || (mp != null && Boolean.TRUE.equals(mp.getPropertyValue(IMobileProperties.COMPONENT_TITLE))) ||
-							(jsLabel.getY() < l.getY() || (jsLabel.getY() == l.getY() && jsLabel.getX() < l.getX())))
-						{
-							titleLabels.put(groupID, jsLabel);
-						}
-					}
-				}
+				labels.add((JSLabel)component);
 			}
 		}
-		if (!showInternals) labels.removeAll(titleLabels.values());
 		return labels.toArray(new JSLabel[0]);
 	}
 

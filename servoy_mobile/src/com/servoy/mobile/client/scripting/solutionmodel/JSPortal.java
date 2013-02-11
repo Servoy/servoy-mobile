@@ -106,7 +106,7 @@ public class JSPortal extends JSComponent implements IBaseSMPortal, Exportable
 		List<JSComponent> components = new ArrayList<JSComponent>(portalComponents.length());
 		for (int i = 0; i < portalComponents.length(); i++)
 		{
-			JSComponent jsComponent = JSComponent.getJSComponent(portalComponents.get(i), getSolutionModel(), this);
+			JSComponent jsComponent = JSComponent.getJSComponent(portalComponents.get(i), getSolutionModel(), this, null);
 			if (jsComponent != null)
 			{
 				components.add(jsComponent);
