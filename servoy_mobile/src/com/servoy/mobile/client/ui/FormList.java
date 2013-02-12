@@ -64,9 +64,12 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 		this.dal = dal;
 		if (relationName != null && formController.getForm().getDataSource() != null)
 		{
+			String primaryRelationName = relationName;
+			int lastRelSep = primaryRelationName.lastIndexOf('.');
+			if (lastRelSep != -1 && lastRelSep < primaryRelationName.length() - 1) primaryRelationName = primaryRelationName.substring(lastRelSep + 1);
 			String entity = FoundSetManager.getEntityFromDataSource(formController.getForm().getDataSource());
 			EntityDescription entityDescription = formController.getApplication().getFoundSetManager().getEntityDescription(entity);
-			relation = entityDescription.getPrimaryRelation(relationName);
+			relation = entityDescription.getPrimaryRelation(primaryRelationName);
 		}
 		else
 		{
@@ -116,9 +119,11 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 
 	private String fixRelatedDataproviderID(String dataProviderID)
 	{
-		if (relation != null && dataProviderID != null && dataProviderID.startsWith(relation.getName() + '.'))
+		int relationNameIdx;
+		String relationName;
+		if (relation != null && dataProviderID != null && (relationNameIdx = dataProviderID.lastIndexOf(relationName = (relation.getName() + '.'))) > -1)
 		{
-			return dataProviderID.substring(relation.getName().length() + 1);
+			return dataProviderID.substring(relationNameIdx + relationName.length());
 		}
 		return dataProviderID;
 	}
