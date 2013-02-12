@@ -19,6 +19,7 @@ package com.servoy.mobile.client.ui;
 
 import java.util.ArrayList;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -69,28 +70,36 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 		if (relationName != null && formController.getForm().getDataSource() != null)
 		{
 			String[] relationItems = relationName.split("\\."); //$NON-NLS-1$
-			if (relationItems.length > 0)
+			String entity = FoundSetManager.getEntityFromDataSource(formController.getForm().getDataSource());
+			EntityDescription entityDescription = formController.getApplication().getFoundSetManager().getEntityDescription(entity);
+			relation = new ArrayList<RelationDescription>();
+			RelationDescription relationDesc;
+			for (String relationItem : relationItems)
 			{
-				String entity = FoundSetManager.getEntityFromDataSource(formController.getForm().getDataSource());
-				EntityDescription entityDescription = formController.getApplication().getFoundSetManager().getEntityDescription(entity);
-				relation = new ArrayList<RelationDescription>();
-				RelationDescription relationDesc;
-				for (String relationItem : relationItems)
+				if (entityDescription == null)
+				{
+					relationDesc = null;
+					Log.warn("No entity description found for " + entity);
+				}
+				else
 				{
 					relationDesc = entityDescription.getPrimaryRelation(relationItem);
-					if (relationDesc != null)
-					{
-						relation.add(relationDesc);
-						entityDescription = formController.getApplication().getFoundSetManager().getEntityDescription(relationDesc.getForeignEntityName());
-					}
-					else
-					{
-						relation.clear();
-						break;
-					}
 				}
-				if (relation.size() == 0) relation = null;
+
+				if (relationDesc != null)
+				{
+					relation.add(relationDesc);
+					entity = relationDesc.getForeignEntityName();
+					entityDescription = formController.getApplication().getFoundSetManager().getEntityDescription(entity);
+				}
+				else
+				{
+					relation.clear();
+					Log.warn("No primary relation found for " + relationItem + " on " + entity);
+					break;
+				}
 			}
+			if (relation.size() == 0) relation = null;
 		}
 
 		for (int i = 0; i < formComponents.length(); i++)
@@ -159,8 +168,7 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 			for (RelationDescription relationItem : relation)
 			{
 				relatedFoundset = relationItem.isSelfRef() ? record.getParent() : record.getRelatedFoundSet(relationItem.getName());
-				if (relatedFoundset != null && relatedFoundset.getSize() > 0) record = relatedFoundset.getRecord(0);
-				else
+				if (relatedFoundset == null || (record = relatedFoundset.getSelectedRecord()) == null)
 				{
 					relatedFoundset = null;
 					break;
