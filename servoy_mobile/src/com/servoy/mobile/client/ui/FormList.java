@@ -17,6 +17,8 @@ package com.servoy.mobile.client.ui;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
+import java.util.ArrayList;
+
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -51,7 +53,8 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 {
 	private final FormController formController;
 	private final DataAdapterList dal;
-	private final RelationDescription relation;
+	private final String relationName;
+	private ArrayList<RelationDescription> relation;
 	private String listItemTextDP, listItemSubtextDP, listItemCountDP, listItemImageDP, listItemHeaderDP;
 	private String listItemStaticText, listItemStaticSubtext, listItemStaticHeader, listItemHeaderStyleclass;
 	private String listItemOnAction;
@@ -62,19 +65,34 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 	{
 		this.formController = formController;
 		this.dal = dal;
+		this.relationName = relationName;
 		if (relationName != null && formController.getForm().getDataSource() != null)
 		{
-			String primaryRelationName = relationName;
-			int lastRelSep = primaryRelationName.lastIndexOf('.');
-			if (lastRelSep != -1 && lastRelSep < primaryRelationName.length() - 1) primaryRelationName = primaryRelationName.substring(lastRelSep + 1);
-			String entity = FoundSetManager.getEntityFromDataSource(formController.getForm().getDataSource());
-			EntityDescription entityDescription = formController.getApplication().getFoundSetManager().getEntityDescription(entity);
-			relation = entityDescription.getPrimaryRelation(primaryRelationName);
+			String[] relationItems = relationName.split("\\."); //$NON-NLS-1$
+			if (relationItems.length > 0)
+			{
+				String entity = FoundSetManager.getEntityFromDataSource(formController.getForm().getDataSource());
+				EntityDescription entityDescription = formController.getApplication().getFoundSetManager().getEntityDescription(entity);
+				relation = new ArrayList<RelationDescription>();
+				RelationDescription relationDesc;
+				for (String relationItem : relationItems)
+				{
+					relationDesc = entityDescription.getPrimaryRelation(relationItem);
+					if (relationDesc != null)
+					{
+						relation.add(relationDesc);
+						entityDescription = formController.getApplication().getFoundSetManager().getEntityDescription(relationDesc.getForeignEntityName());
+					}
+					else
+					{
+						relation.clear();
+						break;
+					}
+				}
+				if (relation.size() == 0) relation = null;
+			}
 		}
-		else
-		{
-			relation = null;
-		}
+
 		for (int i = 0; i < formComponents.length(); i++)
 		{
 			Component component = formComponents.get(i);
@@ -119,11 +137,9 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 
 	private String fixRelatedDataproviderID(String dataProviderID)
 	{
-		int relationNameIdx;
-		String relationName;
-		if (relation != null && dataProviderID != null && (relationNameIdx = dataProviderID.lastIndexOf(relationName = (relation.getName() + '.'))) > -1)
+		if (relation != null && dataProviderID != null && dataProviderID.startsWith(relationName + '.'))
 		{
-			return dataProviderID.substring(relationNameIdx + relationName.length());
+			return dataProviderID.substring(relationName.length() + 1);
 		}
 		return dataProviderID;
 	}
@@ -139,7 +155,17 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 	{
 		if (relation != null)
 		{
-			relatedFoundset = relation.isSelfRef() ? parentRecord.getParent() : parentRecord.getRelatedFoundSet(relation.getName());
+			Record record = parentRecord;
+			for (RelationDescription relationItem : relation)
+			{
+				relatedFoundset = relationItem.isSelfRef() ? record.getParent() : record.getRelatedFoundSet(relationItem.getName());
+				if (relatedFoundset != null && relatedFoundset.getSize() > 0) record = relatedFoundset.getRecord(0);
+				else
+				{
+					relatedFoundset = null;
+					break;
+				}
+			}
 			refreshList();
 		}
 	}
