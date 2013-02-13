@@ -510,11 +510,11 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 				if (!showInternals)
 				{
 					MobileProperties mp = jsComponent.getBase().getMobileProperties();
-					isFormListComponent = Boolean.TRUE.equals(mp.getPropertyValue(IMobileProperties.LIST_ITEM_BUTTON)) ||
-						Boolean.TRUE.equals(mp.getPropertyValue(IMobileProperties.LIST_ITEM_COUNT)) ||
-						Boolean.TRUE.equals(mp.getPropertyValue(IMobileProperties.LIST_ITEM_HEADER)) ||
-						Boolean.TRUE.equals(mp.getPropertyValue(IMobileProperties.LIST_ITEM_IMAGE)) ||
-						Boolean.TRUE.equals(mp.getPropertyValue(IMobileProperties.LIST_ITEM_SUBTEXT));
+					isFormListComponent = mp != null &&
+						(Boolean.TRUE.equals(mp.getPropertyValue(IMobileProperties.LIST_ITEM_BUTTON)) ||
+							Boolean.TRUE.equals(mp.getPropertyValue(IMobileProperties.LIST_ITEM_COUNT)) ||
+							Boolean.TRUE.equals(mp.getPropertyValue(IMobileProperties.LIST_ITEM_HEADER)) ||
+							Boolean.TRUE.equals(mp.getPropertyValue(IMobileProperties.LIST_ITEM_IMAGE)) || Boolean.TRUE.equals(mp.getPropertyValue(IMobileProperties.LIST_ITEM_SUBTEXT)));
 				}
 
 				if (showInternals || (!(jsComponent instanceof JSPortal) && !isFormListComponent))

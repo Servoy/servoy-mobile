@@ -53,9 +53,9 @@ public class JSBase
 		if (parent != null)
 		{
 			hasBeenClonedNow = parent.cloneIfNeeded();
-			if (hasBeenClonedNow)
+			if (hasBeenClonedNow || !getBase().isClone())
 			{
-				ab = parent.ab.getChild(ab.getName());
+				ab = parent.getBase().getChild(ab.getUUID());
 				ab.markAsCopy();
 			}
 		}

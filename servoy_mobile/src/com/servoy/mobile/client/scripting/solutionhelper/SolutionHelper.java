@@ -292,4 +292,9 @@ public class SolutionHelper extends BaseSolutionHelper implements IMobilePredefi
 			(jsComp.getBase().getTypeID() == IRepositoryConstants.GRAPHICALCOMPONENTS && !((GraphicalComponent)jsComp.getBase()).isButton());
 	}
 
+	@Override
+	public void setComponentOrder(IBaseSMComponent[] components)
+	{
+		super.setComponentOrder(components);
+	}
 }

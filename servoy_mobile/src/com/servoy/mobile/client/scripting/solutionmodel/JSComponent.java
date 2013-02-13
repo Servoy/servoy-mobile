@@ -20,10 +20,13 @@ package com.servoy.mobile.client.scripting.solutionmodel;
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.Getter;
+import org.timepedia.exporter.client.NoExport;
 import org.timepedia.exporter.client.Setter;
 
+import com.servoy.base.persistence.IMobileProperties;
 import com.servoy.base.persistence.constants.IRepositoryConstants;
 import com.servoy.base.solutionmodel.IBaseSMComponent;
+import com.servoy.mobile.client.persistence.AbstractBase.MobileProperties;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
@@ -184,6 +187,7 @@ public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 	{
 		cloneIfNeeded();
 		((Component)getBase()).setLocation(x, getY());
+		setLocationToTitleComponent(false);
 	}
 
 	@Override
@@ -192,6 +196,7 @@ public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 	{
 		cloneIfNeeded();
 		((Component)getBase()).setLocation(getX(), y);
+		setLocationToTitleComponent(true);
 	}
 
 	@Override
@@ -247,6 +252,29 @@ public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 	{
 		cloneIfNeeded();
 		((Component)getBase()).setStyleClass(arg);
+	}
+
+	@NoExport
+	private void setLocationToTitleComponent(boolean keepX)
+	{
+		if (getGroupID() != null && getParent() instanceof JSForm)
+		{
+			JSComponent[] components = ((JSForm)getParent()).getComponentsInternal(true, null);
+			for (JSComponent component : components)
+			{
+				if (getGroupID().equals(component.getGroupID()))
+				{
+					MobileProperties mp = ((Component)component.getBase()).getMobileProperties();
+					if (mp != null && mp.getPropertyValue(IMobileProperties.COMPONENT_TITLE).booleanValue())
+					{
+						int oldX = component.getX();
+						int oldY = component.getY();
+						((Component)component.getBase()).setLocation(keepX ? oldX : getX() - 1, keepX ? getY() - 1 : oldY);
+					}
+				}
+			}
+
+		}
 	}
 
 }
