@@ -63,7 +63,8 @@ public class ValueStore
 	int getNextVal()
 	{
 		int lastVal = Utils.getAsInteger(localStorage.getItem(LAST_VALUE_KEY));
-		lastVal++;
+		// go to negative values so it doesn't overlap with real pk coming from server
+		lastVal--;
 		localStorage.setItem(LAST_VALUE_KEY, String.valueOf(lastVal));
 		return lastVal;
 	}

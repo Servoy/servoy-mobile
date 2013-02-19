@@ -247,6 +247,17 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		return index;
 	}
 
+	public void addRecord(String pk, RowDescription rowDescription)
+	{
+		RecordDescription recd = RecordDescription.newInstance(pk);
+		Record retval = new Record(this, recd, rowDescription);
+		int index = getSize();
+		foundSetDescription.insertRecord(index, recd);
+		fillNotLoadedRecordsWithNull(index);
+		records.add(index, retval);
+		fireContentChanged();
+	}
+
 	public Record getRecord(int index)
 	{
 		Record retval = null;
@@ -292,6 +303,18 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 	public int getRecordIndex(Record record)
 	{
 		return records.indexOf(record);
+	}
+
+	public Record getRecordByPk(String pk)
+	{
+		for (Record record : records)
+		{
+			if (pk.equals(record.getPK().toString()))
+			{
+				return record;
+			}
+		}
+		return null;
 	}
 
 	@Export

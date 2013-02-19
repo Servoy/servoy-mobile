@@ -54,6 +54,7 @@ public class FoundSetManager
 	private static final String CHANGES_KEY = "_svy_changes";
 	private static final String DELETES_KEY = "_svy_deletes";
 	private static final String CLIENT_DELETES_KEY = "_svy_client_deletes";
+	private static final String NEW_RECORDS_KEY = "_svy_client_new_records";
 	private static final String ENTITY_PREFIX_KEY = "_svy_entityPrefix";
 	private static final String ENTITIES_KEY = "_svy_entities";
 	private static final String STORAGE_VERSION_KEY = "_svy_storage_version";
@@ -74,6 +75,10 @@ public class FoundSetManager
 	// deletes of records that were created client side, then deleted without existing on server; 
 	// we have to keep track of these also as not all references to these records are deleted, we filter them out at foundset creation
 	private ArrayList<String> clientDeletes;
+
+	// list of records created on client, we need to keep this because not all foundset description are modified at save
+	private ArrayList<String> newRecords;
+
 	HashMap<String, HashSet<FoundSet>> entitiesToFoundsets;
 	HashMap<String, RowDescription> keyToRowDescription;
 
@@ -108,6 +113,9 @@ public class FoundSetManager
 
 		clientDeletes = new ArrayList<String>();
 		addItems(localStorage.getItem(CLIENT_DELETES_KEY), clientDeletes);
+
+		newRecords = new ArrayList<String>();
+		addItems(localStorage.getItem(NEW_RECORDS_KEY), newRecords);
 
 		entitiesToFoundsets = new HashMap<String, HashSet<FoundSet>>();
 		keyToRowDescription = new HashMap<String, RowDescription>();
@@ -173,8 +181,8 @@ public class FoundSetManager
 	}
 
 	private native void exportImpl(String name) /*-{
-												$wnd._ServoyUtils_.defineWindowVariable(name);
-												}-*/;
+		$wnd._ServoyUtils_.defineWindowVariable(name);
+	}-*/;
 
 	public EntityDescription getEntityDescription(String entityName)
 	{
@@ -223,6 +231,7 @@ public class FoundSetManager
 		RelationDescription rd = entities.getPrimaryRelation(entityName, relationName);
 		if (fsd.needsInfoFromKey()) fsd.setInfoFromKey(key, relationName, rd.getForeignEntityName());
 		removeDeletedRecords(fsd);
+		addNewRecords(fsd, rec, rd.getForeignEntityName(), relationName);
 		FoundSet foundset = new RelatedFoundSet(this, rec, fsd, relationName);
 		addFoundsetInList(foundset);
 		return foundset;
@@ -331,7 +340,7 @@ public class FoundSetManager
 		if (fd.getRelationName() != null)
 		{
 			int rid = entities.getRelationID(fd.getRelationName());
-			if (rid > 0)
+			if (rid != 0)
 			{
 				key = String.valueOf(rid);
 				if (fd.getWhereArgsHash() != null) //if global/constant relation at server we did omit the argshash
@@ -395,16 +404,12 @@ public class FoundSetManager
 
 	void storeRowData(String entityName, ArrayList<RowDescription> rowData, boolean local)
 	{
-		DataproviderIdAndTypeHolder dataProviderID = entities.getPKDataProviderID(entityName);
-		if (dataProviderID == null) throw new IllegalStateException(application.getMessages().cannotWorkWithoutPK());
-
 		int oldSize = changes.size();
 
 		//store data in offline db
 		for (RowDescription row : rowData)
 		{
-			Object pk = row.getValue(dataProviderID.getDataproviderId(), dataProviderID.getType());
-			String key = entityName + '|' + pk;
+			String key = getRowDataPkAndKey(entityName, row)[1];
 			if (local)
 			{
 				if (!changes.contains(key)) changes.add(key);
@@ -420,11 +425,8 @@ public class FoundSetManager
 
 	void deleteRowData(String entityName, RowDescription rowData, boolean createdOnClient)
 	{
-		DataproviderIdAndTypeHolder dataProviderID = entities.getPKDataProviderID(entityName);
-		if (dataProviderID == null) throw new IllegalStateException(application.getMessages().cannotWorkWithoutPK());
-
-		Object pk = rowData.getValue(dataProviderID.getDataproviderId(), dataProviderID.getType());
-		String key = entityName + '|' + pk;
+		String[] rowInfo = getRowDataPkAndKey(entityName, rowData);
+		String key = rowInfo[1];
 
 		if (localStorage.getItem(key) != null)
 		{
@@ -449,7 +451,7 @@ public class FoundSetManager
 		{
 			for (FoundSet foundset : set)
 			{
-				foundset.removeRecord(pk);
+				foundset.removeRecord(rowInfo[0]);
 			}
 		}
 
@@ -459,7 +461,58 @@ public class FoundSetManager
 			updateChangesInLocalStorage();
 		}
 
+		if (newRecords.contains(key))
+		{
+			newRecords.remove(key);
+			updateListInLocalStorage(NEW_RECORDS_KEY, newRecords);
+		}
+
 		keyToRowDescription.remove(key);
+
+	}
+
+	void checkForNewRecord(String entityName, RowDescription rowData)
+	{
+		String[] rowInfo = getRowDataPkAndKey(entityName, rowData);
+		String key = rowInfo[1];
+		if (localStorage.getItem(key) == null)
+		{
+			HashSet<FoundSet> set = entitiesToFoundsets.get(entityName);
+			if (set != null)
+			{
+				for (FoundSet foundset : set)
+				{
+					boolean addRecord = true;
+					if (foundset.getRecordByPk(rowInfo[0]) != null)
+					{
+						continue;
+					}
+					if (foundset instanceof RelatedFoundSet)
+					{
+						addRecord = matchesRelatedFoundset(((RelatedFoundSet)foundset).getParents()[0], ((RelatedFoundSet)foundset).getRelationName(), rowData);
+					}
+					if (addRecord)
+					{
+						foundset.addRecord(rowInfo[0], rowData);
+					}
+				}
+			}
+
+			if (!newRecords.contains(key))
+			{
+				newRecords.add(key);
+				updateListInLocalStorage(NEW_RECORDS_KEY, newRecords);
+			}
+		}
+	}
+
+	private String[] getRowDataPkAndKey(String entityName, RowDescription rowData)
+	{
+		DataproviderIdAndTypeHolder dataProviderID = entities.getPKDataProviderID(entityName);
+		if (dataProviderID == null) throw new IllegalStateException(application.getMessages().cannotWorkWithoutPK());
+
+		Object pk = rowData.getValue(dataProviderID.getDataproviderId(), dataProviderID.getType());
+		return new String[] { pk.toString(), entityName + '|' + pk };
 
 	}
 
@@ -474,6 +527,73 @@ public class FoundSetManager
 			}
 		}
 
+	}
+
+	private void addNewRecords(FoundSetDescription fsd, Record parentRecord, String entityName, String relationName)
+	{
+		for (String newRecord : newRecords)
+		{
+			int idx = newRecord.indexOf('|');
+			String recordEntity = newRecord.substring(0, idx);
+			if (entityName.equals(recordEntity))
+			{
+				Object pk = newRecord.substring(idx + 1);
+				RowDescription rowd = getRowDescription(entityName, pk);
+				if (matchesRelatedFoundset(parentRecord, relationName, rowd))
+				{
+					boolean foundRecord = false;
+					JsArray<RecordDescription> recs = fsd.getRecords();
+					for (int i = 0; i < recs.length(); i++)
+					{
+						RecordDescription rec = recs.get(i);
+						if (rec.getPK() != null && rec.getPK().toString().equals(pk))
+						{
+							foundRecord = true;
+						}
+					}
+					if (!foundRecord)
+					{
+						RecordDescription rd = RecordDescription.newInstance(pk);
+						fsd.getRecords().push(rd);
+					}
+				}
+			}
+		}
+	}
+
+	private boolean matchesRelatedFoundset(Record parentRecord, String relationName, RowDescription rowData)
+	{
+		String entityName = parentRecord.getParent().getEntityName();
+		RelationDescription rd = entities.getPrimaryRelation(entityName, relationName);
+		if (rd != null)
+		{
+			JsArrayString pdp = rd.getPrimaryDataProviders();
+			if (pdp.length() > 0)
+			{
+				Object[] coldata = new Object[pdp.length()];
+				for (int j = 0; j < coldata.length; j++)
+				{
+					Object obj = parentRecord.getValue(pdp.get(j));
+					if (obj == null) return false;
+					coldata[j] = obj;
+				}
+				boolean foundMatch = false;
+				for (int i = 0; i < coldata.length; i++)
+				{
+					if (coldata[i].equals(rowData.getValue(rd.getForeignColumns().get(i))))
+					{
+						foundMatch = true;
+					}
+					else
+					{
+						foundMatch = false;
+						break;
+					}
+				}
+				return foundMatch;
+			}
+		}
+		return false;
 	}
 
 	private void removeDeletedRecords(FoundSetDescription desc)
@@ -567,6 +687,7 @@ public class FoundSetManager
 		changes = new ArrayList<String>();
 		serverRecordsDeletes = new ArrayList<String>();
 		clientDeletes = new ArrayList<String>();
+		newRecords = new ArrayList<String>();
 
 		entitiesToFoundsets.clear();
 		keyToRowDescription.clear();

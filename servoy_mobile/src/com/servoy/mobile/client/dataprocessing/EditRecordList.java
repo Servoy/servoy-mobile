@@ -52,6 +52,7 @@ public class EditRecordList
 			{
 				rows.add(row);
 			}
+			foundSetManager.checkForNewRecord(entityName, row);
 		}
 
 		Iterator<String> it = toStore.keySet().iterator();
