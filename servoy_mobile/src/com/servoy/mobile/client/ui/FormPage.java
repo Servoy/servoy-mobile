@@ -56,6 +56,7 @@ public class FormPage extends JQMPage
 	protected final DataAdapterList dal;
 	private IFormPageHeaderDecorator headerDecorator;
 	private IFormPageFooterDecorator footerDecorator;
+	private JQMHeader headerComponent;
 
 	public FormPage(MobileClient application, FormController formController)
 	{
@@ -130,7 +131,7 @@ public class FormPage extends JQMPage
 		JQMButton leftToolbarButton = (JQMButton)createWidget(leftButton);
 		JQMButton rightToolbarButton = (JQMButton)createWidget(rightButton);
 
-		JQMHeader headerComponent = null;
+		headerComponent = null;
 		if (label != null) headerComponent = (JQMHeader)createWidget(label);
 
 		if (leftToolbarButton != null || rightToolbarButton != null)
@@ -265,7 +266,16 @@ public class FormPage extends JQMPage
 	{
 		FoundSet foundSet = formController.getFormModel();
 		if (foundSet != null) refreshRecord(foundSet.getSelectedRecord());
+		if (headerComponent != null)
+		{
+			setDocumentTitle(headerComponent.getText());
+		}
 	}
+
+	private native void setDocumentTitle(String text)
+	/*-{
+		top.document.title = text;
+	}-*/;
 
 	private Widget createWidget(Component component)
 	{
