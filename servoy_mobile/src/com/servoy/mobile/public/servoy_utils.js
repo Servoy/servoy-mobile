@@ -78,8 +78,8 @@ if (typeof(_ServoyUtils_) == "undefined")
 				shiftKey:options.shiftKey               || false,
 				metaKey:options.metaKey                 || false, //I *think* 'meta' is 'Cmd/Apple' on Mac, and 'Windows key' on Win. Not sure, though!
 				button:options.button                   || 0, //0 = left, 1 = middle, 2 = right
-				relatedTarget:options.relatedTarget     || null,
-		}
+				relatedTarget:options.relatedTarget     || null
+		};
 
 		//Pass in the options
 		event.initMouseEvent(

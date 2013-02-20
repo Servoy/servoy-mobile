@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to='mobileclient'>
-  <script src="../jquery-1.6.4.js"/>
-  <script src="../jquery.mobile-1.0.1.min.js"/>
-  <stylesheet src="../jquery.mobile-1.0.1.min.css"/>
+  <script src="jquery-1.6.4.js"/>
+  <script src="jquery.mobile-1.0.1.min.js"/>
+  <stylesheet src="jquery.mobile-1.0.1.min.css"/>
   
-  <script src="../solution.js"/>
-  <script src="../solution.json"/>
-  <script src="../servoy_utils.js"/>
-  <stylesheet src="../servoy.css"/>
+  <script src="solution.js"/>
+  <script src="solution_json.js"/>
+  <script src="servoy_utils.js"/>
+  <stylesheet src="servoy.css"/>
 
   <!-- Inherit the core Web Toolkit stuff.                        -->
   <inherits name='com.google.gwt.user.User'/>
@@ -48,7 +48,7 @@
   <set-configuration-property name="locale.useragent" value="Y"/>
   <set-configuration-property name="locale.searchorder" value="queryparam,cookie,meta,useragent"/>
   
-    <!-- Specify the app entry point class.                         -->
+  <!-- Specify the app entry point class.                         -->
   <entry-point class='com.servoy.mobile.client.MobileClient'/>
 
   <!-- Specify the paths for translatable code                    -->
