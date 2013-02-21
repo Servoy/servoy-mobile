@@ -31,6 +31,7 @@ import org.timepedia.exporter.client.Setter;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.thirdparty.javascript.jscomp.mozilla.rhino.annotations.JSFunction;
 import com.servoy.base.persistence.IMobileProperties;
 import com.servoy.base.persistence.constants.IComponentConstants;
 import com.servoy.base.persistence.constants.IFieldConstants;
@@ -44,6 +45,7 @@ import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
+import com.servoy.mobile.client.persistence.Part;
 import com.servoy.mobile.client.persistence.Portal;
 import com.servoy.mobile.client.persistence.TabPanel;
 import com.servoy.mobile.client.scripting.ScriptEngine;
@@ -788,5 +790,21 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 	{
 		cloneIfNeeded();
 		((Form)getBase()).setOnRecordSelectionCall(method != null ? method.getReferenceString() : null);
+	}
+
+	@JSFunction
+	@Override
+	public JSPart getPart(int type)
+	{
+		JsArray<Component> formComponents = form.getComponents();
+		for (int i = 0; i < formComponents.length(); i++)
+		{
+			Part part = Part.castIfPossible(formComponents.get(i));
+			if (part != null && part.getType() == type)
+			{
+				return new JSPart(part, getSolutionModel(), this);
+			}
+		}
+		return null;
 	}
 }
