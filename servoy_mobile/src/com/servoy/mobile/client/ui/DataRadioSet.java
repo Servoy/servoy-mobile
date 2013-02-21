@@ -227,7 +227,8 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 
 	private native void refreshIfPresent() /*-{
 		var cbr = $wnd.$("input[type='radio']");
-		if ($wnd.$.data(cbr.get()[0], "checkboxradio")) {
+		var cbrEl = cbr.get()[0];
+		if (cbrEl && $wnd.$.data(cbrEl, "checkboxradio")) {
 			cbr.checkboxradio("refresh");
 		}
 	}-*/;
