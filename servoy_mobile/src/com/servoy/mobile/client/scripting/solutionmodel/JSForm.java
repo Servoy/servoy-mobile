@@ -35,6 +35,7 @@ import com.google.gwt.thirdparty.javascript.jscomp.mozilla.rhino.annotations.JSF
 import com.servoy.base.persistence.IMobileProperties;
 import com.servoy.base.persistence.constants.IComponentConstants;
 import com.servoy.base.persistence.constants.IFieldConstants;
+import com.servoy.base.persistence.constants.IPartConstants;
 import com.servoy.base.persistence.constants.IRepositoryConstants;
 import com.servoy.base.solutionmodel.IBaseSMMethod;
 import com.servoy.base.solutionmodel.IBaseSMPortal;
@@ -806,5 +807,32 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 			}
 		}
 		return null;
+	}
+
+	@JSFunction
+	@Override
+	public JSPart newFooterPart(int height)
+	{
+		return getOrCreatePart(IPartConstants.FOOTER);
+	}
+
+	@JSFunction
+	@Override
+	public JSPart newHeaderPart(int height)
+	{
+		return getOrCreatePart(IPartConstants.HEADER);
+	}
+
+	@NoExport
+	private JSPart getOrCreatePart(int partType)
+	{
+		JSPart jsPart = getPart(partType);
+		if (jsPart == null)
+		{
+			cloneIfNeeded();
+			Part part = form.createNewPart(partType);
+			jsPart = new JSPart(part, getSolutionModel(), this);
+		}
+		return jsPart;
 	}
 }

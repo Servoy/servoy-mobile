@@ -57,6 +57,13 @@ public class Form extends AbstractBase
 		return portal;
 	}
 
+	public final Part createNewPart(int partType)
+	{
+		Part part = Part.castIfPossible(Component.createEmptyChildComponent(this, Utils.createStringUUID(), IRepositoryConstants.PARTS));
+		part.setType(partType);
+		return part;
+	}
+
 	public final void setDataSource(String dataSource)
 	{
 		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_DATASOURCE, dataSource);

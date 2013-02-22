@@ -39,4 +39,9 @@ public class Part extends Component
 	{
 		return getAttributeValueInt(IContentSpecConstantsBase.PROPERTY_PARTTYPE, 0);
 	}
+
+	public final void setType(int partType)
+	{
+		setAttributeValueInt(IContentSpecConstantsBase.PROPERTY_PARTTYPE, partType);
+	}
 }
