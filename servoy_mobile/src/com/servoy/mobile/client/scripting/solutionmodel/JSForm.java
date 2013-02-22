@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.timepedia.exporter.client.Export;
-import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.NoExport;
@@ -37,6 +36,7 @@ import com.servoy.base.persistence.constants.IComponentConstants;
 import com.servoy.base.persistence.constants.IFieldConstants;
 import com.servoy.base.persistence.constants.IPartConstants;
 import com.servoy.base.persistence.constants.IRepositoryConstants;
+import com.servoy.base.scripting.solutionhelper.IBaseSMFormInternal;
 import com.servoy.base.solutionmodel.IBaseSMMethod;
 import com.servoy.base.solutionmodel.IBaseSMPortal;
 import com.servoy.base.util.DataSourceUtilsBase;
@@ -50,16 +50,13 @@ import com.servoy.mobile.client.persistence.Part;
 import com.servoy.mobile.client.persistence.Portal;
 import com.servoy.mobile.client.persistence.TabPanel;
 import com.servoy.mobile.client.scripting.ScriptEngine;
-import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMForm;
 
 /**
  * @author acostescu
  */
 @Export
-@ExportPackage("")
-public class JSForm extends JSBase implements IMobileSMForm, Exportable
+public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 {
-
 	private Form form;
 
 	public JSForm(Form form, JSSolutionModel model)
@@ -698,15 +695,13 @@ public class JSForm extends JSBase implements IMobileSMForm, Exportable
 		return method.remove();
 	}
 
-	@Getter
-	@Override
+	@NoExport
 	public int getView()
 	{
 		return form.getView();
 	}
 
-	@Setter
-	@Override
+	@NoExport
 	public void setView(int viewType)
 	{
 		cloneIfNeeded();
