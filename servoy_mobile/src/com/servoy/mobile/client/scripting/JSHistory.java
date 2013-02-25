@@ -79,7 +79,7 @@ public class JSHistory implements Exportable, IJSHistory
 		{
 			int history = formIndex;
 			historyIndex = -2;
-			formManager.showForm(historyList.get(history));
+			formManager.showForm(historyList.get(history), true);
 			historyIndex = history;
 		}
 	}

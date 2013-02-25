@@ -106,14 +106,21 @@ public class FormManager
 
 	public void showForm(FormController formController)
 	{
+		showForm(formController, false);
+	}
+
+	public void showForm(FormController formController, boolean restoreScrollPosition)
+	{
 		formControllerMap.put(formController.getName(), formController);
-		if (currentForm != null && !currentForm.executeOnHideMethod())
+		if (currentForm != null)
 		{
-			return;
+			if (!currentForm.executeOnHideMethod()) return;
+			currentForm.getPage().saveScrollTop();
 		}
 		currentForm = formController;
 		history.add(formController);
 		formController.executeOnShowMethod();
+		if (!restoreScrollPosition && currentForm != null) currentForm.getPage().clearScrollTop();
 		JQMContext.changePage(formController.getPage());
 	}
 

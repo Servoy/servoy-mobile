@@ -38,6 +38,7 @@ import com.servoy.mobile.client.persistence.Part;
 import com.servoy.mobile.client.scripting.IRuntimeComponent;
 import com.servoy.mobile.client.scripting.IRuntimeComponentProvider;
 import com.sksamuel.jqm4gwt.JQMPage;
+import com.sksamuel.jqm4gwt.Mobile;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
@@ -57,6 +58,7 @@ public class FormPage extends JQMPage
 	private IFormPageHeaderDecorator headerDecorator;
 	private IFormPageFooterDecorator footerDecorator;
 	private JQMHeader headerComponent;
+	private int scrollTop;
 
 	public FormPage(MobileClient application, FormController formController)
 	{
@@ -271,6 +273,26 @@ public class FormPage extends JQMPage
 			setDocumentTitle(headerComponent.getText());
 		}
 	}
+
+	@Override
+	protected void onPageShow()
+	{
+		if (scrollTop > 0) Mobile.silentScroll(scrollTop);
+	}
+
+	public void clearScrollTop()
+	{
+		scrollTop = 0;
+	}
+
+	public void saveScrollTop()
+	{
+		scrollTop = getBodyScrollTop();
+	}
+
+	private static native int getBodyScrollTop() /*-{
+		return $wnd.$("body").scrollTop();
+	}-*/;
 
 	private native void setDocumentTitle(String text)
 	/*-{
