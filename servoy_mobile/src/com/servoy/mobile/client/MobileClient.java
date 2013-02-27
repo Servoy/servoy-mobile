@@ -63,6 +63,9 @@ import com.sksamuel.jqm4gwt.Mobile;
  */
 public class MobileClient implements EntryPoint
 {
+
+	public static final String NO_INIT_SMC = "noinitsmc";
+
 	protected I18NMessages messages = (I18NMessages)GWT.create(I18NMessages.class);
 
 	private FoundSetManager foundSetManager;
@@ -76,6 +79,11 @@ public class MobileClient implements EntryPoint
 
 	@Override
 	public void onModuleLoad()
+	{
+		if (!"true".equals(Window.Location.getParameter(NO_INIT_SMC))) initialize();
+	}
+
+	protected void initialize()
 	{
 		/*
 		 * Install an UncaughtExceptionHandler which will produce <code>FATAL</code> log messages
@@ -148,12 +156,17 @@ public class MobileClient implements EntryPoint
 	private native void addStartPageShowCallback()
 	/*-{
 		var mobileClient = this;
-		if ($wnd.$.mobile.activePage && $wnd.$.mobile.activePage.attr("id") == 'start') {
+		if ($wnd.$.mobile.activePage
+				&& $wnd.$.mobile.activePage.attr("id") == 'start') {
 			mobileClient.@com.servoy.mobile.client.MobileClient::onStartPageShown()();
 		} else {
-			$wnd.$('#start').live('pageshow',function(event) {
-													mobileClient.@com.servoy.mobile.client.MobileClient::onStartPageShown()();
-													});
+			$wnd
+					.$('#start')
+					.live(
+							'pageshow',
+							function(event) {
+								mobileClient.@com.servoy.mobile.client.MobileClient::onStartPageShown()();
+							});
 		}
 	}-*/;
 
@@ -332,7 +345,7 @@ public class MobileClient implements EntryPoint
 		formManager.showFirstForm();
 	}
 
-	void setLoginCredentials(String identifier, String password)
+	protected void setLoginCredentials(String identifier, String password)
 	{
 		offlineDataProxy.setLoginCredentials(identifier, password);
 	}
@@ -372,9 +385,14 @@ public class MobileClient implements EntryPoint
 	private native void exportLog()
 	/*-{
 		$wnd._ServoyUtils_.error = function(output) {
-		    output = output.toString();
+			output = output.toString();
 			return @com.allen_sauer.gwt.log.client.Log::error(Ljava/lang/String;)(output);
 		}
 	}-*/;
+
+	protected OfflineDataProxy getOfflineDataProxy()
+	{
+		return offlineDataProxy;
+	}
 
 }

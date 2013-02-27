@@ -263,6 +263,11 @@ public class FlattenedSolution
 		return solution.getSkipConnect();
 	}
 
+	public void setSkipConnect(boolean skip)
+	{
+		solution.setSkipConnect(skip);
+	}
+
 	public boolean getMustAuthenticate()
 	{
 		return solution.getMustAuthenticate();

@@ -74,6 +74,10 @@ public class Solution extends JavaScriptObject
 		return this.skipConnect;
 	}-*/;
 
+	public final native void setSkipConnect(boolean skip) /*-{
+		this.skipConnect = skip;
+	}-*/;
+
 	public final native boolean getMustAuthenticate() /*-{
 		return this.mustAuthenticate;
 	}-*/;
