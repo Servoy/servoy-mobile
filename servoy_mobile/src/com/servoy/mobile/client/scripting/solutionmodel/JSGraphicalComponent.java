@@ -49,7 +49,7 @@ public class JSGraphicalComponent extends JSComponent implements IBaseSMGraphica
 	@Getter
 	public boolean getDisplaysTags()
 	{
-		return ((GraphicalComponent)getBase()).isDisplaysTags();
+		return ((GraphicalComponent)getBase()).getDisplaysTags();
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class JSGraphicalComponent extends JSComponent implements IBaseSMGraphica
 	public void setDisplaysTags(boolean arg)
 	{
 		cloneIfNeeded();
-		((GraphicalComponent)getBase()).setDisplayTags(arg);
+		((GraphicalComponent)getBase()).setDisplaysTags(arg);
 	}
 
 	@Override

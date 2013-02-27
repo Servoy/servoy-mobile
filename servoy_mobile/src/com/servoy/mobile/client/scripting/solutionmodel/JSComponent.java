@@ -134,14 +134,14 @@ public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 	@Getter
 	public boolean getEnabled()
 	{
-		return ((Component)getBase()).isEnabled();
+		return ((Component)getBase()).getEnabled();
 	}
 
 	@Override
 	@Getter
 	public boolean getVisible()
 	{
-		return ((Component)getBase()).isVisible();
+		return ((Component)getBase()).getVisible();
 	}
 
 	@Override

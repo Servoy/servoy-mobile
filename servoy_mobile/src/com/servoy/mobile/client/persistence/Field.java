@@ -1,5 +1,6 @@
 package com.servoy.mobile.client.persistence;
 
+import com.servoy.base.persistence.IBaseFieldCommon;
 import com.servoy.base.persistence.constants.IContentSpecConstantsBase;
 import com.servoy.base.persistence.constants.IFieldConstants;
 import com.servoy.base.persistence.constants.IRepositoryConstants;
@@ -25,7 +26,7 @@ import com.servoy.mobile.client.util.Utils;
 /**
  * @author gboros
  */
-public class Field extends Component
+public class Field extends Component implements IBaseFieldCommon
 {
 	protected Field()
 	{

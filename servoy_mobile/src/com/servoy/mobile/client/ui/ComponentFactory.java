@@ -187,8 +187,8 @@ public class ComponentFactory
 
 		if (componentWidget instanceof IComponent)
 		{
-			((IComponent)componentWidget).setEnabled(component.isEnabled());
-			((IComponent)componentWidget).setVisible(component.isVisible());
+			((IComponent)componentWidget).setEnabled(component.getEnabled());
+			((IComponent)componentWidget).setVisible(component.getVisible());
 		}
 
 		if (componentWidget instanceof HasTheme)

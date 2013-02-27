@@ -44,7 +44,7 @@ public class AbstractRuntimeGraphicalComponent extends AbstractRuntimeBaseCompon
 	@Override
 	public boolean needEntireState()
 	{
-		return componentPersist.isDisplaysTags();
+		return componentPersist.getDisplaysTags();
 	}
 
 	/*

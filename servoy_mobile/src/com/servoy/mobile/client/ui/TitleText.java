@@ -41,9 +41,9 @@ public class TitleText implements IDisplayData
 		this.tagResolver = tagResolver;
 		this.application = application;
 
-		parentComponent.setTitleText(textComponent.isVisible() ? application.getI18nProvider().getI18NMessageIfPrefixed(
+		parentComponent.setTitleText(textComponent.getVisible() ? application.getI18nProvider().getI18NMessageIfPrefixed(
 			textComponent.getText() != null ? textComponent.getText() : "") : ""); //$NON-NLS-1$ //$NON-NLS-2$);
-		parentComponent.setTitleTextVisible(textComponent.isVisible());
+		parentComponent.setTitleTextVisible(textComponent.getVisible());
 	}
 
 	/*
@@ -81,6 +81,6 @@ public class TitleText implements IDisplayData
 
 	public boolean needEntireState()
 	{
-		return textComponent.isDisplaysTags();
+		return textComponent.getDisplaysTags();
 	}
 }

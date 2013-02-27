@@ -1,5 +1,6 @@
 package com.servoy.mobile.client.persistence;
 
+import com.servoy.base.persistence.IBaseComponentCommon;
 import com.servoy.base.persistence.constants.IContentSpecConstantsBase;
 
 
@@ -24,7 +25,7 @@ import com.servoy.base.persistence.constants.IContentSpecConstantsBase;
 /**
  * @author gboros
  */
-public class Component extends AbstractBase
+public class Component extends AbstractBase implements IBaseComponentCommon
 {
 	protected Component()
 	{
@@ -68,7 +69,7 @@ public class Component extends AbstractBase
 		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_LOCATION, x + "," + y); //$NON-NLS-1$
 	}
 
-	public final boolean isVisible()
+	public final boolean getVisible()
 	{
 		return getAttributeValueBoolean(IContentSpecConstantsBase.PROPERTY_VISIBLE, true);
 	}
@@ -78,7 +79,7 @@ public class Component extends AbstractBase
 		setAttributeValueBoolean(IContentSpecConstantsBase.PROPERTY_VISIBLE, visible);
 	}
 
-	public final boolean isEnabled()
+	public final boolean getEnabled()
 	{
 		return getAttributeValueBoolean(IContentSpecConstantsBase.PROPERTY_ENABLED, true);
 	}

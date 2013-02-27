@@ -1,5 +1,6 @@
 package com.servoy.mobile.client.persistence;
 
+import com.servoy.base.persistence.IBaseGraphicalComponentCommon;
 import com.servoy.base.persistence.constants.IComponentConstants;
 import com.servoy.base.persistence.constants.IContentSpecConstantsBase;
 import com.servoy.base.persistence.constants.IRepositoryConstants;
@@ -25,7 +26,7 @@ import com.servoy.mobile.client.util.Utils;
 /**
  * @author gboros
  */
-public class GraphicalComponent extends Component
+public class GraphicalComponent extends Component implements IBaseGraphicalComponentCommon
 {
 	protected GraphicalComponent()
 	{
@@ -77,7 +78,7 @@ public class GraphicalComponent extends Component
 		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_TEXT, text);
 	}
 
-	public final void setDisplayTags(boolean displayTags)
+	public final void setDisplaysTags(boolean displayTags)
 	{
 		setAttributeValueBoolean(IContentSpecConstantsBase.PROPERTY_DISPLAY_TAGS, displayTags);
 	}
@@ -87,7 +88,7 @@ public class GraphicalComponent extends Component
 		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_TEXT, null);
 	}
 
-	public final native boolean isDisplaysTags() /*-{
+	public final native boolean getDisplaysTags() /*-{
 		return this.displaysTags ? this.displaysTags : false;
 	}-*/;
 
