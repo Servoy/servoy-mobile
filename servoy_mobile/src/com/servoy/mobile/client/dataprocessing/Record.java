@@ -172,10 +172,10 @@ public class Record extends Scope implements IJSRecord
 		JsArrayString avail = recordDescription.getRFS();
 		if (avail != null)
 		{
+			int relationID = parent.getRelationID(relationName);
 			for (int i = 0; i < avail.length(); i++)
 			{
 				String key = avail.get(i);
-				int relationID = parent.getRelationID(relationName);
 				if (key.startsWith(relationID + "|"))
 				{
 					retval = parent.getRelatedFoundSet(this, relationName, key);

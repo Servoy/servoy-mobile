@@ -257,9 +257,14 @@ public class FoundSetManager
 		}
 		RelationDescription rd = entities.getPrimaryRelation(entityName, relationName);
 
-		if (rd != null && relatedFoundsets.containsKey(rd.getForeignEntityName()) && relatedFoundsets.get(rd.getForeignEntityName()).containsKey(key))
+		if (rd != null)
 		{
-			return relatedFoundsets.get(rd.getForeignEntityName()).get(key);
+			HashMap<String, FoundSet> relatedEntityFoundsets = relatedFoundsets.get(rd.getForeignEntityName());
+			if (relatedEntityFoundsets != null)
+			{
+				FoundSet fs = relatedEntityFoundsets.get(key);
+				if (fs != null) return fs;
+			}
 		}
 		//load data from offline db
 		String json = localStorage.getItem(key);
