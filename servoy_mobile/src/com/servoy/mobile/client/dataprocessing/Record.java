@@ -18,7 +18,6 @@ package com.servoy.mobile.client.dataprocessing;
  */
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.core.client.JsArray;
@@ -41,7 +40,6 @@ public class Record extends Scope implements IJSRecord
 	protected final FoundSet parent;
 	protected final RecordDescription recordDescription;
 	protected RowDescription rowDescription;
-	protected final HashMap<String, FoundSet> relatedFoundSets;
 	private final Map<String, Integer> variableTypes;
 
 
@@ -50,7 +48,6 @@ public class Record extends Scope implements IJSRecord
 	{
 		parent = p;
 		recordDescription = rd;
-		relatedFoundSets = new HashMap<String, FoundSet>();
 
 		variableTypes = p.getFoundSetManager().exportColumns(p.getEntityName(), this, this);
 		exportProperty("foundset");
@@ -171,34 +168,29 @@ public class Record extends Scope implements IJSRecord
 
 	public FoundSet getRelatedFoundSet(String relationName)
 	{
-		FoundSet retval = relatedFoundSets.get(relationName);
-		if (retval == null)
+		FoundSet retval = null;
+		JsArrayString avail = recordDescription.getRFS();
+		if (avail != null)
 		{
-			JsArrayString avail = recordDescription.getRFS();
-			if (avail != null)
+			for (int i = 0; i < avail.length(); i++)
 			{
-				for (int i = 0; i < avail.length(); i++)
+				String key = avail.get(i);
+				int relationID = parent.getRelationID(relationName);
+				if (key.startsWith(relationID + "|"))
 				{
-					String key = avail.get(i);
-					int relationID = parent.getRelationID(relationName);
-					if (key.startsWith(relationID + "|"))
+					retval = parent.getRelatedFoundSet(this, relationName, key);
+					if (retval != null)
 					{
-						retval = parent.getRelatedFoundSet(this, relationName, key);
-						if (retval != null)
-						{
-							relatedFoundSets.put(relationName, retval);
-							return retval;
-						}
+						return retval;
 					}
 				}
 			}
-			retval = parent.createRelatedFoundSet(relationName, this);
-			if (retval != null)
-			{
-				relatedFoundSets.put(relationName, retval);
-				int relationID = parent.getRelationID(relationName);
-				recordDescription.getRFS().push(relationID + "|" + retval.getWhereArgsHash());
-			}
+		}
+		retval = parent.getRelatedFoundSet(this, relationName, null);
+		if (retval != null)
+		{
+			int relationID = parent.getRelationID(relationName);
+			recordDescription.getRFS().push(relationID + "|" + retval.getWhereArgsHash());
 		}
 		return retval;
 	}
@@ -219,7 +211,6 @@ public class Record extends Scope implements IJSRecord
 
 	void clearRelationCaches()
 	{
-		relatedFoundSets.clear();
 		recordDescription.clearRFS();
 	}
 

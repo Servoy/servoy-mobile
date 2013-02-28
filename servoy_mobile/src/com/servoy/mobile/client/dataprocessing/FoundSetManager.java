@@ -79,7 +79,13 @@ public class FoundSetManager
 	// list of records created on client, we need to keep this because not all foundset description are modified at save
 	private ArrayList<String> newRecords;
 
-	HashMap<String, HashSet<FoundSet>> entitiesToFoundsets;
+	// entityName->foundset
+	HashMap<String, FoundSet> sharedFoundsets;
+	//entityName->relationName|foundsetHash->foundset
+	HashMap<String, HashMap<String, FoundSet>> relatedFoundsets;
+	// entityName->foundsets, not shared or separate, created via databaseManager.getFoundset
+	HashMap<String, HashSet<FoundSet>> foundsets;
+
 	HashMap<String, RowDescription> keyToRowDescription;
 
 	public FoundSetManager(MobileClient mc)
@@ -117,7 +123,9 @@ public class FoundSetManager
 		newRecords = new ArrayList<String>();
 		addItems(localStorage.getItem(NEW_RECORDS_KEY), newRecords);
 
-		entitiesToFoundsets = new HashMap<String, HashSet<FoundSet>>();
+		sharedFoundsets = new HashMap<String, FoundSet>();
+		relatedFoundsets = new HashMap<String, HashMap<String, FoundSet>>();
+		foundsets = new HashMap<String, HashSet<FoundSet>>();
 		keyToRowDescription = new HashMap<String, RowDescription>();
 
 	}
@@ -181,8 +189,8 @@ public class FoundSetManager
 	}
 
 	private native void exportImpl(String name) /*-{
-		$wnd._ServoyUtils_.defineWindowVariable(name);
-	}-*/;
+												$wnd._ServoyUtils_.defineWindowVariable(name);
+												}-*/;
 
 	public EntityDescription getEntityDescription(String entityName)
 	{
@@ -223,17 +231,49 @@ public class FoundSetManager
 
 	FoundSet getRelatedFoundSet(Record rec, String entityName, String relationName, String key)
 	{
+		if (key == null)
+		{
+			int relationID = getRelationID(relationName);
+			RelationDescription rd = entities.getPrimaryRelation(entityName, relationName);
+			if (rd != null)
+			{
+				JsArrayString pdp = rd.getPrimaryDataProviders();
+				if (pdp.length() > 0)
+				{
+					Object[] coldata = new Object[pdp.length()];
+					for (int j = 0; j < coldata.length; j++)
+					{
+						Object obj = rec.getValue(pdp.get(j));
+						if (obj == null) return null;
+						coldata[j] = obj;
+					}
+					key = relationID + "|" + Utils.createPKHashKey(coldata);
+				}
+			}
+		}
+		if (key == null)
+		{
+			return null;
+		}
+		RelationDescription rd = entities.getPrimaryRelation(entityName, relationName);
+
+		if (rd != null && relatedFoundsets.containsKey(rd.getForeignEntityName()) && relatedFoundsets.get(rd.getForeignEntityName()).containsKey(key))
+		{
+			return relatedFoundsets.get(rd.getForeignEntityName()).get(key);
+		}
 		//load data from offline db
 		String json = localStorage.getItem(key);
-		if (json == null) return null;
+		if (json == null)
+		{
+			return createRelatedFoundSet(relationName, rec);
+		}
 
 		FoundSetDescription fsd = JSONParser.parseStrict(json).isObject().getJavaScriptObject().cast();
-		RelationDescription rd = entities.getPrimaryRelation(entityName, relationName);
 		if (fsd.needsInfoFromKey()) fsd.setInfoFromKey(key, relationName, rd.getForeignEntityName());
 		removeDeletedRecords(fsd);
 		addNewRecords(fsd, rec, rd.getForeignEntityName(), relationName);
 		FoundSet foundset = new RelatedFoundSet(this, rec, fsd, relationName);
-		addFoundsetInList(foundset);
+		addFoundsetInList(foundset, key, false);
 		return foundset;
 	}
 
@@ -446,13 +486,10 @@ public class FoundSetManager
 			}
 		}
 
-		HashSet<FoundSet> set = entitiesToFoundsets.get(entityName);
-		if (set != null)
+		HashSet<FoundSet> set = getCreatedFoundsets(entityName);
+		for (FoundSet foundset : set)
 		{
-			for (FoundSet foundset : set)
-			{
-				foundset.removeRecord(rowInfo[0]);
-			}
+			foundset.removeRecord(rowInfo[0]);
 		}
 
 		if (changes.contains(key))
@@ -477,7 +514,7 @@ public class FoundSetManager
 		String key = rowInfo[1];
 		if (localStorage.getItem(key) == null)
 		{
-			HashSet<FoundSet> set = entitiesToFoundsets.get(entityName);
+			HashSet<FoundSet> set = getCreatedFoundsets(entityName);
 			if (set != null)
 			{
 				for (FoundSet foundset : set)
@@ -518,7 +555,7 @@ public class FoundSetManager
 
 	public void recordPushedToServer(String entityName, String pk)
 	{
-		HashSet<FoundSet> set = entitiesToFoundsets.get(entityName);
+		HashSet<FoundSet> set = getCreatedFoundsets(entityName);
 		if (set != null)
 		{
 			for (FoundSet foundset : set)
@@ -527,6 +564,24 @@ public class FoundSetManager
 			}
 		}
 
+	}
+
+	private HashSet<FoundSet> getCreatedFoundsets(String entityName)
+	{
+		HashSet<FoundSet> set = new HashSet<FoundSet>();
+		if (sharedFoundsets.containsKey(entityName))
+		{
+			set.add(sharedFoundsets.get(entityName));
+		}
+		if (foundsets.containsKey(entityName))
+		{
+			set.addAll(foundsets.get(entityName));
+		}
+		if (relatedFoundsets.containsKey(entityName))
+		{
+			set.addAll(relatedFoundsets.get(entityName).values());
+		}
+		return set;
 	}
 
 	private void addNewRecords(FoundSetDescription fsd, Record parentRecord, String entityName, String relationName)
@@ -654,27 +709,47 @@ public class FoundSetManager
 		return dataSource.substring(dataSource.lastIndexOf('/') + 1);
 	}
 
-	public FoundSet getFoundSet(String entityName)
+	public FoundSet getFoundSet(String entityName, boolean shared)
 	{
+		if (shared && sharedFoundsets.containsKey(entityName)) return sharedFoundsets.get(entityName);
+
 		//load data from offline db
 		String json = localStorage.getItem(entityName);
 		if (json == null) return null;
 		FoundSetDescription fsd = JSONParser.parseStrict(json).isObject().getJavaScriptObject().cast();
 		removeDeletedRecords(fsd);
 		FoundSet foundset = new FoundSet(this, fsd);
-		addFoundsetInList(foundset);
+		addFoundsetInList(foundset, null, shared);
 		return foundset;
 	}
 
-	private void addFoundsetInList(FoundSet foundset)
+	private void addFoundsetInList(FoundSet foundset, String relatedKey, boolean shared)
 	{
-		HashSet<FoundSet> set = entitiesToFoundsets.get(foundset.getEntityName());
-		if (set == null)
+		if (shared)
 		{
-			set = new HashSet<FoundSet>();
-			entitiesToFoundsets.put(foundset.getEntityName(), set);
+			sharedFoundsets.put(foundset.getEntityName(), foundset);
 		}
-		set.add(foundset);
+		else if (relatedKey != null)
+		{
+			HashMap<String, FoundSet> map = relatedFoundsets.get(foundset.getEntityName());
+			if (map == null)
+			{
+				map = new HashMap<String, FoundSet>();
+				relatedFoundsets.put(foundset.getEntityName(), map);
+			}
+			map.put(relatedKey, foundset);
+		}
+		else
+		{
+			HashSet<FoundSet> set = foundsets.get(foundset.getEntityName());
+			if (set == null)
+			{
+				set = new HashSet<FoundSet>();
+				foundsets.put(foundset.getEntityName(), set);
+			}
+			set.add(foundset);
+		}
+
 	}
 
 	//delete all local data
@@ -689,7 +764,9 @@ public class FoundSetManager
 		clientDeletes = new ArrayList<String>();
 		newRecords = new ArrayList<String>();
 
-		entitiesToFoundsets.clear();
+		foundsets.clear();
+		relatedFoundsets.clear();
+		sharedFoundsets.clear();
 		keyToRowDescription.clear();
 	}
 
@@ -772,7 +849,7 @@ public class FoundSetManager
 		}
 	}
 
-	FoundSet createRelatedFoundSet(String relationName, Record record)
+	private FoundSet createRelatedFoundSet(String relationName, Record record)
 	{
 		String entityName = record.getParent().getEntityName();
 		RelationDescription rd = entities.getPrimaryRelation(entityName, relationName);
@@ -798,7 +875,7 @@ public class FoundSetManager
 			seek(foreignEntityName, rd.getForeignColumns(), coldata, rds);
 			removeDeletedRecords(fsd);
 			FoundSet foundset = new RelatedFoundSet(this, record, fsd, relationName);
-			addFoundsetInList(foundset);
+			addFoundsetInList(foundset, getRelationID(relationName) + "|" + whereArgsHash, false);
 			return foundset;
 		}
 		else

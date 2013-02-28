@@ -436,11 +436,6 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		return null;
 	}
 
-	FoundSet createRelatedFoundSet(String relationName, Record record)
-	{
-		return foundSetManager.createRelatedFoundSet(relationName, record);
-	}
-
 	String getWhereArgsHash()
 	{
 		return foundSetDescription.getWhereArgsHash();

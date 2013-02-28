@@ -42,7 +42,7 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 		String dataSource = form.getDataSource();
 		if (dataSource != null)
 		{
-			foundSet = mc.getFoundSetManager().getFoundSet(FoundSetManager.getEntityFromDataSource(dataSource));
+			foundSet = mc.getFoundSetManager().getFoundSet(FoundSetManager.getEntityFromDataSource(dataSource), true);
 			if (foundSet != null) foundSet.addSelectionListener(this);
 		}
 		scope = new FormScope(mc, this);
