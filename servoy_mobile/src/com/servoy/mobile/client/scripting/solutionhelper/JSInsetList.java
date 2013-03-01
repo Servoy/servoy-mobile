@@ -207,4 +207,32 @@ public class JSInsetList extends BaseSHInsetList implements Exportable
 		super.setName(name);
 	}
 
+	@Setter
+	@Override
+	public void setHeaderStyleClass(String styleClass)
+	{
+		super.setHeaderStyleClass(styleClass);
+	}
+
+	@Getter
+	@Override
+	public String getHeaderStyleClass()
+	{
+		return super.getHeaderStyleClass();
+	}
+
+	@Getter
+	@Override
+	public String getListStyleClass()
+	{
+		return super.getListStyleClass();
+	}
+
+	@Setter
+	@Override
+	public void setListStyleClass(String styleClass)
+	{
+		super.setListStyleClass(styleClass);
+	}
+
 }
