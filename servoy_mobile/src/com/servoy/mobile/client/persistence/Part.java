@@ -17,6 +17,7 @@
 
 package com.servoy.mobile.client.persistence;
 
+import com.servoy.base.persistence.IBasePart;
 import com.servoy.base.persistence.constants.IContentSpecConstantsBase;
 import com.servoy.base.persistence.constants.IRepositoryConstants;
 
@@ -24,7 +25,7 @@ import com.servoy.base.persistence.constants.IRepositoryConstants;
  * @author gboros
  *
  */
-public class Part extends Component
+public class Part extends Component implements IBasePart
 {
 	protected Part()
 	{
