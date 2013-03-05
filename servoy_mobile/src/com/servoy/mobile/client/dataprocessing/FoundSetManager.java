@@ -189,8 +189,8 @@ public class FoundSetManager
 	}
 
 	private native void exportImpl(String name) /*-{
-												$wnd._ServoyUtils_.defineWindowVariable(name);
-												}-*/;
+		$wnd._ServoyUtils_.defineWindowVariable(name);
+	}-*/;
 
 	public EntityDescription getEntityDescription(String entityName)
 	{
@@ -263,7 +263,11 @@ public class FoundSetManager
 			if (relatedEntityFoundsets != null)
 			{
 				FoundSet fs = relatedEntityFoundsets.get(key);
-				if (fs != null) return fs;
+				if (fs != null)
+				{
+					fs.touch();
+					return fs;
+				}
 			}
 		}
 		//load data from offline db
@@ -736,6 +740,16 @@ public class FoundSetManager
 		}
 		else if (relatedKey != null)
 		{
+			for (HashMap<String, FoundSet> map : relatedFoundsets.values())
+			{
+				if (map != null)
+				{
+					for (FoundSet f : map.values())
+					{
+						f.flushIfPossible();
+					}
+				}
+			}
 			HashMap<String, FoundSet> map = relatedFoundsets.get(foundset.getEntityName());
 			if (map == null)
 			{
@@ -746,6 +760,16 @@ public class FoundSetManager
 		}
 		else
 		{
+			for (HashSet<FoundSet> set : foundsets.values())
+			{
+				if (set != null)
+				{
+					for (FoundSet f : set)
+					{
+						f.flushIfPossible();
+					}
+				}
+			}
 			HashSet<FoundSet> set = foundsets.get(foundset.getEntityName());
 			if (set == null)
 			{

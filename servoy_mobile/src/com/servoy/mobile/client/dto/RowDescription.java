@@ -25,6 +25,8 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 import com.servoy.base.persistence.constants.IColumnTypeConstants;
+import com.servoy.mobile.client.dataprocessing.IRowChangeListener;
+import com.servoy.mobile.client.util.Utils;
 
 /**
  * @author jblok
@@ -34,6 +36,7 @@ public class RowDescription extends JavaScriptObject
 {
 	public static final String MODIFICATION_DATE = "modification_date";
 	public static final String CREATED_ON_DEVICE = "created_on_device";
+
 
 	protected RowDescription()
 	{
@@ -102,8 +105,51 @@ public class RowDescription extends JavaScriptObject
 
 	public final void setValue(String dataProviderID, Object obj)
 	{
+		Object oldObj = getValue(dataProviderID);
 		setValueInternal(dataProviderID, obj);
 		setModificationDate();//flag as changed
+		if (!Utils.equalObjects(oldObj, obj)) fireChanged(dataProviderID, obj);
+	}
+
+	public final native void addRowChangeListener(IRowChangeListener listener)
+	/*-{
+		if (!this.listeners)
+			this.listeners = new Array();
+		this.listeners.push(listener);
+	}-*/;
+
+	public final native void removeRowChangeListener(IRowChangeListener listener)
+	/*-{
+		if (this.listeners) {
+			var index = this.listeners.indexOf(listener);
+			this.listeners.splice(index, 1);
+		}
+	}-*/;
+
+	public final native int listenersCount()
+	/*-{
+		if (this.listeners)
+			return this.listeners.length;
+		return 0;
+	}-*/;
+
+	public final native IRowChangeListener getListener(int index)
+	/*-{
+		if (this.listeners)
+			return this.listeners[index];
+		return null;
+	}-*/;
+
+	private final void fireChanged(String dataProviderID, Object obj)
+	{
+		int count = listenersCount();
+		if (count > 0)
+		{
+			for (int i = 0; i < count; i++)
+			{
+				getListener(i).notifyChange(dataProviderID, obj);
+			}
+		}
 	}
 
 	private final native void setModificationDate()/*-{

@@ -29,13 +29,12 @@ import com.servoy.mobile.client.dto.EntityDescription;
 import com.servoy.mobile.client.dto.RecordDescription;
 import com.servoy.mobile.client.dto.RowDescription;
 import com.servoy.mobile.client.scripting.Scope;
-import com.servoy.mobile.client.util.Utils;
 
 /**
  * The mobile record
  * @author jblok
  */
-public class Record extends Scope implements IJSRecord
+public class Record extends Scope implements IJSRecord, IRowChangeListener
 {
 	protected final FoundSet parent;
 	protected final RecordDescription recordDescription;
@@ -59,6 +58,7 @@ public class Record extends Scope implements IJSRecord
 	{
 		this(foundSet, rd);
 		rowDescription = rowd;
+		rowDescription.addRowChangeListener(this);
 	}
 
 	public Object getPK()
@@ -128,11 +128,14 @@ public class Record extends Scope implements IJSRecord
 			if (rd == null) return;
 			parent.startEdit(this);
 
-			Object oldObj = rd.getValue(dataProviderID);
 			rd.setValue(dataProviderID, obj);
-
-			if (!Utils.equalObjects(oldObj, obj)) fireModificationEvent(dataProviderID, obj);
 		}
+	}
+
+	@Override
+	public void notifyChange(String dataProviderID, Object value)
+	{
+		fireModificationEvent(dataProviderID, value);
 	}
 
 	private Record getRelatedRecord(String dataProviderID)
@@ -205,6 +208,7 @@ public class Record extends Scope implements IJSRecord
 		if (rowDescription == null)
 		{
 			rowDescription = parent.getRowDescription(getPK());
+			rowDescription.addRowChangeListener(this);
 		}
 		return rowDescription;
 	}
@@ -325,6 +329,16 @@ public class Record extends Scope implements IJSRecord
 			parent.deleteRecord(this);
 		}
 		parent.getFoundSetManager().getEditRecordList().removeEditedRecord(this);
+	}
+
+	public void flush()
+	{
+		if (rowDescription != null)
+		{
+			rowDescription.removeRowChangeListener(this);
+			rowDescription = null;
+		}
+		clearRelationCaches();
 	}
 
 	@Override

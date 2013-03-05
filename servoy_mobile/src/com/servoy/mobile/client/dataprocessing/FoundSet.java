@@ -19,6 +19,7 @@ package com.servoy.mobile.client.dataprocessing;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
@@ -45,7 +46,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 	private final ArrayList<Record> records = new ArrayList<Record>();
 	private final ArrayList<IFoundSetListener> foundSetListeners = new ArrayList<IFoundSetListener>();
 	private final JavaScriptObject javascriptInstance;
-
+	private Date lastTouched = new Date();
 
 	private boolean needToSaveFoundSetDescription;
 
@@ -496,5 +497,27 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 	public Object getJavaScriptInstance()
 	{
 		return javascriptInstance;
+	}
+
+	public void touch()
+	{
+		lastTouched = new Date();
+	}
+
+	public void flushIfPossible()
+	{
+		if (foundSetListeners.size() == 0 && selectionListeners.size() == 0)
+		{
+			Date currentTime = new Date();
+			if (currentTime.getTime() - lastTouched.getTime() > 30000)
+			{
+				// 30 seconds not touched, assume we can flush it
+				for (Record record : records)
+				{
+					record.flush();
+				}
+				records.clear();
+			}
+		}
 	}
 }
