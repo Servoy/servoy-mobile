@@ -105,4 +105,18 @@ public class Field extends Component implements IBaseFieldCommon
 		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_PLACEHOLDERTEXT, null);
 	}
 
+	public final boolean getEditable()
+	{
+		return getAttributeValueBoolean(IContentSpecConstantsBase.PROPERTY_EDITABLE, true);
+	}
+
+	public final void setEditable(boolean editable)
+	{
+		setAttributeValueBoolean(IContentSpecConstantsBase.PROPERTY_EDITABLE, editable);
+	}
+
+	public final void setText(String text)
+	{
+		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_TEXT, text);
+	}
 }
