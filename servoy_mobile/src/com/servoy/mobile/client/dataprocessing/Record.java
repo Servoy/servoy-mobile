@@ -27,6 +27,7 @@ import com.servoy.base.scripting.api.IJSRecord;
 import com.servoy.mobile.client.dto.DataProviderDescription;
 import com.servoy.mobile.client.dto.EntityDescription;
 import com.servoy.mobile.client.dto.RecordDescription;
+import com.servoy.mobile.client.dto.RelationDescription;
 import com.servoy.mobile.client.dto.RowDescription;
 import com.servoy.mobile.client.scripting.Scope;
 
@@ -92,7 +93,7 @@ public class Record extends Scope implements IJSRecord, IRowChangeListener
 			}
 		}
 
-		Record relatedRecord = getRelatedRecord(dataProviderID);
+		Record relatedRecord = getRelatedRecord(dataProviderID, false);
 		if (relatedRecord != null)
 		{
 			return relatedRecord.getValue(getRelatedDataprovideID(dataProviderID));
@@ -117,7 +118,7 @@ public class Record extends Scope implements IJSRecord, IRowChangeListener
 	@Override
 	public void setValue(String dataProviderID, Object obj)
 	{
-		Record relatedRecord = getRelatedRecord(dataProviderID);
+		Record relatedRecord = getRelatedRecord(dataProviderID, true);
 		if (relatedRecord != null)
 		{
 			relatedRecord.setValue(getRelatedDataprovideID(dataProviderID), obj);
@@ -138,7 +139,7 @@ public class Record extends Scope implements IJSRecord, IRowChangeListener
 		fireModificationEvent(dataProviderID, value);
 	}
 
-	private Record getRelatedRecord(String dataProviderID)
+	private Record getRelatedRecord(String dataProviderID, boolean create)
 	{
 		int index = dataProviderID.indexOf('.');
 		if (index > 0) //check if is related value request
@@ -151,7 +152,19 @@ public class Record extends Scope implements IJSRecord, IRowChangeListener
 				//related data
 				int selected = foundSet.getSelectedIndex();
 				if (selected == -1 && foundSet.getSize() > 0) selected = 0;
-
+				if (create && selected == 0 && foundSet.getSize() == 0)
+				{
+					EntityDescription entityDescription = parent.getFoundSetManager().getEntityDescription(parent.getEntityName());
+					if (entityDescription != null)
+					{
+						RelationDescription relationDescription = entityDescription.getPrimaryRelation(relationName);
+						if (relationDescription != null && relationDescription.getAllowCreationRelatedRecords())
+						{
+							foundSet.newRecord(0, true);
+							parent.startEdit(foundSet.getRecord(0));
+						}
+					}
+				}
 				return foundSet.getRecord(selected);
 			}
 			return null;
