@@ -152,7 +152,7 @@ public class Record extends Scope implements IJSRecord, IRowChangeListener
 				//related data
 				int selected = foundSet.getSelectedIndex();
 				if (selected == -1 && foundSet.getSize() > 0) selected = 0;
-				if (create && selected == 0 && foundSet.getSize() == 0)
+				if (create && foundSet.getSize() == 0)
 				{
 					EntityDescription entityDescription = parent.getFoundSetManager().getEntityDescription(parent.getEntityName());
 					if (entityDescription != null)
