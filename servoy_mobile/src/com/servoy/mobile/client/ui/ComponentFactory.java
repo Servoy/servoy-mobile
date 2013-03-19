@@ -26,6 +26,7 @@ import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.DataAdapterList;
 import com.servoy.mobile.client.persistence.AbstractBase;
+import com.servoy.mobile.client.persistence.Bean;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.Form;
@@ -180,6 +181,14 @@ public class ComponentFactory
 					if (mobileProperties != null && mobileProperties.getPropertyValue(IMobileProperties.LIST_COMPONENT).booleanValue())
 					{
 						componentWidget = new FormListComponent(portal, formController, dal, application);
+					}
+				}
+				else
+				{
+					Bean bean = Bean.castIfPossible(component);
+					if (bean != null)
+					{
+						componentWidget = new BeanComponent(bean, formController.getExecutor(), application);
 					}
 				}
 			}

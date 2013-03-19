@@ -20,6 +20,7 @@ package com.servoy.mobile.client.scripting;
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.Exporter;
+import org.timepedia.exporter.client.ExporterUtil;
 import org.timepedia.exporter.client.Getter;
 
 import com.google.gwt.core.client.GWT;
@@ -111,4 +112,14 @@ public class MobilePlugin implements Exportable
 			$wnd._ServoyUtils_.simulateClick($wnd.$("#servoyanchor").get(0));
 		}
 	}-*/;
+
+	public String getMarkupId(Object element)
+	{
+		Object gwtInstance = ExporterUtil.gwtInstance(element);
+		if (gwtInstance instanceof AbstractRuntimeBaseComponent< ? , ? >)
+		{
+			return ((AbstractRuntimeBaseComponent< ? , ? >)gwtInstance).getComponent().getId();
+		}
+		return null;
+	}
 }
