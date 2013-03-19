@@ -42,6 +42,7 @@ import com.servoy.base.solutionmodel.IBaseSMPortal;
 import com.servoy.base.util.DataSourceUtilsBase;
 import com.servoy.mobile.client.dataprocessing.RelatedFoundSet;
 import com.servoy.mobile.client.persistence.AbstractBase.MobileProperties;
+import com.servoy.mobile.client.persistence.Bean;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.Form;
@@ -829,5 +830,38 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 			jsPart = new JSPart(part, getSolutionModel(), this);
 		}
 		return jsPart;
+	}
+
+	@Override
+	public JSBean newBean(String name, String classname, int x, int y, int width, int height)
+	{
+		cloneIfNeeded();
+		Bean bean = Bean.createNewBeanComponent(form);
+		bean.setSize(width, height);
+		bean.setLocation(x, y);
+		return new JSBean(bean, getSolutionModel(), this);
+	}
+
+	@Override
+	public JSBean getBean(String name)
+	{
+		if (name != null)
+		{
+			JSComponent[] beans = getComponentsInternal(false, Integer.valueOf(IRepositoryConstants.BEANS));
+			for (JSComponent bean : beans)
+			{
+				if (bean != null && name.equals(bean.getName()))
+				{
+					return (JSBean)bean;
+				}
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public boolean removeBean(String name)
+	{
+		return removeComponent(name, IRepositoryConstants.BEANS);
 	}
 }

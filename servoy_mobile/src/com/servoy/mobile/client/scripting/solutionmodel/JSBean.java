@@ -15,28 +15,25 @@
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
-package com.servoy.mobile.client.persistence;
+package com.servoy.mobile.client.scripting.solutionmodel;
 
-import com.servoy.base.persistence.constants.IRepositoryConstants;
-import com.servoy.mobile.client.util.Utils;
+import org.timepedia.exporter.client.Export;
+import org.timepedia.exporter.client.ExportPackage;
+import org.timepedia.exporter.client.Exportable;
+
+import com.servoy.base.solutionmodel.IBaseSMBean;
+import com.servoy.mobile.client.persistence.Bean;
 
 /**
  * @author gboros
  *
  */
-public class Bean extends Component
+@Export
+@ExportPackage("")
+public class JSBean extends JSComponent implements IBaseSMBean, Exportable
 {
-	protected Bean()
+	public JSBean(Bean bean, JSSolutionModel model, JSBase parent)
 	{
-	}
-
-	public final static Bean createNewBeanComponent(AbstractBase parent)
-	{
-		return castIfPossible(createEmptyChildComponent(parent, Utils.createStringUUID(), IRepositoryConstants.BEANS));
-	}
-
-	public final static Bean castIfPossible(AbstractBase ab)
-	{
-		return ab.getTypeID() == IRepositoryConstants.BEANS ? (Bean)ab.cast() : null;
+		super(bean, model, parent);
 	}
 }
