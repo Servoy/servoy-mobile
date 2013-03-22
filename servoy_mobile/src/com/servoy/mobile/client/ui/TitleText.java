@@ -64,7 +64,8 @@ public class TitleText implements IDisplayData
 		String txt;
 		if (textComponent.getDataProviderID() == null)
 		{
-			txt = TagParser.processTags(textComponent.getText(), tagResolver, application.getI18nProvider());
+			txt = TagParser.processTags(application.getI18nProvider().getI18NMessageIfPrefixed(textComponent.getText()), tagResolver,
+				application.getI18nProvider());
 		}
 		else
 		{

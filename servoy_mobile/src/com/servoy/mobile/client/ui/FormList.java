@@ -208,11 +208,8 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 			Object dpValue = dal.getRecordValue(null, listItemHeaderDP);
 			if (dpValue == null)
 			{
-				dpValue = TagParser.processTags(listItemStaticHeader, dal, formController.getApplication().getI18nProvider());
-				if (dpValue != null && dpValue.toString().startsWith("i18n:"))
-				{
-					dpValue = formController.getApplication().getI18nProvider().getI18NMessageIfPrefixed(listItemStaticHeader);
-				}
+				dpValue = TagParser.processTags(formController.getApplication().getI18nProvider().getI18NMessageIfPrefixed(listItemStaticHeader), dal,
+					formController.getApplication().getI18nProvider());
 			}
 			if (dpValue != null)
 			{
@@ -228,11 +225,8 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 				dpValue = dal.getRecordValue(listItemRecord, listItemTextDP);
 				if (dpValue == null)
 				{
-					dpValue = TagParser.processTags(listItemStaticText, listItemTagResolver, formController.getApplication().getI18nProvider());
-					if (dpValue != null && dpValue.toString().startsWith("i18n:"))
-					{
-						dpValue = formController.getApplication().getI18nProvider().getI18NMessageIfPrefixed(listItemStaticText);
-					}
+					dpValue = TagParser.processTags(formController.getApplication().getI18nProvider().getI18NMessageIfPrefixed(listItemStaticText),
+						listItemTagResolver, formController.getApplication().getI18nProvider());
 				}
 				JQMListItem listItem = addItem(listWidgetCount, dpValue != null ? dpValue.toString() : ""); //$NON-NLS-1$
 				listWidgetCount++;
@@ -259,11 +253,8 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 				dpValue = dal.getRecordValue(listItemRecord, listItemSubtextDP);
 				if (dpValue == null)
 				{
-					dpValue = TagParser.processTags(listItemStaticSubtext, listItemTagResolver, formController.getApplication().getI18nProvider());
-					if (dpValue != null && dpValue.toString().startsWith("i18n:"))
-					{
-						dpValue = formController.getApplication().getI18nProvider().getI18NMessageIfPrefixed(listItemStaticSubtext);
-					}
+					dpValue = TagParser.processTags(formController.getApplication().getI18nProvider().getI18NMessageIfPrefixed(listItemStaticSubtext),
+						listItemTagResolver, formController.getApplication().getI18nProvider());
 				}
 				if (dpValue != null) listItem.addText(dpValue.toString());
 

@@ -74,7 +74,8 @@ public class AbstractRuntimeGraphicalComponent extends AbstractRuntimeBaseCompon
 		String txt;
 		if (componentPersist.getDataProviderID() == null)
 		{
-			txt = TagParser.processTags(componentPersist.getText(), tagResolver, application.getI18nProvider());
+			txt = TagParser.processTags(application.getI18nProvider().getI18NMessageIfPrefixed(componentPersist.getText()), tagResolver,
+				application.getI18nProvider());
 		}
 		else
 		{
