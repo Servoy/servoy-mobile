@@ -1,6 +1,6 @@
 package com.servoy.mobile.client.persistence;
 
-import com.servoy.base.persistence.IBaseComponentCommon;
+import com.servoy.base.persistence.IBaseComponent;
 import com.servoy.base.persistence.constants.IContentSpecConstantsBase;
 
 
@@ -25,7 +25,7 @@ import com.servoy.base.persistence.constants.IContentSpecConstantsBase;
 /**
  * @author gboros
  */
-public class Component extends AbstractBase implements IBaseComponentCommon
+public class Component extends AbstractBase implements IBaseComponent
 {
 	protected Component()
 	{
