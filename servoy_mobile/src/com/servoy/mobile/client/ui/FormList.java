@@ -170,7 +170,10 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 				relatedFoundset = relationItem.isSelfRef() ? record.getParent() : record.getRelatedFoundSet(relationItem.getName());
 				if (relatedFoundset == null || (record = relatedFoundset.getSelectedRecord()) == null)
 				{
-					relatedFoundset = null;
+					if (relation.indexOf(relationItem) < relation.size() - 1)
+					{
+						relatedFoundset = null;
+					}
 					break;
 				}
 			}
@@ -191,8 +194,8 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 	}
 
 	protected native void forceRefresh(String id) /*-{
-		$wnd.$("#" + id).listview('refresh', true);
-	}-*/;
+													$wnd.$("#" + id).listview('refresh', true);
+													}-*/;
 
 	private void createList(FoundSet foundset)
 	{
