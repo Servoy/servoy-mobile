@@ -362,8 +362,6 @@ public class OfflineDataProxy
 	{
 		if (credentials != null)
 		{
-			builder.setUser(credentials[0]);
-			builder.setPassword(credentials[1]);
 			builder.setHeader("Authorization", "Basic " + Base64Coder.encodeString(credentials[0] + ":" + credentials[1]));
 		}
 	}
