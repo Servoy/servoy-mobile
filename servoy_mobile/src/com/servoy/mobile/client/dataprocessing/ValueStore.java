@@ -68,4 +68,9 @@ public class ValueStore
 		localStorage.setItem(LAST_VALUE_KEY, String.valueOf(lastVal));
 		return lastVal;
 	}
+
+	void clearCache()
+	{
+		uid_to_id.clear();
+	}
 }

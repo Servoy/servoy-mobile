@@ -189,8 +189,8 @@ public class FoundSetManager
 	}
 
 	private native void exportImpl(String name) /*-{
-		$wnd._ServoyUtils_.defineWindowVariable(name);
-	}-*/;
+												$wnd._ServoyUtils_.defineWindowVariable(name);
+												}-*/;
 
 	public EntityDescription getEntityDescription(String entityName)
 	{
@@ -297,7 +297,7 @@ public class FoundSetManager
 		HashMap<String, HashSet<Object>> entitiesToPKs = new HashMap<String, HashSet<Object>>();
 
 		localStorage.setItem(STORAGE_VERSION_KEY, String.valueOf(STORAGE_VERSION));
-
+		valueStore.clearCache();
 		//store data in offline db
 		entities = new Entities(offlineData.getEntities(), valueStore);
 		// first sync up Relations -> RelationDescription
