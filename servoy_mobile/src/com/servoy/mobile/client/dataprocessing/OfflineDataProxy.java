@@ -65,7 +65,7 @@ public class OfflineDataProxy
 
 		//requires a REST url like: serverURL/offline_data/version/name
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, serverURL + "/offline_data/" + version + "/" + URL.encode(name));
-		setRequestCredentials(builder);
+		setRequestParameters(builder);
 
 		builder.setHeader("Accept", "application/json");
 		try
@@ -74,7 +74,8 @@ public class OfflineDataProxy
 			{
 				public void onError(Request request, Throwable exception)
 				{
-					loadCallback.onFailure(new Failure(foundSetManager.getApplication().getMessages().cannotLoadJSON(), exception));
+					loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getMessages().cannotLoadJSON(),
+						exception));
 					loadCallback = null;
 				}
 
@@ -92,7 +93,8 @@ public class OfflineDataProxy
 					}
 					else
 					{
-						loadCallback.onFailure(new Failure(foundSetManager.getApplication().getMessages().cannotLoadJSON(), response.getStatusCode()));
+						loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getMessages().cannotLoadJSON(),
+							response.getStatusCode()));
 						loadCallback = null;
 					}
 				}
@@ -100,7 +102,7 @@ public class OfflineDataProxy
 		}
 		catch (RequestException e)
 		{
-			loadCallback.onFailure(new Failure(foundSetManager.getApplication().getMessages().cannotLoadJSON(), e));
+			loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getMessages().cannotLoadJSON(), e));
 			loadCallback = null;
 		}
 	}
@@ -141,7 +143,7 @@ public class OfflineDataProxy
 		//serverURL/entityName PUT (for new)
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, serverURL + "/" + foundSetManager.getEntityPrefix() + entityName + "/" + version +
 			"/list" + URL.encode(params));
-		setRequestCredentials(builder);
+		setRequestParameters(builder);
 
 		builder.setHeader("Accept", "application/json");
 		try
@@ -150,7 +152,8 @@ public class OfflineDataProxy
 			{
 				public void onError(Request request, Throwable exception)
 				{
-					loadCallback.onFailure(new Failure(foundSetManager.getApplication().getMessages().cannotLoadJSON(), exception));
+					loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getMessages().cannotLoadJSON(),
+						exception));
 					loadCallback = null;
 				}
 
@@ -174,7 +177,8 @@ public class OfflineDataProxy
 					}
 					else
 					{
-						loadCallback.onFailure(new Failure(foundSetManager.getApplication().getMessages().cannotLoadJSON(), response.getStatusCode()));
+						loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getMessages().cannotLoadJSON(),
+							response.getStatusCode()));
 						loadCallback = null;
 					}
 				}
@@ -182,7 +186,7 @@ public class OfflineDataProxy
 		}
 		catch (RequestException e)
 		{
-			loadCallback.onFailure(new Failure(foundSetManager.getApplication().getMessages().cannotLoadJSON(), e));
+			loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getMessages().cannotLoadJSON(), e));
 			loadCallback = null;
 		}
 	}
@@ -248,7 +252,7 @@ public class OfflineDataProxy
 		//DELETE server side
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.DELETE, serverURL + "/" + foundSetManager.getEntityPrefix() + entityName + "/" + version +
 			"/" + URL.encode(pk));
-		setRequestCredentials(builder);
+		setRequestParameters(builder);
 		//builder.setHeader("Access-Control-Request-Method", "DELETE");
 
 		try
@@ -257,7 +261,8 @@ public class OfflineDataProxy
 			{
 				public void onError(Request request, Throwable exception)
 				{
-					callback.onFailure(new Failure(foundSetManager.getApplication().getMessages().cannotDeleteRecord(), exception));
+					callback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getMessages().cannotDeleteRecord(),
+						exception));
 				}
 
 				public void onResponseReceived(Request request, Response response)
@@ -270,14 +275,15 @@ public class OfflineDataProxy
 					}
 					else
 					{
-						callback.onFailure(new Failure(foundSetManager.getApplication().getMessages().cannotDeleteRecord(), response.getStatusCode()));
+						callback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getMessages().cannotDeleteRecord(),
+							response.getStatusCode()));
 					}
 				}
 			});
 		}
 		catch (RequestException e)
 		{
-			callback.onFailure(new Failure(foundSetManager.getApplication().getMessages().cannotDeleteRecord(), e));
+			callback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getMessages().cannotDeleteRecord(), e));
 		}
 	}
 
@@ -303,7 +309,7 @@ public class OfflineDataProxy
 		//serverURL/entityName/12 PUT (for update), POST for new
 		RequestBuilder builder = new RequestBuilder(row.isCreatedOnDevice() ? RequestBuilder.POST : RequestBuilder.PUT, serverURL + "/" +
 			foundSetManager.getEntityPrefix() + entityName + "/" + version + "/" + URL.encode(remotepk));
-		setRequestCredentials(builder);
+		setRequestParameters(builder);
 		//builder.setHeader("Access-Control-Request-Method", row.isCreatedOnDevice() ? "POST" : "PUT");
 
 		builder.setHeader("Content-Type", "application/json");
@@ -313,7 +319,7 @@ public class OfflineDataProxy
 			{
 				public void onError(Request request, Throwable exception)
 				{
-					callback.onFailure(new Failure(foundSetManager.getApplication().getMessages().cannotSaveJSON(), exception));
+					callback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getMessages().cannotSaveJSON(), exception));
 				}
 
 				public void onResponseReceived(Request request, Response response)
@@ -330,14 +336,15 @@ public class OfflineDataProxy
 					}
 					else
 					{
-						callback.onFailure(new Failure(foundSetManager.getApplication().getMessages().cannotSaveJSON(), response.getStatusCode()));
+						callback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getMessages().cannotSaveJSON(),
+							response.getStatusCode()));
 					}
 				}
 			});
 		}
 		catch (RequestException e)
 		{
-			callback.onFailure(new Failure(foundSetManager.getApplication().getMessages().cannotSaveJSON(), e));
+			callback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getMessages().cannotSaveJSON(), e));
 		}
 	}
 
@@ -358,11 +365,13 @@ public class OfflineDataProxy
 		return credentials != null;
 	}
 
-	private void setRequestCredentials(RequestBuilder builder)
+	private void setRequestParameters(RequestBuilder builder)
 	{
 		if (credentials != null)
 		{
 			builder.setHeader("Authorization", "Basic " + Base64Coder.encodeString(credentials[0] + ":" + credentials[1]));
 		}
+		// 30 seconds timeout
+		builder.setTimeoutMillis(30000);
 	}
 }

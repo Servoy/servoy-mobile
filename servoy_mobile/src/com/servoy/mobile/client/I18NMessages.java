@@ -35,6 +35,15 @@ public interface I18NMessages extends Messages
 	@DefaultMessage("Authentication required, please login.")
 	String authenticationRequired();
 
+	@DefaultMessage("Authentication failed.")
+	String authenticationFailed();
+
+	@DefaultMessage("Request timed out.")
+	String requestTimeout();
+
+	@DefaultMessage("Requested url is not available.")
+	String serviceNotAvailable();
+
 	@DefaultMessage("Email")
 	String userUid();
 

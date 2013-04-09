@@ -303,6 +303,7 @@ public class MobileClient implements EntryPoint
 					detail.append(")");
 				}
 				GWT.log(detail.toString());
+				Log.error(detail.toString());
 				error(reason.getMessage());
 				if (reason.getStatusCode() != Response.SC_UNAUTHORIZED && reason.getStatusCode() != 0)
 				{
