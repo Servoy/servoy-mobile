@@ -18,15 +18,21 @@
 package com.servoy.mobile.client.scripting;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.servoy.base.scripting.api.IJSHistory;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.FormManager;
+import com.sksamuel.jqm4gwt.JQMContext;
 
 @Export
 public class JSHistory implements Exportable, IJSHistory
@@ -34,6 +40,7 @@ public class JSHistory implements Exportable, IJSHistory
 	private final FormManager formManager;
 	private final List<FormController> historyList = new ArrayList<FormController>();
 	private int historyIndex = -1;
+	private final Map<String, FormHistoryIndex> historyHashIndex = new HashMap<String, FormHistoryIndex>();
 
 	public JSHistory(FormManager formManager)
 	{
@@ -78,9 +85,16 @@ public class JSHistory implements Exportable, IJSHistory
 		if (formIndex >= 0 && formIndex <= historyList.size() && historyList.get(formIndex) != null)
 		{
 			int history = formIndex;
+			int prevHistory = historyIndex;
 			historyIndex = -2;
-			formManager.showForm(historyList.get(history), true);
-			historyIndex = history;
+			if (formManager.showForm(historyList.get(history), true))
+			{
+				historyIndex = history;
+			}
+			else
+			{
+				historyIndex = prevHistory;
+			}
 		}
 	}
 
@@ -155,6 +169,56 @@ public class JSHistory implements Exportable, IJSHistory
 		historyIndex = historyList.size();
 		historyList.add(page);
 
+	}
+
+	/**
+	 * @param hash
+	 */
+	public void hashChanged(String hash)
+	{
+		final FormController currentForm = formManager.getCurrentForm();
+		if (currentForm == null) return;
+		final FormHistoryIndex formHistory = historyHashIndex.get(hash);
+		if (formHistory == null)
+		{
+			historyHashIndex.put(hash, new FormHistoryIndex(historyIndex, currentForm));
+		}
+		else if (formHistory.controller != currentForm)
+		{
+			if (Log.isInfoEnabled())
+			{
+				Log.info("hash change to: " + hash + " because of back or forward button, current form: " + currentForm.getName() + " != " + formHistory.controller.getName()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			}
+			go(formHistory.index - historyIndex);
+			if (formManager.getCurrentForm() == currentForm)
+			{
+				Scheduler.get().scheduleDeferred(new ScheduledCommand()
+				{
+					@Override
+					public void execute()
+					{
+						if (Log.isInfoEnabled())
+						{
+							Log.info("current form: " + currentForm.getName() + " couldn't be changed to  " + formHistory.controller.getName() + ", 'reverting' to currrent page in browser"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+						}
+						JQMContext.changePage(currentForm.getPage());
+					}
+				});
+			}
+		}
+	}
+
+	private class FormHistoryIndex
+	{
+		private final int index;
+		private final FormController controller;
+
+		private FormHistoryIndex(int index, FormController controller)
+		{
+			this.index = index;
+			this.controller = controller;
+
+		}
 	}
 
 }

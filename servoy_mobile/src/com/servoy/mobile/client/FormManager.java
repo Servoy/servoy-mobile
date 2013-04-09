@@ -109,12 +109,12 @@ public class FormManager
 		showForm(formController, false);
 	}
 
-	public void showForm(FormController formController, boolean restoreScrollPosition)
+	public boolean showForm(FormController formController, boolean restoreScrollPosition)
 	{
 		formControllerMap.put(formController.getName(), formController);
 		if (currentForm != null)
 		{
-			if (!currentForm.executeOnHideMethod()) return;
+			if (!currentForm.executeOnHideMethod()) return false;
 			currentForm.getPage().saveScrollTop();
 		}
 		currentForm = formController;
@@ -122,6 +122,7 @@ public class FormManager
 		formController.executeOnShowMethod();
 		if (!restoreScrollPosition && currentForm != null) currentForm.getPage().clearScrollTop();
 		JQMContext.changePage(formController.getPage());
+		return true;
 	}
 
 	public FormController getCurrentForm()
@@ -192,17 +193,27 @@ public class FormManager
 		return null;
 	}
 
+	private void hashChanged(String hash)
+	{
+		getHistory().hashChanged(hash);
+
+	}
+
 	private native void defineStandardFormVariables(FormScope formScope)
 	/*-{
 		$wnd._ServoyUtils_.defineStandardFormVariables(formScope);
 	}-*/;
 
 
-	public native void export() /*-{
+	public native void export()
+	/*-{
 		var formManager = this;
 		$wnd._ServoyUtils_.getFormScope = function(name) {
 			return formManager.@com.servoy.mobile.client.FormManager::getFormScope(Ljava/lang/String;)(name);
 		}
+		$wnd.$($wnd).bind('hashchange', function () {;
+			formManager.@com.servoy.mobile.client.FormManager::hashChanged(Ljava/lang/String;)($wnd.location.hash);
+		});
 	}-*/;
 
 	public void reloadScopeIfInitialized(String formName)
