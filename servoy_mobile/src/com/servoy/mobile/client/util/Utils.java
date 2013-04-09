@@ -590,11 +590,11 @@ public class Utils implements Exportable
 			{
 				try
 				{
-					array[i] = jsArray.getObject(i);
+					array[i] = jsArray.getNumberObject(i);
 				}
 				catch (Exception e)
 				{
-					array[i] = jsArray.getNumberObject(i);
+					array[i] = jsArray.getObject(i);
 				}
 			}
 		}

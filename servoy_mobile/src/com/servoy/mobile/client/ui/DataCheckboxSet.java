@@ -171,6 +171,7 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 		var cbr = $wnd.$("#" + id);
 		var cbrEl = cbr.get()[0];
 		if (cbrEl && $wnd.$.data(cbrEl, "checkboxradio")) {
+			$wnd.$(cbr[0]).prop("checked", cbr.attr("checked"));
 			cbr.checkboxradio("refresh");
 		}
 	}-*/;
