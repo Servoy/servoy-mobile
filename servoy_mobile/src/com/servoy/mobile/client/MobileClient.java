@@ -145,7 +145,7 @@ public class MobileClient implements EntryPoint
 		{
 			JQMContext.changePage(new TrialModePage(this));
 		}
-		else if (!foundSetManager.hasContent() && isOnline())
+		else if (!foundSetManager.hasContent())
 		{
 			sync();
 		}
@@ -205,12 +205,6 @@ public class MobileClient implements EntryPoint
 
 	public void sync()
 	{
-		if (!isOnline())
-		{
-			Window.alert(messages.noNetwork());
-			return;
-		}
-
 		if (flattenedSolution.getMustAuthenticate() && !offlineDataProxy.hasCredentials())
 		{
 			formManager.showLogin();
@@ -354,6 +348,7 @@ public class MobileClient implements EntryPoint
 	}
 
 	//check to see if currently connected to IP network
+	// seems this is not really reliable, especially when using phonegap
 	public final native boolean isOnline()
 	/*-{
 		try {

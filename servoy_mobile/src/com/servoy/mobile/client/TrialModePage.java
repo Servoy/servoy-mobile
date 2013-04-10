@@ -46,7 +46,7 @@ public class TrialModePage extends JQMPage
 			@Override
 			public void onClick(ClickEvent event)
 			{
-				if (!application.getFoundSetManager().hasContent() && application.isOnline())
+				if (!application.getFoundSetManager().hasContent())
 				{
 					application.sync();
 				}
