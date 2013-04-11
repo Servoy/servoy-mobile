@@ -51,6 +51,7 @@ import com.servoy.mobile.client.util.Utils;
 @SuppressWarnings("nls")
 public class FoundSetManager
 {
+	public static final String LITERAL_PREFIX = "LITERAL:"; //$NON-NLS-1$
 	private static final String CHANGES_KEY = "_svy_changes";
 	private static final String DELETES_KEY = "_svy_deletes";
 	private static final String CLIENT_DELETES_KEY = "_svy_client_deletes";
@@ -243,9 +244,17 @@ public class FoundSetManager
 					Object[] coldata = new Object[pdp.length()];
 					for (int j = 0; j < coldata.length; j++)
 					{
-						Object obj = rec.getValue(pdp.get(j));
-						if (obj == null) return null;
-						coldata[j] = obj;
+						String pdpValue = pdp.get(j);
+						if (pdpValue.startsWith(LITERAL_PREFIX))
+						{
+							coldata[j] = Utils.parseJSExpression(pdpValue.substring(LITERAL_PREFIX.length()));
+						}
+						else
+						{
+							Object obj = rec.getValue(pdpValue);
+							if (obj == null) return null;
+							coldata[j] = obj;
+						}
 					}
 					key = relationID + "|" + Utils.createPKHashKey(coldata);
 				}

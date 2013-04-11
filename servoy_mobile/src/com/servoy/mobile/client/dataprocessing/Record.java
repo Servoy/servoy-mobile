@@ -20,6 +20,7 @@ package com.servoy.mobile.client.dataprocessing;
 import java.util.Date;
 import java.util.Map;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
 import com.servoy.base.persistence.constants.IColumnTypeConstants;
@@ -30,6 +31,7 @@ import com.servoy.mobile.client.dto.RecordDescription;
 import com.servoy.mobile.client.dto.RelationDescription;
 import com.servoy.mobile.client.dto.RowDescription;
 import com.servoy.mobile.client.scripting.Scope;
+import com.servoy.mobile.client.util.Utils;
 
 /**
  * The mobile record
@@ -129,6 +131,24 @@ public class Record extends Scope implements IJSRecord, IRowChangeListener
 			if (rd == null) return;
 			parent.startEdit(this);
 
+			if (obj != null)
+			{
+				int type = getVariableType(dataProviderID);
+				if (type == IColumnTypeConstants.INTEGER && !(obj instanceof Number))
+				{
+					obj = Integer.valueOf((int)Utils.getAsDouble(obj));
+				}
+				else if (type == IColumnTypeConstants.NUMBER && !(obj instanceof Number))
+				{
+					obj = Double.valueOf(Utils.getAsDouble(obj));
+				}
+				else if (type == IColumnTypeConstants.DATETIME && !(obj instanceof Date || obj instanceof Number))
+				{
+					Log.error("Can't set value: " + obj + " on dataprovider: " + dataProviderID + " of datasource: " + parent.getEntityName() +
+						", not a date or number");
+					return;
+				}
+			}
 			rd.setValue(dataProviderID, obj);
 		}
 	}

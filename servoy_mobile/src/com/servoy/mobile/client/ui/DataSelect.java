@@ -134,11 +134,11 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 				JsArrayObject objectArray = valuelist.getRealValues().cast();
 				try
 				{
-					return objectArray.getObject(getSelectedIndex());
+					return objectArray.getNumberObject(getSelectedIndex());
 				}
 				catch (Exception e)
 				{
-					return objectArray.getNumberObject(getSelectedIndex());
+					return objectArray.getObject(getSelectedIndex());
 				}
 			}
 			else
@@ -247,11 +247,11 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 	}
 
 	private native void refreshIfPresent(String dataSelectId) /*-{
-		var selectId = $wnd.$("#" + dataSelectId).find("select").attr("id");
-		var select = $wnd.$("select#" + selectId);
-		var selectEl = select.get()[0];
-		if (selectEl && $wnd.$.data(selectEl, "selectmenu")) {
-			select.selectmenu("refresh");
-		}
-	}-*/;
+																var selectId = $wnd.$("#" + dataSelectId).find("select").attr("id");
+																var select = $wnd.$("select#" + selectId);
+																var selectEl = select.get()[0];
+																if (selectEl && $wnd.$.data(selectEl, "selectmenu")) {
+																select.selectmenu("refresh");
+																}
+																}-*/;
 }

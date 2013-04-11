@@ -558,6 +558,32 @@ public class Utils implements Exportable
 		return mergedArgs;
 	}
 
+	public static Object parseJSExpression(Object o)
+	{
+		if (o instanceof String)
+		{
+			String s = ((String)o).trim();
+			if ("".equals(s)) return null;
+			if ("true".equals(s)) return Boolean.TRUE;
+			if ("false".equals(s)) return Boolean.FALSE;
+			try
+			{
+				return Double.valueOf(s);
+			}
+			catch (NumberFormatException e)
+			{
+				if ((s.charAt(0) == '\'' && s.charAt(s.length() - 1) == '\'') || (s.charAt(0) == '"' && s.charAt(s.length() - 1) == '"'))
+				{
+					return s.substring(1, s.length() - 1);
+				}
+			}
+			return null;
+		}
+
+		// non-string, keep original
+		return o;
+	}
+
 	/**
 	 * Find item in an array of objects
 	 * 
