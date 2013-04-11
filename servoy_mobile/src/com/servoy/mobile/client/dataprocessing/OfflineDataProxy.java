@@ -17,12 +17,14 @@ package com.servoy.mobile.client.dataprocessing;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.http.client.Request;
@@ -369,7 +371,14 @@ public class OfflineDataProxy
 	{
 		if (credentials != null)
 		{
-			builder.setHeader("Authorization", "Basic " + Base64Coder.encodeString(credentials[0] + ":" + credentials[1]));
+			try
+			{
+				builder.setHeader("Authorization", "Basic " + new String(Base64Coder.encode((credentials[0] + ":" + credentials[1]).getBytes("UTF-8"))));
+			}
+			catch (UnsupportedEncodingException e)
+			{
+				Log.error("Cannot convert to UTF8 encoding:", e);
+			}
 		}
 		// 30 seconds timeout
 		builder.setTimeoutMillis(30000);
