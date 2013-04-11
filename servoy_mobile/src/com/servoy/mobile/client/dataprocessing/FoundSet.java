@@ -200,6 +200,17 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		return false;
 	}
 
+	@Export("deleteAllRecords")
+	@Override
+	public boolean js_deleteAllRecords() throws Exception
+	{
+		for (int i = getSize(); i >= 1; i--)
+		{
+			js_deleteRecord(i);
+		}
+		return true;
+	}
+
 	/*
 	 * @see com.servoy.j2db.scripting.api.IJSFoundSet#sort(java.lang.Object)
 	 */
