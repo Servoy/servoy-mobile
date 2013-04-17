@@ -13,11 +13,11 @@ public class Login extends JQMPage implements SubmissionHandler<LoginData>
 	{
 		this.application = mc;
 
-		JQMHeader h = new JQMHeader(application.getMessages().loginTitle());
+		JQMHeader h = new JQMHeader(application.getI18nMessageWithFallback("loginTitle"));
 		h.setTheme("b");
 		add(h);
 
-		add(new Paragraph(application.getMessages().authenticationRequired()));
+		add(new Paragraph(application.getI18nMessageWithFallback("authenticationRequired")));
 
 		LoginData form = new LoginData(application, this);
 		add(form);

@@ -190,8 +190,8 @@ public class FoundSetManager
 	}
 
 	private native void exportImpl(String name) /*-{
-												$wnd._ServoyUtils_.defineWindowVariable(name);
-												}-*/;
+		$wnd._ServoyUtils_.defineWindowVariable(name);
+	}-*/;
 
 	public EntityDescription getEntityDescription(String entityName)
 	{
@@ -564,7 +564,7 @@ public class FoundSetManager
 	private String[] getRowDataPkAndKey(String entityName, RowDescription rowData)
 	{
 		DataproviderIdAndTypeHolder dataProviderID = entities.getPKDataProviderID(entityName);
-		if (dataProviderID == null) throw new IllegalStateException(application.getMessages().cannotWorkWithoutPK());
+		if (dataProviderID == null) throw new IllegalStateException(application.getI18nMessageWithFallback("cannotWorkWithoutPK"));
 
 		Object pk = rowData.getValue(dataProviderID.getDataproviderId(), dataProviderID.getType());
 		return new String[] { pk.toString(), entityName + '|' + pk };

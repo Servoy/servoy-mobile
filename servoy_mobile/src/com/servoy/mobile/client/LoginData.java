@@ -39,10 +39,10 @@ public class LoginData extends JQMForm
 		super(handler);
 		this.application = mc;
 
-		emailInput = new JQMEmail(application.getMessages().userUid());
+		emailInput = new JQMEmail(application.getI18nMessageWithFallback("userUid"));
 		addRequired(emailInput);
 
-		passwordInput = new JQMPassword(application.getMessages().password());
+		passwordInput = new JQMPassword(application.getI18nMessageWithFallback("password"));
 		passwordInput.addKeyUpHandler(new KeyUpHandler()
 		{
 			@Override
@@ -56,7 +56,7 @@ public class LoginData extends JQMForm
 		});
 		addRequired(passwordInput);
 
-		JQMSubmit submit = new JQMSubmit(application.getMessages().login());
+		JQMSubmit submit = new JQMSubmit(application.getI18nMessageWithFallback("login"));
 		add(submit);
 	}
 

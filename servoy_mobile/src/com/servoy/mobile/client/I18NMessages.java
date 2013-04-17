@@ -1,55 +1,58 @@
 package com.servoy.mobile.client;
 
+import com.google.gwt.i18n.client.ConstantsWithLookup;
 import com.google.gwt.i18n.client.LocalizableResource.DefaultLocale;
 import com.google.gwt.i18n.client.LocalizableResource.Generate;
-import com.google.gwt.i18n.client.Messages;
 
 @Generate(format = "com.google.gwt.i18n.rebind.format.PropertiesFormat")
 @DefaultLocale("en_US")
-public interface I18NMessages extends Messages
+public interface I18NMessages extends ConstantsWithLookup
 {
-	@DefaultMessage("Syncing")
+	/*
+	 * If you add a new key here, add it also in messages.properties with servoy.mobile.mynewkey so that it shows in developer i18n editor.
+	 */
+	@DefaultStringValue("Syncing")
 	String syncing();
 
-	@DefaultMessage("You are currently not connected to a network")
+	@DefaultStringValue("You are currently not connected to a network")
 	String noNetwork();
 
-	@DefaultMessage("Discard local changes?")
+	@DefaultStringValue("Discard local changes?")
 	String discardLocalChanges();
 
-	@DefaultMessage("Couldn`t retrieve JSON")
+	@DefaultStringValue("Couldn`t retrieve JSON")
 	String cannotLoadJSON();
 
-	@DefaultMessage("Couldn`t put JSON")
+	@DefaultStringValue("Couldn`t put JSON")
 	String cannotSaveJSON();
 
-	@DefaultMessage("Couldn`t delete record")
+	@DefaultStringValue("Couldn`t delete record")
 	String cannotDeleteRecord();
 
-	@DefaultMessage("Cannot work without a primary key")
+	@DefaultStringValue("Cannot work without a primary key")
 	String cannotWorkWithoutPK();
 
-	@DefaultMessage("Authenticate")
+	@DefaultStringValue("Authenticate")
 	String loginTitle();
 
-	@DefaultMessage("Authentication required, please login.")
+	@DefaultStringValue("Authentication required, please login.")
 	String authenticationRequired();
 
-	@DefaultMessage("Authentication failed.")
+	@DefaultStringValue("Authentication failed.")
 	String authenticationFailed();
 
-	@DefaultMessage("Request timed out.")
+	@DefaultStringValue("Request timed out.")
 	String requestTimeout();
 
-	@DefaultMessage("Requested url is not available.")
+	@DefaultStringValue("Requested url is not available.")
 	String serviceNotAvailable();
 
-	@DefaultMessage("Email")
+	@DefaultStringValue("Email")
 	String userUid();
 
-	@DefaultMessage("Password")
+	@DefaultStringValue("Password")
 	String password();
 
-	@DefaultMessage("Login")
+	@DefaultStringValue("Login")
 	String login();
 }

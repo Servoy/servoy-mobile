@@ -67,8 +67,6 @@ public class MobileClient implements EntryPoint
 
 	public static final String NO_INIT_SMC = "noinitsmc";
 
-	protected I18NMessages messages = (I18NMessages)GWT.create(I18NMessages.class);
-
 	private FoundSetManager foundSetManager;
 	private OfflineDataProxy offlineDataProxy;
 	private FormManager formManager;
@@ -212,7 +210,7 @@ public class MobileClient implements EntryPoint
 		else
 		{
 
-			Mobile.showLoadingDialog(messages.syncing());
+			Mobile.showLoadingDialog(getI18nMessageWithFallback("syncing"));
 
 			if (foundSetManager.hasChanges())
 			{
@@ -233,7 +231,7 @@ public class MobileClient implements EntryPoint
 						Mobile.hideLoadingDialog();
 
 						error(reason.getMessage());
-						boolean ok = Window.confirm(messages.discardLocalChanges());
+						boolean ok = Window.confirm(getI18nMessageWithFallback("discardLocalChanges"));
 						if (ok)
 						{
 							load();
@@ -250,6 +248,11 @@ public class MobileClient implements EntryPoint
 				load();
 			}
 		}
+	}
+
+	public String getI18nMessageWithFallback(String key)
+	{
+		return i18nProvider.getI18nMessageWithFallback(key);
 	}
 
 	public void log(String msg)
@@ -363,11 +366,6 @@ public class MobileClient implements EntryPoint
 	/*-{
 		return $wnd.navigator.language;
 	}-*/;
-
-	public I18NMessages getMessages()
-	{
-		return messages;
-	}
 
 	public SolutionI18nProvider getI18nProvider()
 	{

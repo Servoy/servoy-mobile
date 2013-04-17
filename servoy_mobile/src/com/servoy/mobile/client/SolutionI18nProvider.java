@@ -17,6 +17,7 @@
 
 package com.servoy.mobile.client;
 
+import com.google.gwt.core.client.GWT;
 import com.servoy.base.util.I18NProvider;
 import com.servoy.mobile.client.persistence.FlattenedSolution;
 
@@ -29,6 +30,7 @@ public class SolutionI18nProvider implements I18NProvider
 
 	private final FlattenedSolution solution;
 	private String locale;
+	protected I18NMessages messages = (I18NMessages)GWT.create(I18NMessages.class);
 
 	public SolutionI18nProvider(FlattenedSolution solution, String locale)
 	{
@@ -80,5 +82,15 @@ public class SolutionI18nProvider implements I18NProvider
 	public String getLocale()
 	{
 		return locale;
+	}
+
+	public String getI18nMessageWithFallback(String key)
+	{
+		String message = getI18NMessage(I18NProvider.MOBILE_KEY_PREFIX + key);
+		if (message == null)
+		{
+			message = messages.getString(key);
+		}
+		return message;
 	}
 }

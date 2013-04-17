@@ -76,8 +76,8 @@ public class OfflineDataProxy
 			{
 				public void onError(Request request, Throwable exception)
 				{
-					loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getMessages().cannotLoadJSON(),
-						exception));
+					loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback(
+						"cannotLoadJSON"), exception));
 					loadCallback = null;
 				}
 
@@ -95,8 +95,8 @@ public class OfflineDataProxy
 					}
 					else
 					{
-						loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getMessages().cannotLoadJSON(),
-							response.getStatusCode()));
+						loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback(
+							"cannotLoadJSON"), response.getStatusCode()));
 						loadCallback = null;
 					}
 				}
@@ -104,7 +104,8 @@ public class OfflineDataProxy
 		}
 		catch (RequestException e)
 		{
-			loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getMessages().cannotLoadJSON(), e));
+			loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback("cannotLoadJSON"),
+				e));
 			loadCallback = null;
 		}
 	}
@@ -154,8 +155,8 @@ public class OfflineDataProxy
 			{
 				public void onError(Request request, Throwable exception)
 				{
-					loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getMessages().cannotLoadJSON(),
-						exception));
+					loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback(
+						"cannotLoadJSON"), exception));
 					loadCallback = null;
 				}
 
@@ -179,8 +180,8 @@ public class OfflineDataProxy
 					}
 					else
 					{
-						loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getMessages().cannotLoadJSON(),
-							response.getStatusCode()));
+						loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback(
+							"cannotLoadJSON"), response.getStatusCode()));
 						loadCallback = null;
 					}
 				}
@@ -188,7 +189,8 @@ public class OfflineDataProxy
 		}
 		catch (RequestException e)
 		{
-			loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getMessages().cannotLoadJSON(), e));
+			loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback("cannotLoadJSON"),
+				e));
 			loadCallback = null;
 		}
 	}
@@ -263,8 +265,8 @@ public class OfflineDataProxy
 			{
 				public void onError(Request request, Throwable exception)
 				{
-					callback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getMessages().cannotDeleteRecord(),
-						exception));
+					callback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback(
+						"cannotDeleteRecord"), exception));
 				}
 
 				public void onResponseReceived(Request request, Response response)
@@ -277,15 +279,16 @@ public class OfflineDataProxy
 					}
 					else
 					{
-						callback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getMessages().cannotDeleteRecord(),
-							response.getStatusCode()));
+						callback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback(
+							"cannotDeleteRecord"), response.getStatusCode()));
 					}
 				}
 			});
 		}
 		catch (RequestException e)
 		{
-			callback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getMessages().cannotDeleteRecord(), e));
+			callback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback("cannotDeleteRecord"),
+				e));
 		}
 	}
 
@@ -321,7 +324,8 @@ public class OfflineDataProxy
 			{
 				public void onError(Request request, Throwable exception)
 				{
-					callback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getMessages().cannotSaveJSON(), exception));
+					callback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback(
+						"cannotSaveJSON"), exception));
 				}
 
 				public void onResponseReceived(Request request, Response response)
@@ -338,15 +342,15 @@ public class OfflineDataProxy
 					}
 					else
 					{
-						callback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getMessages().cannotSaveJSON(),
-							response.getStatusCode()));
+						callback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback(
+							"cannotSaveJSON"), response.getStatusCode()));
 					}
 				}
 			});
 		}
 		catch (RequestException e)
 		{
-			callback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getMessages().cannotSaveJSON(), e));
+			callback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback("cannotSaveJSON"), e));
 		}
 	}
 

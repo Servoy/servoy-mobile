@@ -59,15 +59,15 @@ public class Failure
 	{
 		if (statusCode == Response.SC_UNAUTHORIZED)
 		{
-			return application.getMessages().authenticationFailed();
+			return application.getI18nMessageWithFallback("authenticationFailed");
 		}
 		if (statusCode == Response.SC_SERVICE_UNAVAILABLE)
 		{
-			return application.getMessages().serviceNotAvailable();
+			return application.getI18nMessageWithFallback("serviceNotAvailable");
 		}
 		if (e instanceof RequestTimeoutException)
 		{
-			return application.getMessages().requestTimeout();
+			return application.getI18nMessageWithFallback("requestTimeout");
 		}
 		return defaultMessage;
 	}
