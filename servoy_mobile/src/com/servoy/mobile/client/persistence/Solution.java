@@ -83,6 +83,8 @@ public class Solution extends JavaScriptObject
 	}-*/;
 
 	public final native String getI18nValue(String key) /*-{
+		if (!this.i18n)
+			this.i18n = {};
 		return this.i18n[key];
 	}-*/;
 
@@ -98,6 +100,8 @@ public class Solution extends JavaScriptObject
 
 	public final native void setI18nValue(String key, String value)
 	/*-{
+		if (!this.i18n)
+			this.i18n = {};
 		this.i18n[key] = value;
 	}-*/;
 
