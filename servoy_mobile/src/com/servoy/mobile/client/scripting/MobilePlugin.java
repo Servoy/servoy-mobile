@@ -77,6 +77,11 @@ public class MobilePlugin implements Exportable
 		client.sync();
 	}
 
+	public void syncData(JavaScriptObject successCallback, JavaScriptObject errorHandler)
+	{
+		client.sync(successCallback, errorHandler);
+	}
+
 	public native int getUsedStorageSpace()
 	/*-{
 		return unescape(encodeURIComponent(JSON.stringify(localStorage))).length * 2;

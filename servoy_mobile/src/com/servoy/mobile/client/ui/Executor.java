@@ -96,7 +96,7 @@ public class Executor
 	 * @param function
 	 * @param string
 	 */
-	private static native Object call(JavaScriptObject func, JsArrayMixed params)
+	public static native Object call(JavaScriptObject func, JsArrayMixed params)
 	/*-{
 		return $wnd.internal.Utils.wrapIfPrimitive(func.apply(func, params));
 	}-*/;

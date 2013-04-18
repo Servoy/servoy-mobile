@@ -22,6 +22,8 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.Window;
 import com.servoy.base.solutionmodel.IBaseSolutionModel;
@@ -203,6 +205,11 @@ public class MobileClient implements EntryPoint
 
 	public void sync()
 	{
+		sync(null, null);
+	}
+
+	public void sync(final JavaScriptObject successCallback, final JavaScriptObject errorHandler)
+	{
 		if (flattenedSolution.getMustAuthenticate() && !offlineDataProxy.hasCredentials())
 		{
 			formManager.showLogin();
@@ -221,8 +228,7 @@ public class MobileClient implements EntryPoint
 					public void onSuccess(Integer result)
 					{
 						log("Done, submitted size: " + result);
-
-						load();
+						load(successCallback, errorHandler);
 					}
 
 					@Override
@@ -231,21 +237,31 @@ public class MobileClient implements EntryPoint
 						Mobile.hideLoadingDialog();
 
 						error(reason.getMessage());
-						boolean ok = Window.confirm(getI18nMessageWithFallback("discardLocalChanges"));
-						if (ok)
+						if (errorHandler != null)
 						{
-							load();
+							JsArrayMixed jsArray = JavaScriptObject.createArray().cast();
+							jsArray.set(0, reason.getStatusCode());
+							jsArray.set(1, reason.getMessage());
+							Executor.call(errorHandler, jsArray);
 						}
 						else
 						{
-							showFirstForm();
+							boolean ok = Window.confirm(getI18nMessageWithFallback("discardLocalChanges"));
+							if (ok)
+							{
+								load(successCallback, errorHandler);
+							}
+							else
+							{
+								showFirstForm();
+							}
 						}
 					}
 				});
 			}
 			else
 			{
-				load();
+				load(successCallback, errorHandler);
 			}
 		}
 	}
@@ -265,7 +281,7 @@ public class MobileClient implements EntryPoint
 		Window.alert(msg);
 	}
 
-	private void load()
+	private void load(final JavaScriptObject successCallback, final JavaScriptObject errorHandler)
 	{
 		//first clear existing stuff if there is any
 		foundSetManager.clearLocalStorage();
@@ -277,7 +293,13 @@ public class MobileClient implements EntryPoint
 			{
 				Mobile.hideLoadingDialog();
 				log("Done, loaded size: " + result);
-				showFirstForm();
+				if (successCallback != null)
+				{
+					JsArrayMixed jsArray = JavaScriptObject.createArray().cast();
+					jsArray.set(0, result.doubleValue());
+					Executor.call(successCallback, jsArray);
+				}
+				else showFirstForm();
 			}
 
 			@Override
@@ -301,11 +323,21 @@ public class MobileClient implements EntryPoint
 				}
 				GWT.log(detail.toString());
 				Log.error(detail.toString());
-				error(reason.getMessage());
-				if (reason.getStatusCode() != Response.SC_UNAUTHORIZED && reason.getStatusCode() != 0)
+				if (errorHandler != null)
 				{
-					// if authentication failed don't show first form
-					showFirstForm();
+					JsArrayMixed jsArray = JavaScriptObject.createArray().cast();
+					jsArray.set(0, reason.getStatusCode());
+					jsArray.set(1, reason.getMessage());
+					Executor.call(errorHandler, jsArray);
+				}
+				else
+				{
+					error(reason.getMessage());
+					if (reason.getStatusCode() != Response.SC_UNAUTHORIZED && reason.getStatusCode() != 0)
+					{
+						// if authentication failed don't show first form
+						showFirstForm();
+					}
 				}
 			}
 		});
