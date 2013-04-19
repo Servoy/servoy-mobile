@@ -9,12 +9,13 @@
   <!-- Inherit the core Web Toolkit stuff.                        -->
   <inherits name='com.google.gwt.user.User'/>
   
-  <script src="prepareHTMLForTesting.js"/>
   <inherits name="com.servoy.mobile.MobileClient"/>
+  <script src="testing.js"/>
 
   <inherits name="com.allen_sauer.gwt.log.gwt-log-RemoteLogger"/>
-  <inherits name="com.google.gwt.junit.JUnit"/>
   
+  <set-property name="export" value="yes"/>
+
   <super-source path="translatable"/>
   
   <!-- Specify the paths for translatable code                    -->

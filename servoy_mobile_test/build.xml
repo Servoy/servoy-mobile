@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<project name="MobileTestClient" default="build" basedir=".">
+<project name="MobileTestClient" default="war" basedir=".">
   <!-- Arguments to gwtc and devmode targets -->
   <property name="gwt.args" value="" />
 
   <!-- Configure path to GWT SDK -->
-  <property name="gwt.sdk" location="E:/EclipseInstalls/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.5.0.v201210291354-rel-r42/gwt-2.5.0" />
+  <property name="gwt.jars" location="../servoy_mobile/lib" />
+  <property name="gwt.servlet.libs" location="lib" />
 
   <path id="project.class.path">
     <pathelement location="../servoy_mobile/war/WEB-INF/classes"/>
     <pathelement location="../servoy_base/bin"/>
     <pathelement location="war/WEB-INF/classes"/>
-    <pathelement location="${gwt.sdk}/gwt-user.jar"/>
-    <fileset dir="${gwt.sdk}" includes="gwt-dev*.jar"/>
+    <pathelement location="${gwt.jars}/gwt-user.jar"/>
+    <fileset dir="${gwt.jars}" includes="gwt-dev.jar"/>
     <!-- Add any additional non-server libs (such as JUnit) -->
     <fileset dir="war/WEB-INF/lib" includes="**/*.jar"/>
     <fileset dir="../servoy_mobile/lib" includes="**/*.jar"/>
 
-    <pathelement location="e:\Workspaces\HEAD\j2db_test\lib\junit_4.5.0.jar" />
+    <!-- <pathelement location="e:\Workspaces\HEAD\j2db_test\lib\junit_4.5.0.jar" /> -->
   </path>
 
   <path id="project.class.path.withsrc">
@@ -27,10 +28,14 @@
   </path>
 
   <target name="libs" description="Copy libs to WEB-INF/lib">
+  	<!--<delete file="war/WEB-INF/lib/gwt-dev.jar" />
+  	<delete file="war/WEB-INF/lib/gwt-log-3.2.0.jar" />-->
+  	
     <mkdir dir="war/WEB-INF/lib" />
-    <copy todir="war/WEB-INF/lib" file="../servoy_mobile/lib/gwt-log-3.2.0.jar" />
-    <copy todir="war/WEB-INF/lib" file="${gwt.sdk}/gwt-servlet.jar" />
-    <copy todir="war/WEB-INF/lib" file="${gwt.sdk}/gwt-servlet-deps.jar" />
+    <!-- in GWT 2.5 caused a need for gwt-dev in order to use gwt-log but until 2.5.1, this workaround jar can be used until then -->
+    <copy todir="war/WEB-INF/lib" file="lib/gwt-fix-2.5.0-rc2.jar" />
+    <copy todir="war/WEB-INF/lib" file="${gwt.servlet.libs}/gwt-servlet.jar" />
+    <copy todir="war/WEB-INF/lib" file="${gwt.servlet.libs}/gwt-servlet-deps.jar" />
     <!-- Add any additional server libs that need to be copied -->
   </target>
 
@@ -57,11 +62,16 @@
       <arg line="-war"/>
       <arg value="war"/>
       <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+      <arg value="-style"/>
+      <arg value="PRETTY"/>
       <arg line="${gwt.args}"/>
       <arg value="com.servoy.mobile.test.MobileTestClient"/>
     </java>
   </target>
 
+  <!-- this target can still be used with developer started TOMCAT using deployed MobileTestClient.war
+       but you have to make sure the war is up-to-date and that the -startupUrl points to the host page in the Tomcat GWT APP;
+       this way you can debug with GWT the client java code -->
   <target name="devmode" depends="javac" description="Run development mode">
     <java failonerror="true" fork="true" classname="com.google.gwt.dev.DevMode">
       <classpath>
@@ -69,16 +79,17 @@
       </classpath>
       <jvmarg value="-Xmx256M"/>
       <arg value="-startupUrl"/>
-      <arg value="MobileTestClient.html"/>
+      <arg value="http://127.0.0.1:8080/MobileTestClient/servoy_mobile_test.html?log_level=DEBUG&amp;noinitsmc=true&amp;bid=0"/>
       <arg line="-war"/>
       <arg value="war"/>
       <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+      <arg value="-noserver"/>
       <arg line="${gwt.args}"/>
       <arg value="com.servoy.mobile.test.MobileTestClient"/>
     </java>
   </target>
 
-  <target name="test.dev" depends="javac" description="Run development mode tests">
+  <!-- <target name="test.dev" depends="javac" description="Run development mode tests">
     <mkdir dir="reports/junitGWT.dev" />
     <junit fork="yes" printsummary="yes" haltonfailure="yes">
       <jvmarg line="-Xmx256m" />
@@ -113,12 +124,12 @@
   <target name="test" description="Run development and production mode tests">
     <antcall target="test.dev" />
     <antcall target="test.prod" />
-  </target>
+  </target> -->
 
   <target name="build" depends="gwtc" description="Build this project" />
 
   <target name="war" depends="build" description="Create a war file">
-    <zip destfile="MobileTestClient.war" basedir="war"/>
+    <jar destfile="MobileTestClient.war" basedir="war"/>
   </target>
 
   <target name="clean" description="Cleans this project">

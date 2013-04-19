@@ -5,30 +5,54 @@
          version="2.5"
          xmlns="http://java.sun.com/xml/ns/javaee">
 
-  <!-- things are declared twice in some places in order for them to work when running both with unit tests or as a simple app -->
-
   <!-- Servlets -->
   <servlet>
     <servlet-name>gwt-log-remote-logger-servlet</servlet-name>
     <servlet-class>com.allen_sauer.gwt.log.server.RemoteLoggerServiceImpl</servlet-class>
+
+    <!-- for developer as cwd -->
     <init-param>
       <param-name>symbolMaps0</param-name>
-      <param-value>war/com.servoy.mobile.test.MobileTestClient.JUnit/.junit_symbolMaps/</param-value>
-      <param-name>symbolMaps1</param-name>
-      <param-value>WEB-INF/deploy/mobiletestclient/symbolMaps/</param-value>
+      <param-value>../application_server/server/webapps/MobileTestClient/WEB-INF/deploy/mobiletestclient/symbolMaps/</param-value>
+    </init-param>
+    
+    <!-- for app. server as cwd -->
+    <init-param>
+      <param-name>symbolMaps2</param-name>
+      <param-value>server/webapps/MobileTestClient/WEB-INF/deploy/mobiletestclient/symbolMaps/</param-value>
     </init-param>
   </servlet>
 
   <servlet-mapping>
     <servlet-name>gwt-log-remote-logger-servlet</servlet-name>
-    <url-pattern>/com.servoy.mobile.test.MobileTestClient.JUnit/gwt-log</url-pattern>
-  </servlet-mapping>
-  
-  <servlet-mapping>
-    <servlet-name>gwt-log-remote-logger-servlet</servlet-name>
     <url-pattern>/mobiletestclient/gwt-log</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+    <servlet-name>testSuiteController</servlet-name>
+    <servlet-class>
+      com.servoy.mobile.test.server.service.TestSuiteController
+    </servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>testSuiteController</servlet-name>
+    <url-pattern>/mobiletestclient/testSuiteController</url-pattern>
+  </servlet-mapping>
+  
+  <!-- bridge to Servoy Developer or ant-junit suite via JNDI bean with static field -->
+  <resource-env-ref>
+    <description>
+      A map for sharing objects with the Servoy world outside this WAR.
+    </description>
+    <resource-env-ref-name>
+      servoy/sharedMap
+    </resource-env-ref-name>
+    <resource-env-ref-type>
+      com.servoy.j2db.util.StaticSingletonMap
+    </resource-env-ref-type>
+  </resource-env-ref>
+
   <!-- Default page to serve -->
   <welcome-file-list>
     <welcome-file>servoy_mobile_test.html</welcome-file>

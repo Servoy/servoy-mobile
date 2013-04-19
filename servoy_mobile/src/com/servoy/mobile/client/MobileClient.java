@@ -27,6 +27,7 @@ import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.Window;
 import com.servoy.base.solutionmodel.IBaseSolutionModel;
+import com.servoy.base.test.IJSUnitSuiteHandler;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.dataprocessing.FoundSetManager;
 import com.servoy.mobile.client.dataprocessing.OfflineDataProxy;
@@ -67,8 +68,6 @@ import com.sksamuel.jqm4gwt.Mobile;
 public class MobileClient implements EntryPoint
 {
 
-	public static final String NO_INIT_SMC = "noinitsmc";
-
 	private FoundSetManager foundSetManager;
 	private OfflineDataProxy offlineDataProxy;
 	private FormManager formManager;
@@ -81,7 +80,7 @@ public class MobileClient implements EntryPoint
 	@Override
 	public void onModuleLoad()
 	{
-		if (!"true".equals(Window.Location.getParameter(NO_INIT_SMC))) initialize();
+		if (!"true".equals(Window.Location.getParameter(IJSUnitSuiteHandler.NO_INIT_SMC_ARG))) initialize();
 	}
 
 	protected void initialize()
