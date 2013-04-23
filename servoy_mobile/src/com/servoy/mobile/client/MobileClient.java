@@ -211,7 +211,7 @@ public class MobileClient implements EntryPoint
 	{
 		if (flattenedSolution.getMustAuthenticate() && !offlineDataProxy.hasCredentials())
 		{
-			formManager.showLogin();
+			formManager.showLogin(successCallback, errorHandler);
 		}
 		else
 		{

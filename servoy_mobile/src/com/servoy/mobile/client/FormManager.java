@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.scripting.FormScope;
 import com.servoy.mobile.client.scripting.JSHistory;
@@ -68,7 +69,7 @@ public class FormManager
 	}
 
 
-	private JQMPage getLogin()
+	private JQMPage getLogin(JavaScriptObject successCallback, JavaScriptObject errorHandler)
 	{
 		if (login == null)
 		{
@@ -178,9 +179,9 @@ public class FormManager
 		showForm(getFirstForm());
 	}
 
-	public void showLogin()
+	public void showLogin(JavaScriptObject successCallback, JavaScriptObject errorHandler)
 	{
-		JQMContext.changePage(getLogin());
+		JQMContext.changePage(getLogin(successCallback, errorHandler));
 	}
 
 	public FormScope getFormScope(String name)
@@ -211,9 +212,14 @@ public class FormManager
 		$wnd._ServoyUtils_.getFormScope = function(name) {
 			return formManager.@com.servoy.mobile.client.FormManager::getFormScope(Ljava/lang/String;)(name);
 		}
-		$wnd.$($wnd).bind('hashchange', function () {;
-			formManager.@com.servoy.mobile.client.FormManager::hashChanged(Ljava/lang/String;)($wnd.location.hash);
-		});
+		$wnd
+				.$($wnd)
+				.bind(
+						'hashchange',
+						function() {
+							;
+							formManager.@com.servoy.mobile.client.FormManager::hashChanged(Ljava/lang/String;)($wnd.location.hash);
+						});
 	}-*/;
 
 	public void reloadScopeIfInitialized(String formName)
