@@ -134,15 +134,8 @@ public class Record extends Scope implements IJSRecord, IRowChangeListener
 			if (obj != null)
 			{
 				int type = getVariableType(dataProviderID);
-				if (type == IColumnTypeConstants.INTEGER && !(obj instanceof Number))
-				{
-					obj = Integer.valueOf((int)Utils.getAsDouble(obj));
-				}
-				else if (type == IColumnTypeConstants.NUMBER && !(obj instanceof Number))
-				{
-					obj = Double.valueOf(Utils.getAsDouble(obj));
-				}
-				else if (type == IColumnTypeConstants.DATETIME && !(obj instanceof Date || obj instanceof Number))
+				obj = getValueAsRightType(obj, type);
+				if (type == IColumnTypeConstants.DATETIME && !(obj instanceof Date || obj instanceof Number))
 				{
 					Log.error("Can't set value: " + obj + " on dataprovider: " + dataProviderID + " of datasource: " + parent.getEntityName() +
 						", not a date or number");
@@ -151,6 +144,19 @@ public class Record extends Scope implements IJSRecord, IRowChangeListener
 			}
 			rd.setValue(dataProviderID, obj);
 		}
+	}
+
+	public Object getValueAsRightType(Object value, int type)
+	{
+		if (type == IColumnTypeConstants.INTEGER && !(value instanceof Number))
+		{
+			return Integer.valueOf((int)Utils.getAsDouble(value));
+		}
+		else if (type == IColumnTypeConstants.NUMBER && !(value instanceof Number))
+		{
+			return Double.valueOf(Utils.getAsDouble(value));
+		}
+		return value;
 	}
 
 	@Override
@@ -248,7 +254,7 @@ public class Record extends Scope implements IJSRecord, IRowChangeListener
 
 	void clearRelationCaches()
 	{
-		recordDescription.clearRFS();
+		if (recordDescription != null) recordDescription.clearRFS();
 	}
 
 	@Override

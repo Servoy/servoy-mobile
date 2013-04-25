@@ -14,7 +14,13 @@ import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
+import com.servoy.base.query.BaseAndCondition;
+import com.servoy.base.query.BaseCompareCondition;
+import com.servoy.base.query.BaseOrCondition;
+import com.servoy.base.query.BaseQueryColumn;
+import com.servoy.base.query.IBaseSQLCondition;
 import com.servoy.base.scripting.solutionhelper.IPredefinedIconConstants;
+import com.servoy.mobile.client.dataprocessing.Record;
 import com.sksamuel.jqm4gwt.DataIcon;
 
 /*
@@ -673,5 +679,155 @@ public class Utils implements Exportable
 			result[i] = jsArrayString.get(i);
 		}
 		return result;
+	}
+
+	public static boolean evalCondition(IBaseSQLCondition condition, Record record)
+	{
+		if (condition != null)
+		{
+			if (condition instanceof BaseAndCondition)
+			{
+				boolean retVal = true;
+				for (IBaseSQLCondition andCondition : ((BaseAndCondition)condition).getConditions())
+				{
+					retVal = retVal && evalCondition(andCondition, record);
+					if (!retVal) break;
+				}
+				return retVal;
+			}
+			if (condition instanceof BaseOrCondition)
+			{
+				boolean retVal = false;
+				for (IBaseSQLCondition orCondition : ((BaseOrCondition)condition).getConditions())
+				{
+					retVal = retVal || evalCondition(orCondition, record);
+					if (retVal) break;
+				}
+				return retVal;
+			}
+			if (condition instanceof BaseCompareCondition)
+			{
+				BaseCompareCondition compareCondition = (BaseCompareCondition)condition;
+				int operator = compareCondition.getOperator();
+				String dataprovider = null;
+				if (compareCondition.getOperand1() != null)
+				{
+					dataprovider = ((BaseQueryColumn)compareCondition.getOperand1()).getName();
+				}
+				if (dataprovider != null)
+				{
+					Object recordValue = record.getValue(dataprovider);
+					Object conditionValue = compareCondition.getOperand2();
+					if (operator == IBaseSQLCondition.BETWEEN_OPERATOR)
+					{
+						return conditionResult(IBaseSQLCondition.GTE_OPERATOR, recordValue, ((Object[])conditionValue)[0]) &&
+							conditionResult(IBaseSQLCondition.LTE_OPERATOR, recordValue, ((Object[])conditionValue)[1]);
+					}
+					return conditionResult(operator, recordValue, conditionValue);
+				}
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private static boolean conditionResult(int operator, Object recordValue, Object conditionValue)
+	{
+		if ((operator & IBaseSQLCondition.CASEINSENTITIVE_MODIFIER) == IBaseSQLCondition.CASEINSENTITIVE_MODIFIER && recordValue instanceof String &&
+			conditionValue instanceof String)
+		{
+			recordValue = recordValue.toString().toUpperCase();
+			conditionValue = conditionValue.toString().toUpperCase();
+		}
+		operator = operator & IBaseSQLCondition.OPERATOR_MASK;
+		if (operator == IBaseSQLCondition.EQUALS_OPERATOR)
+		{
+			return equalObjects(recordValue, conditionValue);
+		}
+		else if (operator == IBaseSQLCondition.NOT_OPERATOR)
+		{
+			return !equalObjects(recordValue, conditionValue);
+		}
+		else if (operator == IBaseSQLCondition.GT_OPERATOR)
+		{
+			if (recordValue instanceof Number && conditionValue instanceof Number)
+			{
+				return ((Number)recordValue).doubleValue() > ((Number)conditionValue).doubleValue();
+			}
+			else if (recordValue instanceof Date && conditionValue instanceof Date)
+			{
+				return ((Date)recordValue).getTime() > ((Date)conditionValue).getTime();
+			}
+			else if (recordValue != null)
+			{
+				return recordValue.toString().compareTo((String)conditionValue) > 0;
+			}
+		}
+		else if (operator == IBaseSQLCondition.LT_OPERATOR)
+		{
+			if (recordValue instanceof Number && conditionValue instanceof Number)
+			{
+				return ((Number)recordValue).doubleValue() < ((Number)conditionValue).doubleValue();
+			}
+			else if (recordValue instanceof Date && conditionValue instanceof Date)
+			{
+				return ((Date)recordValue).getTime() < ((Date)conditionValue).getTime();
+			}
+			else if (recordValue != null)
+			{
+				return recordValue.toString().compareTo((String)conditionValue) < 0;
+			}
+		}
+		else if (operator == IBaseSQLCondition.LTE_OPERATOR)
+		{
+			if (recordValue instanceof Number && conditionValue instanceof Number)
+			{
+				return ((Number)recordValue).doubleValue() <= ((Number)conditionValue).doubleValue();
+			}
+			else if (recordValue instanceof Date && conditionValue instanceof Date)
+			{
+				return ((Date)recordValue).getTime() <= ((Date)conditionValue).getTime();
+			}
+			else if (recordValue != null)
+			{
+				return recordValue.toString().compareTo((String)conditionValue) <= 0;
+			}
+		}
+		else if (operator == IBaseSQLCondition.GTE_OPERATOR)
+		{
+			if (recordValue instanceof Number && conditionValue instanceof Number)
+			{
+				return ((Number)recordValue).doubleValue() >= ((Number)conditionValue).doubleValue();
+			}
+			else if (recordValue instanceof Date && conditionValue instanceof Date)
+			{
+				return ((Date)recordValue).getTime() >= ((Date)conditionValue).getTime();
+			}
+			else if (recordValue != null)
+			{
+				return recordValue.toString().compareTo((String)conditionValue) >= 0;
+			}
+		}
+		else if (operator == IBaseSQLCondition.LIKE_OPERATOR)
+		{
+			if (recordValue != null)
+			{
+				String searchString = recordValue.toString();
+				String pattern = conditionValue.toString();
+				if (pattern.startsWith("%") && pattern.endsWith("%"))
+				{
+					return searchString.contains(pattern.substring(1, pattern.length() - 1).replace("\\", ""));
+				}
+				else if (pattern.endsWith("%"))
+				{
+					return searchString.startsWith(pattern.substring(0, pattern.length() - 1).replace("\\", ""));
+				}
+				else if (pattern.startsWith("%"))
+				{
+					return searchString.endsWith(pattern.substring(1, pattern.length()).replace("\\", ""));
+				}
+			}
+		}
+		return false;
 	}
 }

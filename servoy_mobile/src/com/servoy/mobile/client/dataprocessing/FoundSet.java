@@ -20,19 +20,35 @@ package com.servoy.mobile.client.dataprocessing;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.i18n.shared.DateTimeFormat;
+import com.servoy.base.dataprocessing.BaseSQLGenerator;
+import com.servoy.base.dataprocessing.ITypeConverter;
+import com.servoy.base.dataprocessing.IValueConverter;
+import com.servoy.base.persistence.BaseColumn;
 import com.servoy.base.persistence.constants.IColumnTypeConstants;
+import com.servoy.base.query.BaseAndCondition;
+import com.servoy.base.query.BaseColumnType;
+import com.servoy.base.query.BaseOrCondition;
+import com.servoy.base.query.BaseQueryColumn;
+import com.servoy.base.query.BaseQueryFactory;
+import com.servoy.base.query.BaseQueryTable;
+import com.servoy.base.query.IBaseSQLCondition;
 import com.servoy.base.scripting.api.IJSFoundSet;
 import com.servoy.base.scripting.api.IJSRecord;
 import com.servoy.mobile.client.dto.FoundSetDescription;
 import com.servoy.mobile.client.dto.RecordDescription;
 import com.servoy.mobile.client.dto.RowDescription;
 import com.servoy.mobile.client.scripting.Scope;
+import com.servoy.mobile.client.util.Debug;
 import com.servoy.mobile.client.util.Utils;
 
 /**
@@ -47,6 +63,9 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 	private final ArrayList<IFoundSetListener> foundSetListeners = new ArrayList<IFoundSetListener>();
 	private final JavaScriptObject javascriptInstance;
 	private Date lastTouched = new Date();
+	protected boolean findMode = false;
+	// not all records are present in this foundset, records list contains all records
+	protected boolean filteredFoundset = false;
 
 	private boolean needToSaveFoundSetDescription;
 
@@ -74,6 +93,10 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		Record record = getSelectedRecord();
 		if (record != null)
 		{
+			if (isInFindMode())
+			{
+				return IColumnTypeConstants.TEXT;
+			}
 			return record.getVariableType(variable);
 		}
 		return IColumnTypeConstants.MEDIA;
@@ -142,6 +165,10 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 	@Export("getSize")
 	public int getSize()
 	{
+		if (isInFindMode() || filteredFoundset)
+		{
+			return records.size();
+		}
 		return foundSetDescription.getRecords().length();
 	}
 
@@ -211,6 +238,175 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		return true;
 	}
 
+	@Export("find")
+	@Override
+	public boolean js_find()
+	{
+		if (foundSetManager.getEditRecordList().stopEditing(true) == EditRecordList.STOPPED)
+		{
+			setFindMode();
+			return true;
+		}
+		return false;
+	}
+
+	public void setFindMode()
+	{
+		flushAllRecords();
+		findMode = true;
+		newRecord(0, true);
+		fireContentChanged();
+	}
+
+	private void cancelFindMode()
+	{
+		findMode = false;
+		flushAllRecords();
+	}
+
+	public boolean isInFindMode()
+	{
+		return findMode;
+	}
+
+	@Export("isInFind")
+	@Override
+	public boolean js_isInFind()
+	{
+		return findMode;
+	}
+
+	@Export("search")
+	@Override
+	public int js_search() throws Exception
+	{
+		if (isInFindMode())
+		{
+			IBaseSQLCondition moreWhere = null;
+			BaseQueryTable table = new BaseQueryTable(getEntityName(), null, null, null);
+			for (Record record : records)
+			{
+				if (record instanceof FindState)
+				{
+					final FindState state = (FindState)record;
+					IBaseSQLCondition and1 = null;
+					IBaseSQLCondition and2 = null;
+					Iterator<Map.Entry<String, Object>> it = state.getColumnData().entrySet().iterator();
+					while (it.hasNext())
+					{
+						Map.Entry<String, Object> elem = it.next();
+						final String dataProviderID = elem.getKey();
+						Object raw = elem.getValue();
+						final int dpType = state.getVariableType(dataProviderID);
+						BaseQueryColumn qCol = new BaseQueryColumn(table, 0, dataProviderID, dataProviderID, new BaseColumnType(dpType, 0, 0), false);
+						BaseColumn col = new BaseColumn()
+						{
+
+							@Override
+							public int getLength()
+							{
+								return 0;
+							}
+
+							@Override
+							public int getFlags()
+							{
+								return 0;
+							}
+
+							@Override
+							public int getDataProviderType()
+							{
+								return dpType;
+							}
+
+							@Override
+							public int getType()
+							{
+								return 0;
+							}
+
+							@Override
+							public int getScale()
+							{
+								return 0;
+							}
+
+							@Override
+							public String getSQLName()
+							{
+								return dataProviderID;
+							}
+
+							@Override
+							public int getID()
+							{
+								return 0;
+							}
+						};
+						and2 = BaseSQLGenerator.parseFindExpression(BaseQueryFactory.INSTANCE, raw, qCol, null, dpType, null, col, false, new IValueConverter()
+						{
+
+							@Override
+							public Object convertFromObject(Object value)
+							{
+								return value;
+							}
+						}, new ITypeConverter()
+						{
+
+							@Override
+							public Object getAsRightType(int type, int flags, Object obj, int l, boolean throwOnFail)
+							{
+								return state.getValueAsRightType(obj, dpType);
+							}
+
+							@Override
+							public Object getAsRightType(int type, int flags, Object obj, String format, int l, boolean throwOnFail)
+							{
+								if (type == IColumnTypeConstants.DATETIME && obj instanceof String && format != null)
+								{
+									DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat(format);
+									return dateTimeFormat.parse(obj.toString());
+								}
+								return state.getValueAsRightType(obj, dpType);
+							}
+						}, null, Debug.LOGGER);
+						and1 = BaseAndCondition.and(and1, and2);
+					}
+					moreWhere = BaseOrCondition.or(moreWhere, and1);
+				}
+			}
+			if (moreWhere != null)
+			{
+				List<Record> result = new ArrayList<Record>();
+				for (int i = 0; i < foundSetDescription.getRecords().length(); i++)
+				{
+					RecordDescription rd = foundSetDescription.getRecords().get(i);
+					if (rd != null)
+					{
+						Record rec = new Record(this, rd);
+						if (Utils.evalCondition(moreWhere, rec))
+						{
+							result.add(rec);
+						}
+					}
+				}
+				filteredFoundset = true;
+				cancelFindMode();
+				records.addAll(result);
+				fireContentChanged();
+				return result.size();
+			}
+			else
+			{
+				cancelFindMode();
+				fireContentChanged();
+			}
+		}
+		return 0;
+	}
+
 	/*
 	 * @see com.servoy.j2db.scripting.api.IJSFoundSet#sort(java.lang.Object)
 	 */
@@ -227,8 +423,10 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 			}
 
 			Collections.sort(records, new RecordComparater((JavaScriptObject)recordComparisonFunction));
-
-			foundSetDescription.updateRecordDescriptions(records);
+			if (!filteredFoundset)
+			{
+				foundSetDescription.updateRecordDescriptions(records);
+			}
 			fireContentChanged();
 		}
 	}
@@ -240,22 +438,33 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 
 	public int newRecord(int index, boolean changeSelection)
 	{
-		String pk = foundSetManager.getNewPrimaryKey();
-		RecordDescription recd = RecordDescription.newInstance(pk);
-		RowDescription rowd = foundSetManager.createRowDescription(this, pk);
-		Record retval = new Record(this, recd, rowd);
+		Record retval = null;
 		int size = getSize();
 		index = (index < 0) ? 0 : (index > size) ? size : index;
-		foundSetDescription.insertRecord(index, recd);
-		needToSaveFoundSetDescription = true;
-		fillNotLoadedRecordsWithNull(index);
+		if (isInFindMode())
+		{
+			retval = new FindState(this, null);
+		}
+		else
+		{
+			String pk = foundSetManager.getNewPrimaryKey();
+			RecordDescription recd = RecordDescription.newInstance(pk);
+			RowDescription rowd = foundSetManager.createRowDescription(this, pk);
+			retval = new Record(this, recd, rowd);
+			foundSetDescription.insertRecord(index, recd);
+			needToSaveFoundSetDescription = true;
+			fillNotLoadedRecordsWithNull(index);
+		}
 		records.add(index, retval);
 		if (changeSelection)
 		{
 			selectedIndex = index;
 			fireSelectionChanged();
 		}
-		startEdit(retval);
+		if (!isInFindMode())
+		{
+			startEdit(retval);
+		}
 		return index;
 	}
 
@@ -336,7 +545,11 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		if (recordIndex >= 0)
 		{
 			records.remove(record);
-			foundSetDescription.removeRecord(recordIndex);
+			int listIndex = getRecordIndexInDescription(record.getPK());
+			if (listIndex >= 0)
+			{
+				foundSetDescription.removeRecord(listIndex);
+			}
 			getFoundSetManager().getEditRecordList().removeEditedRecord(record);
 			getFoundSetManager().deleteRowData(getEntityName(), record.getRow(), record.isNew());
 			adjustSelectionAndContent(recordIndex);
@@ -364,37 +577,56 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 
 	}
 
-	public void removeRecord(Object pk)
+	private int getRecordIndexInDescription(Object pk)
 	{
-		for (int i = 0; i < getSize(); i++)
+		for (int i = 0; i < foundSetDescription.getRecords().length(); i++)
 		{
 			RecordDescription rd = foundSetDescription.getRecords().get(i);
 			if (rd != null && rd.getPK().toString().equals(pk.toString()))
 			{
-				foundSetDescription.removeRecord(i);
-				if (i < records.size())
-				{
-					records.remove(i);
-				}
-				adjustSelectionAndContent(i);
-				break;
+				return i;
 			}
+		}
+		return -1;
+	}
+
+	private int getRecordIndexInList(Object pk)
+	{
+		for (int i = 0; i < records.size(); i++)
+		{
+			RecordDescription rd = records.get(i).getRecordDescription();
+			if (rd != null && rd.getPK().toString().equals(pk.toString()))
+			{
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	public void removeRecord(Object pk)
+	{
+		int index = getRecordIndexInDescription(pk);
+		if (index >= 0)
+		{
+			foundSetDescription.removeRecord(index);
+		}
+		index = getRecordIndexInList(pk);
+		if (index >= 0)
+		{
+			if (index < records.size())
+			{
+				records.remove(index);
+			}
+			adjustSelectionAndContent(index);
 		}
 	}
 
 	public void recordPushedToServer(String pk)
 	{
-		for (int i = 0; i < getSize(); i++)
+		int index = getRecordIndexInList(pk);
+		if (index >= 0 && index < records.size())
 		{
-			RecordDescription rd = foundSetDescription.getRecords().get(i);
-			if (rd != null && rd.getPK().toString().equals(pk))
-			{
-				if (i < records.size())
-				{
-					records.get(i).pushedToServer();
-				}
-				break;
-			}
+			records.get(index).pushedToServer();
 		}
 	}
 
@@ -517,18 +749,26 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 
 	public void flushIfPossible()
 	{
-		if (foundSetListeners.size() == 0 && selectionListeners.size() == 0)
+		if (!filteredFoundset && foundSetListeners.size() == 0 && selectionListeners.size() == 0)
 		{
 			Date currentTime = new Date();
 			if (currentTime.getTime() - lastTouched.getTime() > 30000)
 			{
 				// 30 seconds not touched, assume we can flush it
-				for (Record record : records)
-				{
-					record.flush();
-				}
-				records.clear();
+				flushAllRecords();
 			}
+		}
+	}
+
+	private void flushAllRecords()
+	{
+		if (!isInFindMode())
+		{
+			for (Record record : records)
+			{
+				record.flush();
+			}
+			records.clear();
 		}
 	}
 }
