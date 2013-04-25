@@ -407,6 +407,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		return 0;
 	}
 
+
 	/*
 	 * @see com.servoy.j2db.scripting.api.IJSFoundSet#sort(java.lang.Object)
 	 */
@@ -431,9 +432,28 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		}
 	}
 
+	@Export("loadAllRecords")
+	@Override
+	public boolean js_loadAllRecords()
+	{
+		if (foundSetManager.getEditRecordList().stopEditing(true) != EditRecordList.STOPPED)
+		{
+			return false;
+		}
+		cancelFindMode();
+		filteredFoundset = false;
+		fireContentChanged();
+		return true;
+	}
+
 	public int getSelectedIndex()
 	{
 		return selectedIndex;
+	}
+
+	public void flagFoundsetFiltered()
+	{
+		filteredFoundset = true;
 	}
 
 	public int newRecord(int index, boolean changeSelection)

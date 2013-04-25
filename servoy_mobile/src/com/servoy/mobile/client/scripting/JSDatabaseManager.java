@@ -132,7 +132,9 @@ public class JSDatabaseManager implements Exportable, IJSDatabaseManager
 	@Override
 	public FoundSet getFoundSet(String dataSource) throws Exception
 	{
-		return manager.getFoundSet(FoundSetManager.getEntityFromDataSource(dataSource), false);
+		FoundSet foundset = manager.getFoundSet(FoundSetManager.getEntityFromDataSource(dataSource), false);
+		foundset.flagFoundsetFiltered();
+		return foundset;
 	}
 
 	private native void export(Object object)
