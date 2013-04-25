@@ -73,8 +73,9 @@ public class FormManager
 	{
 		if (login == null)
 		{
-			login = new Login(application, successCallback, errorHandler);
+			login = new Login(application);
 		}
+		login.setCallbackHandlers(successCallback, errorHandler);
 		return login;
 	}
 

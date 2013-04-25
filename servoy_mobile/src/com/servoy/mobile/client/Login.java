@@ -9,15 +9,12 @@ import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 public class Login extends JQMPage implements SubmissionHandler<LoginData>
 {
 	private final MobileClient application;
-	private final JavaScriptObject successCallback;
-	private final JavaScriptObject errorHandler;
+	private JavaScriptObject successCallback;
+	private JavaScriptObject errorHandler;
 
-	public Login(MobileClient mc, JavaScriptObject successCallback, JavaScriptObject errorHandler)
+	public Login(MobileClient mc)
 	{
 		this.application = mc;
-		this.successCallback = successCallback;
-		this.errorHandler = errorHandler;
-
 		JQMHeader h = new JQMHeader(application.getI18nMessageWithFallback("loginTitle"));
 		h.setTheme("b");
 		add(h);
@@ -26,6 +23,12 @@ public class Login extends JQMPage implements SubmissionHandler<LoginData>
 
 		LoginData form = new LoginData(application, this);
 		add(form);
+	}
+
+	public void setCallbackHandlers(JavaScriptObject successCallback, JavaScriptObject errorHandler)
+	{
+		this.successCallback = successCallback;
+		this.errorHandler = errorHandler;
 	}
 
 	public void onSubmit(LoginData form)
