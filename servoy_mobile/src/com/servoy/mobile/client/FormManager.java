@@ -73,7 +73,7 @@ public class FormManager
 	{
 		if (login == null)
 		{
-			login = new Login(application);
+			login = new Login(application, successCallback, errorHandler);
 		}
 		return login;
 	}
