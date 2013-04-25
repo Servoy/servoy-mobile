@@ -85,4 +85,25 @@ public class EditRecordList
 	{
 		editedRecords.remove(record);
 	}
+
+	public int stopIfEditing(FoundSet fs)
+	{
+		if (hasEditedRecords(fs))
+		{
+			return stopEditing(false);
+		}
+		return STOPPED;
+	}
+
+	public boolean hasEditedRecords(FoundSet foundset)
+	{
+		for (Record rec : editedRecords)
+		{
+			if (rec.getParent() == foundset)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 }

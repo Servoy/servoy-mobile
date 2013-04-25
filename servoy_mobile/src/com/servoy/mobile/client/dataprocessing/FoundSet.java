@@ -242,7 +242,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 	@Override
 	public boolean js_find()
 	{
-		if (foundSetManager.getEditRecordList().stopEditing(true) == EditRecordList.STOPPED)
+		if (foundSetManager.getEditRecordList().stopIfEditing(this) == EditRecordList.STOPPED)
 		{
 			setFindMode();
 			return true;
@@ -436,7 +436,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 	@Override
 	public boolean js_loadAllRecords()
 	{
-		if (foundSetManager.getEditRecordList().stopEditing(true) != EditRecordList.STOPPED)
+		if (foundSetManager.getEditRecordList().stopIfEditing(this) != EditRecordList.STOPPED)
 		{
 			return false;
 		}
