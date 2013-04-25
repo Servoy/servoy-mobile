@@ -254,6 +254,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 	{
 		flushAllRecords();
 		findMode = true;
+		filteredFoundset = false;
 		newRecord(0, true);
 		fireContentChanged();
 	}
