@@ -572,7 +572,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 				foundSetDescription.removeRecord(listIndex);
 			}
 			getFoundSetManager().getEditRecordList().removeEditedRecord(record);
-			getFoundSetManager().deleteRowData(getEntityName(), record.getRow(), record.isNew());
+			if (!isInFindMode()) getFoundSetManager().deleteRowData(getEntityName(), record.getRow(), record.isNew());
 			adjustSelectionAndContent(recordIndex);
 			return true;
 		}
@@ -600,12 +600,15 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 
 	private int getRecordIndexInDescription(Object pk)
 	{
-		for (int i = 0; i < foundSetDescription.getRecords().length(); i++)
+		if (pk != null)
 		{
-			RecordDescription rd = foundSetDescription.getRecords().get(i);
-			if (rd != null && rd.getPK().toString().equals(pk.toString()))
+			for (int i = 0; i < foundSetDescription.getRecords().length(); i++)
 			{
-				return i;
+				RecordDescription rd = foundSetDescription.getRecords().get(i);
+				if (rd != null && rd.getPK().toString().equals(pk.toString()))
+				{
+					return i;
+				}
 			}
 		}
 		return -1;
