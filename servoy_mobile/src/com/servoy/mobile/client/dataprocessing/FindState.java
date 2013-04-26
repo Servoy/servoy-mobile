@@ -22,6 +22,7 @@ import java.util.Map;
 
 import com.servoy.mobile.client.dto.RecordDescription;
 import com.servoy.mobile.client.dto.RowDescription;
+import com.servoy.mobile.client.util.Debug;
 
 /**
  * @author lvostinar
@@ -39,12 +40,22 @@ public class FindState extends Record
 	@Override
 	public Object getValue(String dataProviderID)
 	{
+		Object jsValue = getJavascriptValue(dataProviderID);
+		if (jsValue != null)
+		{
+			return jsValue;
+		}
 		return columndata.get(dataProviderID);
 	}
 
 	@Override
 	public void setValue(String dataProviderID, Object obj)
 	{
+		if (dataProviderID.indexOf('.') > 0)
+		{
+			Debug.error("Trying to set a related dataprovider in find state, this is not supported yet in mobile client.", null);
+			return;
+		}
 		columndata.put(dataProviderID, obj);
 	}
 
