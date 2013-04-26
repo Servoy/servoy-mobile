@@ -93,7 +93,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		Record record = getSelectedRecord();
 		if (record != null)
 		{
-			if (isInFindMode())
+			if (isInFind())
 			{
 				return IColumnTypeConstants.TEXT;
 			}
@@ -165,7 +165,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 	@Export("getSize")
 	public int getSize()
 	{
-		if (isInFindMode() || filteredFoundset)
+		if (isInFind() || filteredFoundset)
 		{
 			return records.size();
 		}
@@ -238,9 +238,9 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		return true;
 	}
 
-	@Export("find")
+	@Export
 	@Override
-	public boolean js_find()
+	public boolean find()
 	{
 		if (foundSetManager.getEditRecordList().stopIfEditing(this) == EditRecordList.STOPPED)
 		{
@@ -265,23 +265,18 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		flushAllRecords();
 	}
 
-	public boolean isInFindMode()
+	@Export
+	@Override
+	public boolean isInFind()
 	{
 		return findMode;
 	}
 
-	@Export("isInFind")
+	@Export
 	@Override
-	public boolean js_isInFind()
+	public int search() throws Exception
 	{
-		return findMode;
-	}
-
-	@Export("search")
-	@Override
-	public int js_search() throws Exception
-	{
-		if (isInFindMode())
+		if (isInFind())
 		{
 			IBaseSQLCondition moreWhere = null;
 			BaseQueryTable table = new BaseQueryTable(getEntityName(), null, null, null);
@@ -462,7 +457,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		Record retval = null;
 		int size = getSize();
 		index = (index < 0) ? 0 : (index > size) ? size : index;
-		if (isInFindMode())
+		if (isInFind())
 		{
 			retval = new FindState(this, null);
 		}
@@ -482,7 +477,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 			selectedIndex = index;
 			fireSelectionChanged();
 		}
-		if (!isInFindMode())
+		if (!isInFind())
 		{
 			startEdit(retval);
 		}
@@ -572,7 +567,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 				foundSetDescription.removeRecord(listIndex);
 			}
 			getFoundSetManager().getEditRecordList().removeEditedRecord(record);
-			if (!isInFindMode()) getFoundSetManager().deleteRowData(getEntityName(), record.getRow(), record.isNew());
+			if (!isInFind()) getFoundSetManager().deleteRowData(getEntityName(), record.getRow(), record.isNew());
 			adjustSelectionAndContent(recordIndex);
 			return true;
 		}
@@ -786,7 +781,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 
 	private void flushAllRecords()
 	{
-		if (!isInFindMode())
+		if (!isInFind())
 		{
 			for (Record record : records)
 			{
