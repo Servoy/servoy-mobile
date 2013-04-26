@@ -34,6 +34,7 @@
     <mkdir dir="war/WEB-INF/lib" />
     <!-- in GWT 2.5 caused a need for gwt-dev in order to use gwt-log but until 2.5.1, this workaround jar can be used until then -->
     <copy todir="war/WEB-INF/lib" file="lib/gwt-fix-2.5.0-rc2.jar" />
+    <copy todir="war/WEB-INF/lib" file="${gwt.jars}/gwt-log-3.2.0.jar" />
     <copy todir="war/WEB-INF/lib" file="${gwt.servlet.libs}/gwt-servlet.jar" />
     <copy todir="war/WEB-INF/lib" file="${gwt.servlet.libs}/gwt-servlet-deps.jar" />
     <!-- Add any additional server libs that need to be copied -->
