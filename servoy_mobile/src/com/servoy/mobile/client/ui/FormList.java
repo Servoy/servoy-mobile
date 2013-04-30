@@ -23,6 +23,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Widget;
 import com.servoy.base.persistence.IMobileProperties;
 import com.servoy.base.scripting.api.IJSEvent;
@@ -219,7 +220,8 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 			}
 			if (dpValue != null)
 			{
-				setWidgetTheme(addDivider(dpValue.toString()), listItemHeaderStyleclass);
+				HasText divider = addDivider(dpValue.toString());
+				if (divider instanceof Widget) setWidgetTheme((Widget)divider, listItemHeaderStyleclass);
 				listWidgetCount = 1;
 			}
 

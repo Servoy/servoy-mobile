@@ -26,3 +26,8 @@ label.label-labelfor
 {
 	margin: 0;
 }
+
+.ui-icon-loading {
+	background: url(images/ajax-loader.png);
+	background-size: 46px 46px;
+}

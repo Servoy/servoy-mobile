@@ -233,7 +233,8 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 									+ $wnd.$(this).attr("id"));
 							var radioEl = radio.get()[0];
 							if (radioEl
-									&& $wnd.$.data(radioEl, "checkboxradio")) {
+									&& $wnd.$.data(radioEl,
+											"mobile-checkboxradio")) {
 								$wnd.$(radio[0]).prop("checked",
 										radio.attr("checked"));
 								radio.checkboxradio("refresh");
