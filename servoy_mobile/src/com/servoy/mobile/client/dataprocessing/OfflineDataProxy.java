@@ -50,13 +50,15 @@ public class OfflineDataProxy
 	private static final int version = 1;
 	private final FoundSetManager foundSetManager;
 	private final String serverURL;
+	private final boolean nodebug;
 
 	private Callback<Integer, Failure> loadCallback;
 	private int totalLength;
 	private String[] credentials; //id, password
 
-	public OfflineDataProxy(FoundSetManager fsm, String serverURL)
+	public OfflineDataProxy(FoundSetManager fsm, String serverURL, boolean nodebug)
 	{
+		this.nodebug = nodebug;
 		foundSetManager = fsm;
 		this.serverURL = serverURL;
 	}
@@ -373,6 +375,7 @@ public class OfflineDataProxy
 
 	private void setRequestParameters(RequestBuilder builder)
 	{
+		if (nodebug) builder.setHeader("servoy.nodebug", "true");
 		if (credentials != null)
 		{
 			try

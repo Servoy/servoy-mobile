@@ -96,6 +96,11 @@ public class MobileClient implements EntryPoint
 			divLogger.setCurrentLogLevel(Log.getLowestLogLevel());
 			Log.addLogger(divLogger);
 		}
+		boolean nodebug = false;
+		if (Window.Location.getParameter("nodebug") != null) //$NON-NLS-1$
+		{
+			nodebug = true;
+		}
 		exportLog();
 
 		GWT.create(JSDatabaseManager.class);
@@ -129,7 +134,7 @@ public class MobileClient implements EntryPoint
 		flattenedSolution = new FlattenedSolution(createSolution());
 		i18nProvider = new SolutionI18nProvider(flattenedSolution, getLocale());
 		foundSetManager = new FoundSetManager(this);
-		offlineDataProxy = new OfflineDataProxy(foundSetManager, getServerURL());
+		offlineDataProxy = new OfflineDataProxy(foundSetManager, getServerURL(), nodebug);
 		formManager = new FormManager(this);
 
 		solutionModel = new JSSolutionModel(this);
