@@ -31,7 +31,6 @@ import com.servoy.mobile.client.dto.RecordDescription;
 import com.servoy.mobile.client.dto.RelationDescription;
 import com.servoy.mobile.client.dto.RowDescription;
 import com.servoy.mobile.client.scripting.Scope;
-import com.servoy.mobile.client.util.Utils;
 
 /**
  * The mobile record
@@ -144,7 +143,7 @@ public class Record extends Scope implements IJSRecord, IRowChangeListener
 			if (obj != null)
 			{
 				int type = getVariableType(dataProviderID);
-				obj = getValueAsRightType(obj, type);
+				obj = getValueAsRightType(obj, type, null);
 				if (type == IColumnTypeConstants.DATETIME && !(obj instanceof Date || obj instanceof Number))
 				{
 					Log.error("Can't set value: " + obj + " on dataprovider: " + dataProviderID + " of datasource: " + parent.getEntityName() +
@@ -154,19 +153,6 @@ public class Record extends Scope implements IJSRecord, IRowChangeListener
 			}
 			rd.setValue(dataProviderID, obj);
 		}
-	}
-
-	public Object getValueAsRightType(Object value, int type)
-	{
-		if (type == IColumnTypeConstants.INTEGER && !(value instanceof Number))
-		{
-			return Integer.valueOf((int)Utils.getAsDouble(value));
-		}
-		else if (type == IColumnTypeConstants.NUMBER && !(value instanceof Number))
-		{
-			return Double.valueOf(Utils.getAsDouble(value));
-		}
-		return value;
 	}
 
 	@Override

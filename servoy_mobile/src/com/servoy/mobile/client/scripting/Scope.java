@@ -24,11 +24,39 @@ import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
 
 import com.google.gwt.core.client.JsDate;
+import com.google.gwt.i18n.shared.DateTimeFormat;
+import com.servoy.base.persistence.constants.IColumnTypeConstants;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
+import com.servoy.mobile.client.util.Utils;
 
 
 public abstract class Scope
 {
+
+	public static Object getValueAsRightType(Object value, int type, String format)
+	{
+		if (value == null) return null;
+		if (type == IColumnTypeConstants.INTEGER && !(value instanceof Number))
+		{
+			return Integer.valueOf((int)Utils.getAsDouble(value));
+		}
+		else if (type == IColumnTypeConstants.NUMBER && !(value instanceof Number))
+		{
+			return Double.valueOf(Utils.getAsDouble(value));
+		}
+		else if (type == IColumnTypeConstants.DATETIME && value instanceof String && format != null)
+		{
+			DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat(format);
+			return dateTimeFormat.parse(value.toString());
+		}
+		else if (type == IColumnTypeConstants.TEXT && !(value instanceof String))
+		{
+			return value.toString();
+		}
+		return value;
+	}
+
+
 	private final ArrayList<IModificationListener> modificationListeners = new ArrayList<IModificationListener>();
 
 	public Scope()
@@ -53,6 +81,18 @@ public abstract class Scope
 		{
 			setValue(variable, value);
 		}
+	}
+
+	public boolean getVariableBooleanValue(String variable)
+	{
+		Object value = getValue(variable);
+		if (value instanceof Boolean) return ((Boolean)value).booleanValue();
+		return false;
+	}
+
+	public void setVariableBooleanValue(String variable, boolean value)
+	{
+		setValue(variable, Boolean.valueOf(value));
 	}
 
 	public void setVariableNumberValue(String variable, double value)

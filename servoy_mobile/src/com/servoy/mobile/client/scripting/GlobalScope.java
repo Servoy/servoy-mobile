@@ -1,8 +1,11 @@
 package com.servoy.mobile.client.scripting;
 
+import java.sql.Types;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.servoy.base.persistence.constants.IColumnTypeConstants;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.util.Utils;
@@ -41,6 +44,22 @@ public class GlobalScope extends Scope
 	@Override
 	public int getVariableType(String variable)
 	{
+		Object object = scopeVariables.get(variable);
+		if (object != null)
+		{
+			if (object instanceof Number)
+			{
+				return IColumnTypeConstants.NUMBER;
+			}
+			else if (object instanceof Date)
+			{
+				return IColumnTypeConstants.DATETIME;
+			}
+			else if (object instanceof Boolean)
+			{
+				return Types.BOOLEAN;
+			}
+		}
 		Integer type = variableTypes.get(variable);
 		if (type != null) return type.intValue();
 		return IColumnTypeConstants.MEDIA;
@@ -62,9 +81,16 @@ public class GlobalScope extends Scope
 		if (servoyProperties.containsKey(variable)) return;
 
 		Object oldValue = scopeVariables.get(variable);
-		scopeVariables.put(variable, value);
+		int type = getVariableType(variable);
+		Object obj = getValueAsRightType(value, type, null);
+		if (type == IColumnTypeConstants.DATETIME && !(obj instanceof Date || obj instanceof Number))
+		{
+			Log.error("Can't set value: " + obj + " on dataprovider: " + variable + " of globalscope: " + getName() + ", not a date or number");
+			return;
+		}
+		scopeVariables.put(variable, obj);
 
-		if (!Utils.equalObjects(oldValue, value)) fireModificationEvent(variable, value);
+		if (!Utils.equalObjects(oldValue, obj)) fireModificationEvent(variable, obj);
 	}
 
 	public boolean hasVariable(String variable)

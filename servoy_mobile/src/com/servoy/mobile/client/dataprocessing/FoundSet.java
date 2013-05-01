@@ -29,7 +29,6 @@ import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.i18n.shared.DateTimeFormat;
 import com.servoy.base.dataprocessing.BaseSQLGenerator;
 import com.servoy.base.dataprocessing.ITypeConverter;
 import com.servoy.base.dataprocessing.IValueConverter;
@@ -354,18 +353,13 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 							@Override
 							public Object getAsRightType(int type, int flags, Object obj, int l, boolean throwOnFail)
 							{
-								return state.getValueAsRightType(obj, dpType);
+								return Scope.getValueAsRightType(obj, dpType, null);
 							}
 
 							@Override
 							public Object getAsRightType(int type, int flags, Object obj, String format, int l, boolean throwOnFail)
 							{
-								if (type == IColumnTypeConstants.DATETIME && obj instanceof String && format != null)
-								{
-									DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat(format);
-									return dateTimeFormat.parse(obj.toString());
-								}
-								return state.getValueAsRightType(obj, dpType);
+								return Scope.getValueAsRightType(obj, dpType, format);
 							}
 						}, null, Debug.LOGGER);
 						and1 = BaseAndCondition.and(and1, and2);
