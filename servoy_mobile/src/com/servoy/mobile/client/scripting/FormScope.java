@@ -3,6 +3,7 @@ package com.servoy.mobile.client.scripting;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.servoy.base.persistence.constants.IColumnTypeConstants;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
@@ -52,7 +53,17 @@ public class FormScope extends GlobalScope
 		if (type == -4)
 		{
 			Integer recordType = recordTypes.get(variable);
-			if (recordType != null) type = recordType.intValue();
+			if (recordType != null)
+			{
+				if (formController.getFormModel() != null && formController.getFormModel().isInFind())
+				{
+					type = IColumnTypeConstants.TEXT;
+				}
+				else
+				{
+					type = recordType.intValue();
+				}
+			}
 		}
 		return type;
 	}
@@ -85,6 +96,25 @@ public class FormScope extends GlobalScope
 		}
 
 		return super.getValue(variable);
+	}
+
+	@Override
+	public void setValue(String variable, Object value)
+	{
+		FoundSet foundSet = formController.getFormModel();
+		if (foundSet != null)
+		{
+			Record selRecord = foundSet.getSelectedRecord();
+			if (selRecord != null)
+			{
+				if (recordTypes.containsKey(variable))
+				{
+					selRecord.setValue(variable, value);
+					return;
+				}
+			}
+		}
+		super.setValue(variable, value);
 	}
 
 	/**
