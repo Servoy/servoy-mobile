@@ -580,11 +580,8 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		{
 			newSelectedIndex = getSize() - 1;
 		}
-		if (newSelectedIndex != selectedIndex)
-		{
-			setSelectedIndexInternal(newSelectedIndex);
-		}
-
+		// the selection could be deleted, do make sure it refreshes, always set this selection
+		setSelectedIndexInternal(newSelectedIndex);
 	}
 
 	private int getRecordIndexInDescription(Object pk)
