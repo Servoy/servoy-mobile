@@ -978,7 +978,7 @@ public class FoundSetManager
 
 	String getRemotePK(String entityName, String pk, RowDescription row)
 	{
-		if (entities.isPKUUID(entityName) || row.isCreatedOnDevice())
+		if (entities.isPKUUID(entityName) || (row != null && row.isCreatedOnDevice()))
 		{
 			pk = valueStore.getUUIDValue(Utils.getAsInteger(pk));
 		}

@@ -254,10 +254,11 @@ public class OfflineDataProxy
 		int idx = key.indexOf('|');
 		final String entityName = key.substring(0, idx);
 		String pk = key.substring(idx + 1, key.length());
+		String remotepk = foundSetManager.getRemotePK(entityName, pk, null);
 
 		//DELETE server side
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.DELETE, serverURL + "/" + foundSetManager.getEntityPrefix() + entityName + "/" + version +
-			"/" + URL.encode(pk));
+			"/" + URL.encode(remotepk));
 		setRequestParameters(builder);
 		//builder.setHeader("Access-Control-Request-Method", "DELETE");
 
