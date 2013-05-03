@@ -190,12 +190,16 @@ public class FoundSetManager
 	}
 
 	private native void exportImpl(String name) /*-{
-		$wnd._ServoyUtils_.defineWindowVariable(name);
-	}-*/;
+												$wnd._ServoyUtils_.defineWindowVariable(name);
+												}-*/;
 
 	public EntityDescription getEntityDescription(String entityName)
 	{
-		return entities.getDescription(entityName);
+		if (entities != null)
+		{
+			return entities.getDescription(entityName);
+		}
+		return null;
 	}
 
 	/**
@@ -223,7 +227,7 @@ public class FoundSetManager
 	RowDescription getLocalStorageRowDescription(String entityName, Object pk)
 	{
 		String json = localStorage.getItem(entityName + '|' + pk);
-		if (json == null) return null;
+		if (json == null || entities == null) return null;
 
 		JSONArray values = JSONParser.parseStrict(json).isArray();
 		String[] dataProviders = entities.getDataProviders(entityName);
@@ -232,6 +236,7 @@ public class FoundSetManager
 
 	FoundSet getRelatedFoundSet(Record rec, String entityName, String relationName, String key)
 	{
+		if (entities == null) return null;
 		if (key == null)
 		{
 			int relationID = getRelationID(relationName);
@@ -395,7 +400,7 @@ public class FoundSetManager
 	{
 		boolean omitForKeyinfo = false;
 		String key = fd.getEntityName();
-		if (fd.getRelationName() != null)
+		if (fd.getRelationName() != null && entities != null)
 		{
 			int rid = entities.getRelationID(fd.getRelationName());
 			if (rid != 0)
@@ -438,7 +443,7 @@ public class FoundSetManager
 
 	void storeRowData(String entityName, JsArray<RowDescription> rowData)
 	{
-		String[] uuidCols = entities.getUUIDDataProviderNames(entityName);
+		String[] uuidCols = entities != null ? entities.getUUIDDataProviderNames(entityName) : null;
 
 		ArrayList<RowDescription> list = new ArrayList<RowDescription>();
 		for (int i = 0; i < rowData.length(); i++)
@@ -563,6 +568,8 @@ public class FoundSetManager
 
 	private String[] getRowDataPkAndKey(String entityName, RowDescription rowData)
 	{
+		if (entities == null) return null;
+
 		DataproviderIdAndTypeHolder dataProviderID = entities.getPKDataProviderID(entityName);
 		if (dataProviderID == null) throw new IllegalStateException(application.getI18nMessageWithFallback("cannotWorkWithoutPK"));
 
@@ -853,6 +860,7 @@ public class FoundSetManager
 
 	RowDescription createRowDescription(FoundSet fs, Object pkval)
 	{
+		if (entities == null) return null;
 		RowDescription retval = RowDescription.newInstance();
 		retval.setValue(entities.getPKDataProviderID(fs.getEntityName()).getDataproviderId(), pkval);
 		if (fs instanceof RelatedFoundSet)
@@ -889,6 +897,7 @@ public class FoundSetManager
 
 	private FoundSet createRelatedFoundSet(String relationName, Record record)
 	{
+		if (entities == null) return null;
 		String entityName = record.getParent().getEntityName();
 		RelationDescription rd = entities.getPrimaryRelation(entityName, relationName);
 		if (rd != null)
@@ -960,16 +969,19 @@ public class FoundSetManager
 	ArrayList<String> getAllPrimaryRelationNames(String entityName)
 	{
 		ArrayList<String> retval = new ArrayList<String>();
-		EntityDescription ed = entities.getDescription(entityName);
-		if (ed != null)
+		if (entities != null)
 		{
-			JsArray<RelationDescription> rels = ed.getPrimaryRelations();
-			if (rels != null)
+			EntityDescription ed = entities.getDescription(entityName);
+			if (ed != null)
 			{
-				for (int i = 0; i < rels.length(); i++)
+				JsArray<RelationDescription> rels = ed.getPrimaryRelations();
+				if (rels != null)
 				{
-					RelationDescription rd = rels.get(i);
-					retval.add(rd.getName());
+					for (int i = 0; i < rels.length(); i++)
+					{
+						RelationDescription rd = rels.get(i);
+						retval.add(rd.getName());
+					}
 				}
 			}
 		}
