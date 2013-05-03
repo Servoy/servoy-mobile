@@ -190,8 +190,8 @@ public class FoundSetManager
 	}
 
 	private native void exportImpl(String name) /*-{
-												$wnd._ServoyUtils_.defineWindowVariable(name);
-												}-*/;
+		$wnd._ServoyUtils_.defineWindowVariable(name);
+	}-*/;
 
 	public EntityDescription getEntityDescription(String entityName)
 	{
@@ -568,7 +568,7 @@ public class FoundSetManager
 
 	private String[] getRowDataPkAndKey(String entityName, RowDescription rowData)
 	{
-		if (entities == null) return null;
+		if (entities == null) throw new IllegalStateException("Cannot get record when there is no data in local storage");
 
 		DataproviderIdAndTypeHolder dataProviderID = entities.getPKDataProviderID(entityName);
 		if (dataProviderID == null) throw new IllegalStateException(application.getI18nMessageWithFallback("cannotWorkWithoutPK"));
@@ -860,7 +860,8 @@ public class FoundSetManager
 
 	RowDescription createRowDescription(FoundSet fs, Object pkval)
 	{
-		if (entities == null) return null;
+		if (entities == null) throw new IllegalStateException("Cannot create a new record when there is no data in local storage");
+
 		RowDescription retval = RowDescription.newInstance();
 		retval.setValue(entities.getPKDataProviderID(fs.getEntityName()).getDataproviderId(), pkval);
 		if (fs instanceof RelatedFoundSet)
