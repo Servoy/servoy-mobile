@@ -142,7 +142,11 @@ public class FormManager
 		Iterator<FormController> it = formControllerMap.values().iterator();
 		while (it.hasNext())
 		{
-			it.next().cleanup();
+			FormController fc = it.next();
+			if (fc != currentForm)
+			{
+				fc.cleanup();
+			}
 		}
 		formControllerMap.clear();
 		currentForm = null;
@@ -176,12 +180,13 @@ public class FormManager
 	{
 		// if showing the first form (when startup or after a sync)
 		// first just clear all existing forms to be fully refreshed.
-		removeAllForms();
+		history.clear();
 		showForm(getFirstForm());
 	}
 
 	public void showLogin(JavaScriptObject successCallback, JavaScriptObject errorHandler)
 	{
+		currentForm = null;
 		JQMContext.changePage(getLogin(successCallback, errorHandler));
 	}
 
