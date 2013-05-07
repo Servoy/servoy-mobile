@@ -167,9 +167,10 @@ public class MobileClient implements EntryPoint
 			mobileClient.@com.servoy.mobile.client.MobileClient::onStartPageShown()();
 		} else {
 			$wnd
-					.$('#start')
-					.live(
-							'pageshow',
+					.$(document)
+					.on(
+							"pageshow",
+							"#start",
 							function(event) {
 								mobileClient.@com.servoy.mobile.client.MobileClient::onStartPageShown()();
 							});
