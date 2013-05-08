@@ -288,9 +288,6 @@ public class MobileClient implements EntryPoint
 
 	private void load(final JavaScriptObject successCallback, final JavaScriptObject errorHandler)
 	{
-		//first clear existing stuff if there is any
-		foundSetManager.clearLocalStorage();
-
 		offlineDataProxy.loadOfflineData(getSolutionName(), new Callback<Integer, Failure>()
 		{
 			@Override

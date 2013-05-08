@@ -308,6 +308,9 @@ public class FoundSetManager
 
 	void storeOfflineData(OfflineDataProxy offlineDataProxy, String fsname, OfflineDataDescription offlineData)
 	{
+		//first clear existing stuff if there is any
+		clearLocalStorage();
+
 		HashMap<String, HashSet<Object>> entitiesToPKs = new HashMap<String, HashSet<Object>>();
 
 		localStorage.setItem(STORAGE_VERSION_KEY, String.valueOf(STORAGE_VERSION));
