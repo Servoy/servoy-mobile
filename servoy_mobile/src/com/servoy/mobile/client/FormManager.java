@@ -17,7 +17,6 @@ package com.servoy.mobile.client;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
@@ -56,7 +55,6 @@ public class FormManager
 	};
 
 	private FormController currentForm;
-	private ArrayList<FormController> formsMarkedForCleanup = new ArrayList<FormController>();
 
 	protected FormManager(MobileClient mc)
 	{
@@ -126,11 +124,6 @@ public class FormManager
 		formController.executeOnShowMethod();
 		if (!restoreScrollPosition && currentForm != null) currentForm.getPage().clearScrollTop();
 		JQMContext.changePage(formController.getPage());
-		for (FormController fc : formsMarkedForCleanup)
-		{
-			if (!formController.equals(fc)) fc.cleanup();
-		}
-		formsMarkedForCleanup.clear();
 		return true;
 	}
 
@@ -156,7 +149,7 @@ public class FormManager
 			}
 			else
 			{
-				formsMarkedForCleanup.add(fc);
+				fc.markForCleanup();
 			}
 
 		}

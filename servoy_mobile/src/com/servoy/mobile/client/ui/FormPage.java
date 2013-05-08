@@ -280,6 +280,12 @@ public class FormPage extends JQMPage
 		if (scrollTop > 0) Mobile.silentScroll(scrollTop);
 	}
 
+	@Override
+	protected void onPageHide()
+	{
+		if (formController.isMarkedForCleanup()) formController.cleanup();
+	}
+
 	public void clearScrollTop()
 	{
 		scrollTop = 0;

@@ -33,6 +33,7 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 	private final MobileClient mc;
 	private final Executor executor;
 	private boolean didOnShowOnce = false;
+	private boolean markedForCleanup;
 
 	public FormController(MobileClient mc, Form form)
 	{
@@ -248,6 +249,16 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 		{
 			Executor.callFunction(form.getOnRecordSelectionCall(), null, getName(), new JSEvent(IJSEvent.FORM, getFormScope(), getName(), null));
 		}
+	}
+
+	public void markForCleanup()
+	{
+		markedForCleanup = true;
+	}
+
+	public boolean isMarkedForCleanup()
+	{
+		return markedForCleanup;
 	}
 
 	@Override
