@@ -190,8 +190,8 @@ public class FoundSetManager
 	}
 
 	private native void exportImpl(String name) /*-{
-		$wnd._ServoyUtils_.defineWindowVariable(name);
-	}-*/;
+												$wnd._ServoyUtils_.defineWindowVariable(name);
+												}-*/;
 
 	public EntityDescription getEntityDescription(String entityName)
 	{
@@ -993,7 +993,9 @@ public class FoundSetManager
 	{
 		if (entities.isPKUUID(entityName) || (row != null && row.isCreatedOnDevice()))
 		{
-			pk = valueStore.getUUIDValue(Utils.getAsInteger(pk));
+			String uuidPk = valueStore.getUUIDValue(Utils.getAsInteger(pk));
+			if (uuidPk != null) return uuidPk;
+			else Log.info("No uuid pk found for pk: " + pk + " of entity: " + entityName);
 		}
 		return pk;
 	}
