@@ -154,7 +154,7 @@ public class ComponentFactory
 						componentWidget = new DataCheckboxSet(field, valuelist, formController.getExecutor(), application);
 						break;
 					case IFieldConstants.CALENDAR :
-						componentWidget = new DataTextField(field, formController.getExecutor(), application);
+						componentWidget = new DataCalendarField(field, formController.getExecutor(), application);
 						break;
 					case IFieldConstants.PASSWORD :
 						componentWidget = new DataPassword(field, formController.getExecutor(), application);

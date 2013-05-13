@@ -4,6 +4,14 @@
   <script src="jquery.mobile-1.3.1.min.js"/>
   <stylesheet src="jquery.mobile-1.3.1.min.css"/>
   
+  <!-- date stuff -->
+  <script src="datetime/picker.js"/>
+  <script src="datetime/picker.date.js"/>
+  <script src="datetime/picker.time.js"/>
+  <stylesheet src="datetime/themes/default.css"/>
+  <stylesheet src="datetime/themes/default.date.css"/>
+  <stylesheet src="datetime/themes/default.time.css"/>
+  
   <script src="solution.js"/>
   <script src="solution_json.js"/>
   <script src="servoy_utils.js"/>
@@ -49,6 +57,7 @@
   <set-configuration-property name="locale.searchorder" value="queryparam,cookie,meta,useragent"/>
   
   <set-property name="user.agent" value="ie9,safari,gecko1_8"/>
+  <!-- <set-property name="user.agent" value="safari"/>  -->
     
   <!-- Specify the app entry point class.                         -->
   <entry-point class='com.servoy.mobile.client.MobileClient'/>
