@@ -243,6 +243,11 @@ public class Record extends Scope implements IJSRecord, IRowChangeListener
 		if (rowDescription == null)
 		{
 			rowDescription = parent.getRowDescription(getPK());
+			if (rowDescription == null)
+			{
+				Log.error("Row description for pk : " + getPK() + " of datasource: " + getDataSource() + " not found.");
+				return null;
+			}
 			rowDescription.addRowChangeListener(this);
 		}
 		return rowDescription;
