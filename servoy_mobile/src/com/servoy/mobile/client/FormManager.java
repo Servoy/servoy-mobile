@@ -121,7 +121,6 @@ public class FormManager
 		}
 		currentForm = formController;
 		history.add(formController);
-		formController.executeOnShowMethod();
 		if (!restoreScrollPosition && currentForm != null) currentForm.getPage().clearScrollTop();
 		JQMContext.changePage(formController.getPage());
 		return true;
