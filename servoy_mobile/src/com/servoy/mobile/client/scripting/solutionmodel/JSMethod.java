@@ -42,31 +42,34 @@ public class JSMethod extends JSScriptPart implements IBaseSMMethod, Exportable
 	@Override
 	public String getCode()
 	{
-		String c = getCodeInternal(path[0], path[1], path[2]);
-		if (c != null)
+		String codeAndArgs = getArgsAndCodeInternal(path[0], path[1], path[2]);
+
+		if (codeAndArgs != null)
 		{
-			c = joinCodeWithName(c, getName());
+			String wholeTextBeforeArgsInternal = getWholeTextBeforeArgsInternal(path[0], path[1], path[2]);
+			if (wholeTextBeforeArgsInternal == null) wholeTextBeforeArgsInternal = "function " + getName(); // for non-SM created methods
+
+			codeAndArgs = joinIntoFullCode(codeAndArgs, wholeTextBeforeArgsInternal);
 		}
-		return c;
+		return codeAndArgs;
 	}
 
 	@NoExport
-	public static String joinCodeWithName(String c, String name)
+	public static String joinIntoFullCode(String codeWithoutArgs, String wholeTextBeforeArgsInternal)
 	{
-		int idx = c.indexOf("function "); //$NON-NLS-1$
-		return (idx >= 0) ? (c.substring(0, idx + 9) + name + c.substring(idx + 9)) : c;
+		return wholeTextBeforeArgsInternal + codeWithoutArgs;
 	}
 
 	/**
-	 * @return 2 items array, first being code, second name
+	 * @return 3 items array, first being arguments + code, second is name, third is the whole string before arguments.
 	 */
 	@NoExport
-	public static String[] splitCodeFromName(String c)
+	public static String[] splitFullCode(String c)
 	{
 		int idx1 = c.indexOf("function "); //$NON-NLS-1$
 		int idx2 = c.indexOf("("); //$NON-NLS-1$
 
-		if (idx1 >= 0 && idx2 >= 0) return new String[] { c.substring(0, idx1 + 9) + c.substring(idx2), c.substring(idx1 + 9, idx2).trim() };
+		if (idx1 >= 0 && idx2 >= 0) return new String[] { c.substring(idx2), c.substring(idx1 + 9, idx2).trim(), c.substring(0, idx2) };
 		return null;
 	}
 
@@ -76,10 +79,10 @@ public class JSMethod extends JSScriptPart implements IBaseSMMethod, Exportable
 	{
 		if (content == null) return;
 		cloneFormIfNeeded();
-		String[] sr = splitCodeFromName(content);
-		if (sr != null && sr.length == 2)
+		String[] sr = splitFullCode(content);
+		if (sr != null && sr.length == 3)
 		{
-			setCodeInternal(path[0], path[1], path[2], sr[0]);
+			setCodeInternal(path[0], path[1], path[2], sr[0], sr[2]);
 			reloadScope();
 		}
 	}
@@ -131,22 +134,32 @@ public class JSMethod extends JSScriptPart implements IBaseSMMethod, Exportable
 		return false;
 	}-*/;
 
-	private final native String getCodeInternal(String parentScope, String scope, String fName) /*-{
+	private final native String getArgsAndCodeInternal(String parentScope, String scope, String fName) /*-{
 		return $wnd._ServoyInit_[parentScope][scope].fncs[fName];
 	}-*/;
 
-	private final native void setCodeInternal(String parentScope, String scope, String fName, String code) /*-{
-		$wnd._ServoyInit_[parentScope][scope].fncs[fName] = code;
+	private final native String getWholeTextBeforeArgsInternal(String parentScope, String scope, String fName) /*-{
+		return typeof $wnd._ServoyInit_[parentScope][scope].preTxt == 'undefined' ? null
+				: $wnd._ServoyInit_[parentScope][scope].preTxt[fName];
+	}-*/;
+
+	private final native void setCodeInternal(String parentScope, String scope, String fName, String argsAndCode, String wholeTextBeforeArgs) /*-{
+		$wnd._ServoyInit_[parentScope][scope].fncs[fName] = argsAndCode;
+		if (typeof $wnd._ServoyInit_[parentScope][scope].preTxt == 'undefined')
+			$wnd._ServoyInit_[parentScope][scope].preTxt = {};
+		$wnd._ServoyInit_[parentScope][scope].preTxt[fName] = wholeTextBeforeArgs;
 	}-*/;
 
 	private final native void removeInternal(String parentScope, String scope, String fName) /*-{
 		delete $wnd._ServoyInit_[parentScope][scope].fncs[fName];
+		if (typeof $wnd._ServoyInit_[parentScope][scope].preTxt != 'undefined')
+			delete $wnd._ServoyInit_[parentScope][scope].preTxt[fName];
 	}-*/;
 
 	@NoExport
-	public void create(String code)
+	public void create(String argsAndCode, String wholeTextBeforeArgs)
 	{
-		setCodeInternal(path[0], path[1], path[2], code);
+		setCodeInternal(path[0], path[1], path[2], argsAndCode, wholeTextBeforeArgs);
 		reloadScope();
 	}
 

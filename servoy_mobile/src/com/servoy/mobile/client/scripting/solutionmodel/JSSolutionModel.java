@@ -246,15 +246,15 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 		if (code == null) return null;
 		String scope = (scopeName == null ? "globals" : scopeName); //$NON-NLS-1$
 
-		String[] codeAndName = JSMethod.splitCodeFromName(code);
-		if (codeAndName != null && codeAndName.length == 2)
+		String[] codeAndName = JSMethod.splitFullCode(code);
+		if (codeAndName != null && codeAndName.length == 3)
 		{
 			JSMethod gm = new JSMethod(ScriptEngine.SCOPES, scope, codeAndName[1], this, null);
 
 			if (!gm.exists())
 			{
 				createScopeIfNecessary(scope);
-				gm.create(codeAndName[0]);
+				gm.create(codeAndName[0], codeAndName[2]);
 				return gm;
 			}
 		}

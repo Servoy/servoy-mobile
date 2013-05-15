@@ -135,13 +135,13 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 	{
 		if (code == null) return null;
 		cloneIfNeeded();
-		String[] codeAndName = JSMethod.splitCodeFromName(code);
-		if (codeAndName != null && codeAndName.length == 2)
+		String[] codeAndName = JSMethod.splitFullCode(code);
+		if (codeAndName != null && codeAndName.length == 3)
 		{
 			JSMethod fm = new JSMethod(ScriptEngine.FORMS, getName(), codeAndName[1], getSolutionModel(), this);
 			if (!fm.exists())
 			{
-				fm.create(codeAndName[0]);
+				fm.create(codeAndName[0], codeAndName[2]);
 				return fm;
 			}
 		}
