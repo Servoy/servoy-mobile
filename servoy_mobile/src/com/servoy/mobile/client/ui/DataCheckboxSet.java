@@ -32,7 +32,6 @@ import com.servoy.mobile.client.scripting.IModificationListener;
 import com.servoy.mobile.client.scripting.IRuntimeComponent;
 import com.servoy.mobile.client.scripting.ModificationEvent;
 import com.servoy.mobile.client.scripting.RuntimeDataCheckboxSet;
-import com.servoy.mobile.client.util.IDestroyable;
 import com.servoy.mobile.client.util.Utils;
 import com.sksamuel.jqm4gwt.form.elements.JQMCheckbox;
 import com.sksamuel.jqm4gwt.form.elements.JQMCheckset;
@@ -42,13 +41,12 @@ import com.sksamuel.jqm4gwt.form.elements.JQMCheckset;
  *
  * @author gboros
  */
-public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IFieldComponent, ISupportTitleText, IEditListenerSubject, IModificationListener,
-	IDestroyable
+public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IFieldComponent, ISupportTitleText, IEditListenerSubject, IModificationListener
 {
 	private final ValueList valuelist;
 
 	private final List<DataCheckboxSetItem> items = new ArrayList<DataCheckboxSetItem>();
-	private final RuntimeDataCheckboxSet scriptable;
+	private RuntimeDataCheckboxSet scriptable;
 
 	public DataCheckboxSet(Field field, ValueList valuelist, Executor executor, MobileClient application)
 	{
@@ -111,6 +109,7 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 	@Override
 	public void destroy()
 	{
+		scriptable = null;
 		if (valuelist != null) valuelist.removeModificationListener(this);
 	}
 

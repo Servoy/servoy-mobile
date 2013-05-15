@@ -19,6 +19,7 @@ package com.servoy.mobile.client.ui;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.servoy.mobile.client.scripting.IRuntimeComponentProvider;
+import com.servoy.mobile.client.util.IDestroyable;
 
 /**
  * Interface for portal (inset list) ui component.
@@ -26,6 +27,6 @@ import com.servoy.mobile.client.scripting.IRuntimeComponentProvider;
  * @author rgansevles
  *
  */
-public interface IPortalComponent extends IComponent, IRuntimeComponentProvider, HasClickHandlers
+public interface IPortalComponent extends IComponent, IRuntimeComponentProvider, HasClickHandlers, IDestroyable
 {
 }

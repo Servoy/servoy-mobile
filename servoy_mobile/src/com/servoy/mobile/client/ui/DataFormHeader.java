@@ -32,7 +32,7 @@ import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
  */
 public class DataFormHeader extends JQMHeader implements IDisplayData, IGraphicalComponent
 {
-	private final RuntimeDataFormHeader scriptable;
+	private RuntimeDataFormHeader scriptable;
 
 	/**
 	 * @param text
@@ -81,5 +81,16 @@ public class DataFormHeader extends JQMHeader implements IDisplayData, IGraphica
 	public HandlerRegistration addClickHandler(ClickHandler handler)
 	{
 		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.util.IDestroyable#destroy()
+	 */
+	@Override
+	public void destroy()
+	{
+		scriptable = null;
 	}
 }

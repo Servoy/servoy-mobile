@@ -19,12 +19,13 @@ package com.servoy.mobile.client.ui;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.servoy.mobile.client.scripting.IRuntimeComponentProvider;
+import com.servoy.mobile.client.util.IDestroyable;
 
 /**
  * @author gboros
  *
  */
-public interface IFieldComponent extends IComponent, IRuntimeComponentProvider, HasClickHandlers
+public interface IFieldComponent extends IComponent, IRuntimeComponentProvider, HasClickHandlers, IDestroyable
 {
 
 }

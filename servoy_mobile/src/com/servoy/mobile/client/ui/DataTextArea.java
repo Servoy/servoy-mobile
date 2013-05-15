@@ -37,7 +37,7 @@ import com.sksamuel.jqm4gwt.form.elements.JQMTextArea;
  */
 public class DataTextArea extends JQMTextArea implements IDisplayData, ISupportTitleText, IFieldComponent, IEditListenerSubject, ISupportsPlaceholderComponent
 {
-	private final RuntimeDataTextArea scriptable;
+	private RuntimeDataTextArea scriptable;
 
 	public DataTextArea(Field field, Executor executor, MobileClient application)
 	{
@@ -138,5 +138,16 @@ public class DataTextArea extends JQMTextArea implements IDisplayData, ISupportT
 		{
 			element.removeAttribute("placeholder"); //$NON-NLS-1$
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.util.IDestroyable#destroy()
+	 */
+	@Override
+	public void destroy()
+	{
+		scriptable = null;
 	}
 }

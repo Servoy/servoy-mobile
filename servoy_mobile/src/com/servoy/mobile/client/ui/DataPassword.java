@@ -31,7 +31,7 @@ import com.servoy.mobile.client.scripting.RuntimeDataPassword;
  */
 public class DataPassword extends DataTextField implements IDisplayData, ISupportTitleText, IFieldComponent, IEditListenerSubject
 {
-	private final RuntimeDataPassword scriptable;
+	private RuntimeDataPassword scriptable;
 
 	public DataPassword(Field field, Executor executor, MobileClient application)
 	{
@@ -45,5 +45,11 @@ public class DataPassword extends DataTextField implements IDisplayData, ISuppor
 	public IRuntimeField getRuntimeComponent()
 	{
 		return scriptable;
+	}
+
+	@Override
+	public void destroy()
+	{
+		scriptable = null;
 	}
 }

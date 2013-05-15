@@ -26,16 +26,17 @@ import com.servoy.mobile.client.persistence.Bean;
 import com.servoy.mobile.client.scripting.IRuntimeComponent;
 import com.servoy.mobile.client.scripting.IRuntimeComponentProvider;
 import com.servoy.mobile.client.scripting.RuntimeBean;
+import com.servoy.mobile.client.util.IDestroyable;
 import com.sksamuel.jqm4gwt.JQMWidget;
 
 /**
  * @author gboros
  *
  */
-public class BeanComponent extends JQMWidget implements IComponent, IRuntimeComponentProvider, HasText
+public class BeanComponent extends JQMWidget implements IComponent, IRuntimeComponentProvider, HasText, IDestroyable
 {
 	private DivWidget divWidget;
-	private final RuntimeBean scriptable;
+	private RuntimeBean scriptable;
 
 	public BeanComponent(Bean bean, Executor executor, MobileClient application)
 	{
@@ -85,5 +86,16 @@ public class BeanComponent extends JQMWidget implements IComponent, IRuntimeComp
 	public IRuntimeComponent getRuntimeComponent()
 	{
 		return scriptable;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.util.IDestroyable#destroy()
+	 */
+	@Override
+	public void destroy()
+	{
+		scriptable = null;
 	}
 }

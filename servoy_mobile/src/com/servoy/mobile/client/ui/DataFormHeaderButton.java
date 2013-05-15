@@ -38,7 +38,7 @@ public class DataFormHeaderButton extends JQMButton implements IDisplayData, IGr
 	public static int ORIENTATION_RIGHT = 1;
 
 	private final int orientation;
-	private final RuntimeDataFormHeaderButton scriptable;
+	private RuntimeDataFormHeaderButton scriptable;
 
 	public DataFormHeaderButton(GraphicalComponent gc, int orientation, Executor executor, MobileClient application)
 	{
@@ -85,5 +85,16 @@ public class DataFormHeaderButton extends JQMButton implements IDisplayData, IGr
 	public IRuntimeComponent getRuntimeComponent()
 	{
 		return scriptable;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.util.IDestroyable#destroy()
+	 */
+	@Override
+	public void destroy()
+	{
+		scriptable = null;
 	}
 }

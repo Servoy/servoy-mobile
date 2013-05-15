@@ -35,7 +35,7 @@ import com.sksamuel.jqm4gwt.button.JQMButton;
  */
 public class DataButton extends JQMButton implements IDisplayData, IGraphicalComponent
 {
-	private final RuntimeDataButton scriptable;
+	private RuntimeDataButton scriptable;
 
 	public DataButton(GraphicalComponent gc, Executor executor, MobileClient application)
 	{
@@ -80,5 +80,16 @@ public class DataButton extends JQMButton implements IDisplayData, IGraphicalCom
 	public IRuntimeComponent getRuntimeComponent()
 	{
 		return scriptable;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.util.IDestroyable#destroy()
+	 */
+	@Override
+	public void destroy()
+	{
+		scriptable = null;
 	}
 }

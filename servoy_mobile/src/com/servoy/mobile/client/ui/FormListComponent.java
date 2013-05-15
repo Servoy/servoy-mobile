@@ -31,7 +31,7 @@ import com.servoy.mobile.client.scripting.RuntimePortal;
  */
 public class FormListComponent extends FormList implements IPortalComponent
 {
-	private final RuntimePortal scriptable;
+	private RuntimePortal scriptable;
 
 	/**
 	 * @param formController
@@ -49,5 +49,16 @@ public class FormListComponent extends FormList implements IPortalComponent
 	public RuntimePortal getRuntimeComponent()
 	{
 		return scriptable;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.util.IDestroyable#destroy()
+	 */
+	@Override
+	public void destroy()
+	{
+		scriptable = null;
 	}
 }

@@ -33,7 +33,6 @@ import com.servoy.mobile.client.scripting.IModificationListener;
 import com.servoy.mobile.client.scripting.IRuntimeComponent;
 import com.servoy.mobile.client.scripting.ModificationEvent;
 import com.servoy.mobile.client.scripting.RuntimeDataSelect;
-import com.servoy.mobile.client.util.IDestroyable;
 import com.servoy.mobile.client.util.Utils;
 import com.sksamuel.jqm4gwt.form.elements.JQMSelect;
 
@@ -43,11 +42,10 @@ import com.sksamuel.jqm4gwt.form.elements.JQMSelect;
  *
  * @author gboros
  */
-public class DataSelect extends JQMSelect implements IDisplayData, IFieldComponent, ISupportTitleText, IEditListenerSubject, IModificationListener,
-	IDestroyable
+public class DataSelect extends JQMSelect implements IDisplayData, IFieldComponent, ISupportTitleText, IEditListenerSubject, IModificationListener
 {
 	private final ValueList valuelist;
-	private final RuntimeDataSelect scriptable;
+	private RuntimeDataSelect scriptable;
 	private boolean hasEmptyOption;
 	private final String id;
 
@@ -116,6 +114,7 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 	@Override
 	public void destroy()
 	{
+		scriptable = null;
 		if (valuelist != null) valuelist.removeModificationListener(this);
 	}
 

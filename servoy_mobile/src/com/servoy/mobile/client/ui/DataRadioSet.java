@@ -32,7 +32,6 @@ import com.servoy.mobile.client.scripting.IModificationListener;
 import com.servoy.mobile.client.scripting.IRuntimeComponent;
 import com.servoy.mobile.client.scripting.ModificationEvent;
 import com.servoy.mobile.client.scripting.RuntimeDataRadioSet;
-import com.servoy.mobile.client.util.IDestroyable;
 import com.servoy.mobile.client.util.Utils;
 import com.sksamuel.jqm4gwt.form.elements.JQMRadioset;
 
@@ -41,11 +40,10 @@ import com.sksamuel.jqm4gwt.form.elements.JQMRadioset;
  *
  * @author gboros
  */
-public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldComponent, ISupportTitleText, IEditListenerSubject, IModificationListener,
-	IDestroyable
+public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldComponent, ISupportTitleText, IEditListenerSubject, IModificationListener
 {
 	private final ValueList valuelist;
-	private final RuntimeDataRadioSet scriptable;
+	private RuntimeDataRadioSet scriptable;
 
 	public DataRadioSet(Field field, ValueList valuelist, Executor executor, MobileClient application)
 	{
@@ -99,6 +97,7 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 	@Override
 	public void destroy()
 	{
+		scriptable = null;
 		if (valuelist != null) valuelist.removeModificationListener(this);
 	}
 

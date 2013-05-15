@@ -33,7 +33,7 @@ import com.sksamuel.jqm4gwt.form.elements.JQMText;
  */
 public class DataTextField extends JQMText implements IDisplayData, ISupportTitleText, IFieldComponent, IEditListenerSubject, ISupportsPlaceholderComponent
 {
-	private final RuntimeDataTextField scriptable;
+	private RuntimeDataTextField scriptable;
 
 	public DataTextField(Field field, Executor executor, MobileClient application)
 	{
@@ -140,4 +140,15 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 			$wnd.$("#" + inputId).removeAttr("placeholder");
 		}
 	}-*/;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.util.IDestroyable#destroy()
+	 */
+	@Override
+	public void destroy()
+	{
+		scriptable = null;
+	}
 }

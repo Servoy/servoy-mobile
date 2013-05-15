@@ -37,7 +37,7 @@ import com.sksamuel.jqm4gwt.form.elements.JQMText;
  */
 public class DataCalendarField extends JQMText implements IDisplayData, ISupportTitleText, IFieldComponent, IEditListenerSubject, ISupportsPlaceholderComponent
 {
-	private final RuntimeDataCalenderField scriptable;
+	private RuntimeDataCalenderField scriptable;
 
 	public DataCalendarField(Field field, Executor executor, MobileClient application)
 	{
@@ -204,4 +204,15 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 			$wnd.$("#" + inputId).removeAttr("placeholder");
 		}
 	}-*/;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.util.IDestroyable#destroy()
+	 */
+	@Override
+	public void destroy()
+	{
+		scriptable = null;
+	}
 }

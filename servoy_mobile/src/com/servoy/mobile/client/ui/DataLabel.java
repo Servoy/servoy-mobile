@@ -43,7 +43,7 @@ public class DataLabel extends JQMWidget implements HasText, IDisplayData, IGrap
 	private final FormLabel labelFor;
 	private final Heading label;
 	private final FlowPanel flow;
-	private final RuntimeDataLabel scriptable;
+	private RuntimeDataLabel scriptable;
 
 	public DataLabel(GraphicalComponent gc, Executor executor, MobileClient application)
 	{
@@ -174,5 +174,16 @@ public class DataLabel extends JQMWidget implements HasText, IDisplayData, IGrap
 		{
 			removeDataRole();
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.util.IDestroyable#destroy()
+	 */
+	@Override
+	public void destroy()
+	{
+		scriptable = null;
 	}
 }
