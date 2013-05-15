@@ -90,6 +90,7 @@ public class DataButton extends JQMButton implements IDisplayData, IGraphicalCom
 	@Override
 	public void destroy()
 	{
+		scriptable.destroy();
 		scriptable = null;
 	}
 }

@@ -19,6 +19,7 @@ package com.servoy.mobile.client.scripting;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.servoy.base.scripting.api.IJSEvent;
 import com.servoy.base.util.ITagResolver;
 import com.servoy.base.util.TagParser;
@@ -89,7 +90,7 @@ public class AbstractRuntimeGraphicalComponent extends AbstractRuntimeBaseCompon
 	{
 		if (command != null)
 		{
-			component.addClickHandler(new ClickHandler()
+			clickRegistration = component.addClickHandler(new ClickHandler()
 			{
 				@Override
 				public void onClick(ClickEvent event)
@@ -98,5 +99,18 @@ public class AbstractRuntimeGraphicalComponent extends AbstractRuntimeBaseCompon
 				}
 			});
 		}
+	}
+
+	private HandlerRegistration clickRegistration = null;
+
+	@Override
+	public void destroy()
+	{
+		super.destroy();
+		if (clickRegistration != null)
+		{
+			clickRegistration.removeHandler();
+		}
+		tagResolver = null;
 	}
 }

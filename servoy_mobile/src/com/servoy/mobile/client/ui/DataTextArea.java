@@ -148,6 +148,7 @@ public class DataTextArea extends JQMTextArea implements IDisplayData, ISupportT
 	@Override
 	public void destroy()
 	{
+		scriptable.destroy();
 		scriptable = null;
 	}
 }

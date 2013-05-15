@@ -23,6 +23,7 @@ import org.timepedia.exporter.client.Setter;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.servoy.base.scripting.api.IJSEvent;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.persistence.Field;
@@ -67,7 +68,7 @@ public class AbstractRuntimeFieldComponent extends AbstractRuntimeBaseComponent<
 	{
 		if (command != null)
 		{
-			component.addClickHandler(new ClickHandler()
+			clickRegistration = component.addClickHandler(new ClickHandler()
 			{
 				@Override
 				public void onClick(ClickEvent event)
@@ -75,6 +76,23 @@ public class AbstractRuntimeFieldComponent extends AbstractRuntimeBaseComponent<
 					executor.fireEventCommand(IJSEvent.ACTION, command, AbstractRuntimeFieldComponent.this, null);
 				}
 			});
+		}
+	}
+
+	private HandlerRegistration clickRegistration = null;
+	protected HandlerRegistration keyRegistration = null;
+
+	@Override
+	public void destroy()
+	{
+		super.destroy();
+		if (clickRegistration != null)
+		{
+			clickRegistration.removeHandler();
+		}
+		if (keyRegistration != null)
+		{
+			keyRegistration.removeHandler();
 		}
 	}
 

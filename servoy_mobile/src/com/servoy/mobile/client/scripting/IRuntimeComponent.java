@@ -31,4 +31,6 @@ public interface IRuntimeComponent
 	void setActionCommand(String command);
 
 	String getName();
+
+	void destroy();
 }

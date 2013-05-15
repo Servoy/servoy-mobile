@@ -23,6 +23,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Widget;
 import com.servoy.base.persistence.IMobileProperties;
@@ -62,6 +63,7 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 	private String listItemOnAction;
 	private String listItemDataIcon;
 	private String listItemStyleclass;
+	private HandlerRegistration clickRegistration = null;
 
 	public FormList(FormController formController, JsArray<Component> formComponents, DataAdapterList dal, String relationName)
 	{
@@ -196,6 +198,7 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 		if (this.foundSet != null) this.foundSet.removeFoundSetListener(this);
 		formController = null;
 		dal = null;
+		if (clickRegistration != null) clickRegistration.removeHandler();
 
 	}
 
@@ -257,7 +260,7 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 				final int selIndex = i;
 				if (listItemOnAction != null)
 				{
-					listItem.addClickHandler(new ClickHandler()
+					clickRegistration = listItem.addClickHandler(new ClickHandler()
 					{
 						@Override
 						public void onClick(ClickEvent event)

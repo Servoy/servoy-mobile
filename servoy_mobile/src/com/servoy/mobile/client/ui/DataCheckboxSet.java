@@ -109,6 +109,7 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 	@Override
 	public void destroy()
 	{
+		scriptable.destroy();
 		scriptable = null;
 		if (valuelist != null) valuelist.removeModificationListener(this);
 	}

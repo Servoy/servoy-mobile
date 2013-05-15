@@ -42,7 +42,7 @@ public class RuntimeDataPassword extends AbstractRuntimeFieldComponent
 	{
 		if (command != null)
 		{
-			((DataPassword)component).addKeyUpHandler(new KeyUpHandler()
+			keyRegistration = ((DataPassword)component).addKeyUpHandler(new KeyUpHandler()
 			{
 
 				@Override

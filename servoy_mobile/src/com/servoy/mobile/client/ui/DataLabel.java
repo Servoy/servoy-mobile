@@ -184,6 +184,7 @@ public class DataLabel extends JQMWidget implements HasText, IDisplayData, IGrap
 	@Override
 	public void destroy()
 	{
+		scriptable.destroy();
 		scriptable = null;
 	}
 }

@@ -38,8 +38,8 @@ public abstract class AbstractRuntimeBaseComponent<C extends IComponent, P exten
 	HasRuntimeVisible, Exportable
 {
 	protected final MobileClient application;
-	protected final Executor executor;
-	protected final C component;
+	protected Executor executor;
+	protected C component;
 	protected final P componentPersist;
 
 
@@ -108,5 +108,12 @@ public abstract class AbstractRuntimeBaseComponent<C extends IComponent, P exten
 	public void setVisible(boolean b)
 	{
 		component.setVisible(b);
+	}
+
+	@Override
+	public void destroy()
+	{
+		component = null;
+		executor = null;
 	}
 }

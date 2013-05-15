@@ -213,6 +213,7 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 	@Override
 	public void destroy()
 	{
+		scriptable.destroy();
 		scriptable = null;
 	}
 }

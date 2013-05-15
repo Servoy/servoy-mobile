@@ -43,7 +43,7 @@ public class RuntimeDataCalenderField extends AbstractRuntimeFieldComponent
 	{
 		if (command != null)
 		{
-			((DataTextField)component).addKeyUpHandler(new KeyUpHandler()
+			keyRegistration = ((DataTextField)component).addKeyUpHandler(new KeyUpHandler()
 			{
 
 				@Override
