@@ -23,6 +23,7 @@ import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
@@ -117,6 +118,16 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 		scriptable.destroy();
 		scriptable = null;
 		if (valuelist != null) valuelist.removeModificationListener(this);
+		if (editProvider != null)
+		{
+			editProvider.clean();
+			editProvider = null;
+		}
+		if (editChangeHandler != null)
+		{
+			editChangeHandler.removeHandler();
+			editChangeHandler = null;
+		}
 	}
 
 	/*
@@ -181,6 +192,7 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 	}
 
 	private EditProvider editProvider;
+	private HandlerRegistration editChangeHandler;
 
 	/*
 	 * @see com.servoy.mobile.client.dataprocessing.IEditListenerSubject#addEditListener(com.servoy.mobile.client.dataprocessing.IEditListener)
@@ -192,7 +204,7 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 		{
 			editProvider = new EditProvider(this);
 			editProvider.addEditListener(editListener);
-			addChangeHandler(editProvider);
+			editChangeHandler = addChangeHandler(editProvider);
 		}
 	}
 

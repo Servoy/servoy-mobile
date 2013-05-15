@@ -50,6 +50,7 @@ public class DataPassword extends DataTextField implements IDisplayData, ISuppor
 	@Override
 	public void destroy()
 	{
+		super.destroy();
 		scriptable.destroy();
 		scriptable = null;
 	}

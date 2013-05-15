@@ -22,6 +22,7 @@ import java.util.List;
 
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
@@ -112,6 +113,16 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 		scriptable.destroy();
 		scriptable = null;
 		if (valuelist != null) valuelist.removeModificationListener(this);
+		if (editProvider != null)
+		{
+			editProvider.clean();
+			editProvider = null;
+		}
+		if (editBlurHandler != null)
+		{
+			editBlurHandler.removeHandler();
+			editBlurHandler = null;
+		}
 	}
 
 	/*
@@ -177,6 +188,7 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 	}-*/;
 
 	private EditProvider editProvider;
+	private HandlerRegistration editBlurHandler;
 
 	/*
 	 * @see com.servoy.mobile.client.dataprocessing.IEditListenerSubject#addEditListener(com.servoy.mobile.client.dataprocessing.IEditListener)
@@ -188,7 +200,7 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 		{
 			editProvider = new EditProvider(this);
 			editProvider.addEditListener(editListener);
-			addBlurHandler(editProvider);
+			editBlurHandler = addBlurHandler(editProvider);
 		}
 	}
 

@@ -155,10 +155,13 @@ public class DataAdapterList implements IModificationListener, ITagResolver
 		application.getScriptEngine().getGlobalScopeModificationDelegate().removeModificationListener(this);
 		formController.getFormScope().removeModificationListener(this);
 
+		dataAdapters.clear();
+		relatedDataAdapters.clear();
 		for (IDestroyable destroyable : destroyables)
 		{
 			destroyable.destroy();
 		}
+		destroyables.clear();
 
 		formController = null;
 		record = null;

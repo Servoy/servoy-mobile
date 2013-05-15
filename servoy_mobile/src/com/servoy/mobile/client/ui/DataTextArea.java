@@ -63,6 +63,7 @@ public class DataTextArea extends JQMTextArea implements IDisplayData, ISupportT
 	}
 
 	private EditProvider editProvider;
+	private HandlerRegistration editBlurHandler;
 
 	/*
 	 * @see com.servoy.mobile.client.dataprocessing.IEditListenerSubject#addEditListener(com.servoy.mobile.client.dataprocessing.IEditListener)
@@ -74,7 +75,7 @@ public class DataTextArea extends JQMTextArea implements IDisplayData, ISupportT
 		{
 			editProvider = new EditProvider(this);
 			editProvider.addEditListener(editListener);
-			addBlurHandler(editProvider);
+			editBlurHandler = addBlurHandler(editProvider);
 		}
 	}
 
@@ -150,5 +151,16 @@ public class DataTextArea extends JQMTextArea implements IDisplayData, ISupportT
 	{
 		scriptable.destroy();
 		scriptable = null;
+
+		if (editProvider != null)
+		{
+			editProvider.clean();
+			editProvider = null;
+		}
+		if (editBlurHandler != null)
+		{
+			editBlurHandler.removeHandler();
+			editBlurHandler = null;
+		}
 	}
 }

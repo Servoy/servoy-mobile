@@ -17,6 +17,7 @@ package com.servoy.mobile.client.ui;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
@@ -59,6 +60,7 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 	}
 
 	private EditProvider editProvider;
+	private HandlerRegistration editBlurHandler;
 
 	/*
 	 * @see com.servoy.mobile.client.dataprocessing.IEditListenerSubject#addEditListener(com.servoy.mobile.client.dataprocessing.IEditListener)
@@ -70,7 +72,7 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 		{
 			editProvider = new EditProvider(this);
 			editProvider.addEditListener(editListener);
-			addBlurHandler(editProvider);
+			editBlurHandler = addBlurHandler(editProvider);
 		}
 	}
 
@@ -151,5 +153,16 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 	{
 		scriptable.destroy();
 		scriptable = null;
+
+		if (editProvider != null)
+		{
+			editProvider.clean();
+			editProvider = null;
+		}
+		if (editBlurHandler != null)
+		{
+			editBlurHandler.removeHandler();
+			editBlurHandler = null;
+		}
 	}
 }

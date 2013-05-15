@@ -20,6 +20,7 @@ package com.servoy.mobile.client.ui;
 import org.timepedia.exporter.client.ExporterBaseActual.JsArrayObject;
 
 import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.servoy.base.persistence.IMobileProperties;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
@@ -100,6 +101,16 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 		scriptable.destroy();
 		scriptable = null;
 		if (valuelist != null) valuelist.removeModificationListener(this);
+		if (editProvider != null)
+		{
+			editProvider.clean();
+			editProvider = null;
+		}
+		if (editBlurHandler != null)
+		{
+			editBlurHandler.removeHandler();
+			editBlurHandler = null;
+		}
 	}
 
 	/*
@@ -160,6 +171,7 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 	}
 
 	private EditProvider editProvider;
+	private HandlerRegistration editBlurHandler;
 
 	/*
 	 * @see com.servoy.mobile.client.dataprocessing.IEditListenerSubject#addEditListener(com.servoy.mobile.client.dataprocessing.IEditListener)
@@ -171,7 +183,7 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 		{
 			editProvider = new EditProvider(this);
 			editProvider.addEditListener(editListener);
-			addBlurHandler(editProvider);
+			editBlurHandler = addBlurHandler(editProvider);
 		}
 	}
 

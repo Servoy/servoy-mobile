@@ -20,6 +20,7 @@ package com.servoy.mobile.client.ui;
 import java.util.Date;
 
 import com.google.gwt.event.dom.client.TouchEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
@@ -96,6 +97,7 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 	}
 
 	private EditProvider editProvider;
+	private HandlerRegistration editBlurHandler;
 
 	/*
 	 * @see com.servoy.mobile.client.dataprocessing.IEditListenerSubject#addEditListener(com.servoy.mobile.client.dataprocessing.IEditListener)
@@ -107,7 +109,7 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 		{
 			editProvider = new EditProvider(this);
 			editProvider.addEditListener(editListener);
-			addBlurHandler(editProvider);
+			editBlurHandler = addBlurHandler(editProvider);
 		}
 	}
 
@@ -215,5 +217,16 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 	{
 		scriptable.destroy();
 		scriptable = null;
+
+		if (editProvider != null)
+		{
+			editProvider.clean();
+			editProvider = null;
+		}
+		if (editBlurHandler != null)
+		{
+			editBlurHandler.removeHandler();
+			editBlurHandler = null;
+		}
 	}
 }

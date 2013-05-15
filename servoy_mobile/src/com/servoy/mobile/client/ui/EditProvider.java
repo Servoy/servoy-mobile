@@ -30,7 +30,7 @@ import com.servoy.mobile.client.dataprocessing.IEditListener;
  */
 public class EditProvider implements BlurHandler, ChangeHandler
 {
-	private final IDisplayData display;
+	private IDisplayData display;
 	private IEditListener listener;
 
 	public EditProvider(IDisplayData display)
@@ -64,5 +64,11 @@ public class EditProvider implements BlurHandler, ChangeHandler
 	private void commitEdit()
 	{
 		if (listener != null) listener.commitEdit(display);
+	}
+
+	public void clean()
+	{
+		display = null;
+		listener = null;
 	}
 }
