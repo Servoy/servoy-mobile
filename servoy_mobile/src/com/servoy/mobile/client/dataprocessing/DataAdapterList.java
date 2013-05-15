@@ -40,7 +40,7 @@ import com.servoy.mobile.client.util.IDestroyable;
 public class DataAdapterList implements IModificationListener, ITagResolver
 {
 	private final MobileClient application;
-	private final FormController formController;
+	private FormController formController;
 	private final LinkedHashMap<String, IDataAdapter> dataAdapters = new LinkedHashMap<String, IDataAdapter>();
 	private final ArrayList<IDisplayRelatedData> relatedDataAdapters = new ArrayList<IDisplayRelatedData>();
 	private final ArrayList<IDestroyable> destroyables = new ArrayList<IDestroyable>();
@@ -159,6 +159,9 @@ public class DataAdapterList implements IModificationListener, ITagResolver
 		{
 			destroyable.destroy();
 		}
+
+		formController = null;
+		record = null;
 	}
 
 	/*

@@ -45,4 +45,9 @@ public class ElementScope extends Scope
 	{
 		return -4; // media
 	}
+
+	public void destroy()
+	{
+		elements.clear();
+	}
 }

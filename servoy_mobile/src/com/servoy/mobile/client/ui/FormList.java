@@ -53,8 +53,8 @@ import com.sksamuel.jqm4gwt.list.JQMListItem;
  */
 public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetListener
 {
-	private final FormController formController;
-	private final DataAdapterList dal;
+	private FormController formController;
+	private DataAdapterList dal;
 	private final String relationName;
 	private ArrayList<RelationDescription> relation;
 	private String listItemTextDP, listItemSubtextDP, listItemCountDP, listItemImageDP, listItemHeaderDP;
@@ -189,6 +189,14 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 	public void contentChanged()
 	{
 		refreshList();
+	}
+
+	public void destroy()
+	{
+		if (this.foundSet != null) this.foundSet.removeFoundSetListener(this);
+		formController = null;
+		dal = null;
+
 	}
 
 	public void refreshList()

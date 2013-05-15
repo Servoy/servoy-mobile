@@ -12,11 +12,16 @@ import com.servoy.mobile.client.util.Utils;
 public class Executor
 {
 
-	private final FormController formController;
+	private FormController formController;
 
 	public Executor(FormController formController)
 	{
 		this.formController = formController;
+	}
+
+	public void destroy()
+	{
+		formController = null;
 	}
 
 	public void fireEventCommand(String type, String command, IRuntimeComponent source, Object[] args)

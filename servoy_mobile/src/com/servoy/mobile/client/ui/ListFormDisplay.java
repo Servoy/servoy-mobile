@@ -65,5 +65,13 @@ public class ListFormDisplay extends FormDisplay
 			super.onPageBeforeShow();
 			formList.refreshList();
 		}
+
+		@Override
+		public void destroy()
+		{
+			formList.destroy();
+			formList = null;
+			super.destroy();
+		}
 	}
 }

@@ -52,9 +52,9 @@ public class FormPage extends JQMPage
 {
 	protected final MobileClient application;
 	protected final Form form;
-	protected final FormController formController;
+	protected FormController formController;
 	private boolean enabled = true;
-	protected final DataAdapterList dal;
+	protected DataAdapterList dal;
 	private IFormPageHeaderDecorator headerDecorator;
 	private IFormPageFooterDecorator footerDecorator;
 	private JQMHeader headerComponent;
@@ -336,6 +336,14 @@ public class FormPage extends JQMPage
 	public DataAdapterList getDataAdapterList()
 	{
 		return dal;
+	}
+
+	public void destroy()
+	{
+		removeFromParent();
+		dal.destroy();
+		formController = null;
+		dal = null;
 	}
 
 	private class RowDisplay

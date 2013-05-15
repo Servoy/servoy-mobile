@@ -19,6 +19,7 @@ package com.servoy.mobile.client.scripting;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -64,6 +65,7 @@ public class JSHistory implements Exportable, IJSHistory
 		this.formManager.removeAllForms();
 		historyIndex = -1;
 		historyList.clear();
+		historyHashIndex.clear();
 	}
 
 	@Override
@@ -77,6 +79,18 @@ public class JSHistory implements Exportable, IJSHistory
 		return null;
 	}
 
+
+	private int getFormIndex(String formName)
+	{
+		for (int i = 0; i < historyList.size(); i++)
+		{
+			if (historyList.get(i).getName().equals(formName))
+			{
+				return i;
+			}
+		}
+		return -1;
+	}
 
 	@Override
 	public void go(int i)
@@ -141,11 +155,21 @@ public class JSHistory implements Exportable, IJSHistory
 	@Override
 	public boolean removeForm(String formName)
 	{
-		int i = historyList.indexOf(formName);
-		if (i != -1 && !removeIndex(i))
+		int i = getFormIndex(formName);
+		if (i != -1 && !removeIndex(i + 1))
 		{
 			return false;
 		}
+		Iterator<String> it = historyHashIndex.keySet().iterator();
+		while (it.hasNext())
+		{
+			String key = it.next();
+			if (historyHashIndex.get(key).controller.getName().equals(formName))
+			{
+				it.remove();
+			}
+		}
+		historyHashIndex.clear();
 		return formManager.removeForm(formName);
 	}
 

@@ -26,12 +26,12 @@ import com.servoy.mobile.client.ui.IFormDisplay;
  */
 public class FormController implements Exportable, IFoundSetSelectionListener, IJSController
 {
-	private final IFormDisplay formDisplay;
+	private IFormDisplay formDisplay;
 	private FoundSet foundSet;
 	private FormScope scope;
 	private final Form form;
 	private final MobileClient mc;
-	private final Executor executor;
+	private Executor executor;
 	private boolean didOnShowOnce = false;
 	private boolean markedForCleanup;
 
@@ -99,9 +99,14 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 
 	public void cleanup()
 	{
-		formDisplay.getDisplayPage().removeFromParent();
-		formDisplay.getDisplayPage().getDataAdapterList().destroy();
-
+		foundSet.removeSelectionListener(this);
+		formDisplay.getDisplayPage().destroy();
+		formDisplay = null;
+		foundSet = null;
+		scope.destroy();
+		scope = null;
+		executor.destroy();
+		executor = null;
 	}
 
 	/*

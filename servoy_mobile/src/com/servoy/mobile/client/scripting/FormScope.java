@@ -19,7 +19,7 @@ import com.servoy.mobile.client.dataprocessing.Record;
 public class FormScope extends GlobalScope
 {
 	protected final Map<String, Integer> recordTypes;
-	private final FormController formController;
+	private FormController formController;
 
 	public FormScope(MobileClient application, FormController formController)
 	{
@@ -123,5 +123,15 @@ public class FormScope extends GlobalScope
 	public ElementScope getElementScope()
 	{
 		return (ElementScope)servoyProperties.get("elements");
+	}
+
+	public void destroy()
+	{
+		formController = null;
+		if (getElementScope() != null)
+		{
+			getElementScope().destroy();
+		}
+		servoyProperties.clear();
 	}
 }
