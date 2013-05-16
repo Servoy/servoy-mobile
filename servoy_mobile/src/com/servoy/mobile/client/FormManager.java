@@ -142,7 +142,7 @@ public class FormManager
 		while (it.hasNext())
 		{
 			FormController fc = it.next();
-			if (fc != currentForm)
+			if (!fc.getPage().isShow())
 			{
 				fc.cleanup();
 			}
@@ -165,7 +165,14 @@ public class FormManager
 		FormController formController = formControllerMap.get(formName);
 		if (formController != null)
 		{
-			formController.cleanup();
+			if (!formController.getPage().isShow())
+			{
+				formController.cleanup();
+			}
+			else
+			{
+				formController.markForCleanup();
+			}
 			formControllerMap.remove(formName);
 		}
 		return true;

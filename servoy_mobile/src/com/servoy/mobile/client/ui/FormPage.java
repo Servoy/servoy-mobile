@@ -59,6 +59,7 @@ public class FormPage extends JQMPage
 	private IFormPageFooterDecorator footerDecorator;
 	private JQMHeader headerComponent;
 	private int scrollTop;
+	private boolean isShow;
 
 	public FormPage(MobileClient application, FormController formController)
 	{
@@ -277,6 +278,7 @@ public class FormPage extends JQMPage
 	@Override
 	protected void onPageShow()
 	{
+		isShow = true;
 		if (scrollTop > 0) Mobile.silentScroll(scrollTop);
 		formController.executeOnShowMethod();
 	}
@@ -284,7 +286,13 @@ public class FormPage extends JQMPage
 	@Override
 	protected void onPageHide()
 	{
+		isShow = false;
 		if (formController.isMarkedForCleanup()) formController.cleanup();
+	}
+
+	public boolean isShow()
+	{
+		return isShow;
 	}
 
 	public void clearScrollTop()
