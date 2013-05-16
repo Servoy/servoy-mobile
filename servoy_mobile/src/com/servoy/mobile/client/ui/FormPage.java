@@ -340,6 +340,7 @@ public class FormPage extends JQMPage
 
 	public void destroy()
 	{
+		headerComponent = null;
 		removeHeader();
 		removeFooter();
 		removeFromParent();
