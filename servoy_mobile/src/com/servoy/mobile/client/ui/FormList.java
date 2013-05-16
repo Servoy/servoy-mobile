@@ -195,6 +195,7 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 
 	public void destroy()
 	{
+		removeFromParent();
 		if (this.foundSet != null) this.foundSet.removeFoundSetListener(this);
 		formController = null;
 		dal = null;

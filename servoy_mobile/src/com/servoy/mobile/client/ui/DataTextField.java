@@ -151,6 +151,7 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 	@Override
 	public void destroy()
 	{
+		removeFromParent();
 		scriptable.destroy();
 		scriptable = null;
 

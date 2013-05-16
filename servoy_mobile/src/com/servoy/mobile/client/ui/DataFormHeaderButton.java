@@ -95,6 +95,7 @@ public class DataFormHeaderButton extends JQMButton implements IDisplayData, IGr
 	@Override
 	public void destroy()
 	{
+		removeFromParent();
 		scriptable.destroy();
 		scriptable = null;
 	}

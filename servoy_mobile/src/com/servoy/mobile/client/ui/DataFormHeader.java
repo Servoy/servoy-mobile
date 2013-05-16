@@ -91,6 +91,7 @@ public class DataFormHeader extends JQMHeader implements IDisplayData, IGraphica
 	@Override
 	public void destroy()
 	{
+		removeFromParent();
 		scriptable.destroy();
 		scriptable = null;
 	}

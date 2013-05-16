@@ -96,6 +96,7 @@ public class BeanComponent extends JQMWidget implements IComponent, IRuntimeComp
 	@Override
 	public void destroy()
 	{
+		removeFromParent();
 		scriptable.destroy();
 		scriptable = null;
 	}

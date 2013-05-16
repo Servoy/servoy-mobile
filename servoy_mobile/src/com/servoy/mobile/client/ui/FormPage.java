@@ -340,6 +340,8 @@ public class FormPage extends JQMPage
 
 	public void destroy()
 	{
+		removeHeader();
+		removeFooter();
 		removeFromParent();
 		dal.destroy();
 		formController = null;

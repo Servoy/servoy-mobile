@@ -115,6 +115,7 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 	@Override
 	public void destroy()
 	{
+		removeFromParent();
 		scriptable.destroy();
 		scriptable = null;
 		if (valuelist != null) valuelist.removeModificationListener(this);

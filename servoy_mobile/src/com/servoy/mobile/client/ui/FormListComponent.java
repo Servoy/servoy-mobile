@@ -59,6 +59,8 @@ public class FormListComponent extends FormList implements IPortalComponent
 	@Override
 	public void destroy()
 	{
+		removeFromParent();
+		scriptable.destroy();
 		scriptable = null;
 	}
 }
