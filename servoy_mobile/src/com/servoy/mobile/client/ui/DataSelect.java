@@ -49,6 +49,7 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 	private RuntimeDataSelect scriptable;
 	private boolean hasEmptyOption;
 	private final String id;
+	private final HandlerRegistration changeHandler;
 
 	public DataSelect(Field field, ValueList valuelist, Executor executor, MobileClient application)
 	{
@@ -62,7 +63,7 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 			fillByValueList(true);
 		}
 
-		addChangeHandler(new ChangeHandler()
+		changeHandler = addChangeHandler(new ChangeHandler()
 		{
 			@Override
 			public void onChange(ChangeEvent event)
@@ -119,6 +120,7 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 		scriptable.destroy();
 		scriptable = null;
 		if (valuelist != null) valuelist.removeModificationListener(this);
+		if (changeHandler != null) changeHandler.removeHandler();
 		if (editProvider != null)
 		{
 			editProvider.clean();

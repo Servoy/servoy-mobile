@@ -63,7 +63,7 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 	private String listItemOnAction;
 	private String listItemDataIcon;
 	private String listItemStyleclass;
-	private HandlerRegistration clickRegistration = null;
+	private final ArrayList<HandlerRegistration> clickRegistrations = new ArrayList<HandlerRegistration>();
 
 	public FormList(FormController formController, JsArray<Component> formComponents, DataAdapterList dal, String relationName)
 	{
@@ -195,12 +195,11 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 
 	public void destroy()
 	{
+		clear();
 		removeFromParent();
 		if (this.foundSet != null) this.foundSet.removeFoundSetListener(this);
 		formController = null;
 		dal = null;
-		if (clickRegistration != null) clickRegistration.removeHandler();
-
 	}
 
 	public void refreshList()
@@ -212,6 +211,19 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 	protected native void forceRefresh(String id) /*-{
 		$wnd.$("#" + id).listview('refresh', true);
 	}-*/;
+
+
+	@Override
+	public void clear()
+	{
+//		Iterator<JQMListItem> listItemIte = getItems().iterator();
+//		while (listItemIte.hasNext())
+//			listItemIte.next().removeFromParent();
+		for (int i = 0; i < clickRegistrations.size(); i++)
+			clickRegistrations.get(i).removeHandler();
+		clickRegistrations.clear();
+		super.clear();
+	}
 
 	private void createList(FoundSet foundset)
 	{
@@ -261,7 +273,7 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 				final int selIndex = i;
 				if (listItemOnAction != null)
 				{
-					clickRegistration = listItem.addClickHandler(new ClickHandler()
+					clickRegistrations.add(listItem.addClickHandler(new ClickHandler()
 					{
 						@Override
 						public void onClick(ClickEvent event)
@@ -269,7 +281,7 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 							foundSet.setSelectedIndexInternal(selIndex);
 							formController.getExecutor().fireEventCommand(IJSEvent.ACTION, listItemOnAction, getRuntimeComponent(), null);
 						}
-					});
+					}));
 				}
 				dpValue = dal.getRecordValue(listItemRecord, listItemSubtextDP);
 				if (dpValue == null)

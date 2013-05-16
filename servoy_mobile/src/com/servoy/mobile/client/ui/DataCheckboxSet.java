@@ -91,11 +91,12 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 	@Override
 	public void valueChanged(ModificationEvent e)
 	{
+		if (editBlurHandler != null) editBlurHandler.removeHandler();
 		clear();
 		items.clear();
 		fillByValueList();
 		recreate(getId());
-		if (editProvider != null) addBlurHandler(editProvider);
+		if (editProvider != null) editBlurHandler = addBlurHandler(editProvider);
 	}
 
 	private native void recreate(String id) /*-{

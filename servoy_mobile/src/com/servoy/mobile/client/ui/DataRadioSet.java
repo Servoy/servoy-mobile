@@ -80,10 +80,11 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 	@Override
 	public void valueChanged(ModificationEvent e)
 	{
+		if (editBlurHandler != null) editBlurHandler.removeHandler();
 		clear();
 		fillByValueList();
 		recreate(getId());
-		if (editProvider != null) addBlurHandler(editProvider);
+		if (editProvider != null) editBlurHandler = addBlurHandler(editProvider);
 	}
 
 	private native void recreate(String id) /*-{
