@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.scripting.FormScope;
@@ -111,8 +112,16 @@ public class FormManager
 		showForm(formController, false);
 	}
 
+	private boolean isChangingFormPage;
+
+	public void setChangingFormPage(boolean isChangingFormPage)
+	{
+		this.isChangingFormPage = isChangingFormPage;
+	}
+
 	public boolean showForm(FormController formController, boolean restoreScrollPosition)
 	{
+		if (isChangingFormPage) return false;
 		formControllerMap.put(formController.getName(), formController);
 		if (currentForm != null)
 		{
@@ -191,8 +200,11 @@ public class FormManager
 	{
 		// if showing the first form (when startup or after a sync)
 		// first just clear all existing forms to be fully refreshed.
-		history.clear();
-		showForm(getFirstForm());
+		if (!isChangingFormPage)
+		{
+			history.clear();
+			showForm(getFirstForm());
+		}
 	}
 
 	public void showLogin(JavaScriptObject successCallback, JavaScriptObject errorHandler)

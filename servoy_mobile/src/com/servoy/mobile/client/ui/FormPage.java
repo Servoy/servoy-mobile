@@ -267,6 +267,7 @@ public class FormPage extends JQMPage
 	@Override
 	protected void onPageBeforeShow()
 	{
+		application.getFormManager().setChangingFormPage(true);
 		FoundSet foundSet = formController.getFormModel();
 		if (foundSet != null) refreshRecord(foundSet.getSelectedRecord());
 		if (headerComponent != null)
@@ -278,6 +279,7 @@ public class FormPage extends JQMPage
 	@Override
 	protected void onPageShow()
 	{
+		application.getFormManager().setChangingFormPage(false);
 		isShow = true;
 		if (scrollTop > 0) Mobile.silentScroll(scrollTop);
 		formController.executeOnShowMethod();
