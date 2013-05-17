@@ -42,7 +42,7 @@ public class RuntimeDataPassword extends AbstractRuntimeFieldComponent
 	{
 		if (command != null)
 		{
-			keyRegistration = ((DataPassword)component).addKeyUpHandler(new KeyUpHandler()
+			addHandlerRegistration(((DataPassword)component).addKeyUpHandler(new KeyUpHandler()
 			{
 
 				@Override
@@ -53,7 +53,7 @@ public class RuntimeDataPassword extends AbstractRuntimeFieldComponent
 						executor.fireEventCommand(IJSEvent.ACTION, command, RuntimeDataPassword.this, null);
 					}
 				}
-			});
+			}));
 		}
 	}
 }

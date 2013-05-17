@@ -42,7 +42,7 @@ public class RuntimeDataTextField extends AbstractRuntimeFieldComponent
 	{
 		if (command != null)
 		{
-			keyRegistration = ((DataTextField)component).addKeyUpHandler(new KeyUpHandler()
+			addHandlerRegistration(((DataTextField)component).addKeyUpHandler(new KeyUpHandler()
 			{
 
 				@Override
@@ -53,7 +53,7 @@ public class RuntimeDataTextField extends AbstractRuntimeFieldComponent
 						executor.fireEventCommand(IJSEvent.ACTION, command, RuntimeDataTextField.this, null);
 					}
 				}
-			});
+			}));
 		}
 	}
 }

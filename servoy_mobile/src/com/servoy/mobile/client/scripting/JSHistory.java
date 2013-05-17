@@ -167,9 +167,9 @@ public class JSHistory implements Exportable, IJSHistory
 			if (historyHashIndex.get(key).controller.getName().equals(formName))
 			{
 				it.remove();
+				break;
 			}
 		}
-		historyHashIndex.clear();
 		return formManager.removeForm(formName);
 	}
 

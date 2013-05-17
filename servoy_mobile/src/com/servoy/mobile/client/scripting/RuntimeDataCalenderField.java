@@ -43,7 +43,7 @@ public class RuntimeDataCalenderField extends AbstractRuntimeFieldComponent
 	{
 		if (command != null)
 		{
-			keyRegistration = ((DataTextField)component).addKeyUpHandler(new KeyUpHandler()
+			addHandlerRegistration(((DataTextField)component).addKeyUpHandler(new KeyUpHandler()
 			{
 
 				@Override
@@ -54,7 +54,7 @@ public class RuntimeDataCalenderField extends AbstractRuntimeFieldComponent
 						executor.fireEventCommand(IJSEvent.ACTION, command, RuntimeDataCalenderField.this, null);
 					}
 				}
-			});
+			}));
 		}
 	}
 }

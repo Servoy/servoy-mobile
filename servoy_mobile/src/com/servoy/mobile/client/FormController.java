@@ -99,7 +99,7 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 
 	public void cleanup()
 	{
-		foundSet.removeSelectionListener(this);
+		if (foundSet != null) foundSet.removeSelectionListener(this);
 		formDisplay.getDisplayPage().destroy();
 		formDisplay = null;
 		foundSet = null;

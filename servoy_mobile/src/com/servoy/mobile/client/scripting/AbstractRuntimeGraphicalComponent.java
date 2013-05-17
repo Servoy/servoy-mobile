@@ -17,6 +17,9 @@
 
 package com.servoy.mobile.client.scripting;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -35,12 +38,20 @@ import com.servoy.mobile.client.ui.IGraphicalComponent;
 public class AbstractRuntimeGraphicalComponent extends AbstractRuntimeBaseComponent<IGraphicalComponent, GraphicalComponent> implements
 	IRuntimeGraphicalComponent
 {
+	private final List<HandlerRegistration> registrations = new ArrayList<HandlerRegistration>();
+
 	protected ITagResolver tagResolver;
 
 	public AbstractRuntimeGraphicalComponent(MobileClient application, Executor executor, IGraphicalComponent component, GraphicalComponent componentPersist)
 	{
 		super(application, executor, component, componentPersist);
 	}
+
+	protected void addHandlerRegistration(HandlerRegistration registration)
+	{
+		registrations.add(registration);
+	}
+
 
 	@Override
 	public boolean needEntireState()
@@ -90,27 +101,26 @@ public class AbstractRuntimeGraphicalComponent extends AbstractRuntimeBaseCompon
 	{
 		if (command != null)
 		{
-			clickRegistration = component.addClickHandler(new ClickHandler()
+			addHandlerRegistration(component.addClickHandler(new ClickHandler()
 			{
 				@Override
 				public void onClick(ClickEvent event)
 				{
 					executor.fireEventCommand(IJSEvent.ACTION, command, AbstractRuntimeGraphicalComponent.this, null);
 				}
-			});
+			}));
 		}
 	}
-
-	private HandlerRegistration clickRegistration = null;
 
 	@Override
 	public void destroy()
 	{
 		super.destroy();
-		if (clickRegistration != null)
+		for (HandlerRegistration registration : registrations)
 		{
-			clickRegistration.removeHandler();
+			registration.removeHandler();
 		}
+		registrations.clear();
 		tagResolver = null;
 	}
 }

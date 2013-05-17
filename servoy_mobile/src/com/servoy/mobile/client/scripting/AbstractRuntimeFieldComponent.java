@@ -17,6 +17,9 @@
 
 package com.servoy.mobile.client.scripting;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.Setter;
@@ -37,9 +40,16 @@ import com.servoy.mobile.client.ui.ISupportsPlaceholderComponent;
  */
 public class AbstractRuntimeFieldComponent extends AbstractRuntimeBaseComponent<IFieldComponent, Field> implements IRuntimeField
 {
+	private final List<HandlerRegistration> registrations = new ArrayList<HandlerRegistration>();
+
 	public AbstractRuntimeFieldComponent(MobileClient application, Executor executor, IFieldComponent component, Field componentPersist)
 	{
 		super(application, executor, component, componentPersist);
+	}
+
+	protected void addHandlerRegistration(HandlerRegistration registration)
+	{
+		registrations.add(registration);
 	}
 
 	/*
@@ -68,32 +78,27 @@ public class AbstractRuntimeFieldComponent extends AbstractRuntimeBaseComponent<
 	{
 		if (command != null)
 		{
-			clickRegistration = component.addClickHandler(new ClickHandler()
+			addHandlerRegistration(component.addClickHandler(new ClickHandler()
 			{
 				@Override
 				public void onClick(ClickEvent event)
 				{
 					executor.fireEventCommand(IJSEvent.ACTION, command, AbstractRuntimeFieldComponent.this, null);
 				}
-			});
+			}));
 		}
 	}
 
-	private HandlerRegistration clickRegistration = null;
-	protected HandlerRegistration keyRegistration = null;
 
 	@Override
 	public void destroy()
 	{
 		super.destroy();
-		if (clickRegistration != null)
+		for (HandlerRegistration registration : registrations)
 		{
-			clickRegistration.removeHandler();
+			registration.removeHandler();
 		}
-		if (keyRegistration != null)
-		{
-			keyRegistration.removeHandler();
-		}
+		registrations.clear();
 	}
 
 	private String changeCommand;
