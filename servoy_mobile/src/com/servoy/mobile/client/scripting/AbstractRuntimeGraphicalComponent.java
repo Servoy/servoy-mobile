@@ -17,12 +17,8 @@
 
 package com.servoy.mobile.client.scripting;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.servoy.base.scripting.api.IJSEvent;
 import com.servoy.base.util.ITagResolver;
 import com.servoy.base.util.TagParser;
@@ -38,20 +34,12 @@ import com.servoy.mobile.client.ui.IGraphicalComponent;
 public class AbstractRuntimeGraphicalComponent extends AbstractRuntimeBaseComponent<IGraphicalComponent, GraphicalComponent> implements
 	IRuntimeGraphicalComponent
 {
-	private final List<HandlerRegistration> registrations = new ArrayList<HandlerRegistration>();
-
 	protected ITagResolver tagResolver;
 
 	public AbstractRuntimeGraphicalComponent(MobileClient application, Executor executor, IGraphicalComponent component, GraphicalComponent componentPersist)
 	{
 		super(application, executor, component, componentPersist);
 	}
-
-	protected void addHandlerRegistration(HandlerRegistration registration)
-	{
-		registrations.add(registration);
-	}
-
 
 	@Override
 	public boolean needEntireState()
@@ -116,11 +104,6 @@ public class AbstractRuntimeGraphicalComponent extends AbstractRuntimeBaseCompon
 	public void destroy()
 	{
 		super.destroy();
-		for (HandlerRegistration registration : registrations)
-		{
-			registration.removeHandler();
-		}
-		registrations.clear();
 		tagResolver = null;
 	}
 }

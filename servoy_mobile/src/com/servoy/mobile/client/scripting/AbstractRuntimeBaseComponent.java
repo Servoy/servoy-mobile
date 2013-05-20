@@ -17,11 +17,15 @@
 
 package com.servoy.mobile.client.scripting;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.Setter;
 
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.ui.Executor;
@@ -41,7 +45,7 @@ public abstract class AbstractRuntimeBaseComponent<C extends IComponent, P exten
 	protected Executor executor;
 	protected C component;
 	protected final P componentPersist;
-
+	private final List<HandlerRegistration> registrations = new ArrayList<HandlerRegistration>();
 
 	public AbstractRuntimeBaseComponent(MobileClient application, Executor executor, C component, P componentPersist)
 	{
@@ -50,6 +54,12 @@ public abstract class AbstractRuntimeBaseComponent<C extends IComponent, P exten
 		this.component = component;
 		this.componentPersist = componentPersist;
 	}
+
+	protected void addHandlerRegistration(HandlerRegistration registration)
+	{
+		registrations.add(registration);
+	}
+
 
 	/**
 	 * @return the application
@@ -113,6 +123,11 @@ public abstract class AbstractRuntimeBaseComponent<C extends IComponent, P exten
 	@Override
 	public void destroy()
 	{
+		for (HandlerRegistration registration : registrations)
+		{
+			registration.removeHandler();
+		}
+		registrations.clear();
 		component = null;
 		executor = null;
 	}

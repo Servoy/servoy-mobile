@@ -17,16 +17,12 @@
 
 package com.servoy.mobile.client.scripting;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.Setter;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.servoy.base.scripting.api.IJSEvent;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.persistence.Field;
@@ -40,16 +36,10 @@ import com.servoy.mobile.client.ui.ISupportsPlaceholderComponent;
  */
 public class AbstractRuntimeFieldComponent extends AbstractRuntimeBaseComponent<IFieldComponent, Field> implements IRuntimeField
 {
-	private final List<HandlerRegistration> registrations = new ArrayList<HandlerRegistration>();
 
 	public AbstractRuntimeFieldComponent(MobileClient application, Executor executor, IFieldComponent component, Field componentPersist)
 	{
 		super(application, executor, component, componentPersist);
-	}
-
-	protected void addHandlerRegistration(HandlerRegistration registration)
-	{
-		registrations.add(registration);
 	}
 
 	/*
@@ -89,17 +79,6 @@ public class AbstractRuntimeFieldComponent extends AbstractRuntimeBaseComponent<
 		}
 	}
 
-
-	@Override
-	public void destroy()
-	{
-		super.destroy();
-		for (HandlerRegistration registration : registrations)
-		{
-			registration.removeHandler();
-		}
-		registrations.clear();
-	}
 
 	private String changeCommand;
 
