@@ -174,12 +174,12 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 			int selectedIndex = Utils.findInArray(valuelist.hasRealValues() ? valuelist.getRealValues() : valuelist.getDiplayValues(), data);
 			if (selectedIndex > -1)
 			{
-				setSelectedIndex(selectedIndex);
 				if (hasEmptyOption)
 				{
 					removeOption(""); //$NON-NLS-1$
 					hasEmptyOption = false;
 				}
+				setSelectedIndex(selectedIndex);
 			}
 			else
 			{
