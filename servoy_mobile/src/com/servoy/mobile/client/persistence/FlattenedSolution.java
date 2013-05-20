@@ -258,6 +258,11 @@ public class FlattenedSolution
 		return solution.getServerUrl();
 	}
 
+	public int getTimeout()
+	{
+		return solution.getTimeout();
+	}
+
 	public boolean getSkipConnect()
 	{
 		return solution.getSkipConnect();

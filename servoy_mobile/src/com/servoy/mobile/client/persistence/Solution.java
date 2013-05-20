@@ -70,6 +70,10 @@ public class Solution extends JavaScriptObject
 		return this.serverURL;
 	}-*/;
 
+	public final native int getTimeout() /*-{
+		return this.timeout;
+	}-*/;
+
 	public final native boolean getSkipConnect() /*-{
 		return this.skipConnect;
 	}-*/;

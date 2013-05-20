@@ -51,16 +51,18 @@ public class OfflineDataProxy
 	private final FoundSetManager foundSetManager;
 	private final String serverURL;
 	private final boolean nodebug;
+	private final int timeout;
 
 	private Callback<Integer, Failure> loadCallback;
 	private int totalLength;
 	private String[] credentials; //id, password
 
-	public OfflineDataProxy(FoundSetManager fsm, String serverURL, boolean nodebug)
+	public OfflineDataProxy(FoundSetManager fsm, String serverURL, boolean nodebug, int timeout)
 	{
 		this.nodebug = nodebug;
 		foundSetManager = fsm;
 		this.serverURL = serverURL;
+		this.timeout = timeout;
 	}
 
 	public void loadOfflineData(final String name, Callback<Integer, Failure> cb)
@@ -388,7 +390,6 @@ public class OfflineDataProxy
 				Log.error("Cannot convert to UTF8 encoding:", e);
 			}
 		}
-		// 30 seconds timeout
-		builder.setTimeoutMillis(30000);
+		builder.setTimeoutMillis(timeout);
 	}
 }

@@ -134,7 +134,7 @@ public class MobileClient implements EntryPoint
 		flattenedSolution = new FlattenedSolution(createSolution());
 		i18nProvider = new SolutionI18nProvider(flattenedSolution, getLocale());
 		foundSetManager = new FoundSetManager(this);
-		offlineDataProxy = new OfflineDataProxy(foundSetManager, getServerURL(), nodebug);
+		offlineDataProxy = new OfflineDataProxy(foundSetManager, getServerURL(), nodebug, getTimeout());
 		formManager = new FormManager(this);
 
 		solutionModel = new JSSolutionModel(this);
@@ -191,6 +191,11 @@ public class MobileClient implements EntryPoint
 		return serverURL + "/servoy-service/rest_ws/" + getSolutionName() + "_service";
 //		String hostPageBaseURL = GWT.getHostPageBaseURL();
 //		return hostPageBaseURL.substring(0, hostPageBaseURL.length() - 1);
+	}
+
+	protected int getTimeout()
+	{
+		return flattenedSolution.getTimeout();
 	}
 
 	protected String getSolutionName()
