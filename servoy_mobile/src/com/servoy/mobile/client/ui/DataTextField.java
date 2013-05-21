@@ -23,6 +23,7 @@ import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
 import com.servoy.mobile.client.dataprocessing.IEditListenerSubject;
 import com.servoy.mobile.client.persistence.Field;
+import com.servoy.mobile.client.scripting.AbstractRuntimeFieldComponent;
 import com.servoy.mobile.client.scripting.IRuntimeField;
 import com.servoy.mobile.client.scripting.RuntimeDataTextField;
 import com.sksamuel.jqm4gwt.form.elements.JQMText;
@@ -34,11 +35,16 @@ import com.sksamuel.jqm4gwt.form.elements.JQMText;
  */
 public class DataTextField extends JQMText implements IDisplayData, ISupportTitleText, IFieldComponent, IEditListenerSubject, ISupportsPlaceholderComponent
 {
-	private RuntimeDataTextField scriptable;
+	private AbstractRuntimeFieldComponent scriptable;
 
 	public DataTextField(Field field, Executor executor, MobileClient application)
 	{
-		this.scriptable = new RuntimeDataTextField(application, executor, this, field);
+		this.scriptable = createRuntimeComponent(field, executor, application);
+	}
+
+	protected AbstractRuntimeFieldComponent createRuntimeComponent(Field field, Executor executor, MobileClient application)
+	{
+		return new RuntimeDataTextField(application, executor, this, field);
 	}
 
 	/*

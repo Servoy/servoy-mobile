@@ -21,7 +21,7 @@ import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListenerSubject;
 import com.servoy.mobile.client.persistence.Field;
-import com.servoy.mobile.client.scripting.IRuntimeField;
+import com.servoy.mobile.client.scripting.AbstractRuntimeFieldComponent;
 import com.servoy.mobile.client.scripting.RuntimeDataPassword;
 
 /**
@@ -31,27 +31,15 @@ import com.servoy.mobile.client.scripting.RuntimeDataPassword;
  */
 public class DataPassword extends DataTextField implements IDisplayData, ISupportTitleText, IFieldComponent, IEditListenerSubject
 {
-	private RuntimeDataPassword scriptable;
-
 	public DataPassword(Field field, Executor executor, MobileClient application)
 	{
 		super(field, executor, application);
-		this.scriptable = new RuntimeDataPassword(application, executor, this, field);
 		setType("password");
 	}
 
-
 	@Override
-	public IRuntimeField getRuntimeComponent()
+	protected AbstractRuntimeFieldComponent createRuntimeComponent(Field field, Executor executor, MobileClient application)
 	{
-		return scriptable;
-	}
-
-	@Override
-	public void destroy()
-	{
-		super.destroy();
-		scriptable.destroy();
-		scriptable = null;
+		return new RuntimeDataPassword(application, executor, this, field);
 	}
 }
