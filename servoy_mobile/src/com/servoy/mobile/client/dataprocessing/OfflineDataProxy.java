@@ -390,6 +390,6 @@ public class OfflineDataProxy
 				Log.error("Cannot convert to UTF8 encoding:", e);
 			}
 		}
-		builder.setTimeoutMillis(timeout);
+		builder.setTimeoutMillis(timeout * 1000);
 	}
 }
