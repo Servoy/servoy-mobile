@@ -881,7 +881,16 @@ public class FoundSetManager
 				Object[] coldata = new Object[pdp.length()];
 				for (int j = 0; j < coldata.length; j++)
 				{
-					Object obj = parentRecords[0].getValue(pdp.get(j));
+					String pdpValue = pdp.get(j);
+					Object obj = null;
+					if (pdpValue != null && pdpValue.startsWith(LITERAL_PREFIX))
+					{
+						obj = Utils.parseJSExpression(pdpValue.substring(LITERAL_PREFIX.length()));
+					}
+					else
+					{
+						obj = parentRecords[0].getValue(pdpValue);
+					}
 					retval.setValue(fdp.get(j), obj);
 				}
 			}
