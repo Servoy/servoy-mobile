@@ -7,6 +7,33 @@
 		margin: 0 2% 0 0;
 		overflow: hidden;
 	}
+	
+	.ui-field-contain label.ui-select
+	{
+		width: 20%;
+		display: inline-block;
+		vertical-align: top; 
+		margin: 0 2% 0 0;
+		overflow: hidden;
+	}
+	
+	.ui-field-contain label.ui-input-text
+	{
+		width: 20%;
+		display: inline-block;
+		vertical-align: top;
+		margin: 0 2% 0 0;
+		overflow: hidden;
+	}
+	
+	.ui-field-contain .ui-controlgroup-label
+	{
+		width: 20%;
+		display: inline-block;
+		vertical-align: top;
+		margin: 0 2% 0 0;
+		overflow: hidden;
+	}
 }
 
 label.label-labelfor
