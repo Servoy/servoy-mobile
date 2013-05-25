@@ -51,4 +51,6 @@ public interface ITestSuiteControllerAsync
 
 	void bridgeIDVerified(AsyncCallback<Void> callback);
 
+	void getSolutionJsUnitJavascriptCode(AsyncCallback<String[]> asyncCallback);
+
 }

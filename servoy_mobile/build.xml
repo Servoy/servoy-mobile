@@ -36,6 +36,7 @@
 	</target>
 
 	<target name="gwtCompileForDeployment" description="GWT compile to JavaScript for deployed application">
+		<delete dir="gwt-unitCache"/>
 		<java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
 			<classpath>
 				<pathelement location="src"/>
@@ -59,7 +60,7 @@
 				excludes="**/*.jar,**/*.war,**/WEB-INF/deploy/**,**/WEB-INF/classes/**,**/solution_json.js,**/solution.js,**/media/**,**/index.html"
 		/>
 		<ant antfile="build.xml" target="gwtc"/>
-		<copy tofile="../com.servoy.eclipse.exporter.mobile/src/com/servoy/eclipse/mobileexporter/export/resources/servoy_mobile.war" file="servoy_mobile.war"/>
+		<move tofile="../com.servoy.eclipse.exporter.mobile/src/com/servoy/eclipse/exporter/mobile/export/resources/servoy_mobile.war" file="servoy_mobile.war"/>
 	</target>
 
 </project>

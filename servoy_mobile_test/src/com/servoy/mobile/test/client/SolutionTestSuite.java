@@ -73,8 +73,44 @@ public class SolutionTestSuite
 						"}");
 						// @formatter:on
 
-						appendScriptTagToHead(generateJSUnitSuiteCode());
-						final String suiteName = "TestClass2"; // TODO this should be returned by generateJSUnitSuiteCode() as well
+						prepareJSUnitSuiteCodeAndRun();
+					}
+
+				}, "Injecting library code / generating test suite failed."); //$NON-NLS-1$
+			}
+
+			public void onFailure(Throwable caught)
+			{
+				application.reportUnexpectedThrowable("Cannot get the required JSUnit library code or related JS code...", caught); //$NON-NLS-1$
+			}
+		});
+	}
+
+	@SuppressWarnings("nls")
+	protected void prepareJSUnitSuiteCodeAndRun()
+	{
+		// we can get null from controller (ant tests) or the complete suite code and test suite name if tests are being ran in developer (developer knows
+		// more about the solution structure so it can generate nicer suites - mobile client currently only knows the flattened solution)
+		// @formatter:off
+		rpcController.getSolutionJsUnitJavascriptCode(new AsyncCallback<String[]>()
+		{
+			public void onSuccess(final String[] result)
+			{
+				if (result == null)
+				{
+					// TODO ac implement this based on what the solution has to offer if we get null from controller... currently it's a dummy; maybe send the structure remotely to reuse code server-side
+					application.reportUnexpectedThrowable("Client generation of test suite code is not yet supported.", null);
+				}
+				else
+				{
+				application.runSafe(new Runnable()
+				{
+					@Override
+					@SuppressWarnings("nls")
+					public void run()
+					{
+						appendScriptTagToHead(result[1]);
+						final String suiteName = result[0];
 
 						rpcController.setFlattenedTestTree(getFlattenedTestTree(suiteName), new AsyncCallback<Void>()
 						{
@@ -102,48 +138,14 @@ public class SolutionTestSuite
 					}
 
 				}, "Injecting library code / generating test suite failed."); //$NON-NLS-1$
+				}
 			}
 
 			public void onFailure(Throwable caught)
 			{
-				application.reportUnexpectedThrowable("Cannot get the required JSUnit library code or related JS code...", caught); //$NON-NLS-1$
+				application.reportUnexpectedThrowable("Cannot get the javascript JS Unit suite code...", caught); //$NON-NLS-1$
 			}
 		});
-	}
-
-	@SuppressWarnings("nls")
-	protected String generateJSUnitSuiteCode()
-	{
-		// TODO ac implement this based on what the solution has to offer... currently it's a dummy; maybe send the structure remotely to reuse code server-side
-		// @formatter:off
-		return "function TestClass0(name) { TestCase.call(this, name); }\n" +
-			"		function TestClass0_testRounding() { jsunit = this; scopes.globals.testRounding(); jsunit = null; }\n" +
-			"		function TestClass0_testThatMustFailWithError() { jsunit = this; scopes.globals.testRoundinging(); jsunit = null; }\n" +
-			"		function TestClass0_testThatMustFailWithFailure() { jsunit = this; jsunit.assertTrue('this test is supposed to fail', false); jsunit = null; }\n" +
-			"		function TestClass0_aNonPrefixedTstMethod() { jsunit = this; jsunit.assertTrue('this test is NOT supposed to fail', true); jsunit = null; }\n" +
-			"		function TestClass0_testPrefixedStackFail() { jsunit = this; scopes.globals.testRoundingFailure1(); jsunit = null; }\n" +
-			"		TestClass0.prototype = new TestCase();\n" +
-			"		try { throw ''; } catch (e) {};\n" +
-			"		TestClass0.glue(this);\n\n" +
-			"		function TestClass1() {\n" +
-			"			TestSuite.call(this, null);\n" +
-			"			this.setName(\"Scope tests\");\n" +
-			"			var ts;\n" +
-			"			ts = new TestSuite(TestClass0);\n" +
-			"			ts.setName(\"globals\");\n" +
-			"			this.addTest(ts);\n" +
-			"		}\n" +
-			"		TestClass1.prototype = new TestSuite();\n" +
-			"		TestClass1.prototype.suite = function () { return new TestClass1(); }\n" +
-			"		\n" +
-			"		function TestClass2() {\n" +
-			"			TestSuite.call(this, null);\n" +
-			"			this.setName(\"Solution 'byteArrayToASCII' tests\");\n" +
-			"			this.addTest(TestClass1.prototype.suite());\n" +
-			"		}\n" +
-			"		TestClass2.prototype = new TestSuite();\n" +
-			"		TestClass2.prototype.suite = function () { return new TestClass2(); }\n";
-		// @formatter:on
 	}
 
 	protected void startSuite(String suiteName)

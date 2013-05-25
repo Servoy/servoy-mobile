@@ -1,141 +1,160 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <project name="MobileTestClient" default="war" basedir=".">
-  <!-- Arguments to gwtc and devmode targets -->
-  <property name="gwt.args" value="" />
+	<!-- Arguments to gwtc and devmode targets -->
+	<property name="gwt.args" value="" />
 
-  <!-- Configure path to GWT SDK -->
-  <property name="gwt.jars" location="../servoy_mobile/lib" />
-  <property name="gwt.servlet.libs" location="lib" />
+	<!-- Configure path to GWT SDK -->
+	<property name="gwt.jars" location="../servoy_mobile/lib" />
+	<property name="gwt.servlet.libs" location="lib" />
 
-  <path id="project.class.path">
-    <pathelement location="../servoy_mobile/war/WEB-INF/classes"/>
-    <pathelement location="../servoy_base/bin"/>
-    <pathelement location="war/WEB-INF/classes"/>
-    <pathelement location="${gwt.jars}/gwt-user.jar"/>
-    <fileset dir="${gwt.jars}" includes="gwt-dev.jar"/>
-    <!-- Add any additional non-server libs (such as JUnit) -->
-    <fileset dir="war/WEB-INF/lib" includes="**/*.jar"/>
-    <fileset dir="../servoy_mobile/lib" includes="**/*.jar"/>
+	<path id="project.class.path">
+		<pathelement location="../servoy_mobile/war/WEB-INF/classes"/>
+		<pathelement location="../servoy_base/bin"/>
+		<pathelement location="war/WEB-INF/classes"/>
+		<pathelement location="${gwt.jars}/gwt-user.jar"/>
+		<fileset dir="${gwt.jars}" includes="gwt-dev.jar"/>
+		<!-- Add any additional non-server libs (such as JUnit) -->
+		<fileset dir="war/WEB-INF/lib" includes="**/*.jar"/>
+		<fileset dir="../servoy_mobile/lib" includes="**/*.jar"/>
 
-    <!-- <pathelement location="e:\Workspaces\HEAD\j2db_test\lib\junit_4.5.0.jar" /> -->
-  </path>
+		<!-- <pathelement location="e:\Workspaces\HEAD\j2db_test\lib\junit_4.5.0.jar" /> -->
+	</path>
 
-  <path id="project.class.path.withsrc">
-    <pathelement location="../servoy_mobile/src"/>
-    <pathelement location="../servoy_base/src"/>
-    <pathelement location="src" />
-    <path refid="project.class.path" />
-  </path>
+	<path id="project.class.path.withsrc">
+		<pathelement location="../servoy_mobile/src"/>
+		<pathelement location="../servoy_base/src"/>
+		<pathelement location="src" />
+		<path refid="project.class.path" />
+	</path>
 
-  <target name="libs" description="Copy libs to WEB-INF/lib">
-  	<!--<delete file="war/WEB-INF/lib/gwt-dev.jar" />
-  	<delete file="war/WEB-INF/lib/gwt-log-3.2.0.jar" />-->
-  	
-    <mkdir dir="war/WEB-INF/lib" />
-    <!-- in GWT 2.5 caused a need for gwt-dev in order to use gwt-log but until 2.5.1, this workaround jar can be used until then -->
-    <copy todir="war/WEB-INF/lib" file="lib/gwt-fix-2.5.0-rc2.jar" />
-    <copy todir="war/WEB-INF/lib" file="${gwt.jars}/gwt-log-3.2.0.jar" />
-    <copy todir="war/WEB-INF/lib" file="${gwt.servlet.libs}/gwt-servlet.jar" />
-    <copy todir="war/WEB-INF/lib" file="${gwt.servlet.libs}/gwt-servlet-deps.jar" />
-    <!-- Add any additional server libs that need to be copied -->
-  </target>
+	<target name="libs" description="Copy libs to WEB-INF/lib">
+		<!--<delete file="war/WEB-INF/lib/gwt-dev.jar" />
+		<delete file="war/WEB-INF/lib/gwt-log-3.2.0.jar" />-->
+		
+		<mkdir dir="war/WEB-INF/lib" />
+		<!-- in GWT 2.5 caused a need for gwt-dev in order to use gwt-log but until 2.5.1, this workaround jar can be used until then -->
+		<copy todir="war/WEB-INF/lib" file="lib/gwt-fix-2.5.0-rc2.jar" />
+		<copy todir="war/WEB-INF/lib" file="${gwt.jars}/gwt-log-3.2.0.jar" />
+		<copy todir="war/WEB-INF/lib" file="${gwt.servlet.libs}/gwt-servlet.jar" />
+		<copy todir="war/WEB-INF/lib" file="${gwt.servlet.libs}/gwt-servlet-deps.jar" />
+		<!-- Add any additional server libs that need to be copied -->
+	</target>
 
-  <target name="javac" depends="libs" description="Compile java source to bytecode">
-    <mkdir dir="war/WEB-INF/classes"/>
-    <javac srcdir="src" includes="**" encoding="utf-8"
-        destdir="war/WEB-INF/classes"
-        source="1.6" target="1.6" nowarn="true"
-        debug="true" debuglevel="lines,vars,source">
-      <classpath refid="project.class.path"/>
-    </javac>
-    <copy todir="war/WEB-INF/classes">
-      <fileset dir="src" excludes="**/*.java"/>
-    </copy>
-  </target>
+	<target name="javac" depends="libs" description="Compile java source to bytecode">
+		<mkdir dir="war/WEB-INF/classes"/>
+		<javac srcdir="src" includes="**" encoding="utf-8"
+				destdir="war/WEB-INF/classes"
+				source="1.6" target="1.6" nowarn="true"
+				debug="true" debuglevel="lines,vars,source">
+			<classpath refid="project.class.path"/>
+		</javac>
+		<copy todir="war/WEB-INF/classes">
+			<fileset dir="src" excludes="**/*.java"/>
+		</copy>
+	</target>
 
-  <target name="gwtc" depends="javac" description="GWT compile to JavaScript (production mode)">
-    <java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
-      <classpath>
-        <path refid="project.class.path.withsrc"/>
-      </classpath>
-      <!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
-      <jvmarg value="-Xmx256M"/>
-      <arg line="-war"/>
-      <arg value="war"/>
-      <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
-      <arg value="-style"/>
-      <arg value="PRETTY"/>
-      <arg line="${gwt.args}"/>
-      <arg value="com.servoy.mobile.test.MobileTestClient"/>
-    </java>
-  </target>
+	<target name="gwtc" depends="javac, update_html" description="GWT compile to JavaScript (production mode)">
+		<delete dir="gwt-unitCache"/>
+		<java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
+			<classpath>
+				<path refid="project.class.path.withsrc"/>
+			</classpath>
+			<!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
+			<jvmarg value="-Xmx256M"/>
+			<arg line="-war"/>
+			<arg value="war"/>
+			<!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+			<arg value="-style"/>
+			<arg value="PRETTY"/>
+			<arg line="${gwt.args}"/>
+			<arg value="com.servoy.mobile.test.MobileTestClient"/>
+		</java>
+	</target>
 
-  <!-- this target can still be used with developer started TOMCAT using deployed MobileTestClient.war
-       but you have to make sure the war is up-to-date and that the -startupUrl points to the host page in the Tomcat GWT APP;
-       this way you can debug with GWT the client java code -->
-  <target name="devmode" depends="javac" description="Run development mode">
-    <java failonerror="true" fork="true" classname="com.google.gwt.dev.DevMode">
-      <classpath>
-        <path refid="project.class.path.withsrc"/>
-      </classpath>
-      <jvmarg value="-Xmx256M"/>
-      <arg value="-startupUrl"/>
-      <arg value="http://127.0.0.1:8080/MobileTestClient/servoy_mobile_test.html?log_level=DEBUG&amp;noinitsmc=true&amp;bid=0"/>
-      <arg line="-war"/>
-      <arg value="war"/>
-      <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
-      <arg value="-noserver"/>
-      <arg line="${gwt.args}"/>
-      <arg value="com.servoy.mobile.test.MobileTestClient"/>
-    </java>
-  </target>
+	<!-- this target can still be used with developer started TOMCAT using deployed MobileTestClient.war
+			 but you have to make sure the war is up-to-date and that the -startupUrl points to the host page in the Tomcat GWT APP;
+			 this way you can debug with GWT the client java code -->
+	<target name="devmode" depends="javac, update_html" description="Run development mode">
+		<java failonerror="true" fork="true" classname="com.google.gwt.dev.DevMode">
+			<classpath>
+				<path refid="project.class.path.withsrc"/>
+			</classpath>
+			<jvmarg value="-Xmx256M"/>
+			<arg value="-startupUrl"/>
+			<arg value="http://127.0.0.1:8080/servoy_mobile_test/servoy_mobile_test.html?log_level=DEBUG&amp;noinitsmc=true&amp;bid=0"/>
+			<arg line="-war"/>
+			<arg value="war"/>
+			<!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+			<arg value="-noserver"/>
+			<arg line="${gwt.args}"/>
+			<arg value="com.servoy.mobile.test.MobileTestClient"/>
+		</java>
+	</target>
 
-  <!-- <target name="test.dev" depends="javac" description="Run development mode tests">
-    <mkdir dir="reports/junitGWT.dev" />
-    <junit fork="yes" printsummary="yes" haltonfailure="yes">
-      <jvmarg line="-Xmx256m" />
-      <sysproperty key="gwt.args" value="-port 8888 -logLevel INFO -style DETAILED -testMethodTimeout 1 -testBeginTimeout 1 -runStyle Manual:1 -userAgents safari" />
-      <sysproperty key="java.awt.headless" value="true" />
-      <classpath>
-        <path refid="project.class.path.withsrc" />
-      </classpath>
-      <test name="com.servoy.mobile.test.server.MobileSolutionTestSuite" todir="reports/junitGWT.dev" />
-      <formatter type="brief" usefile="false" />
-      <formatter type="plain" />
-      <formatter type="xml" />
-    </junit>
-  </target>
+	<target name="update_html" description="Update servoy_mobile_test.html; it must always be almost the same as servoy_mobile.html">
+		<copy file="../servoy_mobile/war/servoy_mobile.html" toFile="war/servoy_mobile_test.html" overwrite="true" />
+		<replace file="war/servoy_mobile_test.html" summary="true">
+			<replacefilter token="mobileclient/mobileclient" value="mobiletestclient/mobiletestclient"/>
+			<replacefilter token="&lt;head&gt;" value="&lt;head&gt;&#xA;&#xD;&#x9;&#x9;&lt;link rel=&quot;shortcut icon&quot; type=&quot;image/x-icon&quot; href=&quot;favicon.ico&quot;&gt;"/>
+		</replace>
+	</target>
+	
+<!--	<target name="test.dev" depends="javac" description="Run development mode tests">
+		<mkdir dir="reports/junitGWT.dev" />
+		<junit fork="yes" printsummary="yes" haltonfailure="yes">
+			<jvmarg line="-Xmx256m" />
+			<sysproperty key="gwt.args" value="-port 8888 -logLevel INFO -style DETAILED -testMethodTimeout 1 -testBeginTimeout 1 -runStyle Manual:1 -userAgents safari" />
+			<sysproperty key="java.awt.headless" value="true" />
+			<classpath>
+				<path refid="project.class.path.withsrc" />
+			</classpath>
+			<test name="com.servoy.mobile.test.server.MobileSolutionTestSuite" todir="reports/junitGWT.dev" />
+			<formatter type="brief" usefile="false" />
+			<formatter type="plain" />
+			<formatter type="xml" />
+		</junit>
+	</target>
 
-  <target name="test.prod" depends="javac" description="Run production mode tests">
-    <mkdir dir="reports/junitGWT.prod" />
-    <junit fork="yes" printsummary="yes" haltonfailure="yes">
-      <jvmarg line="-Xmx256m" />
-      <sysproperty key="gwt.args" value="-prod -port 8888 -logLevel INFO -style DETAILED -testMethodTimeout 1 -testBeginTimeout 1 -runStyle Manual:1 -userAgents safari" />
-      <sysproperty key="java.awt.headless" value="true" />
-      <classpath>
-        <path refid="project.class.path.withsrc" />
-      </classpath>
-      <test name="com.servoy.mobile.test.server.MobileSolutionTestSuite" todir="reports/junitGWT.prod" />
-      <formatter type="brief" usefile="false" />
-      <formatter type="plain" />
-      <formatter type="xml" />
-    </junit>
-  </target>
+	<target name="test.prod" depends="javac" description="Run production mode tests">
+		<mkdir dir="reports/junitGWT.prod" />
+		<junit fork="yes" printsummary="yes" haltonfailure="yes">
+			<jvmarg line="-Xmx256m" />
+			<sysproperty key="gwt.args" value="-prod -port 8888 -logLevel INFO -style DETAILED -testMethodTimeout 1 -testBeginTimeout 1 -runStyle Manual:1 -userAgents safari" />
+			<sysproperty key="java.awt.headless" value="true" />
+			<classpath>
+				<path refid="project.class.path.withsrc" />
+			</classpath>
+			<test name="com.servoy.mobile.test.server.MobileSolutionTestSuite" todir="reports/junitGWT.prod" />
+			<formatter type="brief" usefile="false" />
+			<formatter type="plain" />
+			<formatter type="xml" />
+		</junit>
+	</target>
 
-  <target name="test" description="Run development and production mode tests">
-    <antcall target="test.dev" />
-    <antcall target="test.prod" />
-  </target> -->
+	<target name="test" description="Run development and production mode tests">
+		<antcall target="test.dev" />
+		<antcall target="test.prod" />
+	</target> -->
 
-  <target name="build" depends="gwtc" description="Build this project" />
+	<target name="build" depends="gwtc" description="Build this project" />
 
-  <target name="war" depends="build" description="Create a war file">
-    <jar destfile="MobileTestClient.war" basedir="war"/>
-  </target>
+	<target name="manual_war" depends="build" description="Create a war file">
+		<jar destfile="servoy_mobile_test.war" basedir="war"/>
+	</target>
 
-  <target name="clean" description="Cleans this project">
-    <delete dir="war/WEB-INF/classes" failonerror="false" />
-    <delete dir="war/mobiletestclient" failonerror="false" />
-  </target>
+	<target name="war" depends="build" description="Create a war file">
+		<delete file="servoy_mobile_test.war"/>
+		<jar	destfile="servoy_mobile_test.war"
+			basedir="war"
+			duplicate="fail"
+			excludes="**/*.war,**/solution_json.js,**/solution.js,**/media/**,**/index.html"
+		/>
+		<move tofile="../com.servoy.eclipse.exporter.mobile/src/com/servoy/eclipse/exporter/mobile/export/resources/servoy_mobile_test.war" file="servoy_mobile_test.war"/>
+	</target>
+
+	<target name="clean" description="Cleans this project">
+		<delete dir="war/WEB-INF/classes" failonerror="false" />
+		<delete dir="war/mobiletestclient" failonerror="false" />
+	</target>
 
 </project>

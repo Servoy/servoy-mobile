@@ -132,6 +132,12 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 	}
 
 	@Override
+	public String[] getSolutionJsUnitJavascriptCode()
+	{
+		return bridge.getSolutionJsUnitJavascriptCode();
+	}
+
+	@Override
 	public void setFlattenedTestTree(String[] testTree)
 	{
 		bridge.setFlattenedTestTree(testTree);
@@ -329,6 +335,5 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 			requestSequenceLock.notifyAll();
 		}
 	}
-
 
 }
