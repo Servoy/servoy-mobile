@@ -8,16 +8,13 @@
 	<property name="gwt.servlet.libs" location="lib" />
 
 	<path id="project.class.path">
-		<pathelement location="../servoy_mobile/war/WEB-INF/classes"/>
 		<pathelement location="../servoy_base/bin"/>
-		<pathelement location="war/WEB-INF/classes"/>
+		<pathelement location="../servoy_base/@dot"/>
 		<pathelement location="${gwt.jars}/gwt-user.jar"/>
 		<fileset dir="${gwt.jars}" includes="gwt-dev.jar"/>
 		<!-- Add any additional non-server libs (such as JUnit) -->
 		<fileset dir="war/WEB-INF/lib" includes="**/*.jar"/>
 		<fileset dir="../servoy_mobile/lib" includes="**/*.jar"/>
-
-		<!-- <pathelement location="e:\Workspaces\HEAD\j2db_test\lib\junit_4.5.0.jar" /> -->
 	</path>
 
 	<path id="project.class.path.withsrc">
@@ -42,14 +39,14 @@
 
 	<target name="javac" depends="libs" description="Compile java source to bytecode">
 		<mkdir dir="war/WEB-INF/classes"/>
-		<javac srcdir="src" includes="**" encoding="utf-8"
+		<javac srcdir="src" includes="com/servoy/mobile/test/server/**, com/servoy/mobile/test/shared/**" encoding="utf-8"
 				destdir="war/WEB-INF/classes"
 				source="1.6" target="1.6" nowarn="true"
 				debug="true" debuglevel="lines,vars,source">
 			<classpath refid="project.class.path"/>
 		</javac>
 		<copy todir="war/WEB-INF/classes">
-			<fileset dir="src" excludes="**/*.java"/>
+			<fileset dir="src" includes="logging.properties,com/servoy/mobile/test/server/**, com/servoy/mobile/test/shared/**" excludes="**/*.java"/>
 		</copy>
 	</target>
 
