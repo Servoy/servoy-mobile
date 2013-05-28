@@ -1,25 +1,35 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <project name="MobileTestClient" default="war" basedir=".">
-	<!-- Arguments to gwtc and devmode targets -->
+	
+	<property name="servoy_base.dir" location="../servoy_base" />
+	<property name="servoy_base.classes" location="../servoy_base/bin" /> <!-- this relies on eclipse workspace builds to generate the classes; with ant builds - please declare the correct value before referencing this script -->
+	<property name="servoy_mobile.dir" location="../servoy_mobile" />
+	<property name="servoy_mobile.dir" location="../servoy_mobile" />
+	<property name="cse.exporter.mobile.src.dir" location="../com.servoy.eclipse.exporter.mobile/src" />
+	<property name="cse.exporter.mobile.testwar.rel" value="com/servoy/eclipse/exporter/mobile/export/resources/servoy_mobile_test.war" />
+
 	<property name="gwt.args" value="" />
-
-	<!-- Configure path to GWT SDK -->
-	<property name="gwt.jars" location="../servoy_mobile/lib" />
 	<property name="gwt.servlet.libs" location="lib" />
-
+	<property name="gwt.jars" location="${servoy_mobile.dir}/lib" />
+	
+	<property name="javacDebugInfo" value="true" />
+	<property name="bundleJavacSource" value="1.6" />
+	<property name="bundleJavacTarget" value="1.6" />
+	<property name="javacVerbose" value="false" />
+	<property name="compiler" value="modern" />
+	
 	<path id="project.class.path">
-		<pathelement location="../servoy_base/bin"/>
-		<pathelement location="../servoy_base/@dot"/>
+		<pathelement location="${servoy_base.classes}"/>
 		<pathelement location="${gwt.jars}/gwt-user.jar"/>
 		<fileset dir="${gwt.jars}" includes="gwt-dev.jar"/>
 		<!-- Add any additional non-server libs (such as JUnit) -->
 		<fileset dir="war/WEB-INF/lib" includes="**/*.jar"/>
-		<fileset dir="../servoy_mobile/lib" includes="**/*.jar"/>
 	</path>
 
 	<path id="project.class.path.withsrc">
-		<pathelement location="../servoy_mobile/src"/>
-		<pathelement location="../servoy_base/src"/>
+		<pathelement location="${servoy_mobile.dir}/src"/>
+		<fileset dir="${servoy_mobile.dir}/lib" includes="**/*.jar"/>
+		<pathelement location="${servoy_base.dir}/src"/>
 		<pathelement location="src" />
 		<path refid="project.class.path" />
 	</path>
@@ -41,8 +51,11 @@
 		<mkdir dir="war/WEB-INF/classes"/>
 		<javac srcdir="src" includes="com/servoy/mobile/test/server/**, com/servoy/mobile/test/shared/**" encoding="utf-8"
 				destdir="war/WEB-INF/classes"
-				source="1.6" target="1.6" nowarn="true"
-				debug="true" debuglevel="lines,vars,source">
+				compiler="${compiler}"
+				source="${bundleJavacSource}" target="${bundleJavacTarget}" nowarn="true"
+				debug="${javacDebugInfo}" debuglevel="lines,vars,source" verbose="${javacVerbose}"
+				deprecation="off"
+				fork="yes">
 			<classpath refid="project.class.path"/>
 		</javac>
 		<copy todir="war/WEB-INF/classes">
@@ -89,49 +102,12 @@
 	</target>
 
 	<target name="update_html" description="Update servoy_mobile_test.html; it must always be almost the same as servoy_mobile.html">
-		<copy file="../servoy_mobile/war/servoy_mobile.html" toFile="war/servoy_mobile_test.html" overwrite="true" />
+		<copy file="${servoy_mobile.dir}/war/servoy_mobile.html" toFile="war/servoy_mobile_test.html" overwrite="true" />
 		<replace file="war/servoy_mobile_test.html" summary="true">
 			<replacefilter token="mobileclient/mobileclient" value="mobiletestclient/mobiletestclient"/>
 			<replacefilter token="&lt;head&gt;" value="&lt;head&gt;&#xA;&#xD;&#x9;&#x9;&lt;link rel=&quot;shortcut icon&quot; type=&quot;image/x-icon&quot; href=&quot;favicon.ico&quot;&gt;"/>
 		</replace>
 	</target>
-	
-<!--	<target name="test.dev" depends="javac" description="Run development mode tests">
-		<mkdir dir="reports/junitGWT.dev" />
-		<junit fork="yes" printsummary="yes" haltonfailure="yes">
-			<jvmarg line="-Xmx256m" />
-			<sysproperty key="gwt.args" value="-port 8888 -logLevel INFO -style DETAILED -testMethodTimeout 1 -testBeginTimeout 1 -runStyle Manual:1 -userAgents safari" />
-			<sysproperty key="java.awt.headless" value="true" />
-			<classpath>
-				<path refid="project.class.path.withsrc" />
-			</classpath>
-			<test name="com.servoy.mobile.test.server.MobileSolutionTestSuite" todir="reports/junitGWT.dev" />
-			<formatter type="brief" usefile="false" />
-			<formatter type="plain" />
-			<formatter type="xml" />
-		</junit>
-	</target>
-
-	<target name="test.prod" depends="javac" description="Run production mode tests">
-		<mkdir dir="reports/junitGWT.prod" />
-		<junit fork="yes" printsummary="yes" haltonfailure="yes">
-			<jvmarg line="-Xmx256m" />
-			<sysproperty key="gwt.args" value="-prod -port 8888 -logLevel INFO -style DETAILED -testMethodTimeout 1 -testBeginTimeout 1 -runStyle Manual:1 -userAgents safari" />
-			<sysproperty key="java.awt.headless" value="true" />
-			<classpath>
-				<path refid="project.class.path.withsrc" />
-			</classpath>
-			<test name="com.servoy.mobile.test.server.MobileSolutionTestSuite" todir="reports/junitGWT.prod" />
-			<formatter type="brief" usefile="false" />
-			<formatter type="plain" />
-			<formatter type="xml" />
-		</junit>
-	</target>
-
-	<target name="test" description="Run development and production mode tests">
-		<antcall target="test.dev" />
-		<antcall target="test.prod" />
-	</target> -->
 
 	<target name="build" depends="gwtc" description="Build this project" />
 
@@ -146,7 +122,7 @@
 			duplicate="fail"
 			excludes="**/*.war,**/solution_json.js,**/solution.js,**/media/**,**/index.html"
 		/>
-		<move tofile="../com.servoy.eclipse.exporter.mobile/src/com/servoy/eclipse/exporter/mobile/export/resources/servoy_mobile_test.war" file="servoy_mobile_test.war"/>
+		<move tofile="${cse.exporter.mobile.src.dir}/${cse.exporter.mobile.testwar.rel}" file="servoy_mobile_test.war"/>
 	</target>
 
 	<target name="clean" description="Cleans this project">
