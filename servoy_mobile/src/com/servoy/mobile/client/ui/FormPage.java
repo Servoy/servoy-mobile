@@ -144,7 +144,12 @@ public class FormPage extends JQMPage
 			if (rightToolbarButton != null) headerComponent.setRightButton(rightToolbarButton);
 		}
 
-		if (headerPart != null) headerComponent.setTheme(headerPart.getStyleClass());
+		if (headerPart != null)
+		{
+			headerComponent.setTheme(headerPart.getStyleClass());
+			MobileProperties mp = headerPart.getMobileProperties();
+			if (mp != null) headerComponent.setFixed(mp.getPropertyValue(IMobileProperties.FIXED_POSITION).booleanValue());
+		}
 		if (headerDecorator != null) headerDecorator.decorateHeader(headerPart, headerComponent);
 
 		return headerComponent;
@@ -221,7 +226,12 @@ public class FormPage extends JQMPage
 		if (footerComponents.size() < 1) return null;
 		Collections.sort(footerComponents, PositionComparator.XY_COMPARATOR);
 		JQMFooter footerComponent = new JQMFooter();
-		if (footerPart != null) footerComponent.setTheme(footerPart.getStyleClass());
+		if (footerPart != null)
+		{
+			footerComponent.setTheme(footerPart.getStyleClass());
+			MobileProperties mp = footerPart.getMobileProperties();
+			if (mp != null) footerComponent.setFixed(mp.getPropertyValue(IMobileProperties.FIXED_POSITION).booleanValue());
+		}
 		for (Component c : footerComponents)
 			footerComponent.add(createWidget(c));
 
