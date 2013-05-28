@@ -20,11 +20,14 @@ package com.servoy.mobile.client.ui;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.user.client.ui.Widget;
 import com.servoy.base.persistence.IMobileProperties;
+import com.servoy.base.persistence.constants.IColumnTypeConstants;
 import com.servoy.base.persistence.constants.IFieldConstants;
 import com.servoy.base.persistence.constants.IFormConstants;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.DataAdapterList;
+import com.servoy.mobile.client.dataprocessing.FoundSetManager;
+import com.servoy.mobile.client.dto.DataProviderDescription;
 import com.servoy.mobile.client.persistence.AbstractBase;
 import com.servoy.mobile.client.persistence.Bean;
 import com.servoy.mobile.client.persistence.Component;
@@ -136,10 +139,25 @@ public class ComponentFactory
 				{
 					valuelist = application.getFlattenedSolution().getValueListByUUID(valuelistID);
 				}
+				int type = IColumnTypeConstants.TEXT;
+				if (formController.getDataSource() != null && field.getDataProviderID() != null)
+				{
+					String entity = FoundSetManager.getEntityFromDataSource(formController.getDataSource());
+					JsArray<DataProviderDescription> dataProviders = application.getFoundSetManager().getEntityDescription(entity).getDataProviders();
+					for (int i = 0; i < dataProviders.length(); i++)
+					{
+						if (dataProviders.get(i).getDataProviderID().equals(field.getDataProviderID()))
+						{
+							DataProviderDescription dataProviderDescription = dataProviders.get(i);
+							type = dataProviderDescription.getType();
+							break;
+						}
+					}
+				}
 				switch (field.getDisplayType())
 				{
 					case IFieldConstants.TEXT_FIELD :
-						componentWidget = new DataTextField(field, formController.getExecutor(), application);
+						componentWidget = new DataTextField(field, formController.getExecutor(), application, type);
 						break;
 					case IFieldConstants.TEXT_AREA :
 						componentWidget = new DataTextArea(field, formController.getExecutor(), application);

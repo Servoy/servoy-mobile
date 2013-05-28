@@ -17,7 +17,13 @@ package com.servoy.mobile.client.ui;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
+import java.util.Date;
+
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.i18n.client.NumberFormat;
+import com.google.gwt.i18n.shared.DateTimeFormat;
+import com.servoy.base.persistence.constants.IColumnTypeConstants;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
@@ -36,10 +42,27 @@ import com.sksamuel.jqm4gwt.form.elements.JQMText;
 public class DataTextField extends JQMText implements IDisplayData, ISupportTitleText, IFieldComponent, IEditListenerSubject, ISupportsPlaceholderComponent
 {
 	private AbstractRuntimeFieldComponent scriptable;
+	private NumberFormat numberFormat;
+	private DateTimeFormat dateFormat;
 
-	public DataTextField(Field field, Executor executor, MobileClient application)
+	public DataTextField(Field field, Executor executor, MobileClient application, int dataproviderType)
 	{
 		this.scriptable = createRuntimeComponent(field, executor, application);
+		if (field.getFormat() != null)
+		{
+			if (dataproviderType == IColumnTypeConstants.NUMBER || dataproviderType == IColumnTypeConstants.INTEGER)
+			{
+				numberFormat = NumberFormat.getFormat(field.getFormat());
+			}
+			else if (dataproviderType == IColumnTypeConstants.DATETIME)
+			{
+				dateFormat = DateTimeFormat.getFormat(field.getFormat());
+			}
+			else
+			{
+				Log.error("Format is set: " + field.getFormat() + ", on a not supported type: " + dataproviderType); //$NON-NLS-1$ //$NON-NLS-2$ 
+			}
+		}
 	}
 
 	protected AbstractRuntimeFieldComponent createRuntimeComponent(Field field, Executor executor, MobileClient application)
@@ -53,7 +76,20 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 	@Override
 	public Object getValueObject()
 	{
-		return getValue();
+		String txt = getValue();
+		if (numberFormat != null)
+		{
+			Double value = Double.valueOf(numberFormat.parse(txt));
+			setValueObject(value);
+			return value;
+		}
+		else if (dateFormat != null)
+		{
+			Date value = dateFormat.parse(txt);
+			setValueObject(value);
+			return value;
+		}
+		return txt;
 	}
 
 	/*
@@ -62,7 +98,20 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 	@Override
 	public void setValueObject(Object data)
 	{
-		setValue(data != null ? data.toString() : ""); //$NON-NLS-1$
+		String txt;
+		if (data != null && numberFormat != null)
+		{
+			txt = numberFormat.format((Number)data);
+		}
+		else if (data != null && dateFormat != null)
+		{
+			txt = dateFormat.format((Date)data);
+		}
+		else
+		{
+			txt = data != null ? data.toString() : ""; //$NON-NLS-1$
+		}
+		setValue(txt);
 	}
 
 	private EditProvider editProvider;

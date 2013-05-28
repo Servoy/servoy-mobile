@@ -104,4 +104,14 @@ public class Field extends Component implements IBaseFieldCommon
 	{
 		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_PLACEHOLDERTEXT, null);
 	}
+
+	public final void setFormat(String format)
+	{
+		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_FORMAT, format);
+	}
+
+	public final String getFormat()
+	{
+		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_FORMAT, null);
+	}
 }

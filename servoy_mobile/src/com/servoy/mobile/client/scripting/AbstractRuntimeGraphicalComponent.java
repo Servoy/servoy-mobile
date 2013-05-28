@@ -17,8 +17,13 @@
 
 package com.servoy.mobile.client.scripting;
 
+import java.util.Date;
+
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.servoy.base.scripting.api.IJSEvent;
 import com.servoy.base.util.ITagResolver;
 import com.servoy.base.util.TagParser;
@@ -79,7 +84,27 @@ public class AbstractRuntimeGraphicalComponent extends AbstractRuntimeBaseCompon
 		}
 		else
 		{
-			txt = output != null ? output.toString() : ""; //$NON-NLS-1$
+			String format = componentPersist.getFormat();
+			if (format != null && output != null)
+			{
+				if (output instanceof Number)
+				{
+					txt = NumberFormat.getFormat(format).format((Number)output);
+				}
+				else if (output instanceof Date)
+				{
+					txt = DateTimeFormat.getFormat(format).format((Date)output);
+				}
+				else
+				{
+					Log.error("Format is set: " + format + ", on a not supported object: " + output + " class:" + output.getClass()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+					txt = output.toString();
+				}
+			}
+			else
+			{
+				txt = output != null ? output.toString() : ""; //$NON-NLS-1$
+			}
 		}
 
 		component.setText(txt);

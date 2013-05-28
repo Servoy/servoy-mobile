@@ -96,4 +96,14 @@ public class GraphicalComponent extends Component implements IBaseGraphicalCompo
 	{
 		return IComponentConstants.VIEW_TYPE_BUTTON.equals(getViewType());
 	}
+
+	public final void setFormat(String format)
+	{
+		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_FORMAT, format);
+	}
+
+	public final String getFormat()
+	{
+		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_FORMAT, null);
+	}
 }

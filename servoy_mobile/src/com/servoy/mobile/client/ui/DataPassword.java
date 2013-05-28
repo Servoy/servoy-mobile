@@ -17,6 +17,7 @@ package com.servoy.mobile.client.ui;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
+import com.servoy.base.persistence.constants.IColumnTypeConstants;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListenerSubject;
@@ -33,7 +34,7 @@ public class DataPassword extends DataTextField implements IDisplayData, ISuppor
 {
 	public DataPassword(Field field, Executor executor, MobileClient application)
 	{
-		super(field, executor, application);
+		super(field, executor, application, IColumnTypeConstants.TEXT);
 		setType("password");
 	}
 
