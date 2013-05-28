@@ -90,7 +90,7 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 			addOption(""); //$NON-NLS-1$
 			hasEmptyOption = true;
 		}
-		JsArrayString displayValues = valuelist.getDiplayValues();
+		JsArrayString displayValues = valuelist.getDiplayValues(scriptable.getApplication().getI18nProvider());
 		for (int i = 0; i < displayValues.length(); i++)
 			addOption(displayValues.get(i));
 	}
@@ -157,7 +157,7 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 			}
 			else
 			{
-				return valuelist.getDiplayValues().get(getSelectedIndex());
+				return valuelist.getDiplayValues(scriptable.getApplication().getI18nProvider()).get(getSelectedIndex());
 			}
 		}
 		return null;
@@ -171,7 +171,8 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 	{
 		if (valuelist != null)
 		{
-			int selectedIndex = Utils.findInArray(valuelist.hasRealValues() ? valuelist.getRealValues() : valuelist.getDiplayValues(), data);
+			int selectedIndex = Utils.findInArray(
+				valuelist.hasRealValues() ? valuelist.getRealValues() : valuelist.getDiplayValues(scriptable.getApplication().getI18nProvider()), data);
 			if (selectedIndex > -1)
 			{
 				if (hasEmptyOption)

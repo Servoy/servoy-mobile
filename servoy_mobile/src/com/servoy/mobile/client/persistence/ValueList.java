@@ -19,6 +19,7 @@ package com.servoy.mobile.client.persistence;
 
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
+import com.servoy.base.util.I18NProvider;
 import com.servoy.mobile.client.scripting.IModificationListener;
 import com.servoy.mobile.client.scripting.ModificationEvent;
 
@@ -32,7 +33,18 @@ public class ValueList extends AbstractBase
 	{
 	}
 
-	public final native JsArrayString getDiplayValues() /*-{
+	public final JsArrayString getDiplayValues(I18NProvider i18nProvider)
+	{
+		JsArrayString rawDisplayValues = getRawDiplayValues();
+		if (i18nProvider != null)
+		{
+			for (int i = 0; i < rawDisplayValues.length(); i++)
+				rawDisplayValues.set(i, i18nProvider.getI18NMessageIfPrefixed(rawDisplayValues.get(i)));
+		}
+		return rawDisplayValues;
+	}
+
+	private final native JsArrayString getRawDiplayValues() /*-{
 		return this.displayValues;
 	}-*/;
 

@@ -67,7 +67,7 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 	 */
 	public void fillByValueList()
 	{
-		JsArrayString displayValues = valuelist.getDiplayValues();
+		JsArrayString displayValues = valuelist.getDiplayValues(scriptable.getApplication().getI18nProvider());
 		for (int i = 0; i < displayValues.length(); i++)
 			addRadio(displayValues.get(i));
 	}
@@ -125,7 +125,7 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 		{
 			if (valuelist.hasRealValues())
 			{
-				int valueIdx = Utils.findInArray(valuelist.getDiplayValues(), getSelectedValue());
+				int valueIdx = Utils.findInArray(valuelist.getDiplayValues(scriptable.getApplication().getI18nProvider()), getSelectedValue());
 				if (valueIdx > -1)
 				{
 					JsArrayObject objectArray = valuelist.getRealValues().cast();
@@ -155,7 +155,7 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 				int valueIdx = Utils.findInArray(valuelist.getRealValues(), data);
 				if (valueIdx > -1)
 				{
-					JsArrayString stringArray = valuelist.getDiplayValues();
+					JsArrayString stringArray = valuelist.getDiplayValues(scriptable.getApplication().getI18nProvider());
 					selectedValue = stringArray.get(valueIdx);
 				}
 			}

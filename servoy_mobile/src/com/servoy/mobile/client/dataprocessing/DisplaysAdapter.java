@@ -66,6 +66,11 @@ public class DisplaysAdapter implements IDataAdapter, IEditListener
 	public void setRecord(Record record)
 	{
 		this.record = record;
+		updateRecordDisplay();
+	}
+
+	private void updateRecordDisplay()
+	{
 		Object value = dal.getRecordValue(record, dataproviderID);
 		for (IDisplayData d : displays)
 		{
@@ -159,7 +164,12 @@ public class DisplaysAdapter implements IDataAdapter, IEditListener
 	@Override
 	public void valueChanged(ModificationEvent e)
 	{
-		if (Utils.equalObjects(getDataproviderSimpleName(), e.getName()) || dataproviderID == null)
+		// if it is a related data, refresh the display
+		if (record != null && dataproviderID != null && dataproviderID.indexOf(".") > -1) //$NON-NLS-1$
+		{
+			updateRecordDisplay();
+		}
+		else if (Utils.equalObjects(getDataproviderSimpleName(), e.getName()) || dataproviderID == null)
 		{
 			Object value = e.getValue();
 			for (IDisplayData d : displays)

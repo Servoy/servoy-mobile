@@ -72,7 +72,7 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 	 */
 	private void fillByValueList()
 	{
-		JsArrayString displayValues = valuelist.getDiplayValues();
+		JsArrayString displayValues = valuelist.getDiplayValues(scriptable.getApplication().getI18nProvider());
 		JsArrayMixed realValues = valuelist.hasRealValues() ? valuelist.getRealValues() : null;
 		String displayValue;
 		for (int i = 0; i < displayValues.length(); i++)
