@@ -45,7 +45,7 @@ public class DataButton extends JQMButton implements IDisplayData, IGraphicalCom
 		if (mp != null)
 		{
 			DataIcon dataIcon = Utils.stringToDataIcon(mp.getPropertyValue(IMobileProperties.DATA_ICON));
-			if (dataIcon != null) setIcon(dataIcon);
+			if (dataIcon != null) setBuiltInIcon(dataIcon);
 		}
 	}
 

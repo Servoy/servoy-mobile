@@ -47,7 +47,7 @@ public class DataFormHeaderButton extends JQMButton implements IDisplayData, IGr
 		if (mp != null)
 		{
 			DataIcon dataIcon = Utils.stringToDataIcon(mp.getPropertyValue(IMobileProperties.DATA_ICON));
-			if (dataIcon != null) setIcon(dataIcon);
+			if (dataIcon != null) setBuiltInIcon(dataIcon);
 		}
 		this.orientation = orientation;
 		this.scriptable = new RuntimeDataFormHeaderButton(application, executor, this, gc);
