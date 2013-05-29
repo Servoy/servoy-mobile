@@ -17,7 +17,7 @@ public interface I18NMessages extends ConstantsWithLookup
 	@DefaultStringValue("You are currently not connected to a network")
 	String noNetwork();
 
-	@DefaultStringValue("Discard local changes?")
+	@DefaultStringValue("Failed to push the changes. Discard local changes and load latest data from server?")
 	String discardLocalChanges();
 
 	@DefaultStringValue("Couldn`t retrieve JSON")

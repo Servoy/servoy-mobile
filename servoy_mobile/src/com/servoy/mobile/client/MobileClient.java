@@ -140,6 +140,8 @@ public class MobileClient implements EntryPoint
 		solutionModel = new JSSolutionModel(this);
 		scriptEngine = new ScriptEngine(this);
 
+//		JQMContext.setDefaultTransition(Transition.FADE);
+
 		addStartPageShowCallback();
 	}
 
@@ -245,7 +247,6 @@ public class MobileClient implements EntryPoint
 					public void onFailure(Failure reason)
 					{
 						Mobile.hideLoadingDialog();
-
 						error(reason.getMessage());
 						if (errorHandler != null)
 						{
@@ -254,17 +255,22 @@ public class MobileClient implements EntryPoint
 							jsArray.set(1, reason.getMessage());
 							Executor.call(errorHandler, jsArray);
 						}
-						else
+						else if (reason.getStatusCode() != -1)
 						{
 							boolean ok = Window.confirm(getI18nMessageWithFallback("discardLocalChanges"));
 							if (ok)
 							{
+								// TODO really directly remove the changes from memory and local storage?
 								load(successCallback, errorHandler);
 							}
 							else
 							{
 								showFirstForm();
 							}
+						}
+						else
+						{
+							showFirstForm();
 						}
 					}
 				});
