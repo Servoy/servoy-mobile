@@ -82,11 +82,11 @@ public class FormPage extends JQMPage
 			Part part = Part.castIfPossible(component);
 			if (part != null)
 			{
-				if (part.getType() == IPartConstants.HEADER)
+				if (part.getType() == IPartConstants.HEADER || part.getType() == IPartConstants.TITLE_HEADER)
 				{
 					headerPart = part;
 				}
-				else if (part.getType() == IPartConstants.FOOTER)
+				else if (part.getType() == IPartConstants.FOOTER || part.getType() == IPartConstants.TITLE_FOOTER)
 				{
 					footerPart = part;
 				}
@@ -147,8 +147,7 @@ public class FormPage extends JQMPage
 		if (headerPart != null)
 		{
 			headerComponent.setTheme(headerPart.getStyleClass());
-			MobileProperties mp = headerPart.getMobileProperties();
-			if (mp != null) headerComponent.setFixed(mp.getPropertyValue(IMobileProperties.FIXED_POSITION).booleanValue());
+			headerComponent.setFixed(headerPart.getType() == IPartConstants.TITLE_HEADER);
 		}
 		if (headerDecorator != null) headerDecorator.decorateHeader(headerPart, headerComponent);
 
@@ -229,8 +228,7 @@ public class FormPage extends JQMPage
 		if (footerPart != null)
 		{
 			footerComponent.setTheme(footerPart.getStyleClass());
-			MobileProperties mp = footerPart.getMobileProperties();
-			if (mp != null) footerComponent.setFixed(mp.getPropertyValue(IMobileProperties.FIXED_POSITION).booleanValue());
+			footerComponent.setFixed(footerPart.getType() == IPartConstants.TITLE_FOOTER);
 		}
 		for (Component c : footerComponents)
 			footerComponent.add(createWidget(c));
