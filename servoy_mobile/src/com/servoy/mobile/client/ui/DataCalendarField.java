@@ -19,7 +19,6 @@ package com.servoy.mobile.client.ui;
 
 import java.util.Date;
 
-import com.google.gwt.event.dom.client.TouchEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.servoy.mobile.client.MobileClient;
@@ -29,6 +28,7 @@ import com.servoy.mobile.client.dataprocessing.IEditListenerSubject;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.scripting.IRuntimeField;
 import com.servoy.mobile.client.scripting.RuntimeDataCalenderField;
+import com.servoy.mobile.client.util.BrowserSupport;
 import com.sksamuel.jqm4gwt.form.elements.JQMText;
 
 /**
@@ -40,15 +40,18 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 {
 	private RuntimeDataCalenderField scriptable;
 
+	private final String type;
+
 	public DataCalendarField(Field field, Executor executor, MobileClient application)
 	{
 		this.scriptable = new RuntimeDataCalenderField(application, executor, this, field);
-		setType("date");
+		type = "date";
+		setType(type);
 	}
 
 	public String getFormat()
 	{
-		if (!supportsNativeDate())
+		if (!BrowserSupport.isSupportedType(type))
 		{
 			return "dd-MM-yyyy";
 		}
@@ -85,7 +88,7 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 			DateTimeFormat format = DateTimeFormat.getFormat(getFormat());
 			String parsed = format.format((Date)data);
 			setValue(parsed);
-			if (!supportsNativeDate())
+			if (!BrowserSupport.isSupportedType(type))
 			{
 				setDate(((Date)data).getTime());
 			}
@@ -170,20 +173,10 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 	{
 		super.onLoad();
 		setPlaceholder(getId(), scriptable.getApplication().getI18nProvider().getI18NMessageIfPrefixed(getRuntimeComponent().getPlaceholderText()));
-		if (!supportsNativeDate())
+		if (!BrowserSupport.isSupportedType(type))
 		{
 			init(getId(), getFormat().toLowerCase()); // java format maps through lowercase
 		}
-	}
-
-	/**
-	 * Returns if this calender field should use native date fields or not.
-	 * Currently we say yes if Touch is supported.
-	 * @return
-	 */
-	public boolean supportsNativeDate()
-	{
-		return TouchEvent.isSupported();
 	}
 
 	private native void init(String inputId, String format)
