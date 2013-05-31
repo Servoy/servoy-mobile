@@ -22,7 +22,7 @@ public class GlobalScope extends Scope
 	private final Map<String, Object> scopeVariables = new HashMap<String, Object>();
 	protected final Map<String, Object> servoyProperties = new HashMap<String, Object>();
 	protected final Map<String, Integer> variableTypes = new HashMap<String, Integer>();
-	private final MobileClient client;
+	protected final MobileClient client;
 
 	public GlobalScope(String name, MobileClient client)
 	{

@@ -26,8 +26,6 @@ import com.servoy.base.persistence.constants.IFormConstants;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.DataAdapterList;
-import com.servoy.mobile.client.dataprocessing.FoundSetManager;
-import com.servoy.mobile.client.dto.DataProviderDescription;
 import com.servoy.mobile.client.persistence.AbstractBase;
 import com.servoy.mobile.client.persistence.Bean;
 import com.servoy.mobile.client.persistence.Component;
@@ -37,6 +35,7 @@ import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.servoy.mobile.client.persistence.Portal;
 import com.servoy.mobile.client.persistence.TabPanel;
 import com.servoy.mobile.client.persistence.ValueList;
+import com.servoy.mobile.client.scripting.GlobalScope;
 import com.servoy.mobile.client.scripting.IRuntimeComponent;
 import com.servoy.mobile.client.scripting.IRuntimeComponentProvider;
 import com.servoy.mobile.client.scripting.IRuntimeField;
@@ -140,18 +139,16 @@ public class ComponentFactory
 					valuelist = application.getFlattenedSolution().getValueListByUUID(valuelistID);
 				}
 				int type = IColumnTypeConstants.TEXT;
-				if (formController.getDataSource() != null && field.getDataProviderID() != null)
+				if (field.getDataProviderID() != null)
 				{
-					String entity = FoundSetManager.getEntityFromDataSource(formController.getDataSource());
-					JsArray<DataProviderDescription> dataProviders = application.getFoundSetManager().getEntityDescription(entity).getDataProviders();
-					for (int i = 0; i < dataProviders.length(); i++)
+					String[] variableScope = GlobalScope.getVariableScope(field.getDataProviderID());
+					if (variableScope[0] == null)
 					{
-						if (dataProviders.get(i).getDataProviderID().equals(field.getDataProviderID()))
-						{
-							DataProviderDescription dataProviderDescription = dataProviders.get(i);
-							type = dataProviderDescription.getType();
-							break;
-						}
+						type = formController.getFormScope().getVariableType(field.getDataProviderID());
+					}
+					else
+					{
+						type = application.getScriptEngine().getGlobalScope(variableScope[0]).getVariableType(variableScope[1]);
 					}
 				}
 				switch (field.getDisplayType())

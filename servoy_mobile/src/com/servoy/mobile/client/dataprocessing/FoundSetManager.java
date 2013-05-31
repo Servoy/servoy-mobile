@@ -192,6 +192,27 @@ public class FoundSetManager
 		return null;
 	}
 
+	public EntityDescription getRelatedEntityDescription(String entityStartName, String relationString)
+	{
+		String[] relations = relationString.split("\\.");
+		String entityName = entityStartName;
+		for (String relationName : relations)
+		{
+			EntityDescription entityDescription = getEntityDescription(entityName);
+			entityName = null;
+			if (entityDescription != null)
+			{
+				RelationDescription primaryRelation = entityDescription.getPrimaryRelation(relationName);
+				if (primaryRelation != null)
+				{
+					entityName = primaryRelation.getForeignEntityName();
+				}
+			}
+			if (entityName == null) return null;
+		}
+		return getEntityDescription(entityName);
+	}
+
 	/**
 	 * Returns the cached, in memory, row description, that is shared among more instances of same db record.
 	 */

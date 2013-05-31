@@ -49,6 +49,10 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 			else Log.warn("Cannot find DB entity definition for <" + dataSource + ">.");
 		}
 		scope = new FormScope(mc, this);
+	}
+
+	public void createView()
+	{
 		formDisplay = ComponentFactory.createFormDisplay(mc, this);
 	}
 

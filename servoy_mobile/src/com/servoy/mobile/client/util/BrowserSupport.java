@@ -20,11 +20,12 @@ package com.servoy.mobile.client.util;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.core.client.JsArrayString;
 
 /**
  * @author jcompagner
  *
+ * TODO: If we introduce more of these things, we should use http://modernizr.com/
  */
 public class BrowserSupport
 {
@@ -35,16 +36,16 @@ public class BrowserSupport
 		if (supportedTypes == null)
 		{
 			supportedTypes = new HashSet<String>();
-			String[] set = fillSupportedTypes();
-			for (String type : set)
+			JsArrayString set = fillSupportedTypes();
+			for (int i = 0; i < set.length(); i++)
 			{
-				supportedTypes.add(type);
+				supportedTypes.add(set.get(i));
 			}
 		}
 		return supportedTypes;
 	}
 
-	private static native String[] fillSupportedTypes()
+	private static native JsArrayString fillSupportedTypes()
 	/*-{
 		var inputs = [ 'search', 'tel', 'url', 'email', 'datetime', 'date',
 				'month', 'week', 'time', 'datetime-local', 'number', 'color',

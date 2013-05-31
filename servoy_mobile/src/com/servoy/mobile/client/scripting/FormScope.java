@@ -3,12 +3,15 @@ package com.servoy.mobile.client.scripting;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.core.client.JsArray;
 import com.servoy.base.persistence.constants.IColumnTypeConstants;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.dataprocessing.FoundSetManager;
 import com.servoy.mobile.client.dataprocessing.Record;
+import com.servoy.mobile.client.dto.DataProviderDescription;
+import com.servoy.mobile.client.dto.EntityDescription;
 
 /**
  * 
@@ -50,7 +53,7 @@ public class FormScope extends GlobalScope
 	public int getVariableType(String variable)
 	{
 		int type = super.getVariableType(variable);
-		if (type == -4)
+		if (type == IColumnTypeConstants.MEDIA)
 		{
 			Integer recordType = recordTypes.get(variable);
 			if (recordType != null)
@@ -62,6 +65,30 @@ public class FormScope extends GlobalScope
 				else
 				{
 					type = recordType.intValue();
+				}
+			}
+			else
+			{
+				int dotIndex = variable.lastIndexOf('.');
+				if (dotIndex != -1)
+				{
+					// relation
+					String relationpart = variable.substring(0, dotIndex);
+					EntityDescription relatedEntityDescription = client.getFoundSetManager().getRelatedEntityDescription(
+						FoundSetManager.getEntityFromDataSource(formController.getDataSource()), relationpart);
+					if (relatedEntityDescription != null)
+					{
+						String relDataProvider = variable.substring(dotIndex + 1);
+						JsArray<DataProviderDescription> dataProviders = relatedEntityDescription.getDataProviders();
+						for (int i = 0; i < dataProviders.length(); i++)
+						{
+							if (dataProviders.get(i).getDataProviderID().equals(relDataProvider))
+							{
+								type = dataProviders.get(i).getType();
+								break;
+							}
+						}
+					}
 				}
 			}
 		}
