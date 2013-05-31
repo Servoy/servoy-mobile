@@ -9,10 +9,13 @@ import com.google.gwt.i18n.client.LocalizableResource.Generate;
 public interface I18NMessages extends ConstantsWithLookup
 {
 	/*
-	 * If you add a new key here, add it also in messages.properties with servoy.mobile.mynewkey so that it shows in developer i18n editor.
+	 * If you add a new key here, add it also in messages.properties (servoy_shared) with servoy.mobile.mynewkey so that it shows in developer i18n editor.
 	 */
 	@DefaultStringValue("Syncing")
 	String syncing();
+
+	@DefaultStringValue("Loading")
+	String loading();
 
 	@DefaultStringValue("You are currently not connected to a network")
 	String noNetwork();

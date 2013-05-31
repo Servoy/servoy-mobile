@@ -181,17 +181,25 @@ public class TestMobileClient extends MobileClient
 				// automatically login in case of test client
 				if (getFlattenedSolution().getMustAuthenticate() && !getOfflineDataProxy().hasCredentials())
 				{
-					setLoginCredentials("demo", "demo"); // TODO ac make this configurable - for unit testing
+					setUncheckedLoginCredentials("demo", "demo"); // TODO ac make this configurable - for unit testing
 				}
 
-				// avoid trial page
+				// avoid trial page for testing
 				getFlattenedSolution().setSkipConnect(true);
-				TestMobileClient.super.onStartPageShown();
 
-				// prepare and run tests
-				new SolutionTestSuite(TestMobileClient.this, rpcController).runCurrentSolutionTestSuite();
+				// this will do a sync if necessary or simply show the first form if not
+				TestMobileClient.super.onStartPageShown();
 			}
 		});
+	}
+
+	@Override
+	public void showFirstForm()
+	{
+		super.showFirstForm();
+
+		// prepare and run tests
+		new SolutionTestSuite(TestMobileClient.this, rpcController).runCurrentSolutionTestSuite();
 	}
 
 }

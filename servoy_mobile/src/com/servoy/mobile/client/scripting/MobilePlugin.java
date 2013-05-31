@@ -27,6 +27,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.scripting.solutionhelper.SolutionHelper;
+import com.sksamuel.jqm4gwt.Mobile;
 
 /**
  * @author lvostinar
@@ -70,6 +71,22 @@ public class MobilePlugin implements Exportable
 	public boolean isOnline()
 	{
 		return client.isOnline();
+	}
+
+	public void clearLocalData()
+	{
+		client.getFoundSetManager().clearLocalStorage();
+	}
+
+	public void loadData()
+	{
+		loadData(null, null);
+	}
+
+	public void loadData(JavaScriptObject successCallback, JavaScriptObject errorHandler)
+	{
+		Mobile.showLoadingDialog(client.getI18nMessageWithFallback("loading"));
+		client.load(successCallback, errorHandler);
 	}
 
 	public void syncData()

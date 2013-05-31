@@ -101,17 +101,8 @@ public class FoundSetManager
 			localStorage.clear();
 		}
 
-		String ejson = localStorage.getItem(ENTITIES_KEY);
-		if (ejson != null)
-		{
-			JSONArray ea = JSONParser.parseStrict(ejson).isArray();
-			if (ea != null)
-			{
-				JsArray<EntityDescription> e = ea.getJavaScriptObject().cast();
-				entities = new Entities(e, null);
-			}
-		}
-		entityPrefix = localStorage.getItem(ENTITY_PREFIX_KEY);
+		loadEntitiesInMemory(null);
+
 		changes = new ArrayList<String>();
 		addItems(localStorage.getItem(CHANGES_KEY), changes);
 
@@ -128,7 +119,6 @@ public class FoundSetManager
 		relatedFoundsets = new HashMap<String, HashMap<String, FoundSet>>();
 		foundsets = new HashMap<String, HashSet<FoundSet>>();
 		keyToRowDescription = new HashMap<String, RowDescription>();
-
 	}
 
 	private void addItems(String cjson, List<String> list)
@@ -190,8 +180,8 @@ public class FoundSetManager
 	}
 
 	private native void exportImpl(String name) /*-{
-												$wnd._ServoyUtils_.defineWindowVariable(name);
-												}-*/;
+		$wnd._ServoyUtils_.defineWindowVariable(name);
+	}-*/;
 
 	public EntityDescription getEntityDescription(String entityName)
 	{
@@ -313,25 +303,24 @@ public class FoundSetManager
 
 		HashMap<String, HashSet<Object>> entitiesToPKs = new HashMap<String, HashSet<Object>>();
 
-		localStorage.setItem(STORAGE_VERSION_KEY, String.valueOf(STORAGE_VERSION));
-		valueStore.clearCache();
 		//store data in offline db
 		entities = new Entities(offlineData.getEntities(), valueStore);
 		// first sync up Relations -> RelationDescription
 		for (int i = 0; i < application.getFlattenedSolution().relationCount(); i++)
 		{
 			Relation relation = application.getFlattenedSolution().getRelation(i);
-			String entity = FoundSetManager.getEntityFromDataSource(relation.getPrimaryDataSource());
-			EntityDescription entityDescription = getEntityDescription(entity);
-			EntityDescription foreign = getEntityDescription(FoundSetManager.getEntityFromDataSource(relation.getForeignDataSource()));
-			if (entityDescription != null && foreign != null)
+			String primaryString = FoundSetManager.getEntityFromDataSource(relation.getPrimaryDataSource());
+			String foreignString = FoundSetManager.getEntityFromDataSource(relation.getForeignDataSource());
+			EntityDescription primary = getEntityDescription(primaryString);
+			EntityDescription foreign = getEntityDescription(foreignString);
+
+			if (primary != null && foreign != null)
 			{
-				RelationDescription primaryRelation = entityDescription.getPrimaryRelation(relation.getName());
+				RelationDescription primaryRelation = primary.getPrimaryRelation(relation.getName());
 				if (primaryRelation == null)
 				{
-					primaryRelation = RelationDescription.newInstance(relation.getName(), entity,
-						FoundSetManager.getEntityFromDataSource(relation.getForeignDataSource()));
-					entityDescription.addPrimaryRelation(primaryRelation);
+					primaryRelation = RelationDescription.newInstance(relation.getName(), primaryString, foreignString);
+					primary.addPrimaryRelation(primaryRelation);
 				}
 				primaryRelation.setSelfRef(relation.isSelfRef());
 			}
@@ -344,10 +333,8 @@ public class FoundSetManager
 		localStorage.setItem(ENTITIES_KEY, entities.toJSONArray());
 
 		entityPrefix = offlineData.getEntityPrefix();
-		if (entityPrefix != null)
-		{
-			localStorage.setItem(ENTITY_PREFIX_KEY, entityPrefix);
-		}
+		initLocalStorage(entities.toJSONArray(), entityPrefix);
+		if (entityPrefix != null) localStorage.setItem(ENTITY_PREFIX_KEY, entityPrefix);
 
 		JsArray<FoundSetDescription> fsds = offlineData.getFoundSets();
 		if (fsds != null)
@@ -397,6 +384,30 @@ public class FoundSetManager
 		}
 		//initiate load of all row data
 		offlineDataProxy.requestRowData(entitiesToPKs);
+	}
+
+	private void initLocalStorage(String entitiesJSON, String entityPrefixArg)
+	{
+		localStorage.setItem(STORAGE_VERSION_KEY, String.valueOf(STORAGE_VERSION));
+	}
+
+	/**
+	 * @param valueStore null if it is already build in storage, or the value store object if the valueStore is not yet initialized/persisted.
+	 */
+	private void loadEntitiesInMemory(ValueStore valueStoreArg)
+	{
+		String ejson = localStorage.getItem(ENTITIES_KEY);
+		if (ejson != null)
+		{
+			JSONArray ea = JSONParser.parseStrict(ejson).isArray();
+			if (ea != null)
+			{
+				JsArray<EntityDescription> e = ea.getJavaScriptObject().cast();
+				entities = new Entities(e, valueStoreArg);
+			}
+		}
+
+		entityPrefix = localStorage.getItem(ENTITY_PREFIX_KEY);
 	}
 
 	private void storeFoundSetDescription(FoundSetDescription fd)
@@ -816,6 +827,7 @@ public class FoundSetManager
 		relatedFoundsets.clear();
 		sharedFoundsets.clear();
 		keyToRowDescription.clear();
+		valueStore.clearCache();
 	}
 
 	//from mem/obj to store

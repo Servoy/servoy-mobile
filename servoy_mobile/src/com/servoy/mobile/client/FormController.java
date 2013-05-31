@@ -5,6 +5,7 @@ import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.Setter;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.servoy.base.scripting.api.IJSController;
 import com.servoy.base.scripting.api.IJSEvent;
 import com.servoy.base.scripting.api.IJSFoundSet;
@@ -45,6 +46,7 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 		{
 			foundSet = mc.getFoundSetManager().getFoundSet(FoundSetManager.getEntityFromDataSource(dataSource), true);
 			if (foundSet != null) foundSet.addSelectionListener(this);
+			else Log.warn("Cannot find DB entity definition for <" + dataSource + ">.");
 		}
 		scope = new FormScope(mc, this);
 		formDisplay = ComponentFactory.createFormDisplay(mc, this);

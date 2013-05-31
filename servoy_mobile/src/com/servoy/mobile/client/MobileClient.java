@@ -217,18 +217,28 @@ public class MobileClient implements EntryPoint
 
 	public void sync()
 	{
-		sync(null, null);
+		sync(false);
 	}
 
 	public void sync(final JavaScriptObject successCallback, final JavaScriptObject errorHandler)
 	{
-		if (flattenedSolution.getMustAuthenticate() && !offlineDataProxy.hasCredentials())
+		sync(successCallback, errorHandler, false);
+	}
+
+	public void sync(boolean useUncheckedCredentials)
+	{
+		sync(null, null, useUncheckedCredentials);
+	}
+
+	public void sync(final JavaScriptObject successCallback, final JavaScriptObject errorHandler, boolean useUncheckedCredentials)
+	{
+		if (flattenedSolution.getMustAuthenticate() && !offlineDataProxy.hasCredentials() &&
+			!(offlineDataProxy.hasUncheckedCredentials() && useUncheckedCredentials))
 		{
 			formManager.showLogin(successCallback, errorHandler);
 		}
 		else
 		{
-
 			Mobile.showLoadingDialog(getI18nMessageWithFallback("syncing"));
 
 			if (foundSetManager.hasChanges())
@@ -247,7 +257,6 @@ public class MobileClient implements EntryPoint
 					public void onFailure(Failure reason)
 					{
 						Mobile.hideLoadingDialog();
-						error(reason.getMessage());
 						if (errorHandler != null)
 						{
 							JsArrayMixed jsArray = JavaScriptObject.createArray().cast();
@@ -255,22 +264,25 @@ public class MobileClient implements EntryPoint
 							jsArray.set(1, reason.getMessage());
 							Executor.call(errorHandler, jsArray);
 						}
-						else if (reason.getStatusCode() != -1)
+						else
 						{
-							boolean ok = Window.confirm(getI18nMessageWithFallback("discardLocalChanges"));
-							if (ok)
+							error(reason.getMessage());
+							if (reason.getStatusCode() != -1)
 							{
-								// TODO really directly remove the changes from memory and local storage?
-								load(successCallback, errorHandler);
+								boolean ok = Window.confirm(getI18nMessageWithFallback("discardLocalChanges"));
+								if (ok)
+								{
+									load(successCallback, errorHandler);
+								}
+								else
+								{
+									showFirstForm();
+								}
 							}
 							else
 							{
 								showFirstForm();
 							}
-						}
-						else
-						{
-							showFirstForm();
 						}
 					}
 				});
@@ -297,7 +309,7 @@ public class MobileClient implements EntryPoint
 		Window.alert(msg);
 	}
 
-	private void load(final JavaScriptObject successCallback, final JavaScriptObject errorHandler)
+	public void load(final JavaScriptObject successCallback, final JavaScriptObject errorHandler)
 	{
 		offlineDataProxy.loadOfflineData(getSolutionName(), new Callback<Integer, Failure>()
 		{
@@ -378,21 +390,28 @@ public class MobileClient implements EntryPoint
 
 	public void showFirstForm()
 	{
-		// first export all relations and dataproviders.
-		foundSetManager.exportDataproviders();
-
-		if (flattenedSolution.getOnSolutionOpen() != null)
+		if (flattenedSolution.getMustAuthenticate() && !offlineDataProxy.hasCredentials())
 		{
-			Executor.callFunction(flattenedSolution.getOnSolutionOpen(), null, null, null);
+			formManager.showLogin(null, null);
 		}
+		else
+		{
+			// first export all relations and dataproviders.
+			foundSetManager.exportDataproviders();
 
-		// now show the first form.
-		formManager.showFirstForm();
+			if (flattenedSolution.getOnSolutionOpen() != null)
+			{
+				Executor.callFunction(flattenedSolution.getOnSolutionOpen(), null, null, null);
+			}
+
+			// now show the first form.
+			formManager.showFirstForm();
+		}
 	}
 
-	protected void setLoginCredentials(String identifier, String password)
+	protected void setUncheckedLoginCredentials(String identifier, String password)
 	{
-		offlineDataProxy.setLoginCredentials(identifier, password);
+		offlineDataProxy.setUncheckedLoginCredentials(identifier, password);
 	}
 
 	//check to see if currently connected to IP network

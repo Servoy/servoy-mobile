@@ -35,7 +35,7 @@ public class Login extends JQMPage implements SubmissionHandler<LoginData>
 	{
 		form.hideFormProcessingDialog();
 		form.clearValidationErrors();
-		application.setLoginCredentials(form.getEmailInputText(), form.getPasswordInputText());
-		application.sync(successCallback, errorHandler);
+		application.setUncheckedLoginCredentials(form.getEmailInputText(), form.getPasswordInputText());
+		application.sync(successCallback, errorHandler, true);
 	}
 }

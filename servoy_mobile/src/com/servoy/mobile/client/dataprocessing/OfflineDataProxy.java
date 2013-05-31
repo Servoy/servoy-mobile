@@ -56,6 +56,7 @@ public class OfflineDataProxy
 	private Callback<Integer, Failure> loadCallback;
 	private int totalLength;
 	private String[] credentials; //id, password
+	private String[] uncheckedCredentials; //id, password
 
 	public OfflineDataProxy(FoundSetManager fsm, String serverURL, boolean nodebug, int timeout)
 	{
@@ -89,6 +90,8 @@ public class OfflineDataProxy
 				{
 					if (Response.SC_OK == response.getStatusCode())
 					{
+						successfullRestAuthResponseReceived();
+
 						String content = response.getText();
 						totalLength = 0;
 						totalLength += content.length();
@@ -168,6 +171,8 @@ public class OfflineDataProxy
 				{
 					if (Response.SC_OK == response.getStatusCode())
 					{
+						successfullRestAuthResponseReceived();
+
 						String content = response.getText();
 						totalLength += content.length();
 						JsArray<RowDescription> rowData = getRows(content);
@@ -196,6 +201,15 @@ public class OfflineDataProxy
 			loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback("cannotLoadJSON"),
 				e));
 			loadCallback = null;
+		}
+	}
+
+	protected void successfullRestAuthResponseReceived()
+	{
+		if (credentials == null && uncheckedCredentials != null)
+		{
+			credentials = uncheckedCredentials; // login confirmed
+			uncheckedCredentials = null;
 		}
 	}
 
@@ -278,6 +292,8 @@ public class OfflineDataProxy
 				{
 					if (Response.SC_OK == response.getStatusCode())
 					{
+						successfullRestAuthResponseReceived();
+
 						keys.remove(key);//remove current
 						foundSetManager.updateDeletesInLocalStorage(); //update deletes
 						deleteRowData(serverUrl, keys, callback);
@@ -337,6 +353,8 @@ public class OfflineDataProxy
 				{
 					if (Response.SC_OK == response.getStatusCode())
 					{
+						successfullRestAuthResponseReceived();
+
 						keys.remove(key);//remove current
 						foundSetManager.updateChangesInLocalStorage(); //update changes
 						if (row.isCreatedOnDevice())
@@ -359,15 +377,16 @@ public class OfflineDataProxy
 		}
 	}
 
-	public void setLoginCredentials(String identifier, String password)
+	public void setUncheckedLoginCredentials(String identifier, String password)
 	{
+		credentials = null;
 		if (identifier != null && password != null)
 		{
-			credentials = new String[] { identifier, password };
+			uncheckedCredentials = new String[] { identifier, password };
 		}
 		else
 		{
-			credentials = null;
+			uncheckedCredentials = null;
 		}
 	}
 
@@ -376,14 +395,21 @@ public class OfflineDataProxy
 		return credentials != null;
 	}
 
+	public boolean hasUncheckedCredentials()
+	{
+		return uncheckedCredentials != null;
+	}
+
 	private void setRequestParameters(RequestBuilder builder)
 	{
 		if (nodebug) builder.setHeader("servoy.nodebug", "true");
-		if (credentials != null)
+		String[] credentialsToUse = credentials != null ? credentials : uncheckedCredentials != null ? uncheckedCredentials : null;
+		if (credentialsToUse != null)
 		{
 			try
 			{
-				builder.setHeader("Authorization", "Basic " + new String(Base64Coder.encode((credentials[0] + ":" + credentials[1]).getBytes("UTF-8"))));
+				builder.setHeader("Authorization",
+					"Basic " + new String(Base64Coder.encode((credentialsToUse[0] + ":" + credentialsToUse[1]).getBytes("UTF-8"))));
 			}
 			catch (UnsupportedEncodingException e)
 			{
