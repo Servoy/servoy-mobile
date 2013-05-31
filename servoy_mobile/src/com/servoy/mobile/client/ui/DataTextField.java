@@ -79,12 +79,14 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 		String txt = getValue();
 		if (numberFormat != null)
 		{
+			if (txt.trim().equals("")) return null; //$NON-NLS-1$
 			Double value = Double.valueOf(numberFormat.parse(txt));
 			setValueObject(value);
 			return value;
 		}
 		else if (dateFormat != null)
 		{
+			if (txt.trim().equals("")) return null; //$NON-NLS-1$
 			Date value = dateFormat.parse(txt);
 			setValueObject(value);
 			return value;

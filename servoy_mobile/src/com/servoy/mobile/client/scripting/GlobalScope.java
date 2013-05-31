@@ -83,7 +83,7 @@ public class GlobalScope extends Scope
 		Object oldValue = scopeVariables.get(variable);
 		int type = getVariableType(variable);
 		Object obj = getValueAsRightType(value, type, null);
-		if (type == IColumnTypeConstants.DATETIME && !(obj instanceof Date || obj instanceof Number))
+		if (obj != null && type == IColumnTypeConstants.DATETIME && !(obj instanceof Date || obj instanceof Number))
 		{
 			Log.error("Can't set value: " + obj + " on dataprovider: " + variable + " of globalscope: " + getName() + ", not a date or number");
 			return;
