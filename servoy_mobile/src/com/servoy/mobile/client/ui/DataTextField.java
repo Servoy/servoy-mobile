@@ -44,9 +44,11 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 	private AbstractRuntimeFieldComponent scriptable;
 	private NumberFormat numberFormat;
 	private DateTimeFormat dateFormat;
+	private final int dataproviderType;
 
 	public DataTextField(Field field, Executor executor, MobileClient application, int dataproviderType)
 	{
+		this.dataproviderType = dataproviderType;
 		this.scriptable = createRuntimeComponent(field, executor, application);
 		if (field.getFormat() != null)
 		{
@@ -77,16 +79,19 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 	public Object getValueObject()
 	{
 		String txt = getValue();
+		if ((dataproviderType == IColumnTypeConstants.NUMBER || dataproviderType == IColumnTypeConstants.INTEGER || dataproviderType == IColumnTypeConstants.DATETIME) &&
+			(txt == null || txt.trim().length() == 0))
+		{
+			return null;
+		}
 		if (numberFormat != null)
 		{
-			if (txt.trim().equals("")) return null; //$NON-NLS-1$
 			Double value = Double.valueOf(numberFormat.parse(txt));
 			setValueObject(value);
 			return value;
 		}
 		else if (dateFormat != null)
 		{
-			if (txt.trim().equals("")) return null; //$NON-NLS-1$
 			Date value = dateFormat.parse(txt);
 			setValueObject(value);
 			return value;

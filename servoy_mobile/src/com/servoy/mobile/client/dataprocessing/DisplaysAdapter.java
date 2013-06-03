@@ -116,8 +116,8 @@ public class DisplaysAdapter implements IDataAdapter, IEditListener
 		Object oldValue = null;
 		if (globalVariableScope[0] != null)
 		{
-			oldValue = application.getScriptEngine().getGlobalScope().getValue(globalVariableScope[1]);
-			application.getScriptEngine().getGlobalScope().setValue(globalVariableScope[1], value);
+			oldValue = application.getScriptEngine().getGlobalScope(globalVariableScope[0]).getValue(globalVariableScope[1]);
+			application.getScriptEngine().getGlobalScope(globalVariableScope[0]).setValue(globalVariableScope[1], value);
 		}
 		else if (dal.getFormScope().hasVariable(dataproviderID))
 		{

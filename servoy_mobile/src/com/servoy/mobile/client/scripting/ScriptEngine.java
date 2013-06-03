@@ -50,11 +50,6 @@ public class ScriptEngine
 		export();
 	}
 
-	public Scope getGlobalScope()
-	{
-		return getGlobalScope("globals");
-	}
-
 	public GlobalScope getGlobalScope(String name)
 	{
 		GlobalScope scope = scopes.get(name);
@@ -81,25 +76,25 @@ public class ScriptEngine
 	}-*/;
 
 	public static final native JsArrayString getFunctionNamesInternal(String parentScope, String scope) /*-{
-																										var keys = [];
-																										for ( var k in $wnd._ServoyInit_[parentScope][scope].fncs)
-																										keys.push(k);
-																										return keys;
-																										}-*/;
+		var keys = [];
+		for ( var k in $wnd._ServoyInit_[parentScope][scope].fncs)
+			keys.push(k);
+		return keys;
+	}-*/;
 
 	public static final native JsArrayString getVariableNamesInternal(String parentScope, String scope) /*-{
-																										var keys = [];
-																										for ( var k in $wnd._ServoyInit_[parentScope][scope].vrbs)
-																										keys.push(k);
-																										return keys;
-																										}-*/;
+		var keys = [];
+		for ( var k in $wnd._ServoyInit_[parentScope][scope].vrbs)
+			keys.push(k);
+		return keys;
+	}-*/;
 
 	public static final native JsArrayString getScopeNamesInternal(String parentScope) /*-{
-																						var keys = [];
-																						for ( var k in $wnd._ServoyInit_[parentScope])
-																						keys.push(k);
-																						return keys;
-																						}-*/;
+		var keys = [];
+		for ( var k in $wnd._ServoyInit_[parentScope])
+			keys.push(k);
+		return keys;
+	}-*/;
 
 	public GlobalScopeModificationDelegate getGlobalScopeModificationDelegate()
 	{
@@ -133,13 +128,12 @@ public class ScriptEngine
 				scope.@com.servoy.mobile.client.scripting.Scope::setVariableNumberValue(Ljava/lang/String;D)(name,value);
 			} else if (type == 93) {
 				scope.@com.servoy.mobile.client.scripting.Scope::setVariableDateValue(Ljava/lang/String;Lcom/google/gwt/core/client/JsDate;)(name,value);
-			} else if (typeof value == "boolean"){
+			} else if (typeof value == "boolean") {
 				scope.@com.servoy.mobile.client.scripting.Scope::setVariableBooleanValue(Ljava/lang/String;Z)(name,value);
-			}
-			else {
+			} else {
 				scope.@com.servoy.mobile.client.scripting.Scope::setVariableValue(Ljava/lang/String;Ljava/lang/Object;)(name,value);
 			}
-	    }
+		}
 		$wnd._ServoyInit_.init();
 	}-*/;
 
