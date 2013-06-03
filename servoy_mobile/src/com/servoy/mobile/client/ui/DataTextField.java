@@ -60,7 +60,7 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 			}
 			else
 			{
-				Log.error("Format is set: " + field.getFormat() + ", on a not supported type: " + dataproviderType); //$NON-NLS-1$ //$NON-NLS-2$ 
+				Log.error("Format is set: " + field.getFormat() + ", on dataprovider: " + field.getDataProviderID() + " that has a not supported type: " + dataproviderType); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
 			}
 		}
 	}

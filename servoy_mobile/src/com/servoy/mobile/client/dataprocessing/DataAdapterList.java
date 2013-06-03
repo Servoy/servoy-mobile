@@ -121,7 +121,7 @@ public class DataAdapterList implements IModificationListener, ITagResolver
 
 			if (globalVariableScope[0] != null)
 			{
-				recordValue = application.getScriptEngine().getGlobalScope().getValue(globalVariableScope[1]);
+				recordValue = application.getScriptEngine().getGlobalScope(globalVariableScope[0]).getValue(globalVariableScope[1]);
 			}
 			else if (getFormScope().hasVariable(dataproviderID))
 			{
