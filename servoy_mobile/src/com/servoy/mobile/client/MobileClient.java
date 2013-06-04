@@ -80,8 +80,13 @@ public class MobileClient implements EntryPoint
 	@Override
 	public void onModuleLoad()
 	{
+		loadMediaResources();
 		if (!"true".equals(Window.Location.getParameter(IJSUnitSuiteHandler.NO_INIT_SMC_ARG))) initialize();
 	}
+
+	private static native void loadMediaResources()/*-{
+		$wnd._ServoyUtils_.loadMediaResources();
+	}-*/;
 
 	protected void initialize()
 	{

@@ -103,4 +103,31 @@ if (typeof(_ServoyUtils_) == "undefined")
 		//Fire the event
 		target.dispatchEvent(event);
 	}
+	
+	_ServoyUtils_.loadMediaResources = function () {
+		if(mediaCSS && mediaCSS.length)
+		{
+			var cssLink;
+			for(var i = 0; i < mediaCSS.length; i++)
+			{
+				cssLink = document.createElement("link");
+				cssLink.setAttribute("rel", "stylesheet");
+				cssLink.setAttribute("type", "text/css");
+				cssLink.setAttribute("href", "media/" + mediaCSS[i]);
+				document.getElementsByTagName("head")[0].appendChild(cssLink);	
+			}	
+		}
+		if(mediaJS && mediaJS.length)
+		{
+			var jsScript;
+			for(var i = 0; i < mediaJS.length; i++)
+			{
+				jsScript = document.createElement("script");
+				jsScript.setAttribute("language", "javascript");
+				jsScript.setAttribute("type", "text/javascript");
+				jsScript.setAttribute("src", "media/" + mediaJS[i]);
+				document.getElementsByTagName("head")[0].appendChild(jsScript);	
+			}	
+		}		
+	}
 }
