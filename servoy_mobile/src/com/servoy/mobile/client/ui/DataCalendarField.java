@@ -20,7 +20,8 @@ package com.servoy.mobile.client.ui;
 import java.util.Date;
 
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.shared.DateTimeFormat;
+import com.google.gwt.i18n.shared.DateTimeFormat.PredefinedFormat;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
@@ -41,25 +42,58 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 	private RuntimeDataCalenderField scriptable;
 
 	private final String type;
+	private final String format;
 
 	public DataCalendarField(Field field, Executor executor, MobileClient application)
 	{
 		this.scriptable = new RuntimeDataCalenderField(application, executor, this, field);
-		type = "date";
+
+		String frmt = field.getFormat();
+		if (frmt == null)
+		{
+			// if no format is given, set the type just date and get the format based on if the native dates are used or not. 
+			this.type = "date"; //$NON-NLS-1$
+			if (BrowserSupport.isSupportedType(type))
+			{
+				this.format = "yyyy-MM-dd"; //$NON-NLS-1$
+			}
+			else
+			{
+				// no native date then just get the default date_medium pattern.
+				this.format = DateTimeFormat.getFormat(PredefinedFormat.DATE_MEDIUM).getPattern();
+			}
+		}
+		else
+		{
+			boolean hasDate = frmt.indexOf('y') != -1 || frmt.indexOf('M') != -1 || frmt.indexOf('d') != -1;
+			boolean hasTime = frmt.indexOf('h') != -1 || frmt.indexOf('H') != -1 || frmt.indexOf('k') != -1 || frmt.indexOf('K') != -1 ||
+				frmt.indexOf('m') != -1;
+			if (hasDate && hasTime)
+			{
+				this.type = "datetime-local"; //$NON-NLS-1$
+				if (BrowserSupport.isSupportedType(type)) this.format = "yyyy-MM-dd'T'HH:mm"; //$NON-NLS-1$
+				else this.format = frmt;
+			}
+			else if (hasTime)
+			{
+				this.type = "time"; //$NON-NLS-1$
+				if (BrowserSupport.isSupportedType(type)) this.format = "HH:mm"; //$NON-NLS-1$
+				else this.format = frmt;
+			}
+			else
+			{
+				this.type = "date"; //$NON-NLS-1$
+				if (BrowserSupport.isSupportedType(type)) this.format = "yyyy-MM-dd"; //$NON-NLS-1$
+				else this.format = frmt;
+			}
+
+		}
 		setType(type);
 	}
 
 	public String getFormat()
 	{
-		if (!BrowserSupport.isSupportedType(type))
-		{
-			return "dd-MM-yyyy";
-		}
-		else
-		{
-			// native date is always in this format. 
-			return "yyyy-MM-dd";
-		}
+		return format;
 	}
 
 	/*
@@ -71,8 +105,8 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 		String stringValue = getValue();
 		if (stringValue != null && !stringValue.trim().equals("")) //$NON-NLS-1$
 		{
-			DateTimeFormat format = DateTimeFormat.getFormat(getFormat());
-			return format.parse(stringValue);
+			DateTimeFormat dtf = DateTimeFormat.getFormat(getFormat());
+			return dtf.parse(stringValue);
 		}
 		return null;
 	}
@@ -85,8 +119,8 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 	{
 		if (data instanceof Date)
 		{
-			DateTimeFormat format = DateTimeFormat.getFormat(getFormat());
-			String parsed = format.format((Date)data);
+			DateTimeFormat dtf = DateTimeFormat.getFormat(getFormat());
+			String parsed = dtf.format((Date)data);
 			setValue(parsed);
 			if (!BrowserSupport.isSupportedType(type))
 			{
