@@ -75,6 +75,7 @@ public class MobileClient implements EntryPoint
 	private ScriptEngine scriptEngine;
 	private FlattenedSolution flattenedSolution;
 	private SolutionI18nProvider i18nProvider;
+	private boolean firstFormFirstShow = true;
 
 
 	@Override
@@ -363,9 +364,11 @@ public class MobileClient implements EntryPoint
 				else
 				{
 					error(reason.getMessage());
-					if (reason.getStatusCode() != Response.SC_UNAUTHORIZED && reason.getStatusCode() != 0)
+					if (reason.getStatusCode() != 0)
 					{
-						// if authentication failed don't show first form
+						// if authentication failed, clear the current checked/unchecked credentials
+						if (reason.getStatusCode() == Response.SC_UNAUTHORIZED) setUncheckedLoginCredentials(null, null);
+						
 						showFirstForm();
 					}
 				}
@@ -401,12 +404,15 @@ public class MobileClient implements EntryPoint
 		}
 		else
 		{
-			// first export all relations and dataproviders.
-			foundSetManager.exportDataproviders();
 
-			if (flattenedSolution.getOnSolutionOpen() != null)
+			if (firstFormFirstShow)
 			{
-				Executor.callFunction(flattenedSolution.getOnSolutionOpen(), null, null, null);
+				firstFormFirstShow = false;
+
+				if (flattenedSolution.getOnSolutionOpen() != null)
+				{
+					Executor.callFunction(flattenedSolution.getOnSolutionOpen(), null, null, null);
+				}
 			}
 
 			// now show the first form.

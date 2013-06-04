@@ -21,7 +21,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.scripting.FormScope;
@@ -203,7 +202,6 @@ public class FormManager
 		// first just clear all existing forms to be fully refreshed.
 		if (!isChangingFormPage)
 		{
-			history.clear();
 			showForm(getFirstForm());
 		}
 	}

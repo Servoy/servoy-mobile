@@ -403,6 +403,9 @@ public class FoundSetManager
 				storeFoundSetDescription(fd);
 			}
 		}
+
+		exportDataproviders();
+
 		//initiate load of all row data
 		offlineDataProxy.requestRowData(entitiesToPKs);
 	}
@@ -429,6 +432,8 @@ public class FoundSetManager
 		}
 
 		entityPrefix = localStorage.getItem(ENTITY_PREFIX_KEY);
+
+		exportDataproviders();
 	}
 
 	private void storeFoundSetDescription(FoundSetDescription fd)
@@ -849,6 +854,8 @@ public class FoundSetManager
 		sharedFoundsets.clear();
 		keyToRowDescription.clear();
 		valueStore.clearCache();
+
+		application.getFormManager().getHistory().clear();
 	}
 
 	//from mem/obj to store
