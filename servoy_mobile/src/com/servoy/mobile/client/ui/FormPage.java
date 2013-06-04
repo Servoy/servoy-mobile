@@ -269,7 +269,7 @@ public class FormPage extends JQMPage
 
 	public void refreshRecord(Record r)
 	{
-		if (r != null) dal.setRecord(r);
+		dal.setRecord(r);
 	}
 
 	@Override
@@ -278,6 +278,7 @@ public class FormPage extends JQMPage
 		application.getFormManager().setChangingFormPage(true);
 		FoundSet foundSet = formController.getFormModel();
 		if (foundSet != null) refreshRecord(foundSet.getSelectedRecord());
+		else refreshRecord(null);
 		if (headerComponent != null)
 		{
 			setDocumentTitle(headerComponent.getText());
