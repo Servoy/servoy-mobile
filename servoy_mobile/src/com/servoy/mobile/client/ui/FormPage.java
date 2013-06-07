@@ -105,6 +105,7 @@ public class FormPage extends JQMPage implements IFormComponent
 		{
 			setDocumentTitle(headerComponent.getText());
 		}
+		if (formNavigator != null && isTablet()) formNavigator.open();
 	}
 
 	@Override
@@ -207,20 +208,39 @@ public class FormPage extends JQMPage implements IFormComponent
 	{
 		formNavigator = navigator;
 		navigator.setPositionFixed(true);
-		add(navigator);
-		if (headerComponent == null)
+
+		if (isTablet())
 		{
-			headerComponent = new JQMHeader();
+			navigator.setDismissible(false);
+			navigator.setSwipeClose(false);
 		}
-		JQMButton navigatorButton = headerComponent.setLeftButton("", DataIcon.LEFT); //$NON-NLS-1$
-		navigatorButton.setIconPos(IconPos.NOTEXT);
-		navigatorButton.addClickHandler(new ClickHandler()
+		else
 		{
-			@Override
-			public void onClick(ClickEvent event)
+			if (headerComponent == null)
 			{
-				formNavigator.toggle();
+				headerComponent = new JQMHeader();
 			}
-		});
+			JQMButton navigatorButton = headerComponent.setLeftButton("", DataIcon.LEFT); //$NON-NLS-1$
+			navigatorButton.setIconPos(IconPos.NOTEXT);
+			navigatorButton.addClickHandler(new ClickHandler()
+			{
+				@Override
+				public void onClick(ClickEvent event)
+				{
+					formNavigator.toggle();
+				}
+			});
+		}
+
+		add(navigator);
 	}
+
+	private boolean isTablet()
+	{
+		return getWindowWidth() > 1080;
+	}
+
+	private native int getWindowWidth() /*-{
+		return $wnd.$(window).attr('screen').width;
+	}-*/;
 }
