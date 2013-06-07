@@ -18,6 +18,7 @@ import com.servoy.mobile.client.scripting.JSEvent;
 import com.servoy.mobile.client.ui.ComponentFactory;
 import com.servoy.mobile.client.ui.Executor;
 import com.servoy.mobile.client.ui.FormPage;
+import com.servoy.mobile.client.ui.FormPanel;
 import com.servoy.mobile.client.ui.IFormDisplay;
 
 /**
@@ -86,6 +87,11 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 	public FormPage getPage()
 	{
 		return formDisplay.getDisplayPage();
+	}
+
+	public FormPanel getPanel()
+	{
+		return formDisplay.getDisplayPanel();
 	}
 
 	public FoundSet getFormModel()

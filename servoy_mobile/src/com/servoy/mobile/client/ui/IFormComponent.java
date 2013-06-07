@@ -1,7 +1,5 @@
-package com.servoy.mobile.client.ui;
-
 /*
- This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
+ This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2013 Servoy BV
 
  This program is free software; you can redistribute it and/or modify it under
  the terms of the GNU Affero General Public License as published by the Free
@@ -17,26 +15,28 @@ package com.servoy.mobile.client.ui;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
-import com.servoy.mobile.client.FormController;
-import com.servoy.mobile.client.MobileClient;
+package com.servoy.mobile.client.ui;
+
+import com.google.gwt.user.client.ui.Widget;
+import com.servoy.mobile.client.dataprocessing.DataAdapterList;
+import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
+import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 
 /**
- * Basic form display
+ * Form component interface
  * 
  * @author gboros
+ *
  */
-public class SimpleFormDisplay extends FormDisplay
+public interface IFormComponent
 {
-	private final FormPage formPage;
+	void addHeader(JQMHeader header);
 
-	public SimpleFormDisplay(MobileClient application, FormController formController)
-	{
-		formPage = new FormPage(application, formController);
-	}
+	void addFooter(JQMFooter footer);
 
-	@Override
-	public FormPage getDisplayPage()
-	{
-		return formPage;
-	}
+	void addNavigator(FormPanel navigator);
+
+	DataAdapterList getDataAdapter();
+
+	void add(Widget widget);
 }

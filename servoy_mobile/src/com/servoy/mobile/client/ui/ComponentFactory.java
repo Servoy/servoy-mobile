@@ -17,7 +17,6 @@ package com.servoy.mobile.client.ui;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
-import com.google.gwt.core.client.JsArray;
 import com.google.gwt.user.client.ui.Widget;
 import com.servoy.base.persistence.IMobileProperties;
 import com.servoy.base.persistence.constants.IColumnTypeConstants;
@@ -33,7 +32,6 @@ import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.servoy.mobile.client.persistence.Portal;
-import com.servoy.mobile.client.persistence.TabPanel;
 import com.servoy.mobile.client.persistence.ValueList;
 import com.servoy.mobile.client.scripting.GlobalScope;
 import com.servoy.mobile.client.scripting.IRuntimeComponent;
@@ -64,22 +62,7 @@ public class ComponentFactory
 			return new ListFormDisplay(application, formController);
 		}
 
-		JsArray<Component> formComponents = form.getComponents();
-		Component component;
-		AbstractBase.MobileProperties mobileProperties;
-		TabPanel tabPanel = null;
-		for (int i = 0; i < formComponents.length(); i++)
-		{
-			component = formComponents.get(i);
-			mobileProperties = component.getMobileProperties();
-			if (mobileProperties != null && mobileProperties.getPropertyValue(IMobileProperties.FORM_TAB_PANEL).booleanValue() &&
-				(tabPanel = TabPanel.castIfPossible(component)) != null)
-			{
-				return new TabsFormDisplay(application, form, tabPanel);
-			}
-		}
-
-		return new SimpleFormDisplay(application, formController);
+		return new FormDisplay(application, formController);
 	}
 
 	/**

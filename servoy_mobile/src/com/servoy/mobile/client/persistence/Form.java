@@ -136,4 +136,8 @@ public class Form extends AbstractBase
 		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_ONRECORDSELECTIONMETHODID, onRecordSelectionCall);
 	}
 
+	public final String getNavigatorID()
+	{
+		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_NAVIGATORID, null);
+	}
 }

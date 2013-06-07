@@ -17,26 +17,16 @@ package com.servoy.mobile.client.ui;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
-import java.util.ArrayList;
-import java.util.Collections;
-
-import com.google.gwt.core.client.JsArray;
-import com.google.gwt.user.client.ui.Widget;
-import com.servoy.base.persistence.IMobileProperties;
-import com.servoy.base.persistence.constants.IPartConstants;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.DataAdapterList;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.dataprocessing.Record;
-import com.servoy.mobile.client.persistence.AbstractBase;
-import com.servoy.mobile.client.persistence.AbstractBase.MobileProperties;
-import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Form;
-import com.servoy.mobile.client.persistence.GraphicalComponent;
-import com.servoy.mobile.client.persistence.Part;
-import com.servoy.mobile.client.scripting.IRuntimeComponent;
-import com.servoy.mobile.client.scripting.IRuntimeComponentProvider;
+import com.sksamuel.jqm4gwt.DataIcon;
+import com.sksamuel.jqm4gwt.IconPos;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.Mobile;
 import com.sksamuel.jqm4gwt.button.JQMButton;
@@ -44,20 +34,21 @@ import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 
 /**
- * Form UI
+ * Form page UI
  *
  * @author gboros
  */
-public class FormPage extends JQMPage
+public class FormPage extends JQMPage implements IFormComponent
 {
-	protected final MobileClient application;
-	protected final Form form;
-	protected FormController formController;
-	private boolean enabled = true;
-	protected DataAdapterList dal;
-	private IFormPageHeaderDecorator headerDecorator;
-	private IFormPageFooterDecorator footerDecorator;
+	private final MobileClient application;
+	private FormController formController;
+	private final Form form;
+	private DataAdapterList dal;
+
 	private JQMHeader headerComponent;
+	private FormPanel formNavigator;
+
+	private boolean enabled = true;
 	private int scrollTop;
 	private boolean isShow;
 
@@ -65,177 +56,8 @@ public class FormPage extends JQMPage
 	{
 		this.application = application;
 		this.formController = formController;
-		this.form = formController.getForm();
-
+		form = formController.getForm();
 		dal = new DataAdapterList(application, formController);
-		JsArray<Component> formComponents = form.getComponents();
-
-		Component headerLabel = null, headerLeftButton = null, headerRightButton = null;
-		ArrayList<Component> footerComponents = new ArrayList<Component>();
-		ArrayList<Component> contentComponents = new ArrayList<Component>();
-
-		Part headerPart = null, footerPart = null;
-
-		for (int i = 0; i < formComponents.length(); i++)
-		{
-			Component component = formComponents.get(i);
-			Part part = Part.castIfPossible(component);
-			if (part != null)
-			{
-				if (part.getType() == IPartConstants.HEADER || part.getType() == IPartConstants.TITLE_HEADER)
-				{
-					headerPart = part;
-				}
-				else if (part.getType() == IPartConstants.FOOTER || part.getType() == IPartConstants.TITLE_FOOTER)
-				{
-					footerPart = part;
-				}
-			}
-			else
-			{
-				AbstractBase.MobileProperties mobileProperties = component.getMobileProperties();
-				if (mobileProperties != null)
-				{
-					if (mobileProperties.getPropertyValue(IMobileProperties.HEADER_TEXT).booleanValue())
-					{
-						headerLabel = component;
-						continue;
-					}
-					else if (mobileProperties.getPropertyValue(IMobileProperties.HEADER_LEFT_BUTTON).booleanValue())
-					{
-						headerLeftButton = component;
-						continue;
-					}
-					else if (mobileProperties.getPropertyValue(IMobileProperties.HEADER_RIGHT_BUTTON).booleanValue())
-					{
-						headerRightButton = component;
-						continue;
-					}
-					else if (mobileProperties.getPropertyValue(IMobileProperties.FOOTER_ITEM).booleanValue())
-					{
-						footerComponents.add(component);
-						continue;
-					}
-				}
-
-				contentComponents.add(component);
-			}
-		}
-
-		JQMHeader componentHeader = createHeader(headerPart, headerLabel, headerLeftButton, headerRightButton);
-		if (componentHeader != null) add(componentHeader);
-		createContent(contentComponents);
-		JQMFooter componentFooter = createFooter(footerPart, footerComponents);
-		if (componentFooter != null) add(componentFooter);
-	}
-
-	public JQMHeader createHeader(Part headerPart, Component label, Component leftButton, Component rightButton)
-	{
-		JQMButton leftToolbarButton = (JQMButton)createWidget(leftButton);
-		JQMButton rightToolbarButton = (JQMButton)createWidget(rightButton);
-
-		headerComponent = null;
-		if (label != null) headerComponent = (JQMHeader)createWidget(label);
-
-		if (leftToolbarButton != null || rightToolbarButton != null)
-		{
-			if (headerComponent == null) headerComponent = new JQMHeader(""); //$NON-NLS-1$
-			if (leftToolbarButton != null) headerComponent.setLeftButton(leftToolbarButton);
-			if (rightToolbarButton != null) headerComponent.setRightButton(rightToolbarButton);
-		}
-
-		if (headerPart != null)
-		{
-			headerComponent.setTheme(headerPart.getStyleClass());
-			headerComponent.setFixed(headerPart.getType() == IPartConstants.TITLE_HEADER);
-		}
-		if (headerDecorator != null) headerDecorator.decorateHeader(headerPart, headerComponent);
-
-		return headerComponent;
-	}
-
-	public void createContent(ArrayList<Component> contentComponents)
-	{
-		Collections.sort(contentComponents, PositionComparator.YX_COMPARATOR);
-		ArrayList<FormPage.RowDisplay> rowsDisplay = new ArrayList<FormPage.RowDisplay>();
-
-		String groupID;
-		for (Component c : contentComponents)
-		{
-			groupID = c.getGroupID();
-
-			if (groupID != null)
-			{
-				GroupDisplay groupRow = null;
-				for (RowDisplay rd : rowsDisplay)
-				{
-					if (rd instanceof GroupDisplay && ((GroupDisplay)rd).groupID.equals(groupID))
-					{
-						groupRow = (GroupDisplay)rd;
-						break;
-					}
-				}
-				if (groupRow != null)
-				{
-					MobileProperties mp = c.getMobileProperties();
-					if (mp != null && mp.getPropertyValue(IMobileProperties.COMPONENT_TITLE).booleanValue())
-					{
-						groupRow.setRightComponent(groupRow.component);
-						groupRow.component = c;
-					}
-					else groupRow.setRightComponent(c);
-				}
-				else rowsDisplay.add(new GroupDisplay(groupID, c));
-			}
-			else
-			{
-				rowsDisplay.add(new RowDisplay(c));
-			}
-		}
-
-		for (RowDisplay rd : rowsDisplay)
-		{
-			if (rd instanceof GroupDisplay)
-			{
-				GroupDisplay groupRow = (GroupDisplay)rd;
-				GraphicalComponent rowLabel = GraphicalComponent.castIfPossible(groupRow.component);
-				if (rowLabel != null)
-				{
-					Widget widget = createWidget(groupRow.rightComponent);
-					if (widget != null)
-					{
-						if (widget instanceof ISupportTitleText)
-						{
-							dal.addFormObject(new TitleText((ISupportTitleText)widget, rowLabel, dal, application));
-						}
-						add(widget);
-					}
-				}
-			}
-			else
-			{
-				Widget widget = createWidget(rd.component);
-				if (widget != null) add(widget);
-			}
-		}
-	}
-
-	public JQMFooter createFooter(Part footerPart, ArrayList<Component> footerComponents)
-	{
-		if (footerComponents.size() < 1) return null;
-		Collections.sort(footerComponents, PositionComparator.XY_COMPARATOR);
-		JQMFooter footerComponent = new JQMFooter();
-		if (footerPart != null)
-		{
-			footerComponent.setTheme(footerPart.getStyleClass());
-			footerComponent.setFixed(footerPart.getType() == IPartConstants.TITLE_FOOTER);
-		}
-		for (Component c : footerComponents)
-			footerComponent.add(createWidget(c));
-
-		if (footerDecorator != null) footerDecorator.decorateFooter(footerPart, footerComponent);
-
-		return footerComponent;
 	}
 
 	public String getName()
@@ -325,33 +147,6 @@ public class FormPage extends JQMPage
 		top.document.title = text;
 	}-*/;
 
-	private Widget createWidget(Component component)
-	{
-		if (component == null) return null;
-		Widget w = ComponentFactory.createComponent(application, component, dal, formController);
-		if (w != null) dal.addFormObject(w);
-		if (w instanceof IRuntimeComponentProvider)
-		{
-			IRuntimeComponent runtimeComponent = ((IRuntimeComponentProvider)w).getRuntimeComponent();
-			String runtimeComponentName = runtimeComponent.getName();
-			if (runtimeComponentName != null)
-			{
-				formController.getFormScope().getElementScope().addComponent(runtimeComponentName, runtimeComponent);
-			}
-		}
-		return w;
-	}
-
-	public void setHeaderDecorator(IFormPageHeaderDecorator headerDecorator)
-	{
-		this.headerDecorator = headerDecorator;
-	}
-
-	public void setFooterDecorator(IFormPageFooterDecorator footerDecorator)
-	{
-		this.footerDecorator = footerDecorator;
-	}
-
 	public DataAdapterList getDataAdapterList()
 	{
 		return dal;
@@ -368,30 +163,64 @@ public class FormPage extends JQMPage
 		dal = null;
 	}
 
-	private class RowDisplay
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.ui.IFormComponent#addHeader(com.sksamuel.jqm4gwt.toolbar.JQMHeader)
+	 */
+	@Override
+	public void addHeader(JQMHeader h)
 	{
-		Component component;
-
-		RowDisplay(Component component)
-		{
-			this.component = component;
-		}
+		headerComponent = h;
+		add(headerComponent);
 	}
 
-	private class GroupDisplay extends RowDisplay
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.ui.IFormComponent#addFooter(com.sksamuel.jqm4gwt.toolbar.JQMFooter)
+	 */
+	@Override
+	public void addFooter(JQMFooter f)
 	{
-		String groupID;
-		Component rightComponent;
+		add(f);
+	}
 
-		GroupDisplay(String groupID, Component leftComponent)
-		{
-			super(leftComponent);
-			this.groupID = groupID;
-		}
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.ui.IFormComponent#getDataAdapter()
+	 */
+	@Override
+	public DataAdapterList getDataAdapter()
+	{
+		return dal;
+	}
 
-		void setRightComponent(Component rightComponent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.ui.IFormComponent#addNavigator(com.servoy.mobile.client.ui.FormPanel)
+	 */
+	@Override
+	public void addNavigator(FormPanel navigator)
+	{
+		formNavigator = navigator;
+		navigator.setPositionFixed(true);
+		add(navigator);
+		if (headerComponent == null)
 		{
-			this.rightComponent = rightComponent;
+			headerComponent = new JQMHeader();
 		}
+		JQMButton navigatorButton = headerComponent.setLeftButton("", DataIcon.LEFT); //$NON-NLS-1$
+		navigatorButton.setIconPos(IconPos.NOTEXT);
+		navigatorButton.addClickHandler(new ClickHandler()
+		{
+			@Override
+			public void onClick(ClickEvent event)
+			{
+				formNavigator.toggle();
+			}
+		});
 	}
 }
