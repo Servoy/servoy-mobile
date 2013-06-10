@@ -30,8 +30,6 @@ import com.servoy.mobile.client.persistence.Component;
  */
 public class ListFormDisplay extends FormDisplay
 {
-	private ListFormPage listFormPage;
-	private ListFormPanel listFormPanel;
 
 	public ListFormDisplay(MobileClient application, FormController formController)
 	{
@@ -41,23 +39,25 @@ public class ListFormDisplay extends FormDisplay
 	@Override
 	public FormPage getDisplayPage()
 	{
-		if (listFormPage == null)
+		if (formPage == null)
 		{
-			listFormPage = new ListFormPage(application, formController);
-			initDisplay(listFormPage);
+			formPage = new ListFormPage(application, formController);
+			initDisplay(formPage);
 		}
-		return listFormPage;
+		return formPage;
 	}
 
 	@Override
-	public FormPanel getDisplayPanel()
+	public FormPanel getDisplayPanel(String parentFormName)
 	{
-		if (listFormPanel == null)
+		FormPanel formPanel = null;
+		if (formPanelMap.get(parentFormName) == null)
 		{
-			listFormPanel = new ListFormPanel(application, formController);
-			initDisplay(listFormPanel);
+			formPanel = new ListFormPanel(application, formController);
+			formPanelMap.put(parentFormName, formPanel);
+			initDisplay(formPanel);
 		}
-		return listFormPanel;
+		return formPanel;
 	}
 
 	@Override

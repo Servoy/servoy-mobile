@@ -19,6 +19,8 @@ package com.servoy.mobile.client.ui;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.user.client.ui.Widget;
@@ -52,7 +54,7 @@ public class FormDisplay implements IFormDisplay
 	protected final FormController formController;
 
 	protected FormPage formPage;
-	protected FormPanel formPanel;
+	protected HashMap<String, FormPanel> formPanelMap = new HashMap<String, FormPanel>(); // parentForm -> formPanel
 
 	public FormDisplay(MobileClient application, FormController formController)
 	{
@@ -71,20 +73,29 @@ public class FormDisplay implements IFormDisplay
 		return formPage;
 	}
 
-	public FormPanel getDisplayPanel()
+	public FormPanel getDisplayPanel(String parentFormName)
 	{
-		if (formPanel == null)
+		FormPanel formPanel = null;
+		if (formPanelMap.get(parentFormName) == null)
 		{
 			formPanel = new FormPanel(application, formController);
+			formPanelMap.put(parentFormName, formPanel);
 			initDisplay(formPanel);
 		}
 		return formPanel;
 	}
 
+	public void cleanup()
+	{
+		formPanelMap.clear();
+	}
+
 	public void refreshRecord(Record record)
 	{
 		if (formPage != null) formPage.refreshRecord(record);
-		if (formPanel != null) formPanel.refreshRecord(record);
+		Iterator<FormPanel> formPanelIte = formPanelMap.values().iterator();
+		while (formPanelIte.hasNext())
+			formPanelIte.next().refreshRecord(record);
 	}
 
 	public void initDisplay(IFormComponent formComponent)
@@ -154,7 +165,7 @@ public class FormDisplay implements IFormDisplay
 		if (formNavigatorID != null)
 		{
 			Form navigatorForm = application.getFlattenedSolution().getFormByUUID(formNavigatorID);
-			if (navigatorForm != null) formComponent.addNavigator(application.getFormManager().getForm(navigatorForm.getName()).getPanel());
+			if (navigatorForm != null) formComponent.addNavigator(application.getFormManager().getForm(navigatorForm.getName()).getPanel(form.getName()));
 		}
 	}
 

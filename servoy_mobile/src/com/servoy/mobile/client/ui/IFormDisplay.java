@@ -27,7 +27,9 @@ public interface IFormDisplay
 {
 	FormPage getDisplayPage();
 
-	FormPanel getDisplayPanel();
+	FormPanel getDisplayPanel(String parentFormName);
 
 	void refreshRecord(Record record);
+
+	void cleanup();
 }

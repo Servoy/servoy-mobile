@@ -89,9 +89,9 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 		return formDisplay.getDisplayPage();
 	}
 
-	public FormPanel getPanel()
+	public FormPanel getPanel(String parentFormName)
 	{
-		return formDisplay.getDisplayPanel();
+		return formDisplay.getDisplayPanel(parentFormName);
 	}
 
 	public FoundSet getFormModel()
@@ -112,6 +112,7 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 	public void cleanup()
 	{
 		if (foundSet != null) foundSet.removeSelectionListener(this);
+		formDisplay.cleanup();
 		formDisplay.getDisplayPage().destroy();
 		formDisplay = null;
 		foundSet = null;
