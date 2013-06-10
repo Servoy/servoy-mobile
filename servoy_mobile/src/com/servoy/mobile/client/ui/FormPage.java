@@ -220,7 +220,7 @@ public class FormPage extends JQMPage implements IFormComponent
 			{
 				headerComponent = new JQMHeader();
 			}
-			JQMButton navigatorButton = headerComponent.setLeftButton("", DataIcon.LEFT); //$NON-NLS-1$
+			JQMButton navigatorButton = headerComponent.setLeftButton("", DataIcon.BARS); //$NON-NLS-1$
 			navigatorButton.setIconPos(IconPos.NOTEXT);
 			navigatorButton.addClickHandler(new ClickHandler()
 			{
@@ -237,10 +237,10 @@ public class FormPage extends JQMPage implements IFormComponent
 
 	private boolean isTablet()
 	{
-		return getWindowWidth() > 1080;
+		return getScreenWidth() >= 768;
 	}
 
-	private native int getWindowWidth() /*-{
+	private native int getScreenWidth() /*-{
 		return $wnd.$(window).attr('screen').width;
 	}-*/;
 }
