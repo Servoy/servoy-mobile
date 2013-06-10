@@ -61,7 +61,7 @@ label.label-labelfor
 	background-size: 46px 46px;
 }
 
-@media (min-width: 48em){
+@media (min-width: 45em){
 	.ui-panel-content-wrap-position-left.ui-panel-content-wrap-display-reveal.ui-panel-content-wrap-open {
 		margin-right: 17em;
 	}

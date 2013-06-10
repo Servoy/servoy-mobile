@@ -237,10 +237,10 @@ public class FormPage extends JQMPage implements IFormComponent
 
 	private boolean isTablet()
 	{
-		return getScreenWidth() >= 768;
+		return getWindowWidth() >= 720;
 	}
 
-	private native int getScreenWidth() /*-{
-		return $wnd.$(window).attr('screen').width;
+	private native int getWindowWidth() /*-{
+		return $wnd.innerWidth;
 	}-*/;
 }
