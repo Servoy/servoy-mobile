@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.timepedia.exporter.client.Export;
+import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 
 import com.google.gwt.core.client.JsArray;
@@ -38,10 +39,11 @@ import com.servoy.mobile.client.persistence.Portal;
  */
 
 @Export
+@ExportPackage("")
 public class JSPortal extends JSComponent implements IBaseSMPortal, Exportable
 {
 
-	public JSPortal(Portal portal, JSSolutionModel model, JSForm form)
+	public JSPortal(Portal portal, JSSolutionModel model, JSBase form)
 	{
 		super(portal, model, form);
 	}
@@ -74,7 +76,7 @@ public class JSPortal extends JSComponent implements IBaseSMPortal, Exportable
 		if (dataprovider instanceof String) f.setDataProviderID((String)dataprovider);
 		f.setSize(width, height);
 		f.setLocation(x, y);
-		return new JSField(f, getSolutionModel(), this);
+		return JSField.createField(f, getSolutionModel(), this);
 	}
 
 	@Override

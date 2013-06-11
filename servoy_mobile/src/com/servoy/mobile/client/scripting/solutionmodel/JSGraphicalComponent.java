@@ -18,6 +18,7 @@
 package com.servoy.mobile.client.scripting.solutionmodel;
 
 import org.timepedia.exporter.client.Export;
+import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.Setter;
@@ -30,58 +31,12 @@ import com.servoy.mobile.client.persistence.GraphicalComponent;
  * @author acostescu
  */
 @Export
-public class JSGraphicalComponent extends JSComponent implements IBaseSMGraphicalComponent, Exportable
+@ExportPackage("")
+public class JSGraphicalComponent extends JSTextComponent implements IBaseSMGraphicalComponent, Exportable
 {
-
 	public JSGraphicalComponent(GraphicalComponent gc, JSSolutionModel model, JSBase parent)
 	{
 		super(gc, model, parent);
-	}
-
-	@Override
-	@Getter
-	public String getDataProviderID()
-	{
-		return ((GraphicalComponent)getBase()).getDataProviderID();
-	}
-
-	@Override
-	@Getter
-	public boolean getDisplaysTags()
-	{
-		return ((GraphicalComponent)getBase()).getDisplaysTags();
-	}
-
-	@Override
-	@Getter
-	public String getText()
-	{
-		return ((GraphicalComponent)getBase()).getText();
-	}
-
-	@Override
-	@Setter
-	public void setDataProviderID(String arg)
-	{
-		cloneIfNeeded();
-		((GraphicalComponent)getBase()).setDataProviderID(arg);
-
-	}
-
-	@Override
-	@Setter
-	public void setDisplaysTags(boolean arg)
-	{
-		cloneIfNeeded();
-		((GraphicalComponent)getBase()).setDisplaysTags(arg);
-	}
-
-	@Override
-	@Setter
-	public void setText(String arg)
-	{
-		cloneIfNeeded();
-		((GraphicalComponent)getBase()).setText(arg);
 	}
 
 	@Override
@@ -98,7 +53,6 @@ public class JSGraphicalComponent extends JSComponent implements IBaseSMGraphica
 		setOnAction((IBaseSMMethod)method);
 	}
 
-	@Override
 	@Getter
 	public JSMethod getOnAction()
 	{

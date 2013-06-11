@@ -1,5 +1,5 @@
 /*
- This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
+ This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2013 Servoy BV
 
  This program is free software; you can redistribute it and/or modify it under
  the terms of the GNU Affero General Public License as published by the Free
@@ -17,47 +17,60 @@
 
 package com.servoy.mobile.client.scripting.solutionmodel;
 
-import org.timepedia.exporter.client.Export;
-import org.timepedia.exporter.client.ExportPackage;
-import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.Setter;
 
-import com.servoy.base.persistence.IMobileProperties;
-import com.servoy.base.solutionmodel.IBaseSMLabel;
-import com.servoy.base.solutionmodel.IBaseSMTitle;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 
 /**
- * @author acostescu
+ * Abstract form component with text features.
+ * 
+ * @author rgansevles
+ *
  */
-@Export
-@ExportPackage("")
-public class JSLabel extends JSGraphicalComponent implements IBaseSMLabel, Exportable
+abstract class JSTextComponent extends JSComponent
 {
-	JSLabel(GraphicalComponent gc, JSSolutionModel model, JSBase parent)
+	public JSTextComponent(GraphicalComponent gc, JSSolutionModel model, JSBase parent)
 	{
 		super(gc, model, parent);
 	}
 
 	@Getter
-	public int getLabelSize()
+	public String getDataProviderID()
 	{
-		return getCustomProperty(IMobileProperties.HEADER_SIZE).intValue();
+		return ((GraphicalComponent)getBase()).getDataProviderID();
 	}
 
 	@Setter
-	public void setLabelSize(int size)
+	public void setDataProviderID(String arg)
 	{
-		if (size > 0 && size < 7)
-		{
-			putCustomProperty(IMobileProperties.HEADER_SIZE, Integer.valueOf(size));
-		}
+		cloneIfNeeded();
+		((GraphicalComponent)getBase()).setDataProviderID(arg);
 	}
 
-	@Override
-	public IBaseSMTitle getTitle()
+	@Getter
+	public String getText()
 	{
-		return new JSTitle((GraphicalComponent)JSField.getTitleForComponent(this).getBase(), getSolutionModel(), getParent());
+		return ((GraphicalComponent)getBase()).getText();
+	}
+
+	@Setter
+	public void setText(String arg)
+	{
+		cloneIfNeeded();
+		((GraphicalComponent)getBase()).setText(arg);
+	}
+
+	@Getter
+	public boolean getDisplaysTags()
+	{
+		return ((GraphicalComponent)getBase()).getDisplaysTags();
+	}
+
+	@Setter
+	public void setDisplaysTags(boolean arg)
+	{
+		cloneIfNeeded();
+		((GraphicalComponent)getBase()).setDisplaysTags(arg);
 	}
 }

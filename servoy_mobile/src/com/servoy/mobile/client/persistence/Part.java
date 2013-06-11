@@ -36,12 +36,12 @@ public class Part extends Component implements IBasePart
 		return ab.getTypeID() == IRepositoryConstants.PARTS ? (Part)ab.cast() : null;
 	}
 
-	public final int getType()
+	public final int getPartType()
 	{
 		return getAttributeValueInt(IContentSpecConstantsBase.PROPERTY_PARTTYPE, 0);
 	}
 
-	public final void setType(int partType)
+	public final void setPartType(int partType)
 	{
 		setAttributeValueInt(IContentSpecConstantsBase.PROPERTY_PARTTYPE, partType);
 	}

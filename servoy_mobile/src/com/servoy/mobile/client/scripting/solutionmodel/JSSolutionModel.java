@@ -21,10 +21,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.timepedia.exporter.client.Export;
+import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
 
 import com.google.gwt.core.client.JsArrayString;
+import com.servoy.base.scripting.solutionhelper.IBaseSHList;
 import com.servoy.base.solutionmodel.IBaseSMForm;
 import com.servoy.base.solutionmodel.IBaseSolutionModel;
 import com.servoy.base.util.DataSourceUtilsBase;
@@ -33,6 +35,7 @@ import com.servoy.mobile.client.persistence.FlattenedSolution;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.ValueList;
 import com.servoy.mobile.client.scripting.ScriptEngine;
+import com.servoy.mobile.client.scripting.solutionhelper.JSList;
 import com.servoy.mobile.client.util.Utils;
 
 /**
@@ -40,6 +43,7 @@ import com.servoy.mobile.client.util.Utils;
  *
  */
 @Export
+@ExportPackage("")
 public class JSSolutionModel implements IBaseSolutionModel, Exportable
 {
 	private final MobileClient application;
@@ -87,6 +91,12 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 			return new JSForm(solution.newForm(name, dataSource, width, height), this);
 		}
 		return null;
+	}
+
+	@Override
+	public JSForm newForm(String name, String dataSource)
+	{
+		return newForm(name, dataSource, null, false, 0, 0);
 	}
 
 	@Override
@@ -321,4 +331,50 @@ public class JSSolutionModel implements IBaseSolutionModel, Exportable
 		return methods;
 	}
 
+	@Override
+	public JSList newListForm(String formName, String dataSource, String textDataProviderID)
+	{
+		if (getForm(formName) != null) return null; // a form with that name already exists
+
+		// create form
+		JSForm listForm = newForm(formName, dataSource, null, false, 100, 380);
+		listForm.setView(IBaseSMForm.LOCKED_TABLE_VIEW);
+
+		// create list abstraction
+		JSList listComponent = new JSList(listForm);
+
+		// create other persists for remaining contents of list
+		if (textDataProviderID != null) listComponent.setTextDataProviderID(textDataProviderID);
+
+		return listComponent;
+	}
+
+	@Override
+	public JSList getListForm(String name)
+	{
+		JSForm f = getForm(name);
+		if (f != null && f.getView() == IBaseSMForm.LOCKED_TABLE_VIEW)
+		{
+			return new JSList(f);
+		}
+		return null;
+	}
+
+	@Override
+	public IBaseSHList[] getListForms()
+	{
+		List<JSList> listFormsList = new ArrayList<JSList>();
+		JSForm[] forms = getForms();
+		if (forms != null)
+		{
+			for (JSForm form : forms)
+			{
+				if (form.getView() == IBaseSMForm.LOCKED_TABLE_VIEW)
+				{
+					listFormsList.add(new JSList(form));
+				}
+			}
+		}
+		return listFormsList.toArray(new JSList[listFormsList.size()]);
+	}
 }

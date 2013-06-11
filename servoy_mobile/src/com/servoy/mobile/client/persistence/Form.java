@@ -60,7 +60,7 @@ public class Form extends AbstractBase
 	public final Part createNewPart(int partType)
 	{
 		Part part = Part.castIfPossible(Component.createEmptyChildComponent(this, Utils.createStringUUID(), IRepositoryConstants.PARTS));
-		part.setType(partType);
+		part.setPartType(partType);
 		return part;
 	}
 

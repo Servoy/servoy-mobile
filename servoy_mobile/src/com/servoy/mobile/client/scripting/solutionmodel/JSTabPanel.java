@@ -21,12 +21,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.timepedia.exporter.client.Export;
+import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 
 import com.google.gwt.core.client.JsArray;
 import com.servoy.base.solutionmodel.IBaseSMForm;
 import com.servoy.base.solutionmodel.IBaseSMTabPanel;
-import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.Tab;
 import com.servoy.mobile.client.persistence.TabPanel;
 
@@ -36,10 +36,11 @@ import com.servoy.mobile.client.persistence.TabPanel;
  */
 
 @Export
+@ExportPackage("")
 public class JSTabPanel extends JSComponent implements IBaseSMTabPanel, Exportable
 {
 
-	public JSTabPanel(TabPanel tabPanel, JSSolutionModel model, JSForm form)
+	public JSTabPanel(TabPanel tabPanel, JSSolutionModel model, JSBase form)
 	{
 		super(tabPanel, model, form);
 	}
@@ -48,7 +49,7 @@ public class JSTabPanel extends JSComponent implements IBaseSMTabPanel, Exportab
 	public JSTab newTab(String name, String text, IBaseSMForm form)
 	{
 		cloneIfNeeded();
-		Tab tab = ((TabPanel)getBase()).createTab(name, text, ((Form)((JSForm)form).getBase()).getUUID());
+		Tab tab = ((TabPanel)getBase()).createTab(name, text, ((JSForm)form).getBase().getUUID());
 		return new JSTab(tab, getSolutionModel(), this);
 	}
 

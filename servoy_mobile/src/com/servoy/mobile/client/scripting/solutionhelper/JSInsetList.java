@@ -23,7 +23,7 @@ import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.Setter;
 
 import com.servoy.base.scripting.solutionhelper.BaseSHInsetList;
-import com.servoy.base.scripting.solutionhelper.BaseSolutionHelper;
+import com.servoy.base.scripting.solutionhelper.IBaseSMFormInternal;
 import com.servoy.base.solutionmodel.IBaseSMPortal;
 import com.servoy.mobile.client.scripting.solutionmodel.JSMethod;
 
@@ -35,9 +35,9 @@ import com.servoy.mobile.client.scripting.solutionmodel.JSMethod;
 @Export
 public class JSInsetList extends BaseSHInsetList implements Exportable
 {
-	public JSInsetList(IBaseSMPortal portal, BaseSolutionHelper solutionHelper)
+	public JSInsetList(IBaseSMPortal portal, IBaseSMFormInternal contextForm)
 	{
-		super(portal, solutionHelper);
+		super(portal, contextForm);
 	}
 
 	@Override

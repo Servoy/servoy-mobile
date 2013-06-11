@@ -1,5 +1,5 @@
 /*
- This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
+ This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2013 Servoy BV
 
  This program is free software; you can redistribute it and/or modify it under
  the terms of the GNU Affero General Public License as published by the Free
@@ -24,31 +24,35 @@ import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.Setter;
 
 import com.servoy.base.persistence.IMobileProperties;
-import com.servoy.base.solutionmodel.IBaseSMButton;
-import com.servoy.mobile.client.persistence.GraphicalComponent;
+import com.servoy.base.solutionmodel.IBaseSMRadios;
+import com.servoy.mobile.client.persistence.Field;
+import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMField;
 
 /**
- * @author acostescu
+ * Solution model radios field component.
+ * 
+ * @author rgansevles
  */
 @Export
 @ExportPackage("")
-public class JSButton extends JSGraphicalComponent implements IBaseSMButton, Exportable
+public class JSRadios extends JSField implements IMobileSMField, IBaseSMRadios, Exportable
 {
-
-	public JSButton(GraphicalComponent gc, JSSolutionModel model, JSBase form)
+	JSRadios(Field f, JSSolutionModel model, JSBase parent)
 	{
-		super(gc, model, form);
+		super(f, model, parent);
 	}
 
 	@Getter
-	public String getIconType()
+	@Override
+	public boolean getHorizontal()
 	{
-		return getCustomProperty(IMobileProperties.DATA_ICON);
+		return IMobileProperties.RADIO_STYLE_HORIZONTAL.equals(getCustomProperty(IMobileProperties.RADIO_STYLE));
 	}
 
 	@Setter
-	public void setIconType(String iconType)
+	@Override
+	public void setHorizontal(boolean horizontal)
 	{
-		putCustomProperty(IMobileProperties.DATA_ICON, iconType);
+		putCustomProperty(IMobileProperties.RADIO_STYLE, horizontal ? IMobileProperties.RADIO_STYLE_HORIZONTAL : null);
 	}
 }

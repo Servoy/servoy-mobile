@@ -21,8 +21,10 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.Getter;
+import org.timepedia.exporter.client.NoExport;
 import org.timepedia.exporter.client.Setter;
 
+import com.servoy.base.persistence.PersistUtils;
 import com.servoy.mobile.client.persistence.Part;
 import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMPart;
 
@@ -34,16 +36,42 @@ import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMPart;
 @ExportPackage("")
 public class JSPart extends JSBase implements IMobileSMPart, Exportable
 {
-	public JSPart(Part part, JSSolutionModel model, JSBase parent)
+	JSPart(Part part, JSSolutionModel model, JSForm parent)
 	{
 		super(part, model, parent);
+	}
+
+	@Override
+	@NoExport
+	public Part getBase()
+	{
+		return (Part)super.getBase();
+	}
+
+	@NoExport
+	public static JSPart createPart(Part part, JSSolutionModel model, JSForm parent)
+	{
+		if (part == null)
+		{
+			return null;
+		}
+		if (PersistUtils.isHeaderPart(part.getPartType()))
+		{
+			return new JSHeader(part, model, parent);
+		}
+		if (PersistUtils.isFooterPart(part.getPartType()))
+		{
+			return new JSFooter(part, model, parent);
+		}
+
+		return new JSPart(part, model, parent);
 	}
 
 	@Getter
 	@Override
 	public String getStyleClass()
 	{
-		return ((Part)getBase()).getStyleClass();
+		return getBase().getStyleClass();
 	}
 
 	@Setter
@@ -51,6 +79,6 @@ public class JSPart extends JSBase implements IMobileSMPart, Exportable
 	public void setStyleClass(String styleClass)
 	{
 		cloneIfNeeded();
-		((Part)getBase()).setStyleClass(styleClass);
+		getBase().setStyleClass(styleClass);
 	}
 }

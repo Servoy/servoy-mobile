@@ -20,35 +20,22 @@ package com.servoy.mobile.client.scripting.solutionmodel;
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
-import org.timepedia.exporter.client.Getter;
-import org.timepedia.exporter.client.Setter;
 
-import com.servoy.base.persistence.IMobileProperties;
-import com.servoy.base.solutionmodel.IBaseSMButton;
+import com.servoy.base.solutionmodel.IBaseSMTitle;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 
 /**
- * @author acostescu
+ * Title label for elements in mobile form.
+ * 
+ * @author rgansevles
+ *
  */
 @Export
 @ExportPackage("")
-public class JSButton extends JSGraphicalComponent implements IBaseSMButton, Exportable
+public class JSTitle extends JSTextComponent implements IBaseSMTitle, Exportable
 {
-
-	public JSButton(GraphicalComponent gc, JSSolutionModel model, JSBase form)
+	JSTitle(GraphicalComponent gc, JSSolutionModel model, JSBase parent)
 	{
-		super(gc, model, form);
-	}
-
-	@Getter
-	public String getIconType()
-	{
-		return getCustomProperty(IMobileProperties.DATA_ICON);
-	}
-
-	@Setter
-	public void setIconType(String iconType)
-	{
-		putCustomProperty(IMobileProperties.DATA_ICON, iconType);
+		super(gc, model, parent);
 	}
 }

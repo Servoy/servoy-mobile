@@ -19,7 +19,6 @@ import com.servoy.base.query.BaseCompareCondition;
 import com.servoy.base.query.BaseOrCondition;
 import com.servoy.base.query.BaseQueryColumn;
 import com.servoy.base.query.IBaseSQLCondition;
-import com.servoy.base.scripting.solutionhelper.IPredefinedIconConstants;
 import com.servoy.mobile.client.dataprocessing.Record;
 import com.sksamuel.jqm4gwt.DataIcon;
 
@@ -648,24 +647,13 @@ public class Utils implements Exportable
 	{
 		if (dataIcon != null)
 		{
-			if (dataIcon.equals(IPredefinedIconConstants.ICON_GEAR)) return DataIcon.GEAR;
-			if (dataIcon.equals(IPredefinedIconConstants.ICON_LEFT)) return DataIcon.LEFT;
-			if (dataIcon.equals(IPredefinedIconConstants.ICON_RIGHT)) return DataIcon.RIGHT;
-			if (dataIcon.equals(IPredefinedIconConstants.ICON_UP)) return DataIcon.UP;
-			if (dataIcon.equals(IPredefinedIconConstants.ICON_DOWN)) return DataIcon.DOWN;
-			if (dataIcon.equals(IPredefinedIconConstants.ICON_DELETE)) return DataIcon.DELETE;
-			if (dataIcon.equals(IPredefinedIconConstants.ICON_PLUS)) return DataIcon.PLUS;
-			if (dataIcon.equals(IPredefinedIconConstants.ICON_MINUS)) return DataIcon.MINUS;
-			if (dataIcon.equals(IPredefinedIconConstants.ICON_CHECK)) return DataIcon.CHECK;
-			if (dataIcon.equals(IPredefinedIconConstants.ICON_REFRESH)) return DataIcon.REFRESH;
-			if (dataIcon.equals(IPredefinedIconConstants.ICON_FORWARD)) return DataIcon.FORWARD;
-			if (dataIcon.equals(IPredefinedIconConstants.ICON_BACK)) return DataIcon.BACK;
-			if (dataIcon.equals(IPredefinedIconConstants.ICON_GRID)) return DataIcon.GRID;
-			if (dataIcon.equals(IPredefinedIconConstants.ICON_STAR)) return DataIcon.STAR;
-			if (dataIcon.equals(IPredefinedIconConstants.ICON_ALERT)) return DataIcon.ALERT;
-			if (dataIcon.equals(IPredefinedIconConstants.ICON_INFO)) return DataIcon.INFO;
-			if (dataIcon.equals(IPredefinedIconConstants.ICON_HOME)) return DataIcon.HOME;
-			if (dataIcon.equals(IPredefinedIconConstants.ICON_SEARCH)) return DataIcon.SEARCH;
+			for (DataIcon icon : DataIcon.values())
+			{
+				if (dataIcon.equals(icon.getJqmValue()))
+				{
+					return icon;
+				}
+			}
 		}
 
 		return null;

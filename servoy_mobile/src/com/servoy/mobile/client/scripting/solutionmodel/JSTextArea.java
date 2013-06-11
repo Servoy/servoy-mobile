@@ -1,5 +1,5 @@
 /*
- This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
+ This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2013 Servoy BV
 
  This program is free software; you can redistribute it and/or modify it under
  the terms of the GNU Affero General Public License as published by the Free
@@ -20,35 +20,22 @@ package com.servoy.mobile.client.scripting.solutionmodel;
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
-import org.timepedia.exporter.client.Getter;
-import org.timepedia.exporter.client.Setter;
 
-import com.servoy.base.persistence.IMobileProperties;
-import com.servoy.base.solutionmodel.IBaseSMButton;
-import com.servoy.mobile.client.persistence.GraphicalComponent;
+import com.servoy.base.solutionmodel.IBaseSMTextArea;
+import com.servoy.mobile.client.persistence.Field;
+import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMField;
 
 /**
- * @author acostescu
+ * Solution model testarea field component.
+ * 
+ * @author rgansevles
  */
 @Export
 @ExportPackage("")
-public class JSButton extends JSGraphicalComponent implements IBaseSMButton, Exportable
+public class JSTextArea extends JSField implements IMobileSMField, IBaseSMTextArea, Exportable
 {
-
-	public JSButton(GraphicalComponent gc, JSSolutionModel model, JSBase form)
+	JSTextArea(Field f, JSSolutionModel model, JSBase parent)
 	{
-		super(gc, model, form);
-	}
-
-	@Getter
-	public String getIconType()
-	{
-		return getCustomProperty(IMobileProperties.DATA_ICON);
-	}
-
-	@Setter
-	public void setIconType(String iconType)
-	{
-		putCustomProperty(IMobileProperties.DATA_ICON, iconType);
+		super(f, model, parent);
 	}
 }

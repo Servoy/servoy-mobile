@@ -25,6 +25,7 @@ import java.util.Iterator;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.user.client.ui.Widget;
 import com.servoy.base.persistence.IMobileProperties;
+import com.servoy.base.persistence.PersistUtils;
 import com.servoy.base.persistence.constants.IPartConstants;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
@@ -115,11 +116,11 @@ public class FormDisplay implements IFormDisplay
 			Part part = Part.castIfPossible(component);
 			if (part != null)
 			{
-				if (part.getType() == IPartConstants.HEADER || part.getType() == IPartConstants.TITLE_HEADER)
+				if (PersistUtils.isHeaderPart(part.getPartType()))
 				{
 					headerPart = part;
 				}
-				else if (part.getType() == IPartConstants.FOOTER || part.getType() == IPartConstants.TITLE_FOOTER)
+				else if (PersistUtils.isFooterPart(part.getPartType()))
 				{
 					footerPart = part;
 				}
@@ -187,7 +188,7 @@ public class FormDisplay implements IFormDisplay
 		if (headerPart != null)
 		{
 			headerComponent.setTheme(headerPart.getStyleClass());
-			headerComponent.setFixed(headerPart.getType() == IPartConstants.TITLE_HEADER);
+			headerComponent.setFixed(headerPart.getPartType() == IPartConstants.TITLE_HEADER);
 		}
 		if (headerDecorator != null) headerDecorator.decorateHeader(headerPart, headerComponent);
 
@@ -269,7 +270,7 @@ public class FormDisplay implements IFormDisplay
 		if (footerPart != null)
 		{
 			footerComponent.setTheme(footerPart.getStyleClass());
-			footerComponent.setFixed(footerPart.getType() == IPartConstants.TITLE_FOOTER);
+			footerComponent.setFixed(footerPart.getPartType() == IPartConstants.TITLE_FOOTER);
 		}
 		for (Component c : footerComponents)
 			footerComponent.add(createWidget(formComponent, c));

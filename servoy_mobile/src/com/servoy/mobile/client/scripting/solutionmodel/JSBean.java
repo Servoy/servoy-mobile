@@ -32,7 +32,7 @@ import com.servoy.mobile.client.persistence.Bean;
 @ExportPackage("")
 public class JSBean extends JSComponent implements IBaseSMBean, Exportable
 {
-	public JSBean(Bean bean, JSSolutionModel model, JSBase parent)
+	public JSBean(Bean bean, JSSolutionModel model, JSForm parent)
 	{
 		super(bean, model, parent);
 	}

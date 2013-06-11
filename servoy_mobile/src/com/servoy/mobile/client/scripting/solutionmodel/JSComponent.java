@@ -18,6 +18,7 @@
 package com.servoy.mobile.client.scripting.solutionmodel;
 
 import org.timepedia.exporter.client.Export;
+import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.NoExport;
@@ -38,6 +39,7 @@ import com.servoy.mobile.client.ui.PositionComparator;
  * @author acostescu
  */
 @Export
+@ExportPackage("")
 public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 {
 	protected final String formName;
@@ -75,7 +77,7 @@ public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 			Field field = Field.castIfPossible(component);
 			if (field != null)
 			{
-				return new JSField(field, model, parent);
+				return JSField.createField(field, model, parent);
 			}
 		}
 
@@ -84,7 +86,7 @@ public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 			Portal portal = Portal.castIfPossible(component);
 			if (portal != null)
 			{
-				return new JSPortal(portal, model, (JSForm)parent);
+				return new JSPortal(portal, model, parent);
 			}
 		}
 
@@ -93,7 +95,7 @@ public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 			TabPanel tabPanel = TabPanel.castIfPossible(component);
 			if (tabPanel != null)
 			{
-				return new JSTabPanel(tabPanel, model, (JSForm)parent);
+				return new JSTabPanel(tabPanel, model, parent);
 			}
 		}
 		return null;

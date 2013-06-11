@@ -18,6 +18,7 @@
 package com.servoy.mobile.client.scripting.solutionmodel;
 
 import org.timepedia.exporter.client.Export;
+import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.NoExport;
@@ -30,6 +31,7 @@ import com.servoy.mobile.client.scripting.ScriptEngine;
  * @author acostescu
  */
 @Export
+@ExportPackage("")
 public class JSMethod extends JSScriptPart implements IBaseSMMethod, Exportable
 {
 

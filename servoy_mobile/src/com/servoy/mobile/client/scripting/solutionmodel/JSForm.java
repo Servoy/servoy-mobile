@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.timepedia.exporter.client.Export;
+import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.NoExport;
@@ -32,13 +33,19 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.thirdparty.javascript.jscomp.mozilla.rhino.annotations.JSFunction;
 import com.servoy.base.persistence.IMobileProperties;
+import com.servoy.base.persistence.IMobileProperties.MobileProperty;
+import com.servoy.base.persistence.PersistUtils;
 import com.servoy.base.persistence.constants.IComponentConstants;
 import com.servoy.base.persistence.constants.IFieldConstants;
 import com.servoy.base.persistence.constants.IPartConstants;
 import com.servoy.base.persistence.constants.IRepositoryConstants;
+import com.servoy.base.scripting.annotations.ServoyClientSupport;
+import com.servoy.base.scripting.solutionhelper.BaseSolutionHelper;
 import com.servoy.base.scripting.solutionhelper.IBaseSMFormInternal;
+import com.servoy.base.solutionmodel.IBaseSMComponent;
 import com.servoy.base.solutionmodel.IBaseSMMethod;
 import com.servoy.base.solutionmodel.IBaseSMPortal;
+import com.servoy.base.solutionmodel.IBaseSMVariable;
 import com.servoy.base.util.DataSourceUtilsBase;
 import com.servoy.mobile.client.dataprocessing.RelatedFoundSet;
 import com.servoy.mobile.client.persistence.AbstractBase.MobileProperties;
@@ -51,11 +58,13 @@ import com.servoy.mobile.client.persistence.Part;
 import com.servoy.mobile.client.persistence.Portal;
 import com.servoy.mobile.client.persistence.TabPanel;
 import com.servoy.mobile.client.scripting.ScriptEngine;
+import com.servoy.mobile.client.scripting.solutionhelper.JSInsetList;
 
 /**
  * @author acostescu
  */
 @Export
+@ExportPackage("")
 public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 {
 	private Form form;
@@ -64,6 +73,13 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 	{
 		super(form, model, null);
 		this.form = form;
+	}
+
+	@Override
+	@NoExport
+	public Form getBase()
+	{
+		return (Form)super.getBase();
 	}
 
 	@NoExport
@@ -179,7 +195,7 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 		if (dataprovider instanceof String) f.setDataProviderID((String)dataprovider);
 		f.setSize(width, height);
 		f.setLocation(x, y);
-		return new JSField(f, getSolutionModel(), this);
+		return JSField.createField(f, getSolutionModel(), this);
 	}
 
 	public JSField newField(JSVariable dataprovider, int type, int x, int y, int width, int height)
@@ -199,6 +215,23 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 	}
 
 	@Override
+	public JSText newTextField(IBaseSMVariable dataprovidername, int y)
+	{
+		return newTextField((JSVariable)dataprovidername, y);
+	}
+
+	public JSText newTextField(JSVariable dataprovider, int y)
+	{
+		return (JSText)newField(dataprovider.getReferenceString(), IFieldConstants.TEXT_FIELD, 0, y, 10, 10);
+	}
+
+	@Override
+	public JSText newTextField(String dataprovidername, int y)
+	{
+		return (JSText)newField(dataprovidername, IFieldConstants.TEXT_FIELD, 0, y, 10, 10);
+	}
+
+	@Override
 	public JSField newTextArea(Object dataprovider, int x, int y, int width, int height)
 	{
 		return newField(dataprovider, IFieldConstants.TEXT_AREA, x, y, width, height);
@@ -207,6 +240,23 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 	public JSField newTextArea(JSVariable dataprovider, int x, int y, int width, int height)
 	{
 		return newTextArea(dataprovider.getReferenceString(), x, y, width, height);
+	}
+
+	@Override
+	public JSTextArea newTextArea(IBaseSMVariable dataprovidername, int y)
+	{
+		return newTextArea((JSVariable)dataprovidername, y);
+	}
+
+	public JSTextArea newTextArea(JSVariable dataprovider, int y)
+	{
+		return (JSTextArea)newField(dataprovider.getReferenceString(), IFieldConstants.TEXT_AREA, 0, y, 10, 10);
+	}
+
+	@Override
+	public JSTextArea newTextArea(String dataprovidername, int y)
+	{
+		return (JSTextArea)newField(dataprovidername, IFieldConstants.TEXT_AREA, 0, y, 10, 10);
 	}
 
 	@Override
@@ -221,6 +271,23 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 	}
 
 	@Override
+	public JSCombobox newCombobox(IBaseSMVariable dataprovidername, int y)
+	{
+		return newCombobox((JSVariable)dataprovidername, y);
+	}
+
+	public JSCombobox newCombobox(JSVariable dataprovider, int y)
+	{
+		return (JSCombobox)newField(dataprovider.getReferenceString(), IFieldConstants.COMBOBOX, 0, y, 10, 10);
+	}
+
+	@Override
+	public JSCombobox newCombobox(String dataprovidername, int y)
+	{
+		return (JSCombobox)newField(dataprovidername, IFieldConstants.COMBOBOX, 0, y, 10, 10);
+	}
+
+	@Override
 	public JSField newRadios(Object dataprovider, int x, int y, int width, int height)
 	{
 		return newField(dataprovider, IFieldConstants.RADIOS, x, y, width, height);
@@ -229,6 +296,23 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 	public JSField newRadios(JSVariable dataprovider, int x, int y, int width, int height)
 	{
 		return newRadios(dataprovider.getReferenceString(), x, y, width, height);
+	}
+
+	@Override
+	public JSRadios newRadios(IBaseSMVariable dataprovidername, int y)
+	{
+		return newRadios((JSVariable)dataprovidername, y);
+	}
+
+	public JSRadios newRadios(JSVariable dataprovider, int y)
+	{
+		return (JSRadios)newField(dataprovider.getReferenceString(), IFieldConstants.RADIOS, 0, y, 10, 10);
+	}
+
+	@Override
+	public JSRadios newRadios(String dataprovidername, int y)
+	{
+		return (JSRadios)newField(dataprovidername, IFieldConstants.RADIOS, 0, y, 10, 10);
 	}
 
 	@Override
@@ -243,6 +327,23 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 	}
 
 	@Override
+	public JSChecks newCheck(IBaseSMVariable dataprovidername, int y)
+	{
+		return newCheck((JSVariable)dataprovidername, y);
+	}
+
+	public JSChecks newCheck(JSVariable dataprovider, int y)
+	{
+		return (JSChecks)newField(dataprovider.getReferenceString(), IFieldConstants.CHECKS, 0, y, 10, 10);
+	}
+
+	@Override
+	public JSChecks newCheck(String dataprovidername, int y)
+	{
+		return (JSChecks)newField(dataprovidername, IFieldConstants.CHECKS, 0, y, 10, 10);
+	}
+
+	@Override
 	public JSField newPassword(Object dataprovider, int x, int y, int width, int height)
 	{
 		return newField(dataprovider, IFieldConstants.PASSWORD, x, y, width, height);
@@ -251,6 +352,23 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 	public JSField newPassword(JSVariable dataprovider, int x, int y, int width, int height)
 	{
 		return newPassword(dataprovider.getReferenceString(), x, y, width, height);
+	}
+
+	@Override
+	public JSPassword newPassword(IBaseSMVariable dataprovidername, int y)
+	{
+		return newPassword((JSVariable)dataprovidername, y);
+	}
+
+	public JSPassword newPassword(JSVariable dataprovider, int y)
+	{
+		return (JSPassword)newField(dataprovider.getReferenceString(), IFieldConstants.PASSWORD, 0, y, 10, 10);
+	}
+
+	@Override
+	public JSPassword newPassword(String dataprovidername, int y)
+	{
+		return (JSPassword)newField(dataprovidername, IFieldConstants.PASSWORD, 0, y, 10, 10);
 	}
 
 	@Override
@@ -271,6 +389,17 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 	}
 
 	@Override
+	public JSButton newButton(String txt, int y, IBaseSMMethod jsmethod)
+	{
+		return newButton(txt, y, (JSMethod)jsmethod);
+	}
+
+	public JSButton newButton(String txt, int y, JSMethod jsmethod)
+	{
+		return newButton(txt, 0, y, 10, 10, jsmethod);
+	}
+
+	@Override
 	public JSLabel newLabel(String txt, int x, int y, int width, int height)
 	{
 		cloneIfNeeded();
@@ -279,6 +408,13 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 		gc.setSize(width, height);
 		gc.setLocation(x, y);
 		return new JSLabel(gc, getSolutionModel(), this);
+	}
+
+	@Override
+	@ServoyClientSupport(mc = true, wc = false, sc = false)
+	public JSLabel newLabel(String txt, int y)
+	{
+		return newLabel(txt, 0, y, 10, 10);
 	}
 
 	@NoExport
@@ -493,6 +629,22 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 		return getComponentsInternal(false, null);
 	}
 
+	@NoExport
+	public Component selectComponent(MobileProperty<Boolean> property)
+	{
+		JsArray<Component> formComponents = form.getComponents();
+		for (int i = 0; i < formComponents.length(); i++)
+		{
+			Component component = formComponents.get(i);
+			MobileProperties mp = component.getMobileProperties();
+			if (mp != null && Boolean.TRUE.equals(mp.getPropertyValue(IMobileProperties.HEADER_TEXT)))
+			{
+				return component;
+			}
+		}
+		return null;
+	}
+
 	@Override
 	@NoExport
 	public JSComponent[] getComponentsInternal(boolean showInternals, Integer componentType)
@@ -567,7 +719,8 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 		return removeComponent(name, IRepositoryConstants.GRAPHICALCOMPONENTS);
 	}
 
-	public boolean removeComponent(String name, int componentType)
+	@NoExport
+	private boolean removeComponent(String name, int componentType)
 	{
 		cloneIfNeeded();
 		if (name != null)
@@ -713,7 +866,7 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 	@Override
 	public JSMethod getOnShow()
 	{
-		return JSMethod.getMethodFromString(((Form)getBase()).getOnShowCall(), this, getSolutionModel());
+		return JSMethod.getMethodFromString(getBase().getOnShowCall(), this, getSolutionModel());
 	}
 
 	@Override
@@ -726,14 +879,14 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 	public void setOnShow(JSMethod method)
 	{
 		cloneIfNeeded();
-		((Form)getBase()).setOnShowCall(method != null ? method.getReferenceString() : null);
+		getBase().setOnShowCall(method != null ? method.getReferenceString() : null);
 	}
 
 	@Getter
 	@Override
 	public JSMethod getOnLoad()
 	{
-		return JSMethod.getMethodFromString(((Form)getBase()).getOnLoadCall(), this, getSolutionModel());
+		return JSMethod.getMethodFromString(getBase().getOnLoadCall(), this, getSolutionModel());
 	}
 
 	@Override
@@ -746,14 +899,14 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 	public void setOnLoad(JSMethod method)
 	{
 		cloneIfNeeded();
-		((Form)getBase()).setOnLoadCall(method != null ? method.getReferenceString() : null);
+		getBase().setOnLoadCall(method != null ? method.getReferenceString() : null);
 	}
 
 	@Getter
 	@Override
 	public JSMethod getOnHide()
 	{
-		return JSMethod.getMethodFromString(((Form)getBase()).getOnHideCall(), this, getSolutionModel());
+		return JSMethod.getMethodFromString(getBase().getOnHideCall(), this, getSolutionModel());
 	}
 
 	@Override
@@ -766,14 +919,14 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 	public void setOnHide(JSMethod method)
 	{
 		cloneIfNeeded();
-		((Form)getBase()).setOnHideCall(method != null ? method.getReferenceString() : null);
+		getBase().setOnHideCall(method != null ? method.getReferenceString() : null);
 	}
 
 	@Getter
 	@Override
 	public JSMethod getOnRecordSelection()
 	{
-		return JSMethod.getMethodFromString(((Form)getBase()).getOnRecordSelectionCall(), this, getSolutionModel());
+		return JSMethod.getMethodFromString(getBase().getOnRecordSelectionCall(), this, getSolutionModel());
 	}
 
 	@Override
@@ -786,7 +939,7 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 	public void setOnRecordSelection(JSMethod method)
 	{
 		cloneIfNeeded();
-		((Form)getBase()).setOnRecordSelectionCall(method != null ? method.getReferenceString() : null);
+		getBase().setOnRecordSelectionCall(method != null ? method.getReferenceString() : null);
 	}
 
 	@JSFunction
@@ -797,9 +950,9 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 		for (int i = 0; i < formComponents.length(); i++)
 		{
 			Part part = Part.castIfPossible(formComponents.get(i));
-			if (part != null && part.getType() == type)
+			if (part != null && part.getPartType() == type)
 			{
-				return new JSPart(part, getSolutionModel(), this);
+				return JSPart.createPart(part, getSolutionModel(), this);
 			}
 		}
 		return null;
@@ -807,16 +960,98 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 
 	@JSFunction
 	@Override
-	public JSPart newFooterPart(int height)
+	public JSFooter newFooterPart(int height)
 	{
-		return getOrCreatePart(IPartConstants.FOOTER);
+		return newFooter();
 	}
 
 	@JSFunction
 	@Override
-	public JSPart newHeaderPart(int height)
+	public JSFooter newFooter()
 	{
-		return getOrCreatePart(IPartConstants.HEADER);
+		JSFooter footer = getFooter();
+		if (footer != null)
+		{
+			return footer;
+		}
+		return (JSFooter)getOrCreatePart(IPartConstants.TITLE_FOOTER);
+	}
+
+	@JSFunction
+	@Override
+	public JSFooter getFooter()
+	{
+		JSFooter footer = (JSFooter)getPart(IPartConstants.TITLE_FOOTER);
+		if (footer == null)
+		{
+			footer = (JSFooter)getPart(IPartConstants.FOOTER);
+		}
+		return footer;
+	}
+
+	@JSFunction
+	@Override
+	public boolean removeFooter()
+	{
+		return removePart(false);
+	}
+
+	@JSFunction
+	@Override
+	public JSHeader newHeaderPart(int height)
+	{
+		return newHeader();
+	}
+
+	@JSFunction
+	@Override
+	public JSHeader newHeader()
+	{
+		JSHeader header = getHeader();
+		if (header != null)
+		{
+			return header;
+		}
+		return (JSHeader)getOrCreatePart(IPartConstants.TITLE_HEADER);
+	}
+
+	@JSFunction
+	@Override
+	public JSHeader getHeader()
+	{
+		JSHeader header = (JSHeader)getPart(IPartConstants.TITLE_HEADER);
+		if (header == null)
+		{
+			header = (JSHeader)getPart(IPartConstants.HEADER);
+		}
+		return header;
+	}
+
+	@JSFunction
+	@Override
+	public boolean removeHeader()
+	{
+		return removePart(true);
+	}
+
+	@NoExport
+	private boolean removePart(boolean header)
+	{
+		JsArray<Component> formComponents = form.getComponents();
+		for (int i = 0; i < formComponents.length(); i++)
+		{
+			Part part = Part.castIfPossible(formComponents.get(i));
+			if (part != null)
+			{
+				if ((header && PersistUtils.isHeaderPart(part.getPartType())) || (!header && PersistUtils.isFooterPart(part.getPartType())))
+				{
+					cloneIfNeeded();
+					form.removeChild(i);
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	@NoExport
@@ -826,8 +1061,7 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 		if (jsPart == null)
 		{
 			cloneIfNeeded();
-			Part part = form.createNewPart(partType);
-			jsPart = new JSPart(part, getSolutionModel(), this);
+			jsPart = JSPart.createPart(form.createNewPart(partType), getSolutionModel(), this);
 		}
 		return jsPart;
 	}
@@ -863,5 +1097,101 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 	public boolean removeBean(String name)
 	{
 		return removeComponent(name, IRepositoryConstants.BEANS);
+	}
+
+	@Override
+	public JSInsetList newInsetList(int yLocation, String relationName, String headerText, String textDataProviderID)
+	{
+		String autoGeneratedInsetListName = BaseSolutionHelper.AUTO_CREATED_LIST_INSETLIST_NAME;
+		int i = 1;
+		while (getComponent(autoGeneratedInsetListName) != null)
+		{
+			autoGeneratedInsetListName = BaseSolutionHelper.AUTO_CREATED_LIST_INSETLIST_NAME + '_' + (i++);
+		}
+
+		// create portal
+		JSPortal jsportal = (JSPortal)newPortal(autoGeneratedInsetListName, relationName, 0, yLocation, 0, 0);
+		jsportal.putCustomProperty(IMobileProperties.LIST_COMPONENT, Boolean.TRUE);
+
+		// create list abstraction
+		JSInsetList insetList = new JSInsetList(jsportal, this);
+
+		// create other persists for remaining contents of list
+		if (headerText != null) insetList.setHeaderText(headerText);
+		if (textDataProviderID != null) insetList.setTextDataProviderID(textDataProviderID);
+
+		return insetList;
+	}
+
+	@Override
+	public JSInsetList getInsetList(String name)
+	{
+		if (name == null) return null;
+
+		JSPortal jsportal = getPortal(name);
+		if (jsportal != null && Boolean.TRUE.equals(jsportal.getCustomProperty(IMobileProperties.LIST_COMPONENT)))
+		{
+			return new JSInsetList(jsportal, this);
+		}
+		return null;
+	}
+
+	@Override
+	public JSInsetList[] getInsetLists()
+	{
+		JSPortal[] jsportals = getPortals();
+		List<JSInsetList> insetLists = new ArrayList<JSInsetList>(jsportals.length);
+		for (JSPortal jsportal : jsportals)
+		{
+			if (Boolean.TRUE.equals(jsportal.getCustomProperty(IMobileProperties.LIST_COMPONENT)))
+			{
+				insetLists.add(new JSInsetList(jsportal, this));
+			}
+		}
+		return insetLists.toArray(new JSInsetList[insetLists.size()]);
+	}
+
+	@Override
+	public void setComponentOrder(IBaseSMComponent[] components)
+	{
+		int currentHeight = 1;
+		if (components != null && components.length > 0)
+		{
+			boolean footerItems = Boolean.TRUE.equals(((JSBase)components[0]).getCustomProperty(IMobileProperties.FOOTER_ITEM));
+			for (IBaseSMComponent comp : components)
+			{
+				if (comp != null)
+				{
+					if (footerItems)
+					{
+						comp.setX(currentHeight);
+					}
+					else
+					{
+						comp.setY(currentHeight);
+					}
+					currentHeight += footerItems ? comp.getWidth() : comp.getHeight();
+				}
+			}
+		}
+	}
+
+	@Override
+	public boolean removeInsetList(String name)
+	{
+		JSPortal jsportal = getPortal(name);
+		return jsportal != null && Boolean.TRUE.equals(jsportal.getCustomProperty(IMobileProperties.LIST_COMPONENT)) && removePortal(name);
+	}
+
+	@Override
+	public <T> T getMobilePropertyValue(IBaseSMComponent c, MobileProperty<T> property)
+	{
+		return ((JSBase)c).getCustomProperty(property);
+	}
+
+	@Override
+	public <T> void setMobilePropertyValue(IBaseSMComponent c, MobileProperty<T> property, T value)
+	{
+		((JSBase)c).putCustomProperty(property, value);
 	}
 }

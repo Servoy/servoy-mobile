@@ -19,7 +19,9 @@ package com.servoy.mobile.client.scripting.solutionmodel;
 
 import org.timepedia.exporter.client.NoExport;
 
+import com.servoy.base.persistence.IMobileProperties.MobileProperty;
 import com.servoy.mobile.client.persistence.AbstractBase;
+import com.servoy.mobile.client.persistence.AbstractBase.MobileProperties;
 
 /**
  * @author acostescu
@@ -60,6 +62,36 @@ public class JSBase
 			}
 		}
 		return hasBeenClonedNow;
+	}
+
+	@NoExport
+	protected <T> T getCustomProperty(MobileProperty<T> property)
+	{
+		MobileProperties mp = getBase().getMobileProperties();
+		if (mp == null)
+		{
+			return null;
+		}
+		return mp.getPropertyValue(property);
+	}
+
+	@NoExport
+	protected <T> void putCustomProperty(MobileProperty<T> property, T value)
+	{
+		if (value == null)
+		{
+			MobileProperties mp = getBase().getMobileProperties();
+			if (mp != null)
+			{
+				cloneIfNeeded();
+				mp.setPropertyValue(property, value);
+			}
+		}
+		else
+		{
+			cloneIfNeeded();
+			getBase().getOrCreateMobileProperties().setPropertyValue(property, value);
+		}
 	}
 
 	@NoExport

@@ -23,16 +23,10 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 
 import com.servoy.base.persistence.IMobileProperties;
-import com.servoy.base.persistence.constants.IRepositoryConstants;
 import com.servoy.base.scripting.solutionhelper.BaseSolutionHelper;
-import com.servoy.base.scripting.solutionhelper.IBaseSHInsetList;
-import com.servoy.base.scripting.solutionhelper.IBaseSHList;
-import com.servoy.base.scripting.solutionhelper.IBaseSMFormInternal;
 import com.servoy.base.solutionmodel.IBaseSMComponent;
 import com.servoy.base.solutionmodel.IBaseSMForm;
-import com.servoy.base.solutionmodel.IBaseSMPortal;
 import com.servoy.base.solutionmodel.IBaseSolutionModel;
-import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.servoy.mobile.client.scripting.solutionmodel.JSBase;
 import com.servoy.mobile.client.scripting.solutionmodel.JSButton;
 import com.servoy.mobile.client.scripting.solutionmodel.JSComponent;
@@ -235,7 +229,6 @@ public class SolutionHelper extends BaseSolutionHelper implements IMobilePredefi
 		return (JSInsetList)super.getInsetList(form, name);
 	}
 
-
 	@Override
 	public JSInsetList[] getAllInsetLists(IBaseSMForm form)
 	{
@@ -262,34 +255,6 @@ public class SolutionHelper extends BaseSolutionHelper implements IMobilePredefi
 	public JSList[] getAllListForms()
 	{
 		return Arrays.asList(super.getAllListForms()).toArray(new JSList[0]);
-	}
-
-	@Override
-	protected IBaseSHInsetList instantiateInsetList(IBaseSMPortal portal, BaseSolutionHelper baseSolutionHelper)
-	{
-		return new JSInsetList(portal, baseSolutionHelper);
-	}
-
-	@Override
-	protected IBaseSHList instantiateList(IBaseSMForm listForm, BaseSolutionHelper baseSolutionHelper)
-	{
-		return new JSList(listForm, baseSolutionHelper);
-	}
-
-	@Override
-	protected IBaseSMFormInternal getParentForm(IBaseSMComponent c)
-	{
-		JSBase p = null;
-		if (c instanceof JSBase) p = ((JSBase)c).getParent();
-		return (p instanceof IBaseSMFormInternal ? (IBaseSMFormInternal)p : null);
-	}
-
-	@Override
-	protected boolean supportsTitleLabel(IBaseSMComponent c)
-	{
-		JSComponent jsComp = (JSComponent)c;
-		return jsComp.getBase().getTypeID() == IRepositoryConstants.FIELDS ||
-			(jsComp.getBase().getTypeID() == IRepositoryConstants.GRAPHICALCOMPONENTS && !((GraphicalComponent)jsComp.getBase()).isButton());
 	}
 
 	@Override
