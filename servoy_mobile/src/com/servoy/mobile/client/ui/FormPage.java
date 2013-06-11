@@ -32,6 +32,7 @@ import com.sksamuel.jqm4gwt.Mobile;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
+import com.sksamuel.jqm4gwt.toolbar.JQMPanel;
 
 /**
  * Form page UI
@@ -213,6 +214,7 @@ public class FormPage extends JQMPage implements IFormComponent
 		{
 			navigator.setDismissible(false);
 			navigator.setSwipeClose(false);
+			navigator.setDisplay(JQMPanel.DISPLAY_PUSH);
 		}
 		else
 		{

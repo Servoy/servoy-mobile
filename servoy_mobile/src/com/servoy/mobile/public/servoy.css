@@ -1,5 +1,5 @@
 @media all and (min-width: 28em) {
-	.ui-field-contain  label.label-labelfor
+	.ui-content .ui-field-contain  label.label-labelfor
 	{
 		width: 20%;
 		display: inline-block;
@@ -8,7 +8,7 @@
 		overflow: hidden;
 	}
 	
-	.ui-field-contain label.ui-select
+	.ui-content .ui-field-contain label.ui-select
 	{
 		width: 20%;
 		display: inline-block;
@@ -17,7 +17,7 @@
 		overflow: hidden;
 	}
 	
-	.ui-field-contain label.ui-input-text
+	.ui-content .ui-field-contain label.ui-input-text
 	{
 		width: 20%;
 		display: inline-block;
@@ -26,7 +26,7 @@
 		overflow: hidden;
 	}
 	
-	.ui-field-contain .ui-controlgroup-label
+	.ui-content .ui-field-contain .ui-controlgroup-label
 	{
 		width: 20%;
 		display: inline-block;
@@ -43,7 +43,7 @@ label.label-labelfor
 }
 
 @media all and (min-width: 28em) {
-	.ui-field-contain  .label-heading
+	.ui-content .ui-field-contain  .label-heading
 	{
 		width: 60%;
 		display: inline-block;
@@ -61,12 +61,23 @@ label.label-labelfor
 	background-size: 46px 46px;
 }
 
-@media (min-width: 45em){
-	.ui-panel-content-fixed-toolbar-position-left.ui-panel-content-fixed-toolbar-display-reveal.ui-panel-content-fixed-toolbar-open {
-		width: auto;
-		right: 0;
-	}
-	.ui-panel-content-wrap-position-left.ui-panel-content-wrap-display-reveal.ui-panel-content-wrap-open {
-		margin-right: 17em;
-	}
+.ui-panel .ui-panel-inner .ui-field-contain {
+	border-width: 0;
+	padding: 0;
+	margin: 1em 0;
+}
+
+.ui-panel-display-push {
+	-webkit-box-shadow: inset -5px 0 5px rgba(0,0,0,.15);
+	-moz-box-shadow: inset -5px 0 5px rgba(0,0,0,.15);
+	box-shadow: inset -5px 0 5px rgba(0,0,0,.15);
+}
+
+.ui-panel-content-fixed-toolbar-position-left.ui-panel-content-fixed-toolbar-display-push.ui-panel-content-fixed-toolbar-open {
+	width: auto;
+	right: 0;
+}
+
+.ui-panel-content-wrap-position-left.ui-panel-content-wrap-display-push.ui-panel-content-wrap-open {
+	margin-right: 17em;
 }
