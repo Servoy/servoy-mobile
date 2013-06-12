@@ -6,6 +6,7 @@ import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.Setter;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.servoy.base.persistence.constants.IFormConstants;
 import com.servoy.base.scripting.api.IJSController;
 import com.servoy.base.scripting.api.IJSEvent;
 import com.servoy.base.scripting.api.IJSFoundSet;
@@ -277,6 +278,32 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 	public boolean isMarkedForCleanup()
 	{
 		return markedForCleanup;
+	}
+
+	private String navigatorName;
+
+	public void setNavigator(String name)
+	{
+		navigatorName = null;
+		String formNavigatorID = form.getNavigatorID();
+		if (formNavigatorID != null)
+		{
+			if (String.valueOf(IFormConstants.NAVIGATOR_IGNORE).equals(formNavigatorID))
+			{
+				navigatorName = name;
+			}
+			else
+			{
+				Form navigatorForm = mc.getFlattenedSolution().getFormByUUID(formNavigatorID);
+				if (navigatorForm != null) navigatorName = navigatorForm.getName();
+			}
+		}
+		getPage().addNavigator(navigatorName);
+	}
+
+	public String getNavigator()
+	{
+		return navigatorName;
 	}
 
 	@Override

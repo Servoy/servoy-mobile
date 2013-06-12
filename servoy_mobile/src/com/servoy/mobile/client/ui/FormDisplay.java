@@ -161,13 +161,6 @@ public class FormDisplay implements IFormDisplay
 		createContent(formComponent, contentComponents);
 		JQMFooter componentFooter = createFooter(formComponent, footerPart, footerComponents);
 		if (componentFooter != null) formComponent.addFooter(componentFooter);
-
-		String formNavigatorID = form.getNavigatorID();
-		if (formNavigatorID != null)
-		{
-			Form navigatorForm = application.getFlattenedSolution().getFormByUUID(formNavigatorID);
-			if (navigatorForm != null) formComponent.addNavigator(application.getFormManager().getForm(navigatorForm.getName()).getPanel(form.getName()));
-		}
 	}
 
 	public JQMHeader createHeader(IFormComponent formComponent, Part headerPart, Component label, Component leftButton, Component rightButton)

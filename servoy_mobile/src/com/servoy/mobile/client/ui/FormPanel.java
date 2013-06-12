@@ -80,7 +80,7 @@ public class FormPanel extends JQMPanel implements IFormComponent
 	 * @see com.servoy.mobile.client.ui.IFormComponent#addNavigator(com.servoy.mobile.client.ui.FormPanel)
 	 */
 	@Override
-	public void addNavigator(FormPanel navigator)
+	public void addNavigator(String navigatorFormName)
 	{
 	}
 
@@ -107,5 +107,10 @@ public class FormPanel extends JQMPanel implements IFormComponent
 	protected void onPanelClose()
 	{
 		formController.executeOnHideMethod();
+	}
+
+	public String getName()
+	{
+		return formController.getName();
 	}
 }

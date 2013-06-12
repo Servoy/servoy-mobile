@@ -34,9 +34,11 @@ public interface IFormComponent
 
 	void addFooter(JQMFooter footer);
 
-	void addNavigator(FormPanel navigator);
+	void addNavigator(String navigatorFormName);
 
 	DataAdapterList getDataAdapter();
 
 	void add(Widget widget);
+
+	String getName();
 }

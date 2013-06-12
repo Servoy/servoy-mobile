@@ -19,6 +19,7 @@ package com.servoy.mobile.client.ui;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.DataAdapterList;
@@ -47,7 +48,11 @@ public class FormPage extends JQMPage implements IFormComponent
 	private DataAdapterList dal;
 
 	private JQMHeader headerComponent;
+
 	private FormPanel formNavigator;
+	private JQMButton navigatorLeftButton, replacedLeftButton;
+	private HandlerRegistration navigatorLeftButtonHandler;
+	private boolean headerAddedByNavigator;
 
 	private boolean enabled = true;
 	private int scrollTop;
@@ -157,9 +162,18 @@ public class FormPage extends JQMPage implements IFormComponent
 	public void destroy()
 	{
 		headerComponent = null;
+
+		formNavigator = null;
+		if (navigatorLeftButtonHandler != null) navigatorLeftButtonHandler.removeHandler();
+		navigatorLeftButtonHandler = null;
+		navigatorLeftButton = null;
+		replacedLeftButton = null;
+
 		removeHeader();
 		removeFooter();
+		removePanel();
 		removeFromParent();
+
 		dal.destroy();
 		formController = null;
 		dal = null;
@@ -199,42 +213,63 @@ public class FormPage extends JQMPage implements IFormComponent
 		return dal;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.ui.IFormComponent#addNavigator(com.servoy.mobile.client.ui.FormPanel)
-	 */
 	@Override
-	public void addNavigator(FormPanel navigator)
+	public void addNavigator(String navigatorFormName)
 	{
-		formNavigator = navigator;
-		navigator.setPositionFixed(true);
-
-		if (isTablet())
+		if (formNavigator != null)
 		{
-			navigator.setDismissible(false);
-			navigator.setSwipeClose(false);
-			navigator.setDisplay(JQMPanel.DISPLAY_PUSH);
-		}
-		else
-		{
-			if (headerComponent == null)
+			if (formNavigator.getName().equals(navigatorFormName)) return;
+			removePanel();
+			formNavigator = null;
+			if (navigatorLeftButtonHandler != null)
 			{
-				headerComponent = new JQMHeader();
+				navigatorLeftButtonHandler.removeHandler();
+				navigatorLeftButtonHandler = null;
 			}
-			JQMButton navigatorButton = headerComponent.setLeftButton("", DataIcon.BARS); //$NON-NLS-1$
-			navigatorButton.setIconPos(IconPos.NOTEXT);
-			navigatorButton.addClickHandler(new ClickHandler()
+			if (navigatorLeftButton != null)
 			{
-				@Override
-				public void onClick(ClickEvent event)
-				{
-					formNavigator.toggle();
-				}
-			});
+				headerComponent.remove(navigatorLeftButton);
+				navigatorLeftButton = null;
+			}
+			if (headerAddedByNavigator)
+			{
+				remove(headerComponent);
+				headerComponent = null;
+			}
+			else headerComponent.setLeftButton(replacedLeftButton);
 		}
 
-		add(navigator);
+		if (navigatorFormName != null)
+		{
+			formNavigator = application.getFormManager().getForm(navigatorFormName).getPanel(getName());
+			formNavigator.setPositionFixed(true);
+
+			if (isTablet())
+			{
+				formNavigator.setDismissible(false);
+				formNavigator.setSwipeClose(false);
+				formNavigator.setDisplay(JQMPanel.DISPLAY_PUSH);
+			}
+			else
+			{
+				if (headerComponent == null)
+				{
+					headerComponent = new JQMHeader();
+				}
+				navigatorLeftButton = headerComponent.setLeftButton("", DataIcon.BARS); //$NON-NLS-1$
+				navigatorLeftButton.setIconPos(IconPos.NOTEXT);
+				navigatorLeftButtonHandler = navigatorLeftButton.addClickHandler(new ClickHandler()
+				{
+					@Override
+					public void onClick(ClickEvent event)
+					{
+						formNavigator.toggle();
+					}
+				});
+			}
+
+			add(formNavigator);
+		}
 	}
 
 	private boolean isTablet()

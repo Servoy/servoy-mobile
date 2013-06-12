@@ -123,12 +123,15 @@ public class FormManager
 	{
 		if (isChangingFormPage) return false;
 		formControllerMap.put(formController.getName(), formController);
+		String navigatorName = null;
 		if (currentForm != null)
 		{
 			if (!currentForm.executeOnHideMethod()) return false;
 			currentForm.getPage().saveScrollTop();
+			navigatorName = currentForm.getNavigator();
 		}
 		currentForm = formController;
+		currentForm.setNavigator(navigatorName);
 		history.add(formController);
 		if (!restoreScrollPosition && currentForm != null) currentForm.getPage().clearScrollTop();
 		JQMContext.changePage(formController.getPage());
