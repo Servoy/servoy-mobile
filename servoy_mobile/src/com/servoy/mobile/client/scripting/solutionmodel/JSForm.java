@@ -1066,13 +1066,20 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 		return jsPart;
 	}
 
-	@Override
+	/*
+	 * Not in interface but used in first versions of mobile beans
+	 */
 	public JSBean newBean(String name, String classname, int x, int y, int width, int height)
+	{
+		return newBean(name, y);
+	}
+
+	public JSBean newBean(String name, int y)
 	{
 		cloneIfNeeded();
 		Bean bean = Bean.createNewBeanComponent(form);
-		bean.setSize(width, height);
-		bean.setLocation(x, y);
+		bean.setSize(10, 10);
+		bean.setLocation(0, y);
 		return new JSBean(bean, getSolutionModel(), this);
 	}
 
