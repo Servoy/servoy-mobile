@@ -28,6 +28,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.storage.client.Storage;
@@ -180,8 +181,8 @@ public class FoundSetManager
 	}
 
 	private native void exportImpl(String name) /*-{
-		$wnd._ServoyUtils_.defineWindowVariable(name);
-	}-*/;
+												$wnd._ServoyUtils_.defineWindowVariable(name);
+												}-*/;
 
 	public EntityDescription getEntityDescription(String entityName)
 	{
@@ -515,7 +516,9 @@ public class FoundSetManager
 			String key = getRowDataPkAndKey(entityName, row)[1];
 			if (local)
 			{
-				if (!changes.contains(key)) changes.add(key);
+				// first remove this key, so that the "modification timestamp" is updated.
+				changes.remove(key);
+				changes.add(key);
 			}
 			localStorage.setItem(key, row.toJSONArray(entities.getDataProviders(entityName)));
 		}
@@ -1052,7 +1055,7 @@ public class FoundSetManager
 		return pk;
 	}
 
-	String toRemoteJSON(String entityName, RowDescription row)
+	JSONObject toRemoteJSON(String entityName, RowDescription row)
 	{
 		String[] uuidCols = entities.getUUIDDataProviderNames(entityName);
 

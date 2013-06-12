@@ -153,29 +153,29 @@ public class RowDescription extends JavaScriptObject
 	}
 
 	private final native void setModificationDate()/*-{
-		this[@com.servoy.mobile.client.dto.RowDescription::MODIFICATION_DATE] = new Date()
-				.getTime();
-	}-*/;
+													this[@com.servoy.mobile.client.dto.RowDescription::MODIFICATION_DATE] = new Date()
+													.getTime();
+													}-*/;
 
 	private final native void setBooleanValue(String dataProviderID, boolean val)/*-{
-		this[dataProviderID] = val;
-	}-*/;
+																					this[dataProviderID] = val;
+																					}-*/;
 
 	private final native void setNumberValue(String dataProviderID, double val)/*-{
-		this[dataProviderID] = val;
-	}-*/;
+																				this[dataProviderID] = val;
+																				}-*/;
 
 	private final native void setValueObject(String dataProviderID, Object obj) /*-{
-		this[dataProviderID] = obj;
-	}-*/;
+																				this[dataProviderID] = obj;
+																				}-*/;
 
 	public final native double getNumberValue(String dataProviderID)/*-{
-		return this[dataProviderID];
-	}-*/;
+																	return this[dataProviderID];
+																	}-*/;
 
-	public final String toJSONObject()
+	public final JSONObject toJSONObject()
 	{
-		return new JSONObject(this).toString();
+		return new JSONObject(this);
 	}
 
 	public final String toJSONArray(String[] dataProviders)
@@ -219,15 +219,15 @@ public class RowDescription extends JavaScriptObject
 	}
 
 	public final native void setCreatedOnDevice(boolean createdOnDevice)/*-{
-		this[@com.servoy.mobile.client.dto.RowDescription::CREATED_ON_DEVICE] = createdOnDevice;
-	}-*/;
+																		this[@com.servoy.mobile.client.dto.RowDescription::CREATED_ON_DEVICE] = createdOnDevice;
+																		}-*/;
 
 	public final native boolean isCreatedOnDevice() /*-{
-		if (this[@com.servoy.mobile.client.dto.RowDescription::CREATED_ON_DEVICE] == null
-				|| this[@com.servoy.mobile.client.dto.RowDescription::CREATED_ON_DEVICE] == undefined)
-			return false;
-		return this[@com.servoy.mobile.client.dto.RowDescription::CREATED_ON_DEVICE];
-	}-*/;
+													if (this[@com.servoy.mobile.client.dto.RowDescription::CREATED_ON_DEVICE] == null
+													|| this[@com.servoy.mobile.client.dto.RowDescription::CREATED_ON_DEVICE] == undefined)
+													return false;
+													return this[@com.servoy.mobile.client.dto.RowDescription::CREATED_ON_DEVICE];
+													}-*/;
 
 	/**
 	 * For creation for brand new records
@@ -242,6 +242,6 @@ public class RowDescription extends JavaScriptObject
 
 	public final RowDescription cloneRowDescription()
 	{
-		return JSONParser.parseStrict(toJSONObject()).isObject().getJavaScriptObject().cast();
+		return JSONParser.parseStrict(toJSONObject().toString()).isObject().getJavaScriptObject().cast();
 	}
 }

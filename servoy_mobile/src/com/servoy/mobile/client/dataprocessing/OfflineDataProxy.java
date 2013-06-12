@@ -36,6 +36,7 @@ import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONString;
 import com.servoy.mobile.client.dto.OfflineDataDescription;
 import com.servoy.mobile.client.dto.RowDescription;
 import com.servoy.mobile.client.request.Base64Coder;
@@ -57,6 +58,7 @@ public class OfflineDataProxy
 	private int totalLength;
 	private String[] credentials; //id, password
 	private String[] uncheckedCredentials; //id, password
+	private Boolean hasSingleWsUpdateMethod = null;
 
 	public OfflineDataProxy(FoundSetManager fsm, String serverURL, boolean nodebug, int timeout)
 	{
@@ -66,12 +68,13 @@ public class OfflineDataProxy
 		this.timeout = timeout;
 	}
 
+	@SuppressWarnings("nls")
 	public void loadOfflineData(final String name, Callback<Integer, Failure> cb)
 	{
 		this.loadCallback = cb;
 
 		//requires a REST url like: serverURL/offline_data/version/name
-		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, serverURL + "/offline_data/" + version + "/" + URL.encode(name));
+		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, serverURL + "/offline_data/" + version + '/' + URL.encode(name));
 		setRequestParameters(builder);
 
 		builder.setHeader("Accept", "application/json");
@@ -124,13 +127,14 @@ public class OfflineDataProxy
 		return jsono.getJavaScriptObject().cast();
 	}
 
+	@SuppressWarnings("nls")
 	public void requestRowData(final HashMap<String, HashSet<Object>> entitiesToPKs)
 	{
 		final String entityName = getNextItem(entitiesToPKs.keySet());
 		if (entityName == null)
 		{
 			//when empty stop
-			loadCallback.onSuccess(totalLength);
+			loadCallback.onSuccess(Integer.valueOf(totalLength));
 			loadCallback = null;
 			return;
 		}
@@ -149,9 +153,9 @@ public class OfflineDataProxy
 		//serverURL/entityName/list?ids=1,2,3,4,12
 		//serverURL/entityName/filter?name=bla
 		//serverURL/entityName/12 GET
-		//serverURL/entityName/12 POST (for update)
-		//serverURL/entityName PUT (for new)
-		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, serverURL + "/" + foundSetManager.getEntityPrefix() + entityName + "/" + version +
+		//serverURL/entityName/12 POST (for new)
+		//serverURL/entityName PUT (for update)
+		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, serverURL + '/' + foundSetManager.getEntityPrefix() + entityName + '/' + version +
 			"/list" + URL.encode(params));
 		setRequestParameters(builder);
 
@@ -244,26 +248,131 @@ public class OfflineDataProxy
 		return ja.getJavaScriptObject().cast();
 	}
 
-	public void saveOfflineData(final String serverUrl, final Callback<Integer, Failure> callback)
+	@SuppressWarnings("nls")
+	public void saveOfflineData(final Callback<Integer, Failure> callback)
 	{
-		totalLength = 0;
-		deleteRowData(serverUrl, foundSetManager.getDeletes(), callback);
+		if (hasSingleWsUpdateMethod == null)
+		{
+			testOffLineDataWSUpdate(callback);
+		}
+		else if (hasSingleWsUpdateMethod.booleanValue())
+		{
+			JSONObject payload = new JSONObject();
+			payload.put("entityPrefix", new JSONString(foundSetManager.getEntityPrefix()));
+
+			final ArrayList<String> deletes = foundSetManager.getDeletes();
+			if (deletes.size() > 0)
+			{
+				JSONArray deletedKeys = new JSONArray();
+				payload.put("deletes", deletedKeys);
+				for (String key : deletes)
+				{
+					int idx = key.indexOf('|');
+					final String entityName = key.substring(0, idx);
+					String pk = key.substring(idx + 1, key.length());
+					String remotepk = foundSetManager.getRemotePK(entityName, pk, null);
+
+					JSONObject value = new JSONObject();
+					value.put("pk", new JSONString(remotepk));
+					value.put("entity", new JSONString(entityName));
+					deletedKeys.set(deletedKeys.size(), value);
+				}
+			}
+
+			final ArrayList<String> changes = foundSetManager.getChanges();
+			final ArrayList<String[]> createdOnDevice = new ArrayList<String[]>();
+			if (changes.size() > 0)
+			{
+				JSONArray changeRows = new JSONArray();
+				payload.put("changes", changeRows);
+				for (String key : changes)
+				{
+					int idx = key.indexOf('|');
+					final String entityName = key.substring(0, idx);
+					final String pk = key.substring(idx + 1, key.length());
+					final RowDescription row = foundSetManager.getLocalStorageRowDescription(entityName, pk);
+					String remotepk = foundSetManager.getRemotePK(entityName, pk, row);
+
+					JSONObject value = new JSONObject();
+					value.put("pk", new JSONString(remotepk));
+					value.put("entity", new JSONString(entityName));
+					value.put("row", foundSetManager.toRemoteJSON(entityName, row));
+
+					if (row.isCreatedOnDevice())
+					{
+						createdOnDevice.add(new String[] { entityName, pk });
+						value.put("method", new JSONString("i"));
+					}
+					else
+					{
+						value.put("method", new JSONString("u"));
+					}
+					changeRows.set(changeRows.size(), value);
+				}
+			}
+
+			RequestBuilder builder = new RequestBuilder(RequestBuilder.PUT, serverURL + "/offline_data/" + version);
+			setRequestParameters(builder);
+			builder.setHeader("Content-Type", "application/json");
+			String json = payload.toString();
+			totalLength = json.length();
+			try
+			{
+				builder.sendRequest(json, new RequestCallback()
+				{
+					public void onError(Request request, Throwable exception)
+					{
+						callback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback(
+							"cannotSaveJSON"), exception));
+					}
+
+					public void onResponseReceived(Request request, Response response)
+					{
+						if (Response.SC_OK == response.getStatusCode())
+						{
+							successfullRestAuthResponseReceived();
+
+							deletes.clear();
+							changes.clear();
+
+							foundSetManager.updateDeletesInLocalStorage(); //update deletes
+							foundSetManager.updateChangesInLocalStorage(); //update changes
+
+							for (String[] entityAndPk : createdOnDevice)
+							{
+								foundSetManager.recordPushedToServer(entityAndPk[0], entityAndPk[1]); //is present on server, reset flag
+							}
+							callback.onSuccess(Integer.valueOf(totalLength));
+						}
+						else
+						{
+							callback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback(
+								"cannotSaveJSON"), response.getStatusCode()));
+						}
+					}
+				});
+			}
+			catch (RequestException e)
+			{
+				callback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback("cannotSaveJSON"),
+					e));
+			}
+		}
+		else
+		{
+			totalLength = 0;
+			postRowData(foundSetManager.getChanges(), callback);
+		}
 	}
 
-	private void deleteRowData(final String serverUrl, final ArrayList<String> keys, final Callback<Integer, Failure> callback)
+	@SuppressWarnings("nls")
+	private void deleteRowData(final ArrayList<String> keys, final Callback<Integer, Failure> callback)
 	{
 		final String key = getNextItem(keys);
 		if (key == null)
 		{
-			if (foundSetManager.getChanges().size() == 0)
-			{
-				//when no updates stop
-				callback.onSuccess(totalLength);
-			}
-			else
-			{
-				postRowData(serverUrl, foundSetManager.getChanges(), callback);
-			}
+			//when empty stop
+			callback.onSuccess(Integer.valueOf(totalLength));
 			return;
 		}
 
@@ -273,8 +382,8 @@ public class OfflineDataProxy
 		String remotepk = foundSetManager.getRemotePK(entityName, pk, null);
 
 		//DELETE server side
-		RequestBuilder builder = new RequestBuilder(RequestBuilder.DELETE, serverURL + "/" + foundSetManager.getEntityPrefix() + entityName + "/" + version +
-			"/" + URL.encode(remotepk));
+		RequestBuilder builder = new RequestBuilder(RequestBuilder.DELETE, serverURL + '/' + foundSetManager.getEntityPrefix() + entityName + '/' + version +
+			'/' + URL.encode(remotepk));
 		setRequestParameters(builder);
 		//builder.setHeader("Access-Control-Request-Method", "DELETE");
 
@@ -296,7 +405,7 @@ public class OfflineDataProxy
 
 						keys.remove(key);//remove current
 						foundSetManager.updateDeletesInLocalStorage(); //update deletes
-						deleteRowData(serverUrl, keys, callback);
+						deleteRowData(keys, callback);
 					}
 					else
 					{
@@ -313,13 +422,22 @@ public class OfflineDataProxy
 		}
 	}
 
-	private void postRowData(final String serverUrl, final ArrayList<String> keys, final Callback<Integer, Failure> callback)
+	@SuppressWarnings("nls")
+	private void postRowData(final ArrayList<String> keys, final Callback<Integer, Failure> callback)
 	{
 		final String key = getNextItem(keys);
 		if (key == null)
 		{
-			//when empty stop
-			callback.onSuccess(totalLength);
+
+			if (foundSetManager.getDeletes().size() == 0)
+			{
+				//when no updates stop
+				callback.onSuccess(Integer.valueOf(totalLength));
+			}
+			else
+			{
+				deleteRowData(foundSetManager.getDeletes(), callback);
+			}
 			return;
 		}
 
@@ -329,12 +447,12 @@ public class OfflineDataProxy
 		final RowDescription row = foundSetManager.getLocalStorageRowDescription(entityName, pk);
 		String remotepk = foundSetManager.getRemotePK(entityName, pk, row);
 
-		String json = foundSetManager.toRemoteJSON(entityName, row);
+		String json = foundSetManager.toRemoteJSON(entityName, row).toString();
 		totalLength += json.length();
 
 		//serverURL/entityName/12 PUT (for update), POST for new
-		RequestBuilder builder = new RequestBuilder(row.isCreatedOnDevice() ? RequestBuilder.POST : RequestBuilder.PUT, serverURL + "/" +
-			foundSetManager.getEntityPrefix() + entityName + "/" + version + "/" + URL.encode(remotepk));
+		RequestBuilder builder = new RequestBuilder(row.isCreatedOnDevice() ? RequestBuilder.POST : RequestBuilder.PUT, serverURL + '/' +
+			foundSetManager.getEntityPrefix() + entityName + '/' + version + '/' + URL.encode(remotepk));
 		setRequestParameters(builder);
 		//builder.setHeader("Access-Control-Request-Method", row.isCreatedOnDevice() ? "POST" : "PUT");
 
@@ -361,7 +479,7 @@ public class OfflineDataProxy
 						{
 							foundSetManager.recordPushedToServer(entityName, pk); //is present on server, reset flag
 						}
-						postRowData(serverUrl, keys, callback);//process the next
+						postRowData(keys, callback);//process the next
 					}
 					else
 					{
@@ -400,6 +518,50 @@ public class OfflineDataProxy
 		return uncheckedCredentials != null;
 	}
 
+	@SuppressWarnings("nls")
+	private void testOffLineDataWSUpdate(final Callback<Integer, Failure> callback)
+	{
+		//requires a REST url like: serverURL/offline_data/version/name
+		RequestBuilder builder = new ServoyRequestBuilder("OPTIONS", serverURL + "/offline_data/" + version + "/ws_update");
+		setRequestParameters(builder);
+		try
+		{
+			builder.sendRequest("", new RequestCallback()
+			{
+
+				@Override
+				public void onResponseReceived(Request request, Response response)
+				{
+					try
+					{
+						String header = response.getHeader("Allow");
+						Log.info("options response for offlinedate.ws_update: got header response: " + header);
+						hasSingleWsUpdateMethod = (header != null && header.contains("PUT")) ? Boolean.TRUE : Boolean.FALSE;
+					}
+					catch (Exception e)
+					{
+						Log.error("options response for offlinedate.ws_update", e);
+						hasSingleWsUpdateMethod = Boolean.FALSE;
+					}
+					saveOfflineData(callback);
+				}
+
+				@Override
+				public void onError(Request request, Throwable exception)
+				{
+					Log.error("on error: " + exception.getMessage());
+					callback.onFailure(new Failure(foundSetManager.getApplication(), "Couldn't test for a offline_data.ws_update method", exception));
+				}
+			});
+		}
+		catch (RequestException e)
+		{
+			e.printStackTrace();
+		}
+
+	}
+
+	@SuppressWarnings("nls")
 	private void setRequestParameters(RequestBuilder builder)
 	{
 		if (nodebug) builder.setHeader("servoy.nodebug", "true");
@@ -417,5 +579,14 @@ public class OfflineDataProxy
 			}
 		}
 		builder.setTimeoutMillis(timeout * 1000);
+	}
+
+
+	class ServoyRequestBuilder extends RequestBuilder
+	{
+		public ServoyRequestBuilder(String method, String url)
+		{
+			super(method, url);
+		}
 	}
 }

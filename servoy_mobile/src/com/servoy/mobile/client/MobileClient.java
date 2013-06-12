@@ -250,7 +250,7 @@ public class MobileClient implements EntryPoint
 			if (foundSetManager.hasChanges())
 			{
 				//save and clear, when successful do load
-				offlineDataProxy.saveOfflineData(getServerURL(), new Callback<Integer, Failure>()
+				offlineDataProxy.saveOfflineData(new Callback<Integer, Failure>()
 				{
 					@Override
 					public void onSuccess(Integer result)
