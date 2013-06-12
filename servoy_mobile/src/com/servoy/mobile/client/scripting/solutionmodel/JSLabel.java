@@ -43,7 +43,7 @@ public class JSLabel extends JSGraphicalComponent implements IBaseSMLabel, Expor
 	@Getter
 	public int getLabelSize()
 	{
-		return getCustomProperty(IMobileProperties.HEADER_SIZE).intValue();
+		return getMobileProperty(IMobileProperties.HEADER_SIZE).intValue();
 	}
 
 	@Setter
@@ -51,7 +51,7 @@ public class JSLabel extends JSGraphicalComponent implements IBaseSMLabel, Expor
 	{
 		if (size > 0 && size < 7)
 		{
-			putCustomProperty(IMobileProperties.HEADER_SIZE, Integer.valueOf(size));
+			putMobileProperty(IMobileProperties.HEADER_SIZE, Integer.valueOf(size));
 		}
 	}
 

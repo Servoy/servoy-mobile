@@ -43,12 +43,12 @@ public class JSButton extends JSGraphicalComponent implements IBaseSMButton, Exp
 	@Getter
 	public String getIconType()
 	{
-		return getCustomProperty(IMobileProperties.DATA_ICON);
+		return getMobileProperty(IMobileProperties.DATA_ICON);
 	}
 
 	@Setter
 	public void setIconType(String iconType)
 	{
-		putCustomProperty(IMobileProperties.DATA_ICON, iconType);
+		putMobileProperty(IMobileProperties.DATA_ICON, iconType);
 	}
 }

@@ -123,15 +123,15 @@ public class JSHeader extends JSPart implements IMobileSMHeader, Exportable
 	public JSTitle newHeaderText(String txt)
 	{
 		JSLabel label = getParent().newLabel(txt, 0, 0, 10, 10);
-		label.putCustomProperty(IMobileProperties.HEADER_ITEM, Boolean.TRUE);
-		label.putCustomProperty(IMobileProperties.HEADER_TEXT, Boolean.TRUE);
+		label.putMobileProperty(IMobileProperties.HEADER_ITEM, Boolean.TRUE);
+		label.putMobileProperty(IMobileProperties.HEADER_TEXT, Boolean.TRUE);
 		return new JSTitle((GraphicalComponent)label.getBase(), getSolutionModel(), getParent());
 	}
 
 	@Override
 	public JSTitle getHeaderText()
 	{
-		Component headerText = getParent().selectComponent(IMobileProperties.HEADER_TEXT);
+		Component headerText = getParent().findComponent(IMobileProperties.HEADER_TEXT);
 		if (headerText instanceof GraphicalComponent)
 		{
 			return new JSTitle((GraphicalComponent)headerText, getSolutionModel(), getParent());
@@ -149,8 +149,8 @@ public class JSHeader extends JSPart implements IMobileSMHeader, Exportable
 	private JSButton newButtonImpl(boolean left, String txt, JSMethod method)
 	{
 		JSButton button = getParent().newButton(txt, 0, 0, 10, 10, method);
-		button.putCustomProperty(IMobileProperties.HEADER_ITEM, Boolean.TRUE);
-		button.putCustomProperty(left ? IMobileProperties.HEADER_LEFT_BUTTON : IMobileProperties.HEADER_RIGHT_BUTTON, Boolean.TRUE);
+		button.putMobileProperty(IMobileProperties.HEADER_ITEM, Boolean.TRUE);
+		button.putMobileProperty(left ? IMobileProperties.HEADER_LEFT_BUTTON : IMobileProperties.HEADER_RIGHT_BUTTON, Boolean.TRUE);
 		return button;
 	}
 

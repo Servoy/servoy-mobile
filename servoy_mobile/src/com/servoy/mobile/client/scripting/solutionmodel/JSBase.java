@@ -65,7 +65,7 @@ public class JSBase
 	}
 
 	@NoExport
-	protected <T> T getCustomProperty(MobileProperty<T> property)
+	protected <T> T getMobileProperty(MobileProperty<T> property)
 	{
 		MobileProperties mp = getBase().getMobileProperties();
 		if (mp == null)
@@ -76,7 +76,7 @@ public class JSBase
 	}
 
 	@NoExport
-	protected <T> void putCustomProperty(MobileProperty<T> property, T value)
+	protected <T> void putMobileProperty(MobileProperty<T> property, T value)
 	{
 		if (value == null)
 		{

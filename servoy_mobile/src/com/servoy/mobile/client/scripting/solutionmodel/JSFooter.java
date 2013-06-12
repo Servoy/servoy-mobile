@@ -264,7 +264,7 @@ public class JSFooter extends JSPart implements IMobileSMFooter, Exportable
 	@NoExport
 	private <T extends JSBase> T markForFooter(T comp)
 	{
-		comp.putCustomProperty(IMobileProperties.FOOTER_ITEM, Boolean.TRUE);
+		comp.putMobileProperty(IMobileProperties.FOOTER_ITEM, Boolean.TRUE);
 		return comp;
 	}
 

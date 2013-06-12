@@ -209,7 +209,7 @@ public class JSField extends JSComponent implements IMobileSMField, Exportable
 					if (cGroup.equals(l.getGroupID()))
 					{
 						// I guess the following if might as well not be; the location thing is for legacy solutions (before the COMPONENT_TITLE existed)
-						if (Boolean.TRUE.equals(l.getCustomProperty(IMobileProperties.COMPONENT_TITLE)) || l.getY() < comp.getY() ||
+						if (Boolean.TRUE.equals(l.getMobileProperty(IMobileProperties.COMPONENT_TITLE)) || l.getY() < comp.getY() ||
 							(l.getY() == comp.getY() && l.getX() < comp.getX()))
 						{
 							return l;
@@ -225,7 +225,7 @@ public class JSField extends JSComponent implements IMobileSMField, Exportable
 		}
 		JSLabel titleLabel = parentForm.newLabel(null, comp.getX() - 1, comp.getY() - 1, comp.getWidth(), comp.getHeight());
 		titleLabel.setGroupID(cGroup);
-		titleLabel.putCustomProperty(IMobileProperties.COMPONENT_TITLE, Boolean.TRUE);
+		titleLabel.putMobileProperty(IMobileProperties.COMPONENT_TITLE, Boolean.TRUE);
 		return titleLabel;
 	}
 
