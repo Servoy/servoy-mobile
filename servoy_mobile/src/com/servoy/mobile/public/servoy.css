@@ -78,6 +78,10 @@ label.label-labelfor
 	right: 0;
 }
 
+.ui-panel-animate.ui-panel-content-fixed-toolbar-position-left.ui-panel-content-fixed-toolbar-display-push.ui-panel-content-fixed-toolbar-open {
+	right : 17em;	
+}
+
 .ui-panel-content-wrap-position-left.ui-panel-content-wrap-display-push.ui-panel-content-wrap-open {
 	margin-right: 17em;
 }
