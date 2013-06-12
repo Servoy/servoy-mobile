@@ -282,7 +282,7 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 
 	private String navigatorName;
 
-	public void setNavigator(String name)
+	public void updateNavigator(String currentNavigatorName)
 	{
 		navigatorName = null;
 		String formNavigatorID = form.getNavigatorID();
@@ -290,7 +290,7 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 		{
 			if (String.valueOf(IFormConstants.NAVIGATOR_IGNORE).equals(formNavigatorID))
 			{
-				navigatorName = name;
+				navigatorName = currentNavigatorName;
 			}
 			else
 			{
