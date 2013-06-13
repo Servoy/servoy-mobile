@@ -32,6 +32,7 @@ import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.scripting.AbstractRuntimeFieldComponent;
 import com.servoy.mobile.client.scripting.IRuntimeField;
 import com.servoy.mobile.client.scripting.RuntimeDataTextField;
+import com.servoy.mobile.client.util.Utils;
 import com.sksamuel.jqm4gwt.form.elements.JQMText;
 
 /**
@@ -118,7 +119,7 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 		{
 			txt = data != null ? data.toString() : ""; //$NON-NLS-1$
 		}
-		setValue(txt);
+		if (!Utils.equalObjects(txt, getValue())) setValue(txt);
 	}
 
 	private EditProvider editProvider;

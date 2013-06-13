@@ -31,6 +31,7 @@ import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.servoy.mobile.client.ui.Executor;
 import com.servoy.mobile.client.ui.IGraphicalComponent;
+import com.servoy.mobile.client.util.Utils;
 
 /**
  * @author gboros
@@ -107,7 +108,9 @@ public class AbstractRuntimeGraphicalComponent extends AbstractRuntimeBaseCompon
 			}
 		}
 
-		component.setText(txt);
+		if (!Utils.equalObjects(txt, component.getText())) component.setText(txt);
+		// otherwise don't replace innerText of tag - because if this is a click (on this same component - exactly on the visible text)
+		// that generated onBlur on another field that generated setText on this component - then onClick is no longer called on Chrome/Safari...
 	}
 
 	public void setActionCommand(final String command)
