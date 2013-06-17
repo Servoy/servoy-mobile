@@ -19,13 +19,12 @@ package com.servoy.mobile.client.scripting.solutionmodel.i;
 
 import org.timepedia.exporter.client.Exportable;
 
-import com.servoy.base.scripting.solutionhelper.IPredefinedIconConstants;
+import com.servoy.base.solutionmodel.IBaseSMButtonConstants;
 
 /**
  * @author acostescu
  */
 // workaround to have constants automatically exported without re-defining them
-public interface IMobilePredefinedIconConstants extends IPredefinedIconConstants, Exportable
+public interface IMobilePredefinedIconConstants extends IBaseSMButtonConstants, Exportable
 {
-
 }
