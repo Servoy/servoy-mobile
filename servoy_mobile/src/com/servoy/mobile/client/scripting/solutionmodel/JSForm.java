@@ -204,6 +204,23 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 	}
 
 	@Override
+	public JSField newField(IBaseSMVariable dataprovidername, int type, int y)
+	{
+		return newField((JSVariable)dataprovidername, type, y);
+	}
+
+	public JSField newField(JSVariable dataprovider, int type, int y)
+	{
+		return newField(dataprovider.getReferenceString(), type, 0, y, 10, 10);
+	}
+
+	@Override
+	public JSField newField(String dataprovidername, int type, int y)
+	{
+		return newField(dataprovidername, type, 0, y, 10, 10);
+	}
+
+	@Override
 	public JSField newTextField(Object dataprovider, int x, int y, int width, int height)
 	{
 		return newField(dataprovider, IFieldConstants.TEXT_FIELD, x, y, width, height);
