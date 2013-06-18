@@ -101,7 +101,6 @@ public class FormManager
 				formControllerMap.put(name, formController);
 				initFormScope(name, formController.getFormScope(), null);
 				formController.createView();
-				formController.executeOnLoadMethod();
 			}
 		}
 		return formController;

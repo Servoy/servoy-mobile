@@ -69,6 +69,7 @@ public class FormDisplay implements IFormDisplay
 		{
 			formPage = new FormPage(application, formController);
 			initDisplay(formPage);
+			formController.executeOnLoadMethod();
 
 		}
 		return formPage;
@@ -82,6 +83,7 @@ public class FormDisplay implements IFormDisplay
 			formPanel = new FormPanel(application, formController);
 			formPanelMap.put(parentFormName, formPanel);
 			initDisplay(formPanel);
+			formController.executeOnLoadMethod();
 		}
 		return formPanel;
 	}
