@@ -18,6 +18,7 @@ package com.servoy.mobile.client.dataprocessing;
  */
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,6 +29,8 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONNull;
+import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
@@ -60,6 +63,8 @@ public class FoundSetManager
 	private static final String ENTITY_PREFIX_KEY = "_svy_entityPrefix";
 	private static final String ENTITIES_KEY = "_svy_entities";
 	private static final String STORAGE_VERSION_KEY = "_svy_storage_version";
+	private static final String SERVER_DATA_KEY = "|srv";
+
 	private static final int STORAGE_VERSION = 1;
 
 	private final Storage localStorage = Storage.getLocalStorageIfSupported();
@@ -482,6 +487,18 @@ public class FoundSetManager
 		return retval.toString();
 	}
 
+	void storeServerRowDataBeforeChange(String entityName, RowDescription row)
+	{
+		if (!row.isCreatedOnDevice())
+		{
+			String key = getRowDataPkAndKey(entityName, row)[1] + SERVER_DATA_KEY;
+			if (localStorage.getItem(key) == null)
+			{
+				localStorage.setItem(key, row.toJSONArray(entities.getDataProviders(entityName)));
+			}
+		}
+	}
+
 	void storeRowData(String entityName, JsArray<RowDescription> rowData)
 	{
 		String[] uuidCols = entities != null ? entities.getUUIDDataProviderNames(entityName) : null;
@@ -516,9 +533,17 @@ public class FoundSetManager
 			String key = getRowDataPkAndKey(entityName, row)[1];
 			if (local)
 			{
-				// first remove this key, so that the "modification timestamp" is updated.
-				changes.remove(key);
-				changes.add(key);
+				if (!row.isCreatedOnDevice())
+				{
+					// first remove this key, so that the "modification timestamp" is updated.
+					changes.remove(key);
+					changes.add(key);
+				}
+				else if (!changes.contains(key))
+				{
+					// its  new record and the changes list doesn't contain it yet so add it.
+					changes.add(key);
+				}
 			}
 			localStorage.setItem(key, row.toJSONArray(entities.getDataProviders(entityName)));
 		}
@@ -1057,8 +1082,52 @@ public class FoundSetManager
 
 	JSONObject toRemoteJSON(String entityName, RowDescription row)
 	{
-		String[] uuidCols = entities.getUUIDDataProviderNames(entityName);
+		List<String> uuidCols = Arrays.asList(entities.getUUIDDataProviderNames(entityName));
 
+		if (!row.isCreatedOnDevice())
+		{
+			// updated row
+			String key = getRowDataPkAndKey(entityName, row)[1];
+			String json = localStorage.getItem(key + SERVER_DATA_KEY);
+			JSONArray values = JSONParser.parseStrict(json).isArray();
+			String[] dataProviders = entities.getDataProviders(entityName);
+
+			RowDescription serverRD = RowDescription.newInstance(dataProviders, values);
+
+			JSONObject jsonObject = new JSONObject();
+			for (String dataprovider : dataProviders)
+			{
+				Object serverValue = serverRD.getValue(dataprovider);
+				Object clientValue = row.getValue(dataprovider);
+
+				if (!Utils.equalObjects(serverValue, clientValue))
+				{
+					if (uuidCols.contains(dataprovider) && clientValue != null)
+					{
+						clientValue = valueStore.getUUIDValue(Utils.getAsInteger(clientValue));
+					}
+					if (clientValue == null)
+					{
+						jsonObject.put(dataprovider, JSONNull.getInstance());
+					}
+					else if (clientValue instanceof Number)
+					{
+						jsonObject.put(dataprovider, new JSONNumber(((Number)clientValue).doubleValue()));
+					}
+					else
+					{
+						jsonObject.put(dataprovider, new JSONString(clientValue.toString()));
+					}
+				}
+			}
+			if (jsonObject.size() == 1 && jsonObject.containsKey(RowDescription.MODIFICATION_DATE))
+			{
+				return null;
+			}
+
+			return jsonObject;
+		}
+		// new row
 		RowDescription clone = row.cloneRowDescription();
 		if (uuidCols != null)
 		{

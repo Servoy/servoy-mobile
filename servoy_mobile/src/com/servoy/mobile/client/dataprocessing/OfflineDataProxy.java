@@ -291,12 +291,14 @@ public class OfflineDataProxy
 					final String entityName = key.substring(0, idx);
 					final String pk = key.substring(idx + 1, key.length());
 					final RowDescription row = foundSetManager.getLocalStorageRowDescription(entityName, pk);
+					JSONObject json = foundSetManager.toRemoteJSON(entityName, row);
+					if (json == null) continue;
 					String remotepk = foundSetManager.getRemotePK(entityName, pk, row);
 
 					JSONObject value = new JSONObject();
 					value.put("pk", new JSONString(remotepk));
 					value.put("entity", new JSONString(entityName));
-					value.put("row", foundSetManager.toRemoteJSON(entityName, row));
+					value.put("row", json);
 
 					if (row.isCreatedOnDevice())
 					{
@@ -445,9 +447,17 @@ public class OfflineDataProxy
 		final String entityName = key.substring(0, idx);
 		final String pk = key.substring(idx + 1, key.length());
 		final RowDescription row = foundSetManager.getLocalStorageRowDescription(entityName, pk);
+		JSONObject jsonObject = foundSetManager.toRemoteJSON(entityName, row);
+		if (jsonObject == null)
+		{
+			keys.remove(key);//remove current
+			foundSetManager.updateChangesInLocalStorage(); //update changes
+			postRowData(keys, callback);//process the next
+			return;
+		}
 		String remotepk = foundSetManager.getRemotePK(entityName, pk, row);
 
-		String json = foundSetManager.toRemoteJSON(entityName, row).toString();
+		String json = jsonObject.toString();
 		totalLength += json.length();
 
 		//serverURL/entityName/12 PUT (for update), POST for new

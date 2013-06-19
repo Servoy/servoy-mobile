@@ -668,7 +668,12 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 
 	public boolean startEdit(Record record)
 	{
-		return foundSetManager.getEditRecordList().startEditing(record);
+		boolean started = foundSetManager.getEditRecordList().startEditing(record);
+		if (started)
+		{
+			foundSetManager.storeServerRowDataBeforeChange(getEntityName(), record.rowDescription);
+		}
+		return started;
 	}
 
 	public Object getSelectedRecordValue(String dataProviderID)
