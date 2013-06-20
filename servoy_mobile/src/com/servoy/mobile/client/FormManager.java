@@ -101,6 +101,7 @@ public class FormManager
 				formControllerMap.put(name, formController);
 				initFormScope(name, formController.getFormScope(), null);
 				formController.createView();
+				formController.executeOnLoadMethod();
 			}
 		}
 		return formController;
@@ -126,14 +127,14 @@ public class FormManager
 		if (currentForm != null)
 		{
 			if (!currentForm.executeOnHideMethod()) return false;
-			currentForm.getPage().saveScrollTop();
+			currentForm.getView().getDisplayPage().saveScrollTop();
 			currentNavigatorName = currentForm.getNavigator();
 		}
 		currentForm = formController;
 		currentForm.updateNavigator(currentNavigatorName);
 		history.add(formController);
-		if (!restoreScrollPosition && currentForm != null) currentForm.getPage().clearScrollTop();
-		JQMContext.changePage(formController.getPage());
+		if (!restoreScrollPosition && currentForm != null) currentForm.getView().getDisplayPage().clearScrollTop();
+		JQMContext.changePage(formController.getView().getDisplayPage());
 		return true;
 	}
 
@@ -153,7 +154,7 @@ public class FormManager
 		while (it.hasNext())
 		{
 			FormController fc = it.next();
-			if (!fc.getPage().isShow())
+			if (!fc.getView().getDisplayPage().isShow())
 			{
 				fc.cleanup();
 			}
@@ -176,7 +177,7 @@ public class FormManager
 		FormController formController = formControllerMap.get(formName);
 		if (formController != null)
 		{
-			if (!formController.getPage().isShow())
+			if (!formController.getView().getDisplayPage().isShow())
 			{
 				formController.cleanup();
 			}

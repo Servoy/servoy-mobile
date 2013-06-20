@@ -20,7 +20,6 @@ package com.servoy.mobile.client.ui;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.user.client.ui.Widget;
@@ -29,6 +28,7 @@ import com.servoy.base.persistence.PersistUtils;
 import com.servoy.base.persistence.constants.IPartConstants;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
+import com.servoy.mobile.client.dataprocessing.DataAdapterList;
 import com.servoy.mobile.client.dataprocessing.Record;
 import com.servoy.mobile.client.persistence.AbstractBase;
 import com.servoy.mobile.client.persistence.AbstractBase.MobileProperties;
@@ -52,56 +52,112 @@ public class FormDisplay implements IFormDisplay
 	protected IFormPageFooterDecorator footerDecorator;
 
 	protected final MobileClient application;
-	protected final FormController formController;
+	protected FormController formController;
 
 	protected FormPage formPage;
 	protected HashMap<String, FormPanel> formPanelMap = new HashMap<String, FormPanel>(); // parentForm -> formPanel
+
+	protected JQMHeader header;
+	protected JQMFooter footer;
+	protected ArrayList<Widget> content;
+	protected DataAdapterList dal;
 
 	public FormDisplay(MobileClient application, FormController formController)
 	{
 		this.application = application;
 		this.formController = formController;
+		this.dal = new DataAdapterList(application, formController);
+		createComponents();
+	}
+
+	public FormController getFormController()
+	{
+		return formController;
+	}
+
+	protected FormPage createDisplayPage()
+	{
+		return new FormPage(this);
 	}
 
 	public FormPage getDisplayPage()
 	{
 		if (formPage == null)
 		{
-			formPage = new FormPage(application, formController);
-			initDisplay(formPage);
-			formController.executeOnLoadMethod();
-
+			formPage = createDisplayPage();
 		}
+		initDisplay(formPage);
 		return formPage;
+	}
+
+	protected FormPanel createDisplayPanel()
+	{
+		return new FormPanel(this);
 	}
 
 	public FormPanel getDisplayPanel(String parentFormName)
 	{
-		FormPanel formPanel = null;
-		if (formPanelMap.get(parentFormName) == null)
+		FormPanel formPanel = formPanelMap.get(parentFormName);
+		if (formPanel == null)
 		{
-			formPanel = new FormPanel(application, formController);
+			formPanel = createDisplayPanel();
 			formPanelMap.put(parentFormName, formPanel);
-			initDisplay(formPanel);
-			formController.executeOnLoadMethod();
 		}
+		initDisplay(formPanel);
 		return formPanel;
 	}
 
 	public void cleanup()
 	{
+		if (currentDisplay != null) cleanDisplay(currentDisplay);
+		if (formPage != null)
+		{
+			formPage.destroy();
+			formPage = null;
+		}
 		formPanelMap.clear();
+
+		header = null;
+		footer = null;
+		content.clear();
+		dal.destroy();
+		formController = null;
+		dal = null;
 	}
 
 	public void refreshRecord(Record record)
 	{
-		if (formPage != null) formPage.refreshRecord(record);
-		Iterator<FormPanel> formPanelIte = formPanelMap.values().iterator();
-		while (formPanelIte.hasNext())
-			formPanelIte.next().refreshRecord(record);
+		dal.setRecord(record);
 	}
 
-	public void initDisplay(IFormComponent formComponent)
+	private IFormComponent currentDisplay;
+
+	private void initDisplay(IFormComponent formComponent)
+	{
+		if (formComponent != currentDisplay)
+		{
+			if (currentDisplay != null) cleanDisplay(currentDisplay);
+			if (header != null) formComponent.addHeader(header);
+			for (Widget w : content)
+			{
+				formComponent.add(w);
+			}
+			if (footer != null) formComponent.addFooter(footer);
+			currentDisplay = formComponent;
+		}
+	}
+
+	private void cleanDisplay(IFormComponent formComponent)
+	{
+		if (header != null) formComponent.removeHeader();
+		for (Widget w : content)
+		{
+			formComponent.removeWidget(w);
+		}
+		if (footer != null) formComponent.removeFooter();
+	}
+
+	private void createComponents()
 	{
 		Form form = formController.getForm();
 		JsArray<Component> formComponents = form.getComponents();
@@ -158,20 +214,18 @@ public class FormDisplay implements IFormDisplay
 			}
 		}
 
-		JQMHeader componentHeader = createHeader(formComponent, headerPart, headerLabel, headerLeftButton, headerRightButton);
-		if (componentHeader != null) formComponent.addHeader(componentHeader);
-		createContent(formComponent, contentComponents);
-		JQMFooter componentFooter = createFooter(formComponent, footerPart, footerComponents);
-		if (componentFooter != null) formComponent.addFooter(componentFooter);
+		header = createHeader(headerPart, headerLabel, headerLeftButton, headerRightButton);
+		content = createContent(contentComponents);
+		footer = createFooter(footerPart, footerComponents);
 	}
 
-	public JQMHeader createHeader(IFormComponent formComponent, Part headerPart, Component label, Component leftButton, Component rightButton)
+	protected JQMHeader createHeader(Part headerPart, Component label, Component leftButton, Component rightButton)
 	{
-		JQMButton leftToolbarButton = (JQMButton)createWidget(formComponent, leftButton);
-		JQMButton rightToolbarButton = (JQMButton)createWidget(formComponent, rightButton);
+		JQMButton leftToolbarButton = (JQMButton)createWidget(leftButton);
+		JQMButton rightToolbarButton = (JQMButton)createWidget(rightButton);
 
 		JQMHeader headerComponent = null;
-		if (label != null) headerComponent = (JQMHeader)createWidget(formComponent, label);
+		if (label != null) headerComponent = (JQMHeader)createWidget(label);
 
 		if (leftToolbarButton != null || rightToolbarButton != null)
 		{
@@ -190,8 +244,10 @@ public class FormDisplay implements IFormDisplay
 		return headerComponent;
 	}
 
-	public void createContent(IFormComponent formComponent, ArrayList<Component> contentComponents)
+	protected ArrayList<Widget> createContent(ArrayList<Component> contentComponents)
 	{
+		ArrayList<Widget> contentList = new ArrayList<Widget>();
+
 		Collections.sort(contentComponents, PositionComparator.YX_COMPARATOR);
 		ArrayList<FormDisplay.RowDisplay> rowsDisplay = new ArrayList<FormDisplay.RowDisplay>();
 
@@ -237,27 +293,28 @@ public class FormDisplay implements IFormDisplay
 				GraphicalComponent rowLabel = GraphicalComponent.castIfPossible(groupRow.component);
 				if (rowLabel != null)
 				{
-					Widget widget = createWidget(formComponent, groupRow.rightComponent);
+					Widget widget = createWidget(groupRow.rightComponent);
 					if (widget != null)
 					{
 						if (widget instanceof ISupportTitleText)
 						{
-							formComponent.getDataAdapter().addFormObject(
-								new TitleText((ISupportTitleText)widget, rowLabel, formComponent.getDataAdapter(), application));
+							dal.addFormObject(new TitleText((ISupportTitleText)widget, rowLabel, dal, application));
 						}
-						formComponent.add(widget);
+						contentList.add(widget);
 					}
 				}
 			}
 			else
 			{
-				Widget widget = createWidget(formComponent, rd.component);
-				if (widget != null) formComponent.add(widget);
+				Widget widget = createWidget(rd.component);
+				if (widget != null) contentList.add(widget);
 			}
 		}
+
+		return contentList;
 	}
 
-	public JQMFooter createFooter(IFormComponent formComponent, Part footerPart, ArrayList<Component> footerComponents)
+	protected JQMFooter createFooter(Part footerPart, ArrayList<Component> footerComponents)
 	{
 		if (footerComponents.size() < 1) return null;
 		Collections.sort(footerComponents, PositionComparator.XY_COMPARATOR);
@@ -268,7 +325,7 @@ public class FormDisplay implements IFormDisplay
 			footerComponent.setFixed(footerPart.getPartType() == IPartConstants.TITLE_FOOTER);
 		}
 		for (Component c : footerComponents)
-			footerComponent.add(createWidget(formComponent, c));
+			footerComponent.add(createWidget(c));
 
 		if (footerDecorator != null) footerDecorator.decorateFooter(footerPart, footerComponent);
 
@@ -285,11 +342,11 @@ public class FormDisplay implements IFormDisplay
 		this.footerDecorator = footerDecorator;
 	}
 
-	private Widget createWidget(IFormComponent formComponent, Component component)
+	private Widget createWidget(Component component)
 	{
 		if (component == null) return null;
-		Widget w = ComponentFactory.createComponent(application, component, formComponent.getDataAdapter(), formController);
-		if (w != null) formComponent.getDataAdapter().addFormObject(w);
+		Widget w = ComponentFactory.createComponent(application, component, dal, formController);
+		if (w != null) dal.addFormObject(w);
 		if (w instanceof IRuntimeComponentProvider)
 		{
 			IRuntimeComponent runtimeComponent = ((IRuntimeComponentProvider)w).getRuntimeComponent();

@@ -19,6 +19,7 @@ package com.servoy.mobile.client.ui;
 
 import java.util.ArrayList;
 
+import com.google.gwt.user.client.ui.Widget;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.persistence.Component;
@@ -31,49 +32,49 @@ import com.servoy.mobile.client.persistence.Component;
 public class ListFormDisplay extends FormDisplay
 {
 
+	private FormList formList;
+
 	public ListFormDisplay(MobileClient application, FormController formController)
 	{
 		super(application, formController);
 	}
 
 	@Override
-	public FormPage getDisplayPage()
+	protected FormPage createDisplayPage()
 	{
-		if (formPage == null)
-		{
-			formPage = new ListFormPage(application, formController);
-			initDisplay(formPage);
-		}
-		return formPage;
+		return new ListFormPage(this);
 	}
 
 	@Override
-	public FormPanel getDisplayPanel(String parentFormName)
+	protected FormPanel createDisplayPanel()
 	{
-		FormPanel formPanel = null;
-		if (formPanelMap.get(parentFormName) == null)
-		{
-			formPanel = new ListFormPanel(application, formController);
-			formPanelMap.put(parentFormName, formPanel);
-			initDisplay(formPanel);
-		}
-		return formPanel;
+		return new ListFormPanel(this);
 	}
 
 	@Override
-	public void createContent(IFormComponent formComponent, ArrayList<Component> contentComponents)
+	protected ArrayList<Widget> createContent(ArrayList<Component> contentComponents)
 	{
-		FormList formList = new FormList(formController, formController.getForm().getComponents(), formComponent.getDataAdapter(), null);
-		((ISupportFormList)formComponent).addFormList(formList);
+		ArrayList<Widget> contentList = new ArrayList<Widget>();
+
+		formList = new FormList(formController, formController.getForm().getComponents(), dal, null);
+		contentList.add(formList);
+
+		return contentList;
 	}
 
-	class ListFormPage extends FormPage implements ISupportFormList
+	@Override
+	public void cleanup()
 	{
-		private FormList formList;
+		formList.destroy();
+		formList = null;
+		super.cleanup();
+	}
 
-		public ListFormPage(MobileClient application, FormController formController)
+	class ListFormPage extends FormPage
+	{
+		public ListFormPage(IFormDisplay formDisplay)
 		{
-			super(application, formController);
+			super(formDisplay);
 		}
 
 		@Override
@@ -82,35 +83,13 @@ public class ListFormDisplay extends FormDisplay
 			super.onPageBeforeShow();
 			formList.refreshList();
 		}
-
-		@Override
-		public void destroy()
-		{
-			formList.destroy();
-			formList = null;
-			super.destroy();
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see com.servoy.mobile.client.ui.ListFormDisplay.ISupportFormList#addFormList(com.servoy.mobile.client.ui.FormList)
-		 */
-		@Override
-		public void addFormList(FormList fl)
-		{
-			formList = fl;
-			add(fl);
-		}
 	}
 
-	class ListFormPanel extends FormPanel implements ISupportFormList
+	class ListFormPanel extends FormPanel
 	{
-		private FormList formList;
-
-		public ListFormPanel(MobileClient application, FormController formController)
+		public ListFormPanel(IFormDisplay formDisplay)
 		{
-			super(application, formController);
+			super(formDisplay);
 		}
 
 		@Override
@@ -119,22 +98,5 @@ public class ListFormDisplay extends FormDisplay
 			super.onPanelBeforeOpen();
 			formList.refreshList();
 		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see com.servoy.mobile.client.ui.ListFormDisplay.ISupportFormList#addFormList(com.servoy.mobile.client.ui.FormList)
-		 */
-		@Override
-		public void addFormList(FormList fl)
-		{
-			this.formList = fl;
-			add(fl);
-		}
-	}
-
-	interface ISupportFormList
-	{
-		void addFormList(FormList formList);
 	}
 }

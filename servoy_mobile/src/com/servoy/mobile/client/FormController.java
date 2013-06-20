@@ -18,8 +18,6 @@ import com.servoy.mobile.client.scripting.FormScope;
 import com.servoy.mobile.client.scripting.JSEvent;
 import com.servoy.mobile.client.ui.ComponentFactory;
 import com.servoy.mobile.client.ui.Executor;
-import com.servoy.mobile.client.ui.FormPage;
-import com.servoy.mobile.client.ui.FormPanel;
 import com.servoy.mobile.client.ui.IFormDisplay;
 
 /**
@@ -85,14 +83,9 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 		return form.getName();
 	}
 
-	public FormPage getPage()
+	public IFormDisplay getView()
 	{
-		return formDisplay.getDisplayPage();
-	}
-
-	public FormPanel getPanel(String parentFormName)
-	{
-		return formDisplay.getDisplayPanel(parentFormName);
+		return formDisplay;
 	}
 
 	public FoundSet getFormModel()
@@ -114,7 +107,6 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 	{
 		if (foundSet != null) foundSet.removeSelectionListener(this);
 		formDisplay.cleanup();
-		formDisplay.getDisplayPage().destroy();
 		formDisplay = null;
 		foundSet = null;
 		scope.destroy();
@@ -298,7 +290,7 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 				if (navigatorForm != null) navigatorName = navigatorForm.getName();
 			}
 		}
-		getPage().addNavigator(navigatorName);
+		getView().getDisplayPage().addNavigator(navigatorName);
 	}
 
 	public String getNavigator()

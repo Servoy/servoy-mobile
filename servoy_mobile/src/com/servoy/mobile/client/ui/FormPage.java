@@ -20,12 +20,9 @@ package com.servoy.mobile.client.ui;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.Widget;
 import com.servoy.mobile.client.FormController;
-import com.servoy.mobile.client.MobileClient;
-import com.servoy.mobile.client.dataprocessing.DataAdapterList;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
-import com.servoy.mobile.client.dataprocessing.Record;
-import com.servoy.mobile.client.persistence.Form;
 import com.sksamuel.jqm4gwt.DataIcon;
 import com.sksamuel.jqm4gwt.IconPos;
 import com.sksamuel.jqm4gwt.JQMPage;
@@ -42,10 +39,7 @@ import com.sksamuel.jqm4gwt.toolbar.JQMPanel;
  */
 public class FormPage extends JQMPage implements IFormComponent
 {
-	private final MobileClient application;
-	private FormController formController;
-	private final Form form;
-	private DataAdapterList dal;
+	protected IFormDisplay formDisplay;
 
 	private JQMHeader headerComponent;
 
@@ -58,25 +52,9 @@ public class FormPage extends JQMPage implements IFormComponent
 	private int scrollTop;
 	private boolean isShow;
 
-	public FormPage(MobileClient application, FormController formController)
+	public FormPage(IFormDisplay formDisplay)
 	{
-		this.application = application;
-		this.formController = formController;
-		form = formController.getForm();
-		dal = new DataAdapterList(application, formController);
-	}
-
-	public String getName()
-	{
-		return form.getName();
-	}
-
-	/**
-	 * @return
-	 */
-	public String getDataSource()
-	{
-		return form.getDataSource();
+		this.formDisplay = formDisplay;
 	}
 
 	/**
@@ -95,18 +73,14 @@ public class FormPage extends JQMPage implements IFormComponent
 		this.enabled = enabled;
 	}
 
-	public void refreshRecord(Record r)
-	{
-		dal.setRecord(r);
-	}
 
 	@Override
 	protected void onPageBeforeShow()
 	{
-		application.getFormManager().setChangingFormPage(true);
-		FoundSet foundSet = formController.getFormModel();
-		if (foundSet != null) refreshRecord(foundSet.getSelectedRecord());
-		else refreshRecord(null);
+		formDisplay.getFormController().getApplication().getFormManager().setChangingFormPage(true);
+		FoundSet foundSet = formDisplay.getFormController().getFormModel();
+		if (foundSet != null) formDisplay.refreshRecord(foundSet.getSelectedRecord());
+		else formDisplay.refreshRecord(null);
 		if (headerComponent != null)
 		{
 			setDocumentTitle(headerComponent.getText());
@@ -117,17 +91,17 @@ public class FormPage extends JQMPage implements IFormComponent
 	@Override
 	protected void onPageShow()
 	{
-		application.getFormManager().setChangingFormPage(false);
+		formDisplay.getFormController().getApplication().getFormManager().setChangingFormPage(false);
 		isShow = true;
 		if (scrollTop > 0) Mobile.silentScroll(scrollTop);
-		formController.executeOnShowMethod();
+		formDisplay.getFormController().executeOnShowMethod();
 	}
 
 	@Override
 	protected void onPageHide()
 	{
 		isShow = false;
-		if (formController.isMarkedForCleanup()) formController.cleanup();
+		if (formDisplay.getFormController().isMarkedForCleanup()) formDisplay.getFormController().cleanup();
 	}
 
 	public boolean isShow()
@@ -154,11 +128,6 @@ public class FormPage extends JQMPage implements IFormComponent
 		top.document.title = text;
 	}-*/;
 
-	public DataAdapterList getDataAdapterList()
-	{
-		return dal;
-	}
-
 	public void destroy()
 	{
 		headerComponent = null;
@@ -169,14 +138,8 @@ public class FormPage extends JQMPage implements IFormComponent
 		navigatorLeftButton = null;
 		replacedLeftButton = null;
 
-		removeHeader();
-		removeFooter();
 		removePanel();
 		removeFromParent();
-
-		dal.destroy();
-		formController = null;
-		dal = null;
 	}
 
 	/*
@@ -202,23 +165,18 @@ public class FormPage extends JQMPage implements IFormComponent
 		add(f);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.ui.IFormComponent#getDataAdapter()
-	 */
-	@Override
-	public DataAdapterList getDataAdapter()
-	{
-		return dal;
-	}
 
 	@Override
 	public void addNavigator(String navigatorFormName)
 	{
 		if (formNavigator != null)
 		{
-			if (formNavigator.getName().equals(navigatorFormName)) return;
+			if (formNavigator.getName().equals(navigatorFormName))
+			{
+				FormController fc = formDisplay.getFormController();
+				fc.getApplication().getFormManager().getForm(navigatorFormName).getView().getDisplayPanel(fc.getName());
+				return;
+			}
 			removePanel();
 			formNavigator = null;
 			if (navigatorLeftButtonHandler != null)
@@ -241,7 +199,8 @@ public class FormPage extends JQMPage implements IFormComponent
 
 		if (navigatorFormName != null)
 		{
-			formNavigator = application.getFormManager().getForm(navigatorFormName).getPanel(getName());
+			FormController fc = formDisplay.getFormController();
+			formNavigator = fc.getApplication().getFormManager().getForm(navigatorFormName).getView().getDisplayPanel(fc.getName());
 			formNavigator.setPositionFixed(true);
 
 			if (isTablet())
@@ -270,6 +229,11 @@ public class FormPage extends JQMPage implements IFormComponent
 
 			add(formNavigator);
 		}
+	}
+
+	public void removeWidget(Widget w)
+	{
+		remove(w);
 	}
 
 	private boolean isTablet()

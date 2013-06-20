@@ -225,7 +225,7 @@ public class JSHistory implements Exportable, IJSHistory
 						{
 							Log.info("current form: " + currentForm.getName() + " couldn't be changed to  " + formHistory.controller.getName() + ", 'reverting' to currrent page in browser"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 						}
-						JQMContext.changePage(currentForm.getPage());
+						JQMContext.changePage(currentForm.getView().getDisplayPage());
 					}
 				});
 			}

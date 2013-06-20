@@ -1,5 +1,6 @@
 package com.servoy.mobile.client.ui;
 
+import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.dataprocessing.Record;
 
 /*
@@ -28,6 +29,8 @@ public interface IFormDisplay
 	FormPage getDisplayPage();
 
 	FormPanel getDisplayPanel(String parentFormName);
+
+	FormController getFormController();
 
 	void refreshRecord(Record record);
 

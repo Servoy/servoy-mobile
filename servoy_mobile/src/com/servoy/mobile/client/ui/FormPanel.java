@@ -17,11 +17,8 @@
 
 package com.servoy.mobile.client.ui;
 
-import com.servoy.mobile.client.FormController;
-import com.servoy.mobile.client.MobileClient;
-import com.servoy.mobile.client.dataprocessing.DataAdapterList;
+import com.google.gwt.user.client.ui.Widget;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
-import com.servoy.mobile.client.dataprocessing.Record;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.sksamuel.jqm4gwt.toolbar.JQMPanel;
@@ -34,13 +31,11 @@ import com.sksamuel.jqm4gwt.toolbar.JQMPanel;
  */
 public class FormPanel extends JQMPanel implements IFormComponent
 {
-	private final FormController formController;
-	private final DataAdapterList dal;
+	private final IFormDisplay formDisplay;
 
-	public FormPanel(MobileClient application, FormController formController)
+	public FormPanel(IFormDisplay formDisplay)
 	{
-		this.formController = formController;
-		dal = new DataAdapterList(application, formController);
+		this.formDisplay = formDisplay;
 	}
 
 	/*
@@ -66,17 +61,6 @@ public class FormPanel extends JQMPanel implements IFormComponent
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.servoy.mobile.client.ui.IFormComponent#getDataAdapter()
-	 */
-	@Override
-	public DataAdapterList getDataAdapter()
-	{
-		return dal;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see com.servoy.mobile.client.ui.IFormComponent#addNavigator(com.servoy.mobile.client.ui.FormPanel)
 	 */
 	@Override
@@ -84,33 +68,59 @@ public class FormPanel extends JQMPanel implements IFormComponent
 	{
 	}
 
-	public void refreshRecord(Record r)
-	{
-		dal.setRecord(r);
-	}
-
 	@Override
 	protected void onPanelBeforeOpen()
 	{
-		FoundSet foundSet = formController.getFormModel();
-		if (foundSet != null) refreshRecord(foundSet.getSelectedRecord());
-		else refreshRecord(null);
+		FoundSet foundSet = formDisplay.getFormController().getFormModel();
+		if (foundSet != null) formDisplay.refreshRecord(foundSet.getSelectedRecord());
+		else formDisplay.refreshRecord(null);
 	}
 
 	@Override
 	protected void onPanelOpen()
 	{
-		formController.executeOnShowMethod();
+		formDisplay.getFormController().executeOnShowMethod();
 	}
 
 	@Override
 	protected void onPanelClose()
 	{
-		formController.executeOnHideMethod();
+		formDisplay.getFormController().executeOnHideMethod();
 	}
 
 	public String getName()
 	{
-		return formController.getName();
+		return formDisplay.getFormController().getName();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.ui.IFormComponent#removeHeader()
+	 */
+	@Override
+	public void removeHeader()
+	{
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.ui.IFormComponent#removeFooter()
+	 */
+	@Override
+	public void removeFooter()
+	{
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.ui.IFormComponent#removeWidget(com.google.gwt.user.client.ui.Widget)
+	 */
+	@Override
+	public void removeWidget(Widget w)
+	{
+		remove(w);
 	}
 }

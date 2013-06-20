@@ -18,7 +18,6 @@
 package com.servoy.mobile.client.ui;
 
 import com.google.gwt.user.client.ui.Widget;
-import com.servoy.mobile.client.dataprocessing.DataAdapterList;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 
@@ -32,13 +31,15 @@ public interface IFormComponent
 {
 	void addHeader(JQMHeader header);
 
+	void removeHeader();
+
 	void addFooter(JQMFooter footer);
+
+	void removeFooter();
 
 	void addNavigator(String navigatorFormName);
 
-	DataAdapterList getDataAdapter();
-
 	void add(Widget widget);
 
-	String getName();
+	void removeWidget(Widget widget);
 }
