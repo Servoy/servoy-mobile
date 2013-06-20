@@ -21,7 +21,7 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 
-import com.servoy.base.solutionmodel.IBaseSMTitle;
+import com.servoy.base.solutionmodel.mobile.IMobileSMTitle;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 
 /**
@@ -32,7 +32,7 @@ import com.servoy.mobile.client.persistence.GraphicalComponent;
  */
 @Export
 @ExportPackage("")
-public class JSTitle extends JSTextComponent implements IBaseSMTitle, Exportable
+public class JSTitle extends JSTextComponent implements IMobileSMTitle, Exportable
 {
 	JSTitle(GraphicalComponent gc, JSSolutionModel model, JSBase parent)
 	{

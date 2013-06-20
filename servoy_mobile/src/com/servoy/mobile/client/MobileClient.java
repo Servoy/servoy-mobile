@@ -26,7 +26,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.Window;
-import com.servoy.base.solutionmodel.IBaseSolutionModel;
+import com.servoy.base.solutionmodel.mobile.IMobileSolutionModel;
 import com.servoy.base.test.IJSUnitSuiteHandler;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.dataprocessing.FoundSetManager;
@@ -455,7 +455,7 @@ public class MobileClient implements EntryPoint
 		return i18nProvider;
 	}
 
-	public IBaseSolutionModel getSolutionModel()
+	public IMobileSolutionModel getSolutionModel()
 	{
 		return solutionModel;
 

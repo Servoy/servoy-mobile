@@ -24,7 +24,7 @@ import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.Setter;
 
 import com.servoy.base.persistence.IMobileProperties;
-import com.servoy.base.solutionmodel.IBaseSMRadios;
+import com.servoy.base.solutionmodel.mobile.IMobileSMRadios;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMField;
 
@@ -35,7 +35,7 @@ import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMField;
  */
 @Export
 @ExportPackage("")
-public class JSRadios extends JSField implements IMobileSMField, IBaseSMRadios, Exportable
+public class JSRadios extends JSField implements IMobileSMField, IMobileSMRadios, Exportable
 {
 	JSRadios(Field f, JSSolutionModel model, JSBase parent)
 	{

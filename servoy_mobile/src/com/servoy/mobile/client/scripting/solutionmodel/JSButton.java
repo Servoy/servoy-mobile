@@ -24,7 +24,7 @@ import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.Setter;
 
 import com.servoy.base.persistence.IMobileProperties;
-import com.servoy.base.solutionmodel.IBaseSMButton;
+import com.servoy.base.solutionmodel.mobile.IMobileSMButton;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 
 /**
@@ -32,7 +32,7 @@ import com.servoy.mobile.client.persistence.GraphicalComponent;
  */
 @Export
 @ExportPackage("")
-public class JSButton extends JSGraphicalComponent implements IBaseSMButton, Exportable
+public class JSButton extends JSGraphicalComponent implements IMobileSMButton, Exportable
 {
 
 	public JSButton(GraphicalComponent gc, JSSolutionModel model, JSBase form)

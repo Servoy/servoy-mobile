@@ -28,7 +28,7 @@ import org.timepedia.exporter.client.ExporterUtil;
 import com.google.gwt.core.client.JsArrayString;
 import com.servoy.base.scripting.solutionhelper.IBaseSHList;
 import com.servoy.base.solutionmodel.IBaseSMForm;
-import com.servoy.base.solutionmodel.IBaseSolutionModel;
+import com.servoy.base.solutionmodel.mobile.IMobileSolutionModel;
 import com.servoy.base.util.DataSourceUtilsBase;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.persistence.FlattenedSolution;
@@ -44,7 +44,7 @@ import com.servoy.mobile.client.util.Utils;
  */
 @Export
 @ExportPackage("")
-public class JSSolutionModel implements IBaseSolutionModel, Exportable
+public class JSSolutionModel implements IMobileSolutionModel, Exportable
 {
 	private final MobileClient application;
 	private final FlattenedSolution solution;

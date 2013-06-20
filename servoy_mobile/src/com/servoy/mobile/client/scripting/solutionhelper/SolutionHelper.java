@@ -26,7 +26,8 @@ import com.servoy.base.persistence.IMobileProperties;
 import com.servoy.base.scripting.solutionhelper.BaseSolutionHelper;
 import com.servoy.base.solutionmodel.IBaseSMComponent;
 import com.servoy.base.solutionmodel.IBaseSMForm;
-import com.servoy.base.solutionmodel.IBaseSolutionModel;
+import com.servoy.base.solutionmodel.mobile.IMobileSMForm;
+import com.servoy.base.solutionmodel.mobile.IMobileSolutionModel;
 import com.servoy.mobile.client.scripting.solutionmodel.JSBase;
 import com.servoy.mobile.client.scripting.solutionmodel.JSButton;
 import com.servoy.mobile.client.scripting.solutionmodel.JSComponent;
@@ -46,7 +47,7 @@ import com.servoy.mobile.client.util.Utils;
 public class SolutionHelper extends BaseSolutionHelper implements IMobilePredefinedIconConstants, Exportable
 {
 
-	public SolutionHelper(IBaseSolutionModel solutionModel)
+	public SolutionHelper(IMobileSolutionModel solutionModel)
 	{
 		super(solutionModel);
 	}
@@ -230,7 +231,7 @@ public class SolutionHelper extends BaseSolutionHelper implements IMobilePredefi
 	}
 
 	@Override
-	public JSInsetList[] getAllInsetLists(IBaseSMForm form)
+	public JSInsetList[] getAllInsetLists(IMobileSMForm form)
 	{
 		return getAllInsetLists((JSForm)form);
 	}

@@ -29,12 +29,12 @@ import com.servoy.base.persistence.IMobileProperties;
 import com.servoy.base.persistence.IMobileProperties.MobileProperty;
 import com.servoy.base.persistence.constants.IPartConstants;
 import com.servoy.base.solutionmodel.IBaseSMMethod;
+import com.servoy.base.solutionmodel.mobile.IMobileSMHeader;
 import com.servoy.mobile.client.persistence.AbstractBase.MobileProperties;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.servoy.mobile.client.persistence.Part;
-import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMHeader;
 
 /**
  * header part in solution model.

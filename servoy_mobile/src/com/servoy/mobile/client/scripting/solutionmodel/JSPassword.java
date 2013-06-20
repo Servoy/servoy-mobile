@@ -21,7 +21,7 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 
-import com.servoy.base.solutionmodel.IBaseSMPassword;
+import com.servoy.base.solutionmodel.mobile.IMobileSMPassword;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMField;
 
@@ -32,7 +32,7 @@ import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMField;
  */
 @Export
 @ExportPackage("")
-public class JSPassword extends JSField implements IMobileSMField, IBaseSMPassword, Exportable
+public class JSPassword extends JSField implements IMobileSMField, IMobileSMPassword, Exportable
 {
 	JSPassword(Field f, JSSolutionModel model, JSBase parent)
 	{

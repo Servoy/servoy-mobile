@@ -21,7 +21,7 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 
-import com.servoy.base.solutionmodel.IBaseSMChecks;
+import com.servoy.base.solutionmodel.mobile.IMobileSMChecks;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMField;
 
@@ -32,7 +32,7 @@ import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMField;
  */
 @Export
 @ExportPackage("")
-public class JSChecks extends JSField implements IMobileSMField, IBaseSMChecks, Exportable
+public class JSChecks extends JSField implements IMobileSMField, IMobileSMChecks, Exportable
 {
 	JSChecks(Field f, JSSolutionModel model, JSBase parent)
 	{

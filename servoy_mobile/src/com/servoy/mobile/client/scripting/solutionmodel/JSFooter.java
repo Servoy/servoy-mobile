@@ -34,10 +34,10 @@ import com.servoy.base.persistence.constants.IPartConstants;
 import com.servoy.base.solutionmodel.IBaseSMComponent;
 import com.servoy.base.solutionmodel.IBaseSMMethod;
 import com.servoy.base.solutionmodel.IBaseSMVariable;
+import com.servoy.base.solutionmodel.mobile.IMobileSMFooter;
 import com.servoy.mobile.client.persistence.AbstractBase.MobileProperties;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Part;
-import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMFooter;
 
 /**
  * Footer part in solution model.

@@ -21,7 +21,7 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 
-import com.servoy.base.solutionmodel.IBaseSMText;
+import com.servoy.base.solutionmodel.mobile.IMobileSMText;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMField;
 
@@ -32,7 +32,7 @@ import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMField;
  */
 @Export
 @ExportPackage("")
-public class JSText extends JSField implements IMobileSMField, IBaseSMText, Exportable
+public class JSText extends JSField implements IMobileSMField, IMobileSMText, Exportable
 {
 	JSText(Field f, JSSolutionModel model, JSBase parent)
 	{

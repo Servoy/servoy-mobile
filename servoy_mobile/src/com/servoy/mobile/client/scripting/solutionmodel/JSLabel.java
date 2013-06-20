@@ -24,8 +24,8 @@ import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.Setter;
 
 import com.servoy.base.persistence.IMobileProperties;
-import com.servoy.base.solutionmodel.IBaseSMLabel;
-import com.servoy.base.solutionmodel.IBaseSMTitle;
+import com.servoy.base.solutionmodel.mobile.IMobileSMTitle;
+import com.servoy.base.solutionmodel.mobile.IMobileSMLabel;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 
 /**
@@ -33,7 +33,7 @@ import com.servoy.mobile.client.persistence.GraphicalComponent;
  */
 @Export
 @ExportPackage("")
-public class JSLabel extends JSGraphicalComponent implements IBaseSMLabel, Exportable
+public class JSLabel extends JSGraphicalComponent implements IMobileSMLabel, Exportable
 {
 	JSLabel(GraphicalComponent gc, JSSolutionModel model, JSBase parent)
 	{
@@ -56,7 +56,7 @@ public class JSLabel extends JSGraphicalComponent implements IBaseSMLabel, Expor
 	}
 
 	@Override
-	public IBaseSMTitle getTitle()
+	public IMobileSMTitle getTitle()
 	{
 		return new JSTitle((GraphicalComponent)JSField.getTitleForComponent(this).getBase(), getSolutionModel(), getParent());
 	}

@@ -19,13 +19,11 @@ package com.servoy.mobile.client.scripting.solutionmodel.i;
 
 import org.timepedia.exporter.client.Exportable;
 
-import com.servoy.base.solutionmodel.IBaseSMPart;
-
 /**
  * @author lvostinar
  *
  */
-public interface IMobileSMPart extends IBaseSMPart, Exportable
+public interface IMobileSMPart extends com.servoy.base.solutionmodel.mobile.IMobileSMPart, Exportable
 {
 
 }

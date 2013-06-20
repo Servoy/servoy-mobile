@@ -19,13 +19,11 @@ package com.servoy.mobile.client.scripting.solutionmodel.i;
 
 import org.timepedia.exporter.client.Exportable;
 
-import com.servoy.base.solutionmodel.IBaseSMField;
-
 /**
  * @author acostescu
  */
 //workaround to have constants automatically exported without re-defining them
-public interface IMobileSMField extends IBaseSMField, Exportable
+public interface IMobileSMField extends com.servoy.base.solutionmodel.mobile.IMobileSMField, Exportable
 {
 
 }

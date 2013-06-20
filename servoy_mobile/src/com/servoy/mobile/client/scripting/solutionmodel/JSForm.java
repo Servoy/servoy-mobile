@@ -39,7 +39,6 @@ import com.servoy.base.persistence.constants.IComponentConstants;
 import com.servoy.base.persistence.constants.IFieldConstants;
 import com.servoy.base.persistence.constants.IPartConstants;
 import com.servoy.base.persistence.constants.IRepositoryConstants;
-import com.servoy.base.scripting.annotations.ServoyClientSupport;
 import com.servoy.base.scripting.solutionhelper.BaseSolutionHelper;
 import com.servoy.base.scripting.solutionhelper.IBaseSMFormInternal;
 import com.servoy.base.solutionmodel.IBaseSMComponent;
@@ -428,7 +427,6 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 	}
 
 	@Override
-	@ServoyClientSupport(mc = true, wc = false, sc = false)
 	public JSLabel newLabel(String txt, int y)
 	{
 		return newLabel(txt, 0, y, 10, 10);

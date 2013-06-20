@@ -21,7 +21,7 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 
-import com.servoy.base.solutionmodel.IBaseSMCalendar;
+import com.servoy.base.solutionmodel.mobile.IMobileSMCalendar;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMField;
 
@@ -32,7 +32,7 @@ import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMField;
  */
 @Export
 @ExportPackage("")
-public class JSCalendar extends JSField implements IMobileSMField, IBaseSMCalendar, Exportable
+public class JSCalendar extends JSField implements IMobileSMField, IMobileSMCalendar, Exportable
 {
 	JSCalendar(Field f, JSSolutionModel model, JSBase parent)
 	{
