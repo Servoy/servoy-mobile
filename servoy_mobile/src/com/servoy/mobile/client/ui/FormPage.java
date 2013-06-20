@@ -132,7 +132,13 @@ public class FormPage extends JQMPage implements IFormComponent
 	{
 		headerComponent = null;
 
-		formNavigator = null;
+		if (formNavigator != null)
+		{
+			FormController fc = formDisplay.getFormController();
+			IFormDisplay formNavigatorView = fc.getApplication().getFormManager().getForm(formNavigator.getName()).getView();
+			formNavigatorView.removeDisplayPanel(fc.getName());
+			formNavigator = null;
+		}
 		if (navigatorLeftButtonHandler != null) navigatorLeftButtonHandler.removeHandler();
 		navigatorLeftButtonHandler = null;
 		navigatorLeftButton = null;

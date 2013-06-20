@@ -30,6 +30,8 @@ public interface IFormDisplay
 
 	FormPanel getDisplayPanel(String parentFormName);
 
+	void removeDisplayPanel(String parentFormName);
+
 	FormController getFormController();
 
 	void refreshRecord(Record record);

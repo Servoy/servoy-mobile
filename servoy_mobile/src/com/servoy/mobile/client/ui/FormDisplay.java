@@ -107,6 +107,11 @@ public class FormDisplay implements IFormDisplay
 		return formPanel;
 	}
 
+	public void removeDisplayPanel(String parentFormName)
+	{
+		formPanelMap.remove(parentFormName);
+	}
+
 	public void cleanup()
 	{
 		if (currentDisplay != null) cleanDisplay(currentDisplay);
