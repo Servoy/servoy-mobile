@@ -13,14 +13,12 @@
 		<title>Servoy Mobile</title>
 		
 		<script type="text/javascript" language="javascript">
-			if (window.location.hash.length > 0) {
-				window.location.hash = ' ';
-				window.location = window.location;
-			}
+			var idx = window.location.href.indexOf('#');
+			if (idx > 0) window.location.href = window.location.href.split('#')[0];
 		</script>
 		<script type="text/javascript" language="javascript" src="mobileclient/mobileclient.nocache.js"></script>
 		<script type="text/javascript" language="javascript">
-<!--SOLUTION_MEDIA_JS_PLACEHOLDER-->
+		<!--SOLUTION_MEDIA_JS_PLACEHOLDER-->
 		</script>
 		<!--PHONEGAP_JS_PLACEHOLDER-->
 	</head>
