@@ -87,7 +87,7 @@
 			</classpath>
 			<jvmarg value="-Xmx256M"/>
 			<arg value="-startupUrl"/>
-			<arg value="http://127.0.0.1:8080/servoy_mobile_test/servoy_mobile_test.html?log_level=DEBUG&amp;noinitsmc=true&amp;bid=0"/>
+			<arg value="http://127.0.0.1:8080/servoy_mobile_test/servoy_mobile_test.html?log_level=DEBUG&amp;noinitsmc=true&amp;bid=0&amp;nodebug=true"/>
 			<arg line="-war"/>
 			<arg value="war"/>
 			<!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->

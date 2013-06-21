@@ -26,7 +26,6 @@ import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
 
 import com.google.gwt.core.client.JsArrayString;
-import com.servoy.base.scripting.solutionhelper.IBaseSHList;
 import com.servoy.base.solutionmodel.IBaseSMForm;
 import com.servoy.base.solutionmodel.mobile.IMobileSolutionModel;
 import com.servoy.base.util.DataSourceUtilsBase;
@@ -361,7 +360,7 @@ public class JSSolutionModel implements IMobileSolutionModel, Exportable
 	}
 
 	@Override
-	public IBaseSHList[] getListForms()
+	public JSList[] getListForms()
 	{
 		List<JSList> listFormsList = new ArrayList<JSList>();
 		JSForm[] forms = getForms();

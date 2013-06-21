@@ -199,7 +199,12 @@ public class TestMobileClient extends MobileClient
 		super.showFirstForm();
 
 		// prepare and run tests
-		new SolutionTestSuite(TestMobileClient.this, rpcController).runCurrentSolutionTestSuite();
+		if (!firstFormFirstShow) new SolutionTestSuite(TestMobileClient.this, rpcController).runCurrentSolutionTestSuite();
+		else
+		{
+			// login screen shown in mobile client?!
+			reportUnexpectedThrowable("Login screen was shown in test mobile client... Are the credentials (from launch configuration) correct?", null);
+		}
 	}
 
 }

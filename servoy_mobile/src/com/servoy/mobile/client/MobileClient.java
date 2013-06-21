@@ -75,13 +75,13 @@ public class MobileClient implements EntryPoint
 	private ScriptEngine scriptEngine;
 	private FlattenedSolution flattenedSolution;
 	private SolutionI18nProvider i18nProvider;
-	private boolean firstFormFirstShow = true;
+	protected boolean firstFormFirstShow = true;
 
 
 	@Override
 	public void onModuleLoad()
 	{
-		loadMediaResources();
+		// add stuff when needed in initialise rather then here (so that they get executed in mobile test client as well)
 		if (!"true".equals(Window.Location.getParameter(IJSUnitSuiteHandler.NO_INIT_SMC_ARG))) initialize();
 	}
 
@@ -91,6 +91,7 @@ public class MobileClient implements EntryPoint
 
 	protected void initialize()
 	{
+		loadMediaResources();
 		/*
 		 * Install an UncaughtExceptionHandler which will produce <code>FATAL</code> log messages
 		 */
@@ -159,7 +160,7 @@ public class MobileClient implements EntryPoint
 		}
 		else if (!foundSetManager.hasContent())
 		{
-			sync();
+			sync(true); // true is for test client (which auto sets unchecked credentials)
 		}
 		else
 		{
