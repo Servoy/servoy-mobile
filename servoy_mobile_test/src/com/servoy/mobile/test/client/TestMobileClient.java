@@ -3,9 +3,11 @@ package com.servoy.mobile.test.client;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptException;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.servoy.base.test.IJSUnitSuiteHandler;
+import com.servoy.mobile.client.FormManager;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.test.shared.service.ITestSuiteController;
 import com.servoy.mobile.test.shared.service.ITestSuiteControllerAsync;
@@ -165,7 +167,7 @@ public class TestMobileClient extends MobileClient
 
 	private void continueWithValidBridgeID()
 	{
-		rpcController.bridgeIDVerified(new AsyncCallback<Void>()
+		rpcController.bridgeIDVerified(new AsyncCallback<String[]>()
 		{
 
 			@Override
@@ -175,22 +177,36 @@ public class TestMobileClient extends MobileClient
 			}
 
 			@Override
-			public void onSuccess(Void result)
+			public void onSuccess(final String[] result)
 			{
-				Log.info("[MobileJSUnitClient] logging in automatically & syncing"); //$NON-NLS-1$
-				// automatically login in case of test client
-				if (getFlattenedSolution().getMustAuthenticate() && !getOfflineDataProxy().hasCredentials())
+				runSafe(new Runnable()
 				{
-					setUncheckedLoginCredentials("demo", "demo"); // TODO ac make this configurable - for unit testing
-				}
 
-				// avoid trial page for testing
-				getFlattenedSolution().setSkipConnect(true);
+					@Override
+					public void run()
+					{
+						Log.info("[MobileJSUnitClient] logging in automatically & syncing"); //$NON-NLS-1$
 
-				// this will do a sync if necessary or simply show the first form if not
-				TestMobileClient.super.onStartPageShown();
+						// automatically login in case of test client
+						if (getFlattenedSolution().getMustAuthenticate() && !getOfflineDataProxy().hasCredentials() && result != null)
+						{
+							setUncheckedLoginCredentials(result[0], result[1]);
+						}
+						// avoid trial page for testing
+						getFlattenedSolution().setSkipConnect(true);
+
+						// this will do a sync if necessary or simply show the first form if not
+						TestMobileClient.super.onStartPageShown();
+					}
+				}, "Cannot login/sync/show first form (as needed)."); //$NON-NLS-1$
 			}
 		});
+	}
+
+	@Override
+	protected TestFormManager createFormManager()
+	{
+		return new TestFormManager(this);
 	}
 
 	@Override
@@ -202,8 +218,32 @@ public class TestMobileClient extends MobileClient
 		if (!firstFormFirstShow) new SolutionTestSuite(TestMobileClient.this, rpcController).runCurrentSolutionTestSuite();
 		else
 		{
-			// login screen shown in mobile client?!
+			// login screen shown in mobile client?! - it usually doesn't even get this far (sync goes directly to formManager.showLogin(...) instead of showing first form)
 			reportUnexpectedThrowable("Login screen was shown in test mobile client... Are the credentials (from launch configuration) correct?", null);
+		}
+	}
+
+	@Override
+	public void error(String msg)
+	{
+		// avoid modal dialogs
+		Log.error("[MobileJSUnitClient] (client) Error message:" + msg); //$NON-NLS-1$
+	}
+
+	protected static class TestFormManager extends FormManager
+	{
+
+		protected TestFormManager(TestMobileClient mc)
+		{
+			super(mc);
+		}
+
+		@Override
+		public void showLogin(JavaScriptObject successCallback, JavaScriptObject errorHandler)
+		{
+			// this is not acceptable in testing
+			((TestMobileClient)getApplication()).reportUnexpectedThrowable(
+				"Login page was shown in test mobile client... Are the credentials (of the launch configuration) correct?", null);
 		}
 	}
 

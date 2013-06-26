@@ -95,9 +95,10 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 	}
 
 	@Override
-	public void bridgeIDVerified()
+	public String[] bridgeIDVerified()
 	{
 		bridge.registerRunStartListener(this);
+		return bridge.getCredentials();
 	}
 
 	@Override

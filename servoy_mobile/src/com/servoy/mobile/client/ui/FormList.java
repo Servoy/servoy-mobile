@@ -168,18 +168,25 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 		if (relation != null)
 		{
 			Record record = parentRecord;
-			for (int i = 0; i < relation.size(); i++)
+			if (record == null)
 			{
-				RelationDescription relationItem = relation.get(i);
-				relatedFoundset = relationItem.isSelfRef() ? record.getParent() : record.getRelatedFoundSet(relationItem.getName());
-				if (relatedFoundset == null) break;
-				if (i < relation.size() - 1)
+				relatedFoundset = null;
+			}
+			else
+			{
+				for (int i = 0; i < relation.size(); i++)
 				{
-					record = relatedFoundset.getSelectedRecord();
-					if (record == null)
+					RelationDescription relationItem = relation.get(i);
+					relatedFoundset = relationItem.isSelfRef() ? record.getParent() : record.getRelatedFoundSet(relationItem.getName());
+					if (relatedFoundset == null) break;
+					if (i < relation.size() - 1)
 					{
-						relatedFoundset = null;
-						break;
+						record = relatedFoundset.getSelectedRecord();
+						if (record == null)
+						{
+							relatedFoundset = null;
+							break;
+						}
 					}
 				}
 			}

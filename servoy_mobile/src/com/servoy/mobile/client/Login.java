@@ -11,6 +11,7 @@ public class Login extends JQMPage implements SubmissionHandler<LoginData>
 	private final MobileClient application;
 	private JavaScriptObject successCallback;
 	private JavaScriptObject errorHandler;
+	private final LoginData form;
 
 	public Login(MobileClient mc)
 	{
@@ -21,21 +22,23 @@ public class Login extends JQMPage implements SubmissionHandler<LoginData>
 
 		add(new Paragraph(application.getI18nMessageWithFallback("authenticationRequired")));
 
-		LoginData form = new LoginData(application, this);
+		form = new LoginData(application, this);
 		add(form);
 	}
 
-	public void setCallbackHandlers(JavaScriptObject successCallback, JavaScriptObject errorHandler)
+	public void init(JavaScriptObject successCallback, JavaScriptObject errorHandler)
 	{
 		this.successCallback = successCallback;
 		this.errorHandler = errorHandler;
+
+		form.init();
 	}
 
-	public void onSubmit(LoginData form)
+	public void onSubmit(LoginData f)
 	{
-		form.hideFormProcessingDialog();
-		form.clearValidationErrors();
-		application.setUncheckedLoginCredentials(form.getEmailInputText(), form.getPasswordInputText());
+		f.hideFormProcessingDialog();
+		f.clearValidationErrors();
+		application.setUncheckedLoginCredentials(f.getEmailInputText(), f.getPasswordInputText());
 		application.sync(successCallback, errorHandler, true);
 	}
 }

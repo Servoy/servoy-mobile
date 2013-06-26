@@ -142,7 +142,7 @@ public class MobileClient implements EntryPoint
 		i18nProvider = new SolutionI18nProvider(flattenedSolution, getLocale());
 		foundSetManager = new FoundSetManager(this);
 		offlineDataProxy = new OfflineDataProxy(foundSetManager, getServerURL(), nodebug, getTimeout());
-		formManager = new FormManager(this);
+		formManager = createFormManager();
 
 		solutionModel = new JSSolutionModel(this);
 		scriptEngine = new ScriptEngine(this);
@@ -150,6 +150,11 @@ public class MobileClient implements EntryPoint
 //		JQMContext.setDefaultTransition(Transition.FADE);
 
 		addStartPageShowCallback();
+	}
+
+	protected FormManager createFormManager()
+	{
+		return new FormManager(this);
 	}
 
 	protected void onStartPageShown()

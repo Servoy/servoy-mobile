@@ -49,7 +49,7 @@ public interface ITestSuiteControllerAsync
 
 	void doneTesting(int reqSequenceNo, AsyncCallback<Void> callback);
 
-	void bridgeIDVerified(AsyncCallback<Void> callback);
+	void bridgeIDVerified(AsyncCallback<String[]> asyncCallback);
 
 	void getSolutionJsUnitJavascriptCode(AsyncCallback<String[]> asyncCallback);
 

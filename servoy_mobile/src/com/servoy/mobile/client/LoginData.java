@@ -39,11 +39,7 @@ public class LoginData extends JQMForm
 		super(handler);
 		this.application = mc;
 
-		emailInput = new JQMEmail(application.getI18nMessageWithFallback("userUid"));
-		addRequired(emailInput);
-
-		passwordInput = new JQMPassword(application.getI18nMessageWithFallback("password"));
-		passwordInput.addKeyUpHandler(new KeyUpHandler()
+		KeyUpHandler enterHandler = new KeyUpHandler()
 		{
 			@Override
 			public void onKeyUp(KeyUpEvent event)
@@ -53,7 +49,14 @@ public class LoginData extends JQMForm
 					LoginData.this.submit();
 				}
 			}
-		});
+		};
+
+		emailInput = new JQMEmail(application.getI18nMessageWithFallback("userUid"));
+		emailInput.addKeyUpHandler(enterHandler);
+		addRequired(emailInput);
+
+		passwordInput = new JQMPassword(application.getI18nMessageWithFallback("password"));
+		passwordInput.addKeyUpHandler(enterHandler);
 		addRequired(passwordInput);
 
 		JQMSubmit submit = new JQMSubmit(application.getI18nMessageWithFallback("login"));
@@ -68,5 +71,11 @@ public class LoginData extends JQMForm
 	public String getPasswordInputText()
 	{
 		return passwordInput.getValue();
+	}
+
+	public void init()
+	{
+//		emailInput.setValue("", true);
+		passwordInput.setValue("", false);
 	}
 }

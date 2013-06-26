@@ -32,7 +32,12 @@ public interface ITestSuiteController extends RemoteService
 
 	int getId();
 
-	void bridgeIDVerified();
+	/**
+	 * Returns either null for no credentials or a String[2] where index 0 is 'username' and index 1 is 'password' - for automatic
+	 * test client authentication.
+	 * @return see description.
+	 */
+	String[] bridgeIDVerified();
 
 	/**
 	 * @param reqSequenceNo as calls to methods in this interface can come through multiple threads async, this param. allows the client to specify the sequence in which calls will be processed.

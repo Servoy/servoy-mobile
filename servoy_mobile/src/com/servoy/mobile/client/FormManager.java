@@ -62,6 +62,11 @@ public class FormManager
 		export();
 	}
 
+	protected MobileClient getApplication()
+	{
+		return application;
+	}
+
 	protected FormController getFirstForm()
 	{
 		Form jsForm = application.getFlattenedSolution().getFirstForm();
@@ -75,7 +80,7 @@ public class FormManager
 		{
 			login = new Login(application);
 		}
-		login.setCallbackHandlers(successCallback, errorHandler);
+		login.init(successCallback, errorHandler);
 		return login;
 	}
 

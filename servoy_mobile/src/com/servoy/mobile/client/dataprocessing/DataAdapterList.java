@@ -97,7 +97,7 @@ public class DataAdapterList implements IModificationListener, ITagResolver
 
 	public void setRecord(Record record)
 	{
-		if (this.record != null) record.removeModificationListener(this);
+		if (this.record != null) this.record.removeModificationListener(this);
 		this.record = record;
 		if (this.record != null) this.record.addModificationListener(this);
 
