@@ -186,8 +186,8 @@ public class FoundSetManager
 	}
 
 	private native void exportImpl(String name) /*-{
-												$wnd._ServoyUtils_.defineWindowVariable(name);
-												}-*/;
+		$wnd._ServoyUtils_.defineWindowVariable(name);
+	}-*/;
 
 	public EntityDescription getEntityDescription(String entityName)
 	{
@@ -1082,7 +1082,8 @@ public class FoundSetManager
 
 	JSONObject toRemoteJSON(String entityName, RowDescription row)
 	{
-		List<String> uuidCols = Arrays.asList(entities.getUUIDDataProviderNames(entityName));
+		String[] uuidDataProviderNames = entities.getUUIDDataProviderNames(entityName);
+		List<String> uuidCols = uuidDataProviderNames != null ? Arrays.asList(uuidDataProviderNames) : null;
 
 		if (!row.isCreatedOnDevice())
 		{
@@ -1102,7 +1103,7 @@ public class FoundSetManager
 
 				if (!Utils.equalObjects(serverValue, clientValue))
 				{
-					if (uuidCols.contains(dataprovider) && clientValue != null)
+					if (uuidCols != null && uuidCols.contains(dataprovider) && clientValue != null)
 					{
 						clientValue = valueStore.getUUIDValue(Utils.getAsInteger(clientValue));
 					}
