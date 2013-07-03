@@ -41,111 +41,58 @@ public class SolutionTestSuite
 
 	public void runCurrentSolutionTestSuite()
 	{
-		// inject JSUnit related javascript code
-		rpcController.getJsUnitJavascriptCode(new AsyncCallback<String[]>()
-		{
-			public void onSuccess(final String[] result)
-			{
-				application.runSafe(new Runnable()
-				{
-					@Override
-					@SuppressWarnings("nls")
-					public void run()
-					{
-						// unfortunately all JS (libs / suite code) need to be located directly in window scope, otherwise JsUtil's Function.prototype.glue
-						// will not work correctly (it assumes that "this" contains function definitions - that are stored in current scope); and as the current scope cannot be
-						// accessed in JS, nor this altered to match it, the only place left in browsers where the 2 are the same seems to be the main window.
+		// unfortunately all JS (libs / suite code) need to be located directly in window scope, otherwise JsUtil's Function.prototype.glue
+		// will not work correctly (it assumes that "this" contains function definitions - that are stored in current scope); and as the current scope cannot be
+		// accessed in JS, nor this altered to match it, the only place left in browsers where the 2 are the same seems to be the main window.
 
-						// if we need in the future to eval all this JS in a different scope (an isolated function scope), the "glue" method needs to change at least
+		// if we need in the future to eval all this JS in a different scope (an isolated function scope), the "glue" method needs to change at least
 
-						for (String code : result)
-						{
-							appendScriptTagToHead(code); // current scope and "this" must be the same so we have to eval the libs inside the window; we do not have acces to closure scopes programmatically, so we can't isolate the libs
-						}
+		// @formatter:off
+		appendScriptTagToHead("function startTestSuiteInternal(testListener, startSuiteName) {\n"
+								+ "\ttry { throw ''; } catch (e) {}\n" // just for a kind of breakpoint in browser debug tool
+								+ "\tvar result = new TestResult();\n"
+								+ "\ttestListener.setResult(result);\n"
+								+ "\tresult.addListener(testListener);\n"
+								+ "\teval(startSuiteName + '.prototype.suite().run(result)');\n" +
+							"}");
+		// @formatter:on
 
-						// @formatter:off
-						appendScriptTagToHead("function startTestSuiteInternal(testListener, startSuiteName) {\n"
-							+ "\ttry { throw ''; } catch (e) {}\n" // just for a kind of breakpoint in browser debug tool
-							+ "\tvar result = new TestResult();\n"
-							+ "\ttestListener.setResult(result);\n"
-							+ "\tresult.addListener(testListener);\n"
-							+ "\teval(startSuiteName + '.prototype.suite().run(result)');\n" +
-						"}");
-						// @formatter:on
-
-						prepareJSUnitSuiteCodeAndRun();
-					}
-
-				}, "Injecting library code / generating test suite failed."); //$NON-NLS-1$
-			}
-
-			public void onFailure(Throwable caught)
-			{
-				application.reportUnexpectedThrowable("Cannot get the required JSUnit library code or related JS code...", caught); //$NON-NLS-1$
-			}
-		});
+		prepareJSUnitSuiteCodeAndRun();
 	}
 
 	@SuppressWarnings("nls")
 	protected void prepareJSUnitSuiteCodeAndRun()
 	{
-		// we can get null from controller (ant tests) or the complete suite code and test suite name if tests are being ran in developer (developer knows
-		// more about the solution structure so it can generate nicer suites - mobile client currently only knows the flattened solution)
-		// @formatter:off
-		rpcController.getSolutionJsUnitJavascriptCode(new AsyncCallback<String[]>()
+		final String rootSuiteClassName = getRootTestSuiteClassName();
+		if (rootSuiteClassName != null)
 		{
-			public void onSuccess(final String[] result)
+			rpcController.setFlattenedTestTree(getFlattenedTestTree(rootSuiteClassName), new AsyncCallback<Void>()
 			{
-				if (result == null)
+
+				@Override
+				public void onFailure(Throwable caught)
 				{
-					// TODO ac implement this based on what the solution has to offer if we get null from controller... currently it's a dummy; maybe send the structure remotely to reuse code server-side
-					application.reportUnexpectedThrowable("Client generation of test suite code is not yet supported.", null);
+					application.reportUnexpectedThrowable("Cannot set flattened test tree...", caught); //$NON-NLS-1$
 				}
-				else
+
+				@Override
+				public void onSuccess(Void result)
 				{
-				application.runSafe(new Runnable()
-				{
-					@Override
-					@SuppressWarnings("nls")
-					public void run()
+					application.runSafe(new Runnable()
 					{
-						appendScriptTagToHead(result[1]);
-						final String suiteName = result[0];
-
-						rpcController.setFlattenedTestTree(getFlattenedTestTree(suiteName), new AsyncCallback<Void>()
+						@Override
+						public void run()
 						{
-
-							@Override
-							public void onFailure(Throwable caught)
-							{
-								application.reportUnexpectedThrowable("Cannot set flattened test tree...", caught); //$NON-NLS-1$
-							}
-
-							@Override
-							public void onSuccess(Void result)
-							{
-								application.runSafe(new Runnable()
-								{
-									@Override
-									public void run()
-									{
-										startSuite(suiteName);
-									}
-								}, "Error when trying to start the javascript testsuite.");
-							}
-						});
-
-					}
-
-				}, "Injecting library code / generating test suite failed."); //$NON-NLS-1$
+							startSuite(rootSuiteClassName);
+						}
+					}, "Error when trying to start the javascript testsuite.");
 				}
-			}
-
-			public void onFailure(Throwable caught)
-			{
-				application.reportUnexpectedThrowable("Cannot get the javascript JS Unit suite code...", caught); //$NON-NLS-1$
-			}
-		});
+			});
+		}
+		else
+		{
+			application.reportUnexpectedThrowable("Cannot get the javascript JS Unit suite code... Client-side generation not yet supported.", null); //$NON-NLS-1$
+		}
 	}
 
 	protected void startSuite(String suiteName)
@@ -187,6 +134,12 @@ public class SolutionTestSuite
 		}
 		return result;
 	}
+
+	// __rootTestSuiteClassName is part of an already included (in GWT script dependencies) file - testSuite_generatedCode.js (generated by the developer exporter)
+	private native String getRootTestSuiteClassName()
+	/*-{
+		return $wnd.__rootTestSuiteClassName;
+	}-*/;
 
 	private native JsArrayString getFlattenedTestTreeInternal(String suiteName)
 	/*-{

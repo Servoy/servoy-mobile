@@ -53,8 +53,6 @@ public interface ITestSuiteController extends RemoteService
 	 */
 	void reportUnexpectedThrowableMessage(String msg, String throwableMessage, int reqSequenceNo);
 
-	String[] getJsUnitJavascriptCode();
-
 	void setFlattenedTestTree(String[] testTree);
 
 	// TODO ac add a method to tell the client (browser side) which tests should run (with TestTarget in a shared proj?)
@@ -90,12 +88,5 @@ public interface ITestSuiteController extends RemoteService
 	 * (useful when calls happen via browser AJAX async requests...) The first sequenceNumber that will be handled is 0, followed by 1, 2, ... .
 	 */
 	void doneTesting(int reqSequenceNo);
-
-	/**
-	 * Returns either - suggesting that the mobile client should build the suite itself null or a String[2] where index 0 is
-	 * the test suite name and index 1 is the whole javascript code of the solution js unit testsuite.
-	 * @return see description.
-	 */
-	String[] getSolutionJsUnitJavascriptCode();
 
 }

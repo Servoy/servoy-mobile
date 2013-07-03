@@ -127,18 +127,6 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 	}
 
 	@Override
-	public String[] getJsUnitJavascriptCode()
-	{
-		return bridge.getJsUnitJavascriptCode();
-	}
-
-	@Override
-	public String[] getSolutionJsUnitJavascriptCode()
-	{
-		return bridge.getSolutionJsUnitJavascriptCode();
-	}
-
-	@Override
 	public void setFlattenedTestTree(String[] testTree)
 	{
 		bridge.setFlattenedTestTree(testTree);

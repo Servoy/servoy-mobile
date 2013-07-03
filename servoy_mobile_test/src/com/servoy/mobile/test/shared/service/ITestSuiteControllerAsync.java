@@ -29,8 +29,6 @@ public interface ITestSuiteControllerAsync
 
 	void getId(AsyncCallback<Integer> callback);
 
-	void getJsUnitJavascriptCode(AsyncCallback<String[]> callback);
-
 	void reportUnexpectedThrowable(String msg, Throwable t, int reqSequenceNo, AsyncCallback<Void> callback);
 
 	void reportUnexpectedThrowableMessage(String msg, String throwableMessage, int reqSequenceNo, AsyncCallback<Void> callback);
@@ -50,7 +48,5 @@ public interface ITestSuiteControllerAsync
 	void doneTesting(int reqSequenceNo, AsyncCallback<Void> callback);
 
 	void bridgeIDVerified(AsyncCallback<String[]> asyncCallback);
-
-	void getSolutionJsUnitJavascriptCode(AsyncCallback<String[]> asyncCallback);
 
 }

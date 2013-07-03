@@ -165,7 +165,7 @@ public class MobileClient implements EntryPoint
 		}
 		else if (!foundSetManager.hasContent())
 		{
-			sync(true); // true is for test client (which auto sets unchecked credentials)
+			sync(false);
 		}
 		else
 		{

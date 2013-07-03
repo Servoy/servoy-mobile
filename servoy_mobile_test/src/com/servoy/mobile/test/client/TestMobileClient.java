@@ -204,6 +204,12 @@ public class TestMobileClient extends MobileClient
 	}
 
 	@Override
+	public void sync(JavaScriptObject successCallback, JavaScriptObject errorHandler, boolean useUncheckedCredentials)
+	{
+		super.sync(successCallback, errorHandler, true); // always try to use supplied unchecked credentials (to log in automatically, even if sync is called later in test code)
+	}
+
+	@Override
 	protected TestFormManager createFormManager()
 	{
 		return new TestFormManager(this);
@@ -215,7 +221,17 @@ public class TestMobileClient extends MobileClient
 		super.showFirstForm();
 
 		// prepare and run tests
-		if (!firstFormFirstShow) new SolutionTestSuite(TestMobileClient.this, rpcController).runCurrentSolutionTestSuite();
+		if (!firstFormFirstShow)
+		{
+			runSafe(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					new SolutionTestSuite(TestMobileClient.this, rpcController).runCurrentSolutionTestSuite();
+				}
+			}, "Problems running the solution test suite."); //$NON-NLS-1$
+		}
 		else
 		{
 			// login screen shown in mobile client?! - it usually doesn't even get this far (sync goes directly to formManager.showLogin(...) instead of showing first form)
@@ -243,7 +259,7 @@ public class TestMobileClient extends MobileClient
 		{
 			// this is not acceptable in testing
 			((TestMobileClient)getApplication()).reportUnexpectedThrowable(
-				"Login page was shown in test mobile client... Are the credentials (of the launch configuration) correct?", null);
+				"Login page was shown in test mobile client... Are the auto-login credentials correct? Is the service solution available?", null);
 		}
 	}
 
