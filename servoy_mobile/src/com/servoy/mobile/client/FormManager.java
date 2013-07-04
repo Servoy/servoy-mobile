@@ -84,14 +84,14 @@ public class FormManager
 		return login;
 	}
 
-	public void showForm(String formName)
+	public boolean showForm(String formName)
 	{
 		FormController form = getForm(formName);
 		if (form != null)
 		{
-			showForm(form);
+			return showForm(form);
 		}
-
+		return false;
 	}
 
 	public FormController getForm(String name)
@@ -112,9 +112,9 @@ public class FormManager
 		return formController;
 	}
 
-	public void showForm(FormController formController)
+	public boolean showForm(FormController formController)
 	{
-		showForm(formController, false);
+		return showForm(formController, false);
 	}
 
 	private boolean isChangingFormPage;
@@ -214,9 +214,37 @@ public class FormManager
 		}
 	}
 
+	private JavaScriptObject loginSuccessCallback = null;
+	private JavaScriptObject loginErrorHandler = null;
+
+	/**
+	 * @return the loginSuccessCallback
+	 */
+	public JavaScriptObject getLoginSuccessCallback()
+	{
+		return loginSuccessCallback;
+	}
+
+	/**
+	 * @return the loginErrorHandler
+	 */
+	public JavaScriptObject getLoginErrorHandler()
+	{
+		return loginErrorHandler;
+	}
+
 	public void showLogin(JavaScriptObject successCallback, JavaScriptObject errorHandler)
 	{
 		currentForm = null;
+		if (application.getFlattenedSolution().getLoginForm() != null)
+		{
+			if (showForm(application.getFlattenedSolution().getLoginForm()))
+			{
+				loginSuccessCallback = successCallback;
+				loginErrorHandler = errorHandler;
+				return;
+			}
+		}
 		JQMContext.changePage(getLogin(successCallback, errorHandler));
 	}
 

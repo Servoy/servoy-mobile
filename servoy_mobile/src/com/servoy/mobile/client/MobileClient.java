@@ -434,7 +434,7 @@ public class MobileClient implements EntryPoint
 		}
 	}
 
-	protected void setUncheckedLoginCredentials(String identifier, String password)
+	public void setUncheckedLoginCredentials(String identifier, String password)
 	{
 		offlineDataProxy.setUncheckedLoginCredentials(identifier, password);
 	}

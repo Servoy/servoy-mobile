@@ -253,6 +253,11 @@ public class FlattenedSolution
 		return solution.getOnSolutionOpen();
 	}
 
+	public String getLoginForm()
+	{
+		return solution.getLoginForm();
+	}
+
 	public String getServerUrl()
 	{
 		return solution.getServerUrl();

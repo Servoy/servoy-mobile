@@ -21,15 +21,22 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
 
+import com.servoy.base.scripting.api.IJSSecurity;
+import com.servoy.mobile.client.MobileClient;
+
 /**
  * @author jcompagner
  *
  */
 @Export
-public class JSSecurity implements Exportable
+public class JSSecurity implements Exportable, IJSSecurity
 {
-	public JSSecurity()
+	private final MobileClient application;
+
+	public JSSecurity(MobileClient application)
 	{
+		this.application = application;
+
 		export(ExporterUtil.wrap(this));
 		// TODO are there any methods relevant for mobile?
 	}
@@ -38,4 +45,15 @@ public class JSSecurity implements Exportable
 	/*-{
 		$wnd.security = object;
 	}-*/;
+
+	@Override
+	public Object authenticate(String authenticator_solution, String method, Object[] credentials)
+	{
+		if (credentials != null && credentials.length == 2)
+		{
+			application.setUncheckedLoginCredentials((String)credentials[0], (String)credentials[1]);
+			application.sync(application.getFormManager().getLoginSuccessCallback(), application.getFormManager().getLoginErrorHandler(), true);
+		}
+		return null;
+	}
 }

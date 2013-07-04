@@ -66,6 +66,11 @@ public class Solution extends JavaScriptObject
 		return this.onSolutionOpen;
 	}-*/;
 
+	public final native String getLoginForm()
+	/*-{
+		return this.loginForm;
+	}-*/;
+
 	public final native String getServerUrl() /*-{
 		return this.serverURL;
 	}-*/;

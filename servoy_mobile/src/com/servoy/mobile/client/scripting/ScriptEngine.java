@@ -45,7 +45,7 @@ public class ScriptEngine
 		new PluginsScope(application);
 		new JSDatabaseManager(application.getFoundSetManager());
 		new JSUtils(application);
-		new JSSecurity();
+		new JSSecurity(application);
 		new JSI18N(application.getI18nProvider());
 		export();
 	}
