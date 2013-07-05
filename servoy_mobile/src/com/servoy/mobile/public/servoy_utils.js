@@ -45,18 +45,31 @@ if (typeof(_ServoyUtils_) == "undefined")
 			configurable : true });
 	}
 	_ServoyUtils_.definedWindowVariables = new Array();
-	_ServoyUtils_.defineWindowVariable = function(name) {
+	_ServoyUtils_.persistentDefinedWindowVariables = new Array();
+	_ServoyUtils_.defineWindowVariable = function(name,persistent) {
 	    if (!(name in window)) {
-	       _ServoyUtils_.definedWindowVariables.push(name);
+	    	if (persistent)
+	    	{
+	    		_ServoyUtils_.persistentDefinedWindowVariables.push(name);
+	    	}
+	    	else
+	    	{
+	    		_ServoyUtils_.definedWindowVariables.push(name);
+	    	}
 			Object.defineProperty(window, name, {get: function() { return _ServoyUtils_.getValue(name);},
 				set: function(val) { _ServoyUtils_.setValue(name, val);},
-				configurable : false});
+				configurable : true});
 		}
-		else if (_ServoyUtils_.definedWindowVariables.indexOf(name) == -1){
+		else if (_ServoyUtils_.definedWindowVariables.indexOf(name) == -1 && _ServoyUtils_.persistentDefinedWindowVariables.indexOf(name) == -1){
 			_ServoyUtils_.error("window variable: " + name + " is already defined, skipping this dataprovider/relationname");
 		}
 	}
-
+	_ServoyUtils_.clearWindowVariables = function() {
+		for (var i=0; i < _ServoyUtils_.definedWindowVariables.length; i++) {
+		   delete window[_ServoyUtils_.definedWindowVariables[i]];
+		}
+		_ServoyUtils_.definedWindowVariables.length = 0;
+	}
 	_ServoyUtils_.simulateClick = function (target, options) {
 
 		var event = target.ownerDocument.createEvent('MouseEvents'),

@@ -103,7 +103,7 @@ public class JSVariable extends JSScriptPart implements IMobileSMVariable, Expor
 	}-*/;
 
 	private final native void createVarInternal(String parentScope, String scope, String vName, int type) /*-{
-		$wnd._ServoyUtils_.defineWindowVariable(vName);
+		$wnd._ServoyUtils_.defineWindowVariable(vName, true);
 		$wnd._ServoyInit_[parentScope][scope].vrbs[vName] = [ "null", type ];
 	}-*/;
 

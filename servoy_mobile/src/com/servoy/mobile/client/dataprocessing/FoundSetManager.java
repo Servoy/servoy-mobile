@@ -152,6 +152,7 @@ public class FoundSetManager
 	{
 		if (entities != null)
 		{
+			clearDataproviders();
 			Set<String> exported = new HashSet<String>();
 			JsArray<EntityDescription> eds = entities.getEntityDescriptions();
 			for (int i = 0; i < eds.length(); i++)
@@ -186,7 +187,11 @@ public class FoundSetManager
 	}
 
 	private native void exportImpl(String name) /*-{
-		$wnd._ServoyUtils_.defineWindowVariable(name);
+		$wnd._ServoyUtils_.defineWindowVariable(name, false);
+	}-*/;
+
+	private native void clearDataproviders() /*-{
+		$wnd._ServoyUtils_.clearWindowVariables();
 	}-*/;
 
 	public EntityDescription getEntityDescription(String entityName)
