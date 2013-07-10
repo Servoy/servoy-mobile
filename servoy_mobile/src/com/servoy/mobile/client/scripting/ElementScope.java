@@ -49,5 +49,6 @@ public class ElementScope extends Scope
 	public void destroy()
 	{
 		elements.clear();
+		ScriptEngine.clearScope(this);
 	}
 }

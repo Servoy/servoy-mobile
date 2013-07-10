@@ -15,6 +15,11 @@ if (typeof(_ServoyUtils_) == "undefined")
 	}
 
 	_ServoyUtils_.wrapFunction = function(func, scope) {
+		if(!scope["_destroyCallbackFunctions"]) scope["_destroyCallbackFunctions"] = [];
+		scope["_destroyCallbackFunctions"].push(function() {
+			func = null;
+			scope = null;
+		});
 		return function() {
 			_ServoyUtils_.stack.push(scope);
 			try {
@@ -25,23 +30,37 @@ if (typeof(_ServoyUtils_) == "undefined")
 		}
 	}
 
+	_ServoyUtils_.clearScope = function(scope) {
+		for (var i = 0; i < scope._destroyCallbackFunctions.length; i++) {
+			scope._destroyCallbackFunctions[i]();
+		}
+	}
+	
 	_ServoyUtils_.defineStandardFormVariables = function(form) {
 		_ServoyUtils_.defineVariable(form, "foundset");
 		_ServoyUtils_.defineVariable(form, "controller");
 		_ServoyUtils_.defineVariable(form, "elements");
 	}
 
-	_ServoyUtils_.defineVariable = function(object, name, defaultValue, type) {
-		Object.defineProperty(object, name, {get: function() { return _ServoyUtils_.getScopeVariable(object, name);},
-			set: function(val) { _ServoyUtils_.setScopeVariable(object, name, val);},
+	_ServoyUtils_.defineVariable = function(scope, name, defaultValue, type) {
+		if(!scope["_destroyCallbackFunctions"]) scope["_destroyCallbackFunctions"] = [];
+		scope["_destroyCallbackFunctions"].push(function() {
+			scope = null;
+		});
+		Object.defineProperty(scope, name, {get: function() { return _ServoyUtils_.getScopeVariable(scope, name);},
+			set: function(val) { _ServoyUtils_.setScopeVariable(scope, name, val);},
 			configurable : true });
-		if (type != undefined) _ServoyUtils_.setScopeVariableType(object, name, type);
-		if (defaultValue != undefined) _ServoyUtils_.setScopeVariable(object, name, defaultValue); // set default value
+		if (type != undefined) _ServoyUtils_.setScopeVariableType(scope, name, type);
+		if (defaultValue != undefined) _ServoyUtils_.setScopeVariable(scope, name, defaultValue); // set default value
 	}
 
-	_ServoyUtils_.defineRedirectVariable = function(object,javascriptObject, name) {
-		Object.defineProperty(javascriptObject, name, {get: function() { return _ServoyUtils_.getScopeVariable(object, name);},
-			set: function(val) { _ServoyUtils_.setScopeVariable(object, name, val);},
+	_ServoyUtils_.defineRedirectVariable = function(scope,javascriptObject, name) {
+		if(!scope["_destroyCallbackFunctions"]) scope["_destroyCallbackFunctions"] = []; 
+		scope["_destroyCallbackFunctions"].push(function() {
+			scope = null;
+		});
+		Object.defineProperty(javascriptObject, name, {get: function() { return _ServoyUtils_.getScopeVariable(scope, name);},
+			set: function(val) { _ServoyUtils_.setScopeVariable(scope, name, val);},
 			configurable : true });
 	}
 	_ServoyUtils_.definedWindowVariables = new Array();

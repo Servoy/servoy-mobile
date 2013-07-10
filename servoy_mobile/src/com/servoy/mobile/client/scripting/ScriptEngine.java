@@ -96,6 +96,11 @@ public class ScriptEngine
 		return keys;
 	}-*/;
 
+	public static final native void clearScope(Scope scope)
+	/*-{
+		$wnd._ServoyUtils_.clearScope(scope);
+	}-*/;
+
 	public GlobalScopeModificationDelegate getGlobalScopeModificationDelegate()
 	{
 		return globalScopeModificationDelegate;

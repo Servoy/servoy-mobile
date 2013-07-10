@@ -160,5 +160,6 @@ public class FormScope extends GlobalScope
 			getElementScope().destroy();
 		}
 		servoyProperties.clear();
+		ScriptEngine.clearScope(this);
 	}
 }
