@@ -53,6 +53,8 @@ public interface ITestSuiteController extends RemoteService
 	 */
 	void reportUnexpectedThrowableMessage(String msg, String throwableMessage, int reqSequenceNo);
 
+	String[] getJsUnitJavascriptCode();
+
 	void setFlattenedTestTree(String[] testTree);
 
 	// TODO ac add a method to tell the client (browser side) which tests should run (with TestTarget in a shared proj?)

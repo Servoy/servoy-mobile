@@ -33,6 +33,8 @@ public interface ITestSuiteControllerAsync
 
 	void reportUnexpectedThrowableMessage(String msg, String throwableMessage, int reqSequenceNo, AsyncCallback<Void> callback);
 
+	void getJsUnitJavascriptCode(AsyncCallback<String[]> callback);
+
 	void setFlattenedTestTree(String[] testTree, AsyncCallback<Void> callback);
 
 	void addError(String testName, String[] throwableStack, int reqSequenceNo, AsyncCallback<Void> callback);

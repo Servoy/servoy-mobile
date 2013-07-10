@@ -27,6 +27,8 @@ public class TestMobileClient extends MobileClient
 	@Override
 	public void onModuleLoad()
 	{
+		GWT.create(SolutionTestSuite.class); // this will export to make it accessible from JS
+
 		rpcController = (ITestSuiteControllerAsync)GWT.create(ITestSuiteController.class);
 		runSafe(new Runnable()
 		{
