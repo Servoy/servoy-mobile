@@ -24,7 +24,6 @@ import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.Setter;
 
 import com.servoy.base.persistence.IMobileProperties;
-import com.servoy.base.solutionmodel.mobile.IMobileSMTitle;
 import com.servoy.base.solutionmodel.mobile.IMobileSMLabel;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 
@@ -56,7 +55,7 @@ public class JSLabel extends JSGraphicalComponent implements IMobileSMLabel, Exp
 	}
 
 	@Override
-	public IMobileSMTitle getTitle()
+	public JSTitle getTitle()
 	{
 		return new JSTitle((GraphicalComponent)JSField.getTitleForComponent(this).getBase(), getSolutionModel(), getParent());
 	}
