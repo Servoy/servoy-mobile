@@ -31,8 +31,11 @@ if (typeof(_ServoyUtils_) == "undefined")
 	}
 
 	_ServoyUtils_.clearScope = function(scope) {
-		for (var i = 0; i < scope._destroyCallbackFunctions.length; i++) {
-			scope._destroyCallbackFunctions[i]();
+		if(scope._destroyCallbackFunctions)
+		{
+			for (var i = 0; i < scope._destroyCallbackFunctions.length; i++) {
+				scope._destroyCallbackFunctions[i]();
+			}
 		}
 	}
 	
