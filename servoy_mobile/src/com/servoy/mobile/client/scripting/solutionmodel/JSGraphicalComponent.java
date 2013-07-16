@@ -59,4 +59,16 @@ public class JSGraphicalComponent extends JSTextComponent implements IBaseSMGrap
 		return JSMethod.getMethodFromString(((GraphicalComponent)getBase()).getOnActionMethodCall(), (JSForm)getParent(), getSolutionModel());
 	}
 
+	@Setter
+	public void setFormat(String format)
+	{
+		cloneIfNeeded();
+		((GraphicalComponent)getBase()).setFormat(format);
+	}
+
+	@Getter
+	public String getFormat()
+	{
+		return ((GraphicalComponent)getBase()).getFormat();
+	}
 }

@@ -110,6 +110,19 @@ public class JSField extends JSComponent implements IMobileSMField, Exportable
 		return new JSValueList(getSolutionModel().getApplication().getFlattenedSolution().getValueListByUUID(((Field)getBase()).getValuelistID()));
 	}
 
+	@Getter
+	public String getFormat()
+	{
+		return ((Field)getBase()).getFormat();
+	}
+
+	@Setter
+	public void setFormat(String arg)
+	{
+		cloneIfNeeded();
+		((Field)getBase()).setFormat(arg);
+	}
+
 	@Setter
 	@Override
 	public void setDataProviderID(String arg)
