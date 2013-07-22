@@ -24,8 +24,8 @@ import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.Setter;
 
 import com.servoy.base.persistence.IMobileProperties;
-import com.servoy.base.solutionmodel.mobile.IMobileSMButton;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
+import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMButton;
 
 /**
  * @author acostescu
