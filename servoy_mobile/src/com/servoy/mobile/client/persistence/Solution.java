@@ -75,6 +75,10 @@ public class Solution extends JavaScriptObject
 		return this.serverURL;
 	}-*/;
 
+	public final native String getServiceSolutionName() /*-{
+		return this.serviceSolutionName;
+	}-*/;
+
 	public final native int getTimeout() /*-{
 		return this.timeout;
 	}-*/;

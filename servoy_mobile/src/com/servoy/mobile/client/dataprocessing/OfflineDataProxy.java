@@ -50,7 +50,7 @@ public class OfflineDataProxy
 {
 	private static final int version = 1;
 	private final FoundSetManager foundSetManager;
-	private final String serverURL;
+	private String serverURL;
 	private final boolean nodebug;
 	private final int timeout;
 
@@ -569,6 +569,11 @@ public class OfflineDataProxy
 			e.printStackTrace();
 		}
 
+	}
+
+	public void setServerURL(String url)
+	{
+		this.serverURL = url;
 	}
 
 	@SuppressWarnings("nls")

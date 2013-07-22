@@ -248,6 +248,12 @@ public class FlattenedSolution
 		return solution.getSolutionName();
 	}
 
+	public String getServiceSolutionName()
+	{
+		return solution.getServiceSolutionName();
+	}
+
+
 	public String getOnSolutionOpen()
 	{
 		return solution.getOnSolutionOpen();
