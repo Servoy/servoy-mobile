@@ -43,6 +43,7 @@ import com.servoy.mobile.client.scripting.JSUtils;
 import com.servoy.mobile.client.scripting.PluginsScope;
 import com.servoy.mobile.client.scripting.RuntimeBean;
 import com.servoy.mobile.client.scripting.RuntimeDataButton;
+import com.servoy.mobile.client.scripting.RuntimeDataCalenderField;
 import com.servoy.mobile.client.scripting.RuntimeDataCheckboxSet;
 import com.servoy.mobile.client.scripting.RuntimeDataFormHeader;
 import com.servoy.mobile.client.scripting.RuntimeDataFormHeaderButton;
@@ -132,6 +133,7 @@ public class MobileClient implements EntryPoint
 		GWT.create(RuntimeDataTextField.class);
 		GWT.create(RuntimeDataTextArea.class);
 		GWT.create(RuntimeDataPassword.class);
+		GWT.create(RuntimeDataCalenderField.class);
 		GWT.create(RuntimePortal.class);
 		GWT.create(RuntimeBean.class);
 
@@ -143,7 +145,6 @@ public class MobileClient implements EntryPoint
 		foundSetManager = new FoundSetManager(this);
 		offlineDataProxy = new OfflineDataProxy(foundSetManager, getServerURL(), nodebug, getTimeout());
 		formManager = createFormManager();
-
 		solutionModel = new JSSolutionModel(this);
 		scriptEngine = new ScriptEngine(this);
 
