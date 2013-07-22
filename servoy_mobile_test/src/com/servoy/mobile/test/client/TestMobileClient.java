@@ -246,6 +246,8 @@ public class TestMobileClient extends MobileClient
 	{
 		// avoid modal dialogs
 		Log.error("[MobileJSUnitClient] (client) Error message:" + msg); //$NON-NLS-1$
+		// fail tests
+		reportUnexpectedThrowable(msg, null);
 	}
 
 	protected static class TestFormManager extends FormManager

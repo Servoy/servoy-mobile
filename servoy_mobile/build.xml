@@ -62,6 +62,6 @@
 		<move tofile="../com.servoy.eclipse.model/src/com/servoy/eclipse/model/mobile/exporter/resources/servoy_mobile.war" file="servoy_mobile.war"/>
 	</target>
 	
-	<target name="build_mobile_in_developer" depends="build_mobile, gwtc"/> <!-- compile back for developer debug - gwtc (to avoid cross-site scripting error dialog when debugging GWT from eclipse -->
+	<target name="build_mobile_in_developer" depends="build_mobile, gwtc"/> <!-- compile back for developer debug - gwtc (to avoid cross-site scripting error dialog when debugging GWT from eclipse) -->
 
 </project>
