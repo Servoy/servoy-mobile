@@ -109,6 +109,12 @@ public class MobileClient implements EntryPoint
 		{
 			nodebug = true;
 		}
+
+		String localeFromURL = null;
+		if (Window.Location.getParameter("locale") != null) //$NON-NLS-1$
+		{
+			localeFromURL = Window.Location.getParameter("locale");
+		}
 		exportLog();
 
 		GWT.create(JSDatabaseManager.class);
@@ -141,7 +147,7 @@ public class MobileClient implements EntryPoint
 		GWT.create(Utils.class);
 
 		flattenedSolution = new FlattenedSolution(createSolution());
-		i18nProvider = new SolutionI18nProvider(flattenedSolution, getLocale());
+		i18nProvider = new SolutionI18nProvider(flattenedSolution, localeFromURL != null ? localeFromURL : getLocale());
 		foundSetManager = new FoundSetManager(this);
 		offlineDataProxy = new OfflineDataProxy(foundSetManager, getServerURL(), nodebug, getTimeout());
 		formManager = createFormManager();
