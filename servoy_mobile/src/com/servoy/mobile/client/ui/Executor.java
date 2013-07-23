@@ -1,9 +1,12 @@
 package com.servoy.mobile.client.ui;
 
+import java.util.Date;
+
 import org.timepedia.exporter.client.ExporterUtil;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
+import com.google.gwt.core.client.JsDate;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.scripting.IRuntimeComponent;
 import com.servoy.mobile.client.scripting.JSEvent;
@@ -86,6 +89,10 @@ public class Executor
 				else if (evalled instanceof JavaScriptObject)
 				{
 					jsArray.set(i, (JavaScriptObject)evalled);
+				}
+				else if (evalled instanceof Date)
+				{
+					jsArray.set(i, JsDate.create(((Date)evalled).getTime()));
 				}
 			}
 		}
