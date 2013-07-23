@@ -114,6 +114,7 @@ public class MobileClient implements EntryPoint
 		if (Window.Location.getParameter("locale") != null) //$NON-NLS-1$
 		{
 			localeFromURL = Window.Location.getParameter("locale");
+			localeFromURL = localeFromURL.replace('-', '_');
 		}
 		exportLog();
 
@@ -147,7 +148,7 @@ public class MobileClient implements EntryPoint
 		GWT.create(Utils.class);
 
 		flattenedSolution = new FlattenedSolution(createSolution());
-		i18nProvider = new SolutionI18nProvider(flattenedSolution, localeFromURL != null ? localeFromURL : getLocale());
+		i18nProvider = new SolutionI18nProvider(flattenedSolution, localeFromURL != null ? localeFromURL : getLocale().replace('-', '_'));
 		foundSetManager = new FoundSetManager(this);
 		offlineDataProxy = new OfflineDataProxy(foundSetManager, getServerURL(), nodebug, getTimeout());
 		formManager = createFormManager();

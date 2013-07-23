@@ -45,6 +45,14 @@ public class SolutionI18nProvider implements I18NProvider
 		String value = solution.getI18nValue(key);
 		if (value == null)
 		{
+			// fallback to language only if it is defined . ex:  locale is de_AT , but only 'de' i18n key is defined
+			String[] languageAndCountry = locale.split("_");
+			if (languageAndCountry.length > 1)
+			{
+				key = languageAndCountry[0] + '.' + i18nKey;
+				value = solution.getI18nValue(key);
+				if (value != null) return value;
+			}
 			key = "." + i18nKey; //$NON-NLS-1$
 			value = solution.getI18nValue(key);
 		}
@@ -74,9 +82,16 @@ public class SolutionI18nProvider implements I18NProvider
 		solution.setI18nValue(key, value);
 	}
 
-	public void setLocale(String locale)
+	public void setLocale(String locale, String country)
 	{
-		this.locale = locale;
+		if (country == null || country.length() == 0)
+		{
+			this.locale = locale;
+		}
+		else
+		{
+			this.locale = locale + '_' + country;
+		}
 	}
 
 	public String getLocale()

@@ -42,10 +42,7 @@ public class JSI18N implements Exportable, IJSI18N
 
 	public void setLocale(String language, String country)
 	{
-		if (language != null)
-		{
-			i18nProvider.setLocale(language);
-		}
+		i18nProvider.setLocale(language, country);
 	}
 
 	@Override
