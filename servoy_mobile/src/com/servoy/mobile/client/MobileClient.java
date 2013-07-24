@@ -148,7 +148,7 @@ public class MobileClient implements EntryPoint
 		GWT.create(Utils.class);
 
 		flattenedSolution = new FlattenedSolution(createSolution());
-		i18nProvider = new SolutionI18nProvider(flattenedSolution, localeFromURL != null ? localeFromURL : getLocale().replace('-', '_'));
+		i18nProvider = new SolutionI18nProvider(flattenedSolution, localeFromURL != null ? localeFromURL : getLocale());
 		foundSetManager = new FoundSetManager(this);
 		offlineDataProxy = new OfflineDataProxy(foundSetManager, getServerURL(), nodebug, getTimeout());
 		formManager = createFormManager();
@@ -483,7 +483,18 @@ public class MobileClient implements EntryPoint
 		}
 	}-*/;
 
-	public final native String getLocale()
+	public String getLocale()
+	{
+		String browserLocale = getLocaleInternal();
+		if (browserLocale != null)
+		{
+			browserLocale = browserLocale.replace('-', '_');
+		}
+		else browserLocale = "";
+		return browserLocale;
+	}
+
+	private final native String getLocaleInternal()
 	/*-{
 		return $wnd.navigator.language;
 	}-*/;

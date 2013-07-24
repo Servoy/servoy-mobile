@@ -51,10 +51,14 @@ public class SolutionI18nProvider implements I18NProvider
 			{
 				key = languageAndCountry[0] + '.' + i18nKey;
 				value = solution.getI18nValue(key);
-				if (value != null) return value;
+
 			}
-			key = "." + i18nKey; //$NON-NLS-1$
-			value = solution.getI18nValue(key);
+			if (value == null)
+			{
+				key = "." + i18nKey; //$NON-NLS-1$
+				value = solution.getI18nValue(key);
+			}
+
 		}
 		return value;
 	}
@@ -84,13 +88,17 @@ public class SolutionI18nProvider implements I18NProvider
 
 	public void setLocale(String locale, String country)
 	{
-		if (country == null || country.length() == 0)
+		if (locale != null)
 		{
-			this.locale = locale;
-		}
-		else
-		{
-			this.locale = locale + '_' + country;
+			if (country != null)
+			{
+				this.locale = locale + '_' + country;
+
+			}
+			else if (country == null || country.length() == 0)
+			{
+				this.locale = locale;
+			}
 		}
 	}
 
