@@ -109,13 +109,6 @@ public class MobileClient implements EntryPoint
 		{
 			nodebug = true;
 		}
-
-		String localeFromURL = null;
-		if (Window.Location.getParameter("locale") != null) //$NON-NLS-1$
-		{
-			localeFromURL = Window.Location.getParameter("locale");
-			localeFromURL = localeFromURL.replace('-', '_');
-		}
 		exportLog();
 
 		GWT.create(JSDatabaseManager.class);
@@ -148,7 +141,7 @@ public class MobileClient implements EntryPoint
 		GWT.create(Utils.class);
 
 		flattenedSolution = new FlattenedSolution(createSolution());
-		i18nProvider = new SolutionI18nProvider(flattenedSolution, localeFromURL != null ? localeFromURL : getLocale());
+		i18nProvider = new SolutionI18nProvider(flattenedSolution, getBrowserLocale());
 		foundSetManager = new FoundSetManager(this);
 		offlineDataProxy = new OfflineDataProxy(foundSetManager, getServerURL(), nodebug, getTimeout());
 		formManager = createFormManager();
@@ -483,15 +476,23 @@ public class MobileClient implements EntryPoint
 		}
 	}-*/;
 
-	public String getLocale()
+	public String getBrowserLocale()
 	{
-		String browserLocale = getLocaleInternal();
-		if (browserLocale != null)
+		String locale = "";
+		String localeFromURL = Window.Location.getParameter("locale");
+		if (localeFromURL != null)
 		{
-			browserLocale = browserLocale.replace('-', '_');
+			locale = localeFromURL.replace('-', '_');
 		}
-		else browserLocale = "";
-		return browserLocale;
+		else
+		{
+			String browserLocale = getLocaleInternal();
+			if (browserLocale != null)
+			{
+				locale = browserLocale.replace('-', '_');
+			}
+		}
+		return locale;
 	}
 
 	private final native String getLocaleInternal()
