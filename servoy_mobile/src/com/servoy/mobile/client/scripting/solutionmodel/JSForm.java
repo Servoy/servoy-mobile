@@ -388,6 +388,24 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 	}
 
 	@Override
+	public JSCalendar newCalendar(IBaseSMVariable dataprovidername, int y)
+	{
+		return newCalendar((JSVariable)dataprovidername, y);
+	}
+
+	public JSCalendar newCalendar(JSVariable dataprovider, int y)
+	{
+		return (JSCalendar)newField(dataprovider.getReferenceString(), IFieldConstants.CALENDAR, 0, y, 10, 10);
+	}
+
+	@Override
+	public JSCalendar newCalendar(String dataprovidername, int y)
+	{
+		return (JSCalendar)newField(dataprovidername, IFieldConstants.CALENDAR, 0, y, 10, 10);
+	}
+
+
+	@Override
 	public JSButton newButton(String txt, int x, int y, int width, int height, Object action)
 	{
 		return newButton(txt, x, y, width, height, null); // because of how GWT Exporter works, the other method will be most likely called instead anyway for JSMethod actions
