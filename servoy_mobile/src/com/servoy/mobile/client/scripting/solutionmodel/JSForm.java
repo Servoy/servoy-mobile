@@ -1282,13 +1282,10 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 	}
 
 	@Setter
-	public void setNavigator(Number navigator)
+	public void setNavigator(int navigator)
 	{
-		if (navigator != null)
-		{
-			cloneIfNeeded();
+		cloneIfNeeded();
 
-			form.setNavigatorID(navigator.toString());
-		}
+		form.setNavigatorID(String.valueOf(navigator));
 	}
 }

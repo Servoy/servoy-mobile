@@ -47,7 +47,6 @@ public class ScriptEngine
 		new JSUtils(application);
 		new JSSecurity(application);
 		new JSI18N(application.getI18nProvider());
-		new DEFAULTS();
 		export();
 	}
 

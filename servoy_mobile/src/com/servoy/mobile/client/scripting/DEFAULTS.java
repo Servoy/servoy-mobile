@@ -18,8 +18,8 @@
 package com.servoy.mobile.client.scripting;
 
 import org.timepedia.exporter.client.Export;
+import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
-import org.timepedia.exporter.client.ExporterUtil;
 
 import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMDefaults;
 
@@ -27,16 +27,12 @@ import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMDefaults;
  * @author lvostinar
  *
  */
-@Export
+@Export("SM_DEFAULTS")
+@ExportPackage("")
 public class DEFAULTS implements IMobileSMDefaults, Exportable
 {
 	public DEFAULTS()
 	{
-		export(ExporterUtil.wrap(this));
 	}
 
-	private native void export(Object object)
-	/*-{
-		$wnd.SM_DEFAULTS = object;
-	}-*/;
 }
