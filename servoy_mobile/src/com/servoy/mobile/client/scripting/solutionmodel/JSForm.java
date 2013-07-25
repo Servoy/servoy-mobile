@@ -58,6 +58,7 @@ import com.servoy.mobile.client.persistence.Portal;
 import com.servoy.mobile.client.persistence.TabPanel;
 import com.servoy.mobile.client.scripting.ScriptEngine;
 import com.servoy.mobile.client.scripting.solutionhelper.JSInsetList;
+import com.servoy.mobile.client.util.Utils;
 
 /**
  * @author acostescu
@@ -1233,5 +1234,61 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 	public <T> void setMobilePropertyValue(IBaseSMComponent c, MobileProperty<T> property, T value)
 	{
 		((JSBase)c).putMobileProperty(property, value);
+	}
+
+	@Getter
+	public Object getNavigator()
+	{
+		if (Utils.isInteger(form.getNavigatorID()))
+		{
+			return Integer.valueOf(form.getNavigatorID());
+		}
+		Form f = getSolutionModel().getApplication().getFlattenedSolution().getFormByUUID(form.getNavigatorID());
+		if (f != null)
+		{
+			return new JSForm(f, getSolutionModel());
+		}
+		return null;
+	}
+
+	@Setter
+	public void setNavigator(JSForm navigator)
+	{
+		if (navigator != null)
+		{
+			cloneIfNeeded();
+
+			form.setNavigatorID(navigator.getBase().getUUID());
+		}
+	}
+
+	@Setter
+	public void setNavigator(String navigator)
+	{
+		if (navigator != null)
+		{
+			cloneIfNeeded();
+
+			Form f = getSolutionModel().getApplication().getFlattenedSolution().getForm(navigator);
+			if (f != null)
+			{
+				form.setNavigatorID(f.getUUID());
+			}
+			else
+			{
+				throw new RuntimeException("cannot find form with name '" + navigator + "'");
+			}
+		}
+	}
+
+	@Setter
+	public void setNavigator(Number navigator)
+	{
+		if (navigator != null)
+		{
+			cloneIfNeeded();
+
+			form.setNavigatorID(navigator.toString());
+		}
 	}
 }

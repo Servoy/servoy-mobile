@@ -33,6 +33,7 @@ import com.servoy.mobile.client.dataprocessing.FoundSetManager;
 import com.servoy.mobile.client.dataprocessing.OfflineDataProxy;
 import com.servoy.mobile.client.persistence.FlattenedSolution;
 import com.servoy.mobile.client.persistence.Solution;
+import com.servoy.mobile.client.scripting.DEFAULTS;
 import com.servoy.mobile.client.scripting.JSApplication;
 import com.servoy.mobile.client.scripting.JSDatabaseManager;
 import com.servoy.mobile.client.scripting.JSEvent;
@@ -122,6 +123,7 @@ public class MobileClient implements EntryPoint
 		GWT.create(JSEvent.class);
 		GWT.create(JSSolutionModel.class); // this will also export all referenced classes like JSForm
 		GWT.create(FoundSet.class); // foundset is not a scope yet, if it becomes a scope (aggregates) then this can't be done, or must he exported differently
+		GWT.create(DEFAULTS.class);
 		// export all the scriptable ui classes:
 		GWT.create(RuntimeDataButton.class);
 		GWT.create(RuntimeDataCheckboxSet.class);

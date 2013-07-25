@@ -97,6 +97,21 @@ public class Utils implements Exportable
 		}
 	}
 
+
+	public static boolean isInteger(String s)
+	{
+		try
+		{
+			new Double(s.replace(',', '.')).intValue();
+			return true;
+		}
+		catch (Exception ex)
+		{
+
+		}
+		return false;
+	}
+
 	/**
 	 * Try to parse the given object as an integer
 	 * 

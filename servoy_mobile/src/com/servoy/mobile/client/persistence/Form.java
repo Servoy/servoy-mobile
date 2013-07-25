@@ -140,4 +140,9 @@ public class Form extends AbstractBase
 	{
 		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_NAVIGATORID, null);
 	}
+
+	public final void setNavigatorID(String navigatorID)
+	{
+		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_NAVIGATORID, navigatorID);
+	}
 }
