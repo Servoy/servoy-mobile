@@ -28,6 +28,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
 import com.servoy.base.scripting.api.IJSApplication;
+import com.servoy.base.solutionmodel.IBaseApplicationTypes;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.persistence.ValueList;
 
@@ -101,6 +102,12 @@ public class JSApplication implements Exportable, IJSApplication
 	@NoExport
 	public void setValueListItems(String name, Object[] displayValues, Object[] realValues)
 	{
+	}
+
+	@Override
+	public int getApplicationType()
+	{
+		return IBaseApplicationTypes.MOBILE_CLIENT;
 	}
 
 	private native void export(Object object)
