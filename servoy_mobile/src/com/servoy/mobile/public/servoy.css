@@ -57,7 +57,7 @@ label.label-labelfor
 }
 
 .ui-icon-loading {
-	background: url(images/ajax-loader.png);
+	background: url(images/ajax-loader.gif);
 	background-size: 46px 46px;
 }
 
