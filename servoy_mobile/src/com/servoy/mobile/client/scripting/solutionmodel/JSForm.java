@@ -1112,6 +1112,7 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 	{
 		cloneIfNeeded();
 		Bean bean = Bean.createNewBeanComponent(form);
+		bean.setName(name);
 		bean.setSize(10, 10);
 		bean.setLocation(0, y);
 		return new JSBean(bean, getSolutionModel(), this);
