@@ -15,11 +15,11 @@
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
-package com.servoy.mobile.client.scripting.solutionmodel.i;
+package com.servoy.mobile.client.scripting;
 
 import org.timepedia.exporter.client.Exportable;
 
-import com.servoy.base.solutionmodel.IBaseApplicationTypes;
+import com.servoy.base.persistence.constants.IBaseApplicationTypes;
 
 /**
  * @author lvostinar

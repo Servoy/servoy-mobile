@@ -27,8 +27,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
+import com.servoy.base.persistence.constants.IBaseApplicationTypes;
 import com.servoy.base.scripting.api.IJSApplication;
-import com.servoy.base.solutionmodel.IBaseApplicationTypes;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.persistence.ValueList;
 
