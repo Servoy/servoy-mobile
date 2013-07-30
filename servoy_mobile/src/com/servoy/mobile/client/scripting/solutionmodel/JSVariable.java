@@ -80,35 +80,35 @@ public class JSVariable extends JSScriptPart implements IMobileSMVariable, Expor
 
 	private final native boolean existsInternal(String parentScope, String scope, String vName) /*-{
 		var scp = $wnd._ServoyInit_[parentScope][scope];
-		if (scp && scp.vrbs[vName]) {
+		if (scp && scp._sv_vrbs[vName]) {
 			return true;
 		}
 		return false;
 	}-*/;
 
 	private final native String getDefaultValueInternal(String parentScope, String scope, String vName) /*-{
-		return $wnd._ServoyInit_[parentScope][scope].vrbs[vName][0];
+		return $wnd._ServoyInit_[parentScope][scope]._sv_vrbs[vName][0];
 	}-*/;
 
 	private final native void setDefaultValueInternal(String parentScope, String scope, String vName, String defValueStr) /*-{
-		$wnd._ServoyInit_[parentScope][scope].vrbs[vName][0] = defValueStr;
+		$wnd._ServoyInit_[parentScope][scope]._sv_vrbs[vName][0] = defValueStr;
 	}-*/;
 
 	private final native int getVariableTypeInternal(String parentScope, String scope, String vName) /*-{
-		return $wnd._ServoyInit_[parentScope][scope].vrbs[vName][1];
+		return $wnd._ServoyInit_[parentScope][scope]._sv_vrbs[vName][1];
 	}-*/;
 
 	private final native void setVariableTypeInternal(String parentScope, String scope, String vName, int type) /*-{
-		$wnd._ServoyInit_[parentScope][scope].vrbs[vName][1] = type;
+		$wnd._ServoyInit_[parentScope][scope]._sv_vrbs[vName][1] = type;
 	}-*/;
 
 	private final native void createVarInternal(String parentScope, String scope, String vName, int type) /*-{
 		$wnd._ServoyUtils_.defineWindowVariable(vName, true);
-		$wnd._ServoyInit_[parentScope][scope].vrbs[vName] = [ "null", type ];
+		$wnd._ServoyInit_[parentScope][scope]._sv_vrbs[vName] = [ "null", type ];
 	}-*/;
 
 	private final native void removeInternal(String parentScope, String scope, String vName) /*-{
-		delete $wnd._ServoyInit_[parentScope][scope].vrbs[vName];
+		delete $wnd._ServoyInit_[parentScope][scope]._sv_vrbs[vName];
 	}-*/;
 
 	@NoExport

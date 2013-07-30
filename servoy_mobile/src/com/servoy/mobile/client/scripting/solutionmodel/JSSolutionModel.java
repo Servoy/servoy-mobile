@@ -279,8 +279,8 @@ public class JSSolutionModel implements IMobileSolutionModel, Exportable
 				configurable : false
 			});
 			$wnd._ServoyInit_.scopes[scope] = {
-				fncs : {},
-				vrbs : {}
+				_sv_fncs : {},
+				_sv_vrbs : {}
 			};
 		}
 	}-*/;

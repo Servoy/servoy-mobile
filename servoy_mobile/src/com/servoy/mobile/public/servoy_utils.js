@@ -20,7 +20,7 @@ if (typeof(_ServoyUtils_) == "undefined")
 			func = null;
 			scope = null;
 		});
-		return function() {
+		var wrapper = function() {
 			_ServoyUtils_.stack.push(scope);
 			try {
 				return func.apply(scope, arguments);
@@ -28,6 +28,8 @@ if (typeof(_ServoyUtils_) == "undefined")
 				_ServoyUtils_.stack.pop();   
 			}
 		}
+		wrapper.realFunction = func;
+		return wrapper; 
 	}
 
 	_ServoyUtils_.clearScope = function(scope) {

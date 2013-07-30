@@ -130,14 +130,32 @@ public class JSMethod extends JSScriptPart implements IBaseSMMethod, Exportable
 
 	private final native boolean existsInternal(String parentScope, String scope, String fName) /*-{
 		var scp = $wnd._ServoyInit_[parentScope][scope];
-		if (scp && scp.fncs[fName]) {
-			return true;
+		if (scp) {
+			if (scp._sv_fncs[fName] || scp[fName]) {
+				return true;
+			}
+			var tmpScope = new Object();
+			scp._sv_init(tmpScope, null, true);
+			if (tmpScope[fName]) {
+				return true;
+			}
 		}
 		return false;
 	}-*/;
 
 	private final native String getArgsAndCodeInternal(String parentScope, String scope, String fName) /*-{
-		return $wnd._ServoyInit_[parentScope][scope].fncs[fName];
+		var scp = $wnd._ServoyInit_[parentScope][scope];
+		if (scp) {
+			var code = scp._sv_fncs[fName];
+			if (code)
+				return code;
+			var tmpScope = new Object();
+			scp._sv_init(tmpScope, null, true);
+			if (tmpScope[fName]) {
+				return tmpScope[fName].realFunction.toString();
+			}
+		}
+		return;
 	}-*/;
 
 	private final native String getWholeTextBeforeArgsInternal(String parentScope, String scope, String fName) /*-{
@@ -146,14 +164,14 @@ public class JSMethod extends JSScriptPart implements IBaseSMMethod, Exportable
 	}-*/;
 
 	private final native void setCodeInternal(String parentScope, String scope, String fName, String argsAndCode, String wholeTextBeforeArgs) /*-{
-		$wnd._ServoyInit_[parentScope][scope].fncs[fName] = argsAndCode;
+		$wnd._ServoyInit_[parentScope][scope]._sv_fncs[fName] = argsAndCode;
 		if (typeof $wnd._ServoyInit_[parentScope][scope].preTxt == 'undefined')
 			$wnd._ServoyInit_[parentScope][scope].preTxt = {};
 		$wnd._ServoyInit_[parentScope][scope].preTxt[fName] = wholeTextBeforeArgs;
 	}-*/;
 
 	private final native void removeInternal(String parentScope, String scope, String fName) /*-{
-		delete $wnd._ServoyInit_[parentScope][scope].fncs[fName];
+		delete $wnd._ServoyInit_[parentScope][scope]._sv_fncs[fName];
 		if (typeof $wnd._ServoyInit_[parentScope][scope].preTxt != 'undefined')
 			delete $wnd._ServoyInit_[parentScope][scope].preTxt[fName];
 	}-*/;

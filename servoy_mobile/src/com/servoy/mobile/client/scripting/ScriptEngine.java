@@ -71,20 +71,32 @@ public class ScriptEngine
 
 	public static native void initScope(String scopeParent, String scopeName, Scope scopeToInit, Scope oldScope)
 	/*-{
-		$wnd._ServoyInit_.initScope(scopeParent, scopeName, scopeToInit,
-				oldScope);
+		if ($wnd._ServoyInit_[scopeParent][scopeName]._sv_init) {
+			$wnd._ServoyInit_[scopeParent][scopeName]._sv_init(scopeToInit,
+					oldScope);
+		} else {
+			$wnd._ServoyInit_.initScope(scopeParent, scopeName, scopeToInit,
+					oldScope);
+		}
 	}-*/;
 
-	public static final native JsArrayString getFunctionNamesInternal(String parentScope, String scope) /*-{
+	public static final native JsArrayString getFunctionNamesInternal(String parentScope, String scope)
+	/*-{
 		var keys = [];
-		for ( var k in $wnd._ServoyInit_[parentScope][scope].fncs)
+		var scp = $wnd._ServoyInit_[parentScope][scope];
+		for ( var k in scp._sv_fncs)
 			keys.push(k);
+		var tmpScope = new Object();
+		scp._sv_init(tmpScope, null, true);
+		for ( var k in tmpScope)
+			if (k != '_destroyCallbackFunctions')
+				keys.push(k);
 		return keys;
 	}-*/;
 
 	public static final native JsArrayString getVariableNamesInternal(String parentScope, String scope) /*-{
 		var keys = [];
-		for ( var k in $wnd._ServoyInit_[parentScope][scope].vrbs)
+		for ( var k in $wnd._ServoyInit_[parentScope][scope]._sv_vrbs)
 			keys.push(k);
 		return keys;
 	}-*/;

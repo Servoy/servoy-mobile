@@ -220,8 +220,8 @@ public class FlattenedSolution
 		$wnd._ServoyInit_.smForms[formName] = formScriptEntity; // can be null for SM created forms; otherwise it's a backup
 		if (formScriptEntity == null) {
 			$wnd._ServoyInit_.forms[formName] = {
-				fncs : {},
-				vrbs : {}
+				_sv_fncs : {},
+				_sv_vrbs : {}
 			};
 		}
 	}-*/;
