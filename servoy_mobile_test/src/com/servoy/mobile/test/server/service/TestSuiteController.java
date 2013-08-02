@@ -38,7 +38,7 @@ import com.servoy.mobile.test.shared.service.ITestSuiteController;
 public class TestSuiteController extends RemoteServiceServlet implements ITestSuiteController, TestCycleListener
 {
 
-	// this constant is also defined in testing.js inside servoy_mobile_testing; please update that as well if you change the value
+	// this constant is also defined in testing.js inside servoy_mobile_testing and MobileExporter.java; please update those as well if you change the value
 	private static final String SCOPE_NAME_SEPARATOR = "_sNS_"; //$NON-NLS-1$
 
 	// see http://tomcat.apache.org/tomcat-6.0-doc/jndi-datasource-examples-howto.html

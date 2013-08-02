@@ -2,7 +2,7 @@ if (typeof(_ServoyTesting_) == "undefined") {
 	
 	
 	_ServoyTesting_ = {
-		SCOPE_NAME_SEPARATOR : "_sNS_"	// this constant is also defined in TestSuiteController.java; please update that as well if you change the value
+		SCOPE_NAME_SEPARATOR : "_sNS_"	// this constant is also defined in MobileExporter.java and TestSuiteController.java; please update those as well if you change the value
 	};
 	
 	// used for locating the origin of a function inside and AssertionFailedError

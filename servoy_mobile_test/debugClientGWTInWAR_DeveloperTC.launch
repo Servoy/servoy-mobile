@@ -3,7 +3,7 @@
 <booleanAttribute key="com.google.gdt.eclipse.core.RUN_SERVER" value="false"/>
 <stringAttribute key="com.google.gdt.eclipse.suiteMainTypeProcessor.PREVIOUSLY_SET_MAIN_TYPE_NAME" value="com.google.gwt.dev.DevMode"/>
 <booleanAttribute key="com.google.gdt.eclipse.suiteWarArgumentProcessor.IS_WAR_FROM_PROJECT_PROPERTIES" value="false"/>
-<stringAttribute key="com.google.gwt.eclipse.core.URL" value="http://127.0.0.1:8080/servoy_sample_mobile_TEST/servoy_mobile_test.html?log_level=DEBUG&amp;noinitsmc=true&amp;nodebug=true&amp;bid=0"/>
+<stringAttribute key="com.google.gwt.eclipse.core.URL" value="http://127.0.0.1:8080/servoy_sample_mobile_TEST/index.html?log_level=DEBUG&amp;noinitsmc=true&amp;nodebug=true&amp;bid=0"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
 <listEntry value="/servoy_mobile_test"/>
 </listAttribute>
@@ -12,7 +12,7 @@
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="com.google.gwt.eclipse.core.moduleClasspathProvider"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.google.gwt.dev.DevMode"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-startupUrl http://127.0.0.1:8080/servoy_sample_mobile_TEST/servoy_mobile_test.html?log_level=DEBUG&amp;noinitsmc=true&amp;nodebug=true&amp;bid=0 -war &quot;${servoy_install}/application_server/server/webapps/servoy_sample_mobile_TEST&quot; -noserver -remoteUI &quot;${gwt_remote_ui_server_port}:${unique_id}&quot; -logLevel INFO -codeServerPort 9997 com.servoy.mobile.test.MobileTestClient"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-startupUrl http://127.0.0.1:8080/servoy_sample_mobile_TEST/index.html?log_level=DEBUG&amp;noinitsmc=true&amp;nodebug=true&amp;bid=0 -war &quot;${servoy_install}/application_server/server/webapps/servoy_sample_mobile_TEST&quot; -noserver -remoteUI &quot;${gwt_remote_ui_server_port}:${unique_id}&quot; -logLevel INFO -codeServerPort 9997 com.servoy.mobile.test.MobileTestClient"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="servoy_mobile_test"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx512m"/>
 </launchConfiguration>

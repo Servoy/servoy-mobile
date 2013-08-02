@@ -131,15 +131,13 @@ public class JSMethod extends JSScriptPart implements IBaseSMMethod, Exportable
 	private final native boolean existsInternal(String parentScope, String scope, String fName) /*-{
 		var scp = $wnd._ServoyInit_[parentScope][scope];
 		if (scp) {
-			if (scp._sv_fncs[fName] || scp[fName]) {
+			if (scp._sv_fncs[fName]) {
 				return true;
 			}
-			if (scp._sv_init) {
-				var tmpScope = new Object();
-				scp._sv_init(tmpScope, null, true);
-				if (tmpScope[fName]) {
-					return true;
-				}
+			var tmpScope = new Object();
+			scp._sv_init(tmpScope, null, true);
+			if (tmpScope[fName]) {
+				return true;
 			}
 		}
 		return false;
@@ -155,11 +153,17 @@ public class JSMethod extends JSScriptPart implements IBaseSMMethod, Exportable
 				var tmpScope = new Object();
 				scp._sv_init(tmpScope, null, true);
 				if (tmpScope[fName]) {
-					return tmpScope[fName].realFunction.toString();
+					code = tmpScope[fName].realFunction.toString();
+					if (code) {
+						var tmpIdx = code.indexOf('(');
+						if (tmpIdx >= 0)
+							code = code.substr(tmpIdx);
+					}
+					return code;
 				}
 			}
 		}
-		return;
+		return null;
 	}-*/;
 
 	private final native String getWholeTextBeforeArgsInternal(String parentScope, String scope, String fName) /*-{
