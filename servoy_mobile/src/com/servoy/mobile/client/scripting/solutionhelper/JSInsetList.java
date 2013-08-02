@@ -155,7 +155,7 @@ public class JSInsetList extends BaseSHInsetList implements Exportable
 	@Getter
 	public String getSubtextDataProviderID()
 	{
-		return super.getSubtext();
+		return super.getSubtextDataProviderID();
 	}
 
 	@Override

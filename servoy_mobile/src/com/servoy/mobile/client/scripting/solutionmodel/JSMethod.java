@@ -134,10 +134,12 @@ public class JSMethod extends JSScriptPart implements IBaseSMMethod, Exportable
 			if (scp._sv_fncs[fName] || scp[fName]) {
 				return true;
 			}
-			var tmpScope = new Object();
-			scp._sv_init(tmpScope, null, true);
-			if (tmpScope[fName]) {
-				return true;
+			if (scp._sv_init) {
+				var tmpScope = new Object();
+				scp._sv_init(tmpScope, null, true);
+				if (tmpScope[fName]) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -149,10 +151,12 @@ public class JSMethod extends JSScriptPart implements IBaseSMMethod, Exportable
 			var code = scp._sv_fncs[fName];
 			if (code)
 				return code;
-			var tmpScope = new Object();
-			scp._sv_init(tmpScope, null, true);
-			if (tmpScope[fName]) {
-				return tmpScope[fName].realFunction.toString();
+			if (scp._sv_init) {
+				var tmpScope = new Object();
+				scp._sv_init(tmpScope, null, true);
+				if (tmpScope[fName]) {
+					return tmpScope[fName].realFunction.toString();
+				}
 			}
 		}
 		return;
