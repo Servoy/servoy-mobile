@@ -57,9 +57,9 @@ public class JSMethod extends JSScriptPart implements IBaseSMMethod, Exportable
 	}
 
 	@NoExport
-	public static String joinIntoFullCode(String codeWithoutArgs, String wholeTextBeforeArgsInternal)
+	public static String joinIntoFullCode(String codeAndArgs, String wholeTextBeforeArgsInternal)
 	{
-		return wholeTextBeforeArgsInternal + codeWithoutArgs;
+		return wholeTextBeforeArgsInternal + codeAndArgs;
 	}
 
 	/**
