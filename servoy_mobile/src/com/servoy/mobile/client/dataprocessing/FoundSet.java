@@ -767,9 +767,9 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		if (!filteredFoundset && foundSetListeners.size() == 0 && selectionListeners.size() == 0)
 		{
 			Date currentTime = new Date();
-			if (currentTime.getTime() - lastTouched.getTime() > 30000)
+			if (currentTime.getTime() - lastTouched.getTime() > 15000)
 			{
-				// 30 seconds not touched, assume we can flush it
+				// 15 seconds not touched, assume we can flush it
 				flushAllRecords();
 			}
 		}

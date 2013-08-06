@@ -323,6 +323,20 @@ public class FoundSetManager
 	}
 
 
+	public void flushRelatedFoundsets()
+	{
+		for (HashMap<String, FoundSet> map : relatedFoundsets.values())
+		{
+			if (map != null)
+			{
+				for (FoundSet f : map.values())
+				{
+					f.flushIfPossible();
+				}
+			}
+		}
+	}
+
 	String getEntityPrefix()
 	{
 		return (entityPrefix == null ? "" : entityPrefix);
@@ -829,16 +843,6 @@ public class FoundSetManager
 		}
 		else if (relatedKey != null)
 		{
-			for (HashMap<String, FoundSet> map : relatedFoundsets.values())
-			{
-				if (map != null)
-				{
-					for (FoundSet f : map.values())
-					{
-						f.flushIfPossible();
-					}
-				}
-			}
 			HashMap<String, FoundSet> map = relatedFoundsets.get(foundset.getEntityName());
 			if (map == null)
 			{

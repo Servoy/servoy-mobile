@@ -228,6 +228,9 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 			didOnShowOnce = true;
 			Executor.callFunction(form.getOnShowCall(), arguments, getName(), new JSEvent(IJSEvent.FORM, getFormScope(), getName(), null));
 		}
+		// do some memory cleanup here, as this is the place where the UI blocking
+		// is less visible
+		mc.getFoundSetManager().flushRelatedFoundsets();
 	}
 
 	public boolean executeOnHideMethod()
