@@ -21,6 +21,8 @@ import java.util.ArrayList;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -64,6 +66,7 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 	private String listItemDataIcon;
 	private String listItemStyleclass;
 	private final ArrayList<HandlerRegistration> clickRegistrations = new ArrayList<HandlerRegistration>();
+	private HandlerRegistration listClickHandler;
 
 	public FormList(FormController formController, JsArray<Component> formComponents, DataAdapterList dal, String relationName)
 	{
@@ -145,6 +148,23 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 		}
 
 		setInset(true);
+		listClickHandler = addHandler(new ClickHandler()
+		{
+			@Override
+			public void onClick(ClickEvent event)
+			{
+				EventTarget target = event.getNativeEvent().getEventTarget();
+				Element element = Element.as(target);
+				for (JQMListItem listItem : getItems())
+				{
+					if (listItem != null && listItem.getElement().isOrHasChild(element))
+					{
+						listItem.fireEvent(event);
+						break;
+					}
+				}
+			}
+		}, ClickEvent.getType());
 	}
 
 	private String fixRelatedDataproviderID(String dataProviderID)
@@ -202,6 +222,8 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 
 	public void destroy()
 	{
+		listClickHandler.removeHandler();
+		listClickHandler = null;
 		clear();
 		removeFromParent();
 		if (this.foundSet != null) this.foundSet.removeFoundSetListener(this);

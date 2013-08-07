@@ -231,10 +231,10 @@ public class FormDisplay implements IFormDisplay
 
 		JQMHeader headerComponent = null;
 		if (label != null) headerComponent = (JQMHeader)createWidget(label);
+		if (headerComponent == null) headerComponent = new JQMHeader(""); //$NON-NLS-1$  
 
 		if (leftToolbarButton != null || rightToolbarButton != null)
 		{
-			if (headerComponent == null) headerComponent = new JQMHeader(""); //$NON-NLS-1$
 			if (leftToolbarButton != null) headerComponent.setLeftButton(leftToolbarButton);
 			if (rightToolbarButton != null) headerComponent.setRightButton(rightToolbarButton);
 		}
