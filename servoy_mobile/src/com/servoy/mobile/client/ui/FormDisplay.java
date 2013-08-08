@@ -390,4 +390,30 @@ public class FormDisplay implements IFormDisplay
 			this.rightComponent = rightComponent;
 		}
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.ui.IFormDisplay#isShow()
+	 */
+	@Override
+	public boolean isShow()
+	{
+		if (formPage != null && formPage.isShow())
+		{
+			return true;
+		}
+		else
+		{
+			for (FormPanel formPanel : formPanelMap.values())
+			{
+				if (formPanel.isShow())
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
 }

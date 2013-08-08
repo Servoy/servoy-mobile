@@ -42,4 +42,8 @@ public interface IFormComponent
 	void add(Widget widget);
 
 	void removeWidget(Widget widget);
+
+	IFormDisplay getFormDisplay();
+
+	boolean isShow();
 }

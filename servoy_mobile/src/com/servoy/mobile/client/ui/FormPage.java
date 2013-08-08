@@ -134,9 +134,8 @@ public class FormPage extends JQMPage implements IFormComponent
 
 		if (formNavigator != null)
 		{
-			FormController fc = formDisplay.getFormController();
-			IFormDisplay formNavigatorView = fc.getApplication().getFormManager().getForm(formNavigator.getName()).getView();
-			formNavigatorView.removeDisplayPanel(fc.getName());
+			IFormDisplay formNavigatorView = formNavigator.getFormDisplay();
+			formNavigatorView.removeDisplayPanel(formDisplay.getFormController().getName());
 			formNavigator = null;
 		}
 		if (navigatorLeftButtonHandler != null) navigatorLeftButtonHandler.removeHandler();
@@ -250,4 +249,15 @@ public class FormPage extends JQMPage implements IFormComponent
 	private native int getWindowWidth() /*-{
 		return $wnd.innerWidth;
 	}-*/;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.ui.IFormComponent#getFormDisplay()
+	 */
+	@Override
+	public IFormDisplay getFormDisplay()
+	{
+		return formDisplay;
+	}
 }

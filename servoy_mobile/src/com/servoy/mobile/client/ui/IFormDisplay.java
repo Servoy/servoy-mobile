@@ -37,4 +37,6 @@ public interface IFormDisplay
 	void refreshRecord(Record record);
 
 	void cleanup();
+
+	boolean isShow();
 }

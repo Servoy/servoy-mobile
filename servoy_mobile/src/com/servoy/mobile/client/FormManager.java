@@ -26,6 +26,7 @@ import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.scripting.FormScope;
 import com.servoy.mobile.client.scripting.JSHistory;
 import com.servoy.mobile.client.scripting.ScriptEngine;
+import com.servoy.mobile.client.ui.IFormDisplay;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.JQMPage;
 
@@ -159,7 +160,7 @@ public class FormManager
 		while (it.hasNext())
 		{
 			FormController fc = it.next();
-			if (!fc.getView().getDisplayPage().isShow())
+			if (!fc.getView().isShow())
 			{
 				fc.cleanup();
 			}
@@ -182,7 +183,7 @@ public class FormManager
 		FormController formController = formControllerMap.get(formName);
 		if (formController != null)
 		{
-			if (!formController.getView().getDisplayPage().isShow())
+			if (!formController.getView().isShow())
 			{
 				formController.cleanup();
 			}

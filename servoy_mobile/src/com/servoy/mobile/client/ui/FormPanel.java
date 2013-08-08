@@ -18,6 +18,7 @@
 package com.servoy.mobile.client.ui;
 
 import com.google.gwt.user.client.ui.Widget;
+import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
@@ -32,6 +33,7 @@ import com.sksamuel.jqm4gwt.toolbar.JQMPanel;
 public class FormPanel extends JQMPanel implements IFormComponent
 {
 	private final IFormDisplay formDisplay;
+	private boolean isShow;
 
 	public FormPanel(IFormDisplay formDisplay)
 	{
@@ -79,13 +81,20 @@ public class FormPanel extends JQMPanel implements IFormComponent
 	@Override
 	protected void onPanelOpen()
 	{
+		isShow = true;
 		formDisplay.getFormController().executeOnShowMethod();
 	}
 
 	@Override
 	protected void onPanelClose()
 	{
-		formDisplay.getFormController().executeOnHideMethod();
+		isShow = false;
+		FormController formDisplayController = formDisplay.getFormController();
+		formDisplayController.executeOnHideMethod();
+		if (formDisplayController.isMarkedForCleanup())
+		{
+			formDisplayController.cleanup();
+		}
 	}
 
 	public String getName()
@@ -122,5 +131,27 @@ public class FormPanel extends JQMPanel implements IFormComponent
 	public void removeWidget(Widget w)
 	{
 		remove(w);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.ui.IFormComponent#getFormDisplay()
+	 */
+	@Override
+	public IFormDisplay getFormDisplay()
+	{
+		return formDisplay;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.mobile.client.ui.IFormComponent#isShow()
+	 */
+	@Override
+	public boolean isShow()
+	{
+		return isShow;
 	}
 }
