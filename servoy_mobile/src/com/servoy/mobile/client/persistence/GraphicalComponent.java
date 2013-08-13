@@ -36,6 +36,7 @@ public class GraphicalComponent extends Component implements IBaseGraphicalCompo
 	{
 		GraphicalComponent gc = castIfPossible(createEmptyChildComponent(parent, Utils.createStringUUID(), IRepositoryConstants.GRAPHICALCOMPONENTS));
 		gc.setViewType(viewType);
+		gc.setStyleClass("b");
 		return gc;
 	}
 

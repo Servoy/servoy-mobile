@@ -39,6 +39,7 @@ public class JSPart extends JSBase implements IMobileSMPart, Exportable
 	JSPart(Part part, JSSolutionModel model, JSForm parent)
 	{
 		super(part, model, parent);
+		setStyleClass("b");
 	}
 
 	@Override
