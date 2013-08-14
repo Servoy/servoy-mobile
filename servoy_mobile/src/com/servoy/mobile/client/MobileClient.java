@@ -280,8 +280,9 @@ public class MobileClient implements EntryPoint
 		}
 		else
 		{
+			if (isSynchronizing()) return;
 			Mobile.showLoadingDialog(getI18nMessageWithFallback("syncing"));
-
+			flagSyncStart();
 			if (foundSetManager.hasChanges())
 			{
 				//save and clear, when successful do load
@@ -298,32 +299,39 @@ public class MobileClient implements EntryPoint
 					public void onFailure(Failure reason)
 					{
 						Mobile.hideLoadingDialog();
-						if (errorHandler != null)
+						try
 						{
-							JsArrayMixed jsArray = JavaScriptObject.createArray().cast();
-							jsArray.set(0, reason.getStatusCode());
-							jsArray.set(1, reason.getMessage());
-							Executor.call(errorHandler, jsArray);
-						}
-						else
-						{
-							error(reason.getMessage());
-							if (reason.getStatusCode() != -1)
+							if (errorHandler != null)
 							{
-								boolean ok = Window.confirm(getI18nMessageWithFallback("discardLocalChanges"));
-								if (ok)
+								JsArrayMixed jsArray = JavaScriptObject.createArray().cast();
+								jsArray.set(0, reason.getStatusCode());
+								jsArray.set(1, reason.getMessage());
+								Executor.call(errorHandler, jsArray);
+							}
+							else
+							{
+								error(reason.getMessage());
+								if (reason.getStatusCode() != -1)
 								{
-									load(successCallback, errorHandler);
+									boolean ok = Window.confirm(getI18nMessageWithFallback("discardLocalChanges"));
+									if (ok)
+									{
+										load(successCallback, errorHandler);
+									}
+									else
+									{
+										showFirstForm();
+									}
 								}
 								else
 								{
 									showFirstForm();
 								}
 							}
-							else
-							{
-								showFirstForm();
-							}
+						}
+						finally
+						{
+							flagSyncStop();
 						}
 					}
 				});
@@ -333,6 +341,23 @@ public class MobileClient implements EntryPoint
 				load(successCallback, errorHandler);
 			}
 		}
+	}
+
+	private boolean isSynchronizing;
+
+	private boolean isSynchronizing()
+	{
+		return isSynchronizing;
+	}
+	
+	private void flagSyncStart()
+	{
+		isSynchronizing = true;
+	}
+
+	private void flagSyncStop()
+	{
+		isSynchronizing = false;
 	}
 
 	public String getI18nMessageWithFallback(String key)
@@ -357,63 +382,77 @@ public class MobileClient implements EntryPoint
 			@Override
 			public void onSuccess(Integer result)
 			{
-				Mobile.hideLoadingDialog();
-				log("Done, loaded size: " + result);
-				if (successCallback != null)
+				try
 				{
-					JsArrayMixed jsArray = JavaScriptObject.createArray().cast();
-					jsArray.set(0, result.doubleValue());
-					Executor.call(successCallback, jsArray);
+					Mobile.hideLoadingDialog();
+					log("Done, loaded size: " + result);
+					if (successCallback != null)
+					{
+						JsArrayMixed jsArray = JavaScriptObject.createArray().cast();
+						jsArray.set(0, result.doubleValue());
+						Executor.call(successCallback, jsArray);
+					}
+					else showFirstForm();
 				}
-				else showFirstForm();
+				finally
+				{
+					flagSyncStop();
+				}
 			}
 
 			@Override
 			public void onFailure(Failure reason)
 			{
-				Mobile.hideLoadingDialog();
-				StringBuilder detail = new StringBuilder();
-				if (reason.getStatusCode() != 0)
+				try
 				{
-					detail.append(reason.getStatusCode());
-				}
-				if (reason.getException() != null)
-				{
-					detail.append(",");
-					detail.append(reason.getException().getMessage());
-				}
-				if (detail.length() > 0)
-				{
-					detail.insert(0, " (");
-					detail.append(")");
-				}
-				GWT.log(detail.toString());
-				Log.error(detail.toString());
-				if (errorHandler != null)
-				{
-					JsArrayMixed jsArray = JavaScriptObject.createArray().cast();
-					jsArray.set(0, reason.getStatusCode());
-					jsArray.set(1, reason.getMessage());
-					Executor.call(errorHandler, jsArray);
-				}
-				else
-				{
-					error(reason.getMessage());
+					Mobile.hideLoadingDialog();
+					StringBuilder detail = new StringBuilder();
 					if (reason.getStatusCode() != 0)
 					{
-						// if authentication failed, clear the current checked/unchecked credentials
-						if (reason.getStatusCode() == Response.SC_UNAUTHORIZED)
+						detail.append(reason.getStatusCode());
+					}
+					if (reason.getException() != null)
+					{
+						detail.append(",");
+						detail.append(reason.getException().getMessage());
+					}
+					if (detail.length() > 0)
+					{
+						detail.insert(0, " (");
+						detail.append(")");
+					}
+					GWT.log(detail.toString());
+					Log.error(detail.toString());
+					if (errorHandler != null)
+					{
+						JsArrayMixed jsArray = JavaScriptObject.createArray().cast();
+						jsArray.set(0, reason.getStatusCode());
+						jsArray.set(1, reason.getMessage());
+						Executor.call(errorHandler, jsArray);
+					}
+					else
+					{
+						error(reason.getMessage());
+						if (reason.getStatusCode() != 0)
 						{
-							// for solutions that have mustAuthenticate == false - this will be a bit weird, but the server does ask for authentication it seems, and the server is leading
-							setUncheckedLoginCredentials(null, null);
-							formManager.showLogin(null, null); // TODO we should have this available in scripting - so that the developer can use it in callback methods as well
-							// should we also make onSolutionOpen get called again after this happens - after successful re-login?
-						}
-						else
-						{
-							showFirstForm();
+							// if authentication failed, clear the current checked/unchecked credentials
+							if (reason.getStatusCode() == Response.SC_UNAUTHORIZED)
+							{
+								// for solutions that have mustAuthenticate == false - this will be a bit weird, but the server does ask for authentication it seems, and the server is leading
+								setUncheckedLoginCredentials(null, null);
+								formManager.showLogin(null, null); // TODO we should have this available in scripting - so that the developer can use it in callback methods as well
+								// should we also make onSolutionOpen get called again after this happens - after successful re-login?
+							}
+							else
+							{
+								showFirstForm();
+							}
 						}
 					}
+				}
+				finally
+				{
+					flagSyncStop();
 				}
 			}
 		});
