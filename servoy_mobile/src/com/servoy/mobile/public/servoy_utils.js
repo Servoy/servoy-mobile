@@ -85,7 +85,7 @@ if (typeof(_ServoyUtils_) == "undefined")
 				configurable : true});
 		}
 		else if (_ServoyUtils_.definedWindowVariables.indexOf(name) == -1 && _ServoyUtils_.persistentDefinedWindowVariables.indexOf(name) == -1){
-			_ServoyUtils_.error("window variable: " + name + " is already defined, skipping this dataprovider/relationname");
+			_ServoyUtils_.error("window variable: '" + name + "' is already defined, skipping this dataprovider/relationname");
 		}
 	}
 	_ServoyUtils_.clearWindowVariables = function() {
