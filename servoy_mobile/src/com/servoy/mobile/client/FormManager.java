@@ -26,7 +26,6 @@ import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.scripting.FormScope;
 import com.servoy.mobile.client.scripting.JSHistory;
 import com.servoy.mobile.client.scripting.ScriptEngine;
-import com.servoy.mobile.client.ui.IFormDisplay;
 import com.sksamuel.jqm4gwt.JQMContext;
 import com.sksamuel.jqm4gwt.JQMPage;
 
@@ -276,6 +275,9 @@ public class FormManager
 		var formManager = this;
 		$wnd._ServoyUtils_.getFormScope = function(name) {
 			return formManager.@com.servoy.mobile.client.FormManager::getFormScope(Ljava/lang/String;)(name);
+		}
+		$wnd._ServoyUtils_.reloadFormScope = function(name) {
+			formManager.@com.servoy.mobile.client.FormManager::reloadScopeIfInitialized(Ljava/lang/String;)(name);
 		}
 		$wnd
 				.$($wnd)

@@ -151,6 +151,9 @@ public class ScriptEngine
 				scope.@com.servoy.mobile.client.scripting.Scope::setVariableValue(Ljava/lang/String;Ljava/lang/Object;)(name,value);
 			}
 		}
+		$wnd._ServoyUtils_.reloadGlobalScope = function(name) {
+			$wnd._ServoyUtils_.scriptEngine.@com.servoy.mobile.client.scripting.ScriptEngine::reloadScopeIfInitialized(Ljava/lang/String;)(name);
+		}
 		$wnd._ServoyInit_.init();
 	}-*/;
 
