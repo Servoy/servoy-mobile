@@ -53,11 +53,11 @@ public class LoginData extends JQMForm
 
 		emailInput = new JQMEmail(application.getI18nMessageWithFallback("userUid"));
 		emailInput.addKeyUpHandler(enterHandler);
-		addRequired(emailInput);
+		addRequired(emailInput, application.getI18nMessageWithFallback("requiredField"));
 
 		passwordInput = new JQMPassword(application.getI18nMessageWithFallback("password"));
 		passwordInput.addKeyUpHandler(enterHandler);
-		addRequired(passwordInput);
+		addRequired(passwordInput, application.getI18nMessageWithFallback("requiredField"));
 
 		JQMSubmit submit = new JQMSubmit(application.getI18nMessageWithFallback("login"));
 		add(submit);
