@@ -273,6 +273,7 @@ public class MobileClient implements EntryPoint
 
 	public void sync(final JavaScriptObject successCallback, final JavaScriptObject errorHandler, boolean useUncheckedCredentials)
 	{
+		if (!testLocalStorage()) return;
 		if (flattenedSolution.getMustAuthenticate() && !offlineDataProxy.hasCredentials() &&
 			!(offlineDataProxy.hasUncheckedCredentials() && useUncheckedCredentials))
 		{
@@ -349,7 +350,7 @@ public class MobileClient implements EntryPoint
 	{
 		return isSynchronizing;
 	}
-	
+
 	private void flagSyncStart()
 	{
 		isSynchronizing = true;
@@ -538,6 +539,23 @@ public class MobileClient implements EntryPoint
 		return locale;
 	}
 
+	private final native boolean testLocalStorage()
+	/*-{
+		var testKey = 'qeTest', storage = $wnd.window.sessionStorage;
+		try { // Try and catch quota exceeded errors 
+			storage.setItem(testKey, '1');
+			storage.removeItem(testKey);
+		} catch (error) {
+			if (error.code === DOMException.QUOTA_EXCEEDED_ERR
+					&& storage.length === 0)
+				$wnd
+						.alert('Local storage not available this is likely due to private browsing mode, this is not supported for the mobile client.');
+			$wnd._ServoyUtils_.error(error);
+			return false;
+		}
+		return true;
+	}-*/;
+
 	private final native String getLocaleInternal()
 	/*-{
 		return $wnd.navigator.language;
@@ -559,6 +577,10 @@ public class MobileClient implements EntryPoint
 		$wnd._ServoyUtils_.error = function(output) {
 			output = output.toString();
 			return @com.allen_sauer.gwt.log.client.Log::error(Ljava/lang/String;)(output);
+		}
+		$wnd._ServoyUtils_.warn = function(output) {
+			output = output.toString();
+			return @com.allen_sauer.gwt.log.client.Log::warn(Ljava/lang/String;)(output);
 		}
 	}-*/;
 
