@@ -73,6 +73,8 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 		this.formController = formController;
 		this.dal = dal;
 		this.relationName = relationName;
+
+		this.formController.addFoundsetListener(this);
 		if (relationName != null && formController.getForm().getDataSource() != null)
 		{
 			String[] relationItems = relationName.split("\\."); //$NON-NLS-1$
@@ -227,6 +229,7 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 		clear();
 		removeFromParent();
 		if (this.foundSet != null) this.foundSet.removeFoundSetListener(this);
+		formController.removeFoundsetListener(this);
 		formController = null;
 		dal = null;
 	}

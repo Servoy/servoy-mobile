@@ -1,5 +1,8 @@
 package com.servoy.mobile.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.Getter;
@@ -12,6 +15,7 @@ import com.servoy.base.scripting.api.IJSEvent;
 import com.servoy.base.scripting.api.IJSFoundSet;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.dataprocessing.FoundSetManager;
+import com.servoy.mobile.client.dataprocessing.IFoundSetListener;
 import com.servoy.mobile.client.dataprocessing.IFoundSetSelectionListener;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.scripting.FormScope;
@@ -35,6 +39,7 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 	private Executor executor;
 	private boolean didOnShowOnce = false;
 	private boolean markedForCleanup;
+	private final List<IFoundSetListener> foundsetListeners = new ArrayList<IFoundSetListener>();
 
 	public FormController(MobileClient mc, Form form)
 	{
@@ -218,6 +223,10 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 		if (this.foundSet != null) this.foundSet.removeSelectionListener(this);
 		this.foundSet = foundset;
 		if (this.foundSet != null) this.foundSet.addSelectionListener(this);
+		for (IFoundSetListener listeners : foundsetListeners)
+		{
+			listeners.contentChanged();
+		}
 	}
 
 	public void executeOnShowMethod()
@@ -305,5 +314,18 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 	public String toString()
 	{
 		return "FormController[" + getName() + "," + foundSet + "]";
+	}
+
+	/**
+	 * @param foundSetListener
+	 */
+	public void addFoundsetListener(IFoundSetListener foundSetListener)
+	{
+		foundsetListeners.add(foundSetListener);
+	}
+
+	public void removeFoundsetListener(IFoundSetListener foundSetListener)
+	{
+		foundsetListeners.remove(foundSetListener);
 	}
 }

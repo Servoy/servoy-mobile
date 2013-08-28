@@ -126,6 +126,7 @@ public class FormManager
 
 	public boolean showForm(FormController formController, boolean restoreScrollPosition)
 	{
+		if (currentForm == formController) return true;
 		if (isChangingFormPage) return false;
 		formControllerMap.put(formController.getName(), formController);
 		String currentNavigatorName = null;
