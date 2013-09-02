@@ -56,4 +56,15 @@ public class JSSecurity implements Exportable, IJSSecurity
 		}
 		return null;
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.base.scripting.api.IJSSecurity#logout()
+	 */
+	@Override
+	public void logout()
+	{
+		application.clearCredentials();
+	}
 }
