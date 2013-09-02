@@ -490,19 +490,6 @@ public class FoundSetManager
 				boolean changed = false;
 				FoundSetDescription currentFSD = JSONParser.parseStrict(item).isObject().getJavaScriptObject().cast();
 
-				// look if there are new records in the current foundsetdescription and copy it over to the new.
-				JsArray<RecordDescription> records = currentFSD.getRecords();
-				for (int i = 0; i < records.length(); i++)
-				{
-					Object pk = records.get(i).getPK();
-					if (newRecords.contains(currentFSD.getEntityName() + "|" + pk))
-					{
-						fd.getRecords().set(fd.getRecords().length(), records.get(i));
-						changed = true;
-					}
-				}
-
-
 				if (fd.getRelationName() == null)
 				{
 					// update new records into the current set.
@@ -538,19 +525,26 @@ public class FoundSetManager
 						FoundSet foundSet = sharedFoundsets.get(key);
 						if (foundSet != null) foundSet.updateFoundSetDescription(currentFSD);
 					}
-					else
-					{
-						return;
-					}
+					return;
 				}
 				else
 				{
+					// related fsd that are coming in are just leading only make sure that the new records are kept in the FSD description. 
+					JsArray<RecordDescription> records = currentFSD.getRecords();
+					for (int i = 0; i < records.length(); i++)
+					{
+						Object pk = records.get(i).getPK();
+						if (newRecords.contains(currentFSD.getEntityName() + "|" + pk))
+						{
+							fd.getRecords().set(fd.getRecords().length(), records.get(i));
+							changed = true;
+						}
+					}
+
 					HashMap<String, FoundSet> map = relatedFoundsets.get(fd.getEntityName());
-					Log.error("updating related foundset of: " + fd.getEntityName() + " map: " + map);
 					if (map != null)
 					{
 						FoundSet foundSet = map.get(key);
-						Log.error("updating related foundset of: " + key + " fs: " + foundSet);
 						if (foundSet != null) foundSet.updateFoundSetDescription(fd);
 					}
 				}
