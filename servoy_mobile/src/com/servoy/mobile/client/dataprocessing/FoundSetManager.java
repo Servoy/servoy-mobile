@@ -186,11 +186,13 @@ public class FoundSetManager
 		}
 	}
 
-	private native void exportImpl(String name) /*-{
+	private native void exportImpl(String name)
+	/*-{
 		$wnd._ServoyUtils_.defineWindowVariable(name, false);
 	}-*/;
 
-	private native void clearDataproviders() /*-{
+	private native void clearDataproviders()
+	/*-{
 		$wnd._ServoyUtils_.clearWindowVariables();
 	}-*/;
 
@@ -419,20 +421,20 @@ public class FoundSetManager
 						int idx = key.indexOf('|');
 						int id = entities.getRelationID(key.substring(0, idx));
 						String hash = key.substring(idx + 1);
-						hash = replaceUUIDHash(hash);
+						hash = replaceUUIDHash(hash, false);
 						rfs.set(k, id + "|" + hash);
 					}
 				}
 
 				//store data in offline db
-				storeFoundSetDescription(fd);
+				storeFoundSetDescription(fd, false);
 			}
 		}
 
 		exportDataproviders();
 
 		//initiate load of all row data
-		offlineDataProxy.requestRowData(entitiesToPKs);
+		offlineDataProxy.requestRowData(entitiesToPKs, false);
 	}
 
 	private void initLocalStorage(String entitiesJSON, String entityPrefixArg)
@@ -461,7 +463,7 @@ public class FoundSetManager
 		exportDataproviders();
 	}
 
-	private void storeFoundSetDescription(FoundSetDescription fd)
+	private void storeFoundSetDescription(FoundSetDescription fd, boolean updateMode)
 	{
 		boolean omitForKeyinfo = false;
 		String key = fd.getEntityName();
@@ -475,15 +477,89 @@ public class FoundSetManager
 				{
 					omitForKeyinfo = true;
 					String hash = fd.getWhereArgsHash();
-					hash = replaceUUIDHash(hash);
+					hash = replaceUUIDHash(hash, updateMode);
 					key += '|' + hash;
+				}
+			}
+		}
+		if (updateMode)
+		{
+			String item = localStorage.getItem(key);
+			if (item != null)
+			{
+				boolean changed = false;
+				FoundSetDescription currentFSD = JSONParser.parseStrict(item).isObject().getJavaScriptObject().cast();
+
+				// look if there are new records in the current foundsetdescription and copy it over to the new.
+				JsArray<RecordDescription> records = currentFSD.getRecords();
+				for (int i = 0; i < records.length(); i++)
+				{
+					Object pk = records.get(i).getPK();
+					if (newRecords.contains(currentFSD.getEntityName() + "|" + pk))
+					{
+						fd.getRecords().set(fd.getRecords().length(), records.get(i));
+						changed = true;
+					}
+				}
+
+
+				if (fd.getRelationName() == null)
+				{
+					// update new records into the current set.
+					JsArray<RecordDescription> currentSet = currentFSD.getRecords();
+					JsArray<RecordDescription> newSet = fd.getRecords();
+					int length = currentSet.length();
+					outer : for (int i = 0; i < newSet.length(); i++)
+					{
+						RecordDescription recordDescription = newSet.get(i);
+						Object pk = recordDescription.getPK();
+						for (int j = 0; j < length; j++)
+						{
+							if (Utils.equalObjects(currentSet.get(j).getPK(), pk))
+							{
+								continue outer;
+							}
+						}
+						currentSet.set(currentSet.length(), recordDescription);
+						changed = true;
+					}
+					if (changed)
+					{
+						localStorage.setItem(key, currentFSD.toJSON(omitForKeyinfo));
+
+						HashSet<FoundSet> set = foundsets.get(key);
+						if (set != null)
+						{
+							for (FoundSet foundSet : set)
+							{
+								foundSet.updateFoundSetDescription(currentFSD);
+							}
+						}
+						FoundSet foundSet = sharedFoundsets.get(key);
+						if (foundSet != null) foundSet.updateFoundSetDescription(currentFSD);
+					}
+					else
+					{
+						return;
+					}
+				}
+				else
+				{
+					HashMap<String, FoundSet> map = relatedFoundsets.get(fd.getEntityName());
+					Log.error("updating related foundset of: " + fd.getEntityName() + " map: " + map);
+					if (map != null)
+					{
+						FoundSet foundSet = map.get(key);
+						Log.error("updating related foundset of: " + key + " fs: " + foundSet);
+						if (foundSet != null) foundSet.updateFoundSetDescription(fd);
+					}
 				}
 			}
 		}
 		localStorage.setItem(key, fd.toJSON(omitForKeyinfo));
 	}
 
-	private String replaceUUIDHash(String hash)
+	private String replaceUUIDHash(String hash, boolean updateMode)
 	{
 		if (!hash.startsWith("36.") && !hash.contains(";36.")) return hash;
 
@@ -494,7 +570,8 @@ public class FoundSetManager
 			if (part.startsWith("36."))
 			{
 				//replace
-				retval.append(Utils.createPKHashKey(new Object[] { valueStore.putUUID(part.substring(3)) }));
+				retval.append(Utils.createPKHashKey(new Object[] { updateMode ? valueStore.getOrPutUUID(part.substring(3))
+					: valueStore.putUUID(part.substring(3)) }));
 			}
 			else
 			{
@@ -518,7 +595,7 @@ public class FoundSetManager
 		}
 	}
 
-	void storeRowData(String entityName, JsArray<RowDescription> rowData)
+	void storeRowData(String entityName, JsArray<RowDescription> rowData, boolean updateMode)
 	{
 		String[] uuidCols = entities != null ? entities.getUUIDDataProviderNames(entityName) : null;
 
@@ -533,16 +610,16 @@ public class FoundSetManager
 				for (String dataProviderID : uuidCols)
 				{
 					String val = (String)row.getValue(dataProviderID);
-					if (val != null) row.setValueInternal(dataProviderID, String.valueOf(valueStore.putUUID(val)));
+					if (val != null) row.setValueInternal(dataProviderID, String.valueOf(updateMode ? valueStore.getOrPutUUID(val) : valueStore.putUUID(val)));
 				}
 			}
 
 			list.add(row);
 		}
-		storeRowData(entityName, list, false);
+		storeRowData(entityName, list, false, updateMode);
 	}
 
-	void storeRowData(String entityName, ArrayList<RowDescription> rowData, boolean local)
+	void storeRowData(String entityName, ArrayList<RowDescription> rowData, boolean local, boolean updateMode)
 	{
 		int oldSize = changes.size();
 
@@ -564,7 +641,11 @@ public class FoundSetManager
 					changes.add(key);
 				}
 			}
-			localStorage.setItem(key, row.toJSONArray(entities.getDataProviders(entityName)));
+			// if update mode then only update the row if it is not in the changes list.
+			if (!updateMode || !changes.contains(key))
+			{
+				localStorage.setItem(key, row.toJSONArray(entities.getDataProviders(entityName)));
+			}
 		}
 
 		if (changes.size() != oldSize)
@@ -877,7 +958,10 @@ public class FoundSetManager
 	//delete all local data
 	public void clearLocalStorage()
 	{
+		// do keep the credentials if set.
+		String[] credentials = getCredentials();
 		localStorage.clear();
+		if (credentials != null) storeCredentials(credentials[0], credentials[1]);
 		entities = null;
 
 		editRecordList = new EditRecordList(this);
@@ -981,7 +1065,7 @@ public class FoundSetManager
 		FoundSetDescription fd = fs.needToSaveFoundSetDescription();
 		if (fd != null)
 		{
-			storeFoundSetDescription(fd);
+			storeFoundSetDescription(fd, false);
 		}
 	}
 
@@ -1207,6 +1291,122 @@ public class FoundSetManager
 			}
 		}
 		return variableTypes;
+	}
+
+	/**
+	 * @param offlineDataProxy
+	 * @param offlineData
+	 */
+	public void mergeOfflineData(OfflineDataProxy offlineDataProxy, OfflineDataDescription offlineData)
+	{
+		HashMap<String, HashSet<Object>> entitiesToPKs = new HashMap<String, HashSet<Object>>();
+
+		//store data in offline db
+		entities.update(offlineData.getEntities(), valueStore);
+		// first sync up Relations -> RelationDescription
+		for (int i = 0; i < application.getFlattenedSolution().relationCount(); i++)
+		{
+			Relation relation = application.getFlattenedSolution().getRelation(i);
+			String primaryString = FoundSetManager.getEntityFromDataSource(relation.getPrimaryDataSource());
+			String foreignString = FoundSetManager.getEntityFromDataSource(relation.getForeignDataSource());
+			EntityDescription primary = getEntityDescription(primaryString);
+			EntityDescription foreign = getEntityDescription(foreignString);
+
+			if (primary != null && foreign != null)
+			{
+				RelationDescription primaryRelation = primary.getPrimaryRelation(relation.getName());
+				if (primaryRelation == null)
+				{
+					primaryRelation = RelationDescription.newInstance(relation.getName(), primaryString, foreignString);
+					primary.addPrimaryRelation(primaryRelation);
+				}
+				primaryRelation.setSelfRef(relation.isSelfRef());
+			}
+			else
+			{
+				Log.error("A relation was defined: " + relation.getName() + " on primary: " + relation.getPrimaryDataSource() + " and foreign: " +
+					relation.getForeignDataSource() + " where no Entities/Tables where given by the service solution");
+			}
+		}
+		localStorage.setItem(ENTITIES_KEY, entities.toJSONArray());
+
+		JsArray<FoundSetDescription> fsds = offlineData.getFoundSets();
+		if (fsds != null)
+		{
+			for (int i = 0; i < fsds.length(); i++)
+			{
+				FoundSetDescription fd = fsds.get(i);
+				String entityName = fd.getEntityName();
+
+				//fill entitiesToPKs
+				HashSet<Object> set = entitiesToPKs.get(entityName);
+				if (set == null)
+				{
+					set = new HashSet<Object>();
+					entitiesToPKs.put(entityName, set);
+				}
+				set.addAll(fd.getPKs());
+
+				boolean uuidPK = entities.isPKUUID(entityName);
+				JsArray<RecordDescription> recs = fd.getRecords();
+				for (int j = 0; j < recs.length(); j++)
+				{
+					RecordDescription rd = recs.get(j);
+					//replace UUIDs, to save local storage space
+					if (uuidPK)
+					{
+						String uuid = (String)rd.getPK();
+						int newPK = valueStore.getOrPutUUID(uuid);
+						rd.setPK(String.valueOf(newPK));
+					}
+					//replace relation names with relation ids, to save local storage space
+					JsArrayString rfs = rd.getRFS();
+					for (int k = 0; k < rfs.length(); k++)
+					{
+						String key = rfs.get(k);
+						int idx = key.indexOf('|');
+						int id = entities.getRelationID(key.substring(0, idx));
+						String hash = key.substring(idx + 1);
+						hash = replaceUUIDHash(hash, true);
+						rfs.set(k, id + "|" + hash);
+					}
+				}
+
+				storeFoundSetDescription(fd, true);
+			}
+		}
+
+		exportDataproviders();
+
+		//initiate load of all row data
+		offlineDataProxy.requestRowData(entitiesToPKs, true);
+	}
+
+	/**
+	 * @param userName
+	 * @param password
+	 */
+	public void storeCredentials(String userName, String password)
+	{
+		localStorage.setItem("user_name", userName);
+		localStorage.setItem("user_password", password);
+	}
+
+	public String[] getCredentials()
+	{
+		String userName = localStorage.getItem("user_name");
+		String password = localStorage.getItem("user_password");
+		if (userName != null && password != null)
+		{
+			return new String[] { userName, password };
+		}
+		return null;
+	}
+
+	public void clearCredentials()
+	{
+		localStorage.removeItem("user_name");
+		localStorage.removeItem("user_password");
 	}
 
 }

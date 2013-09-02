@@ -44,6 +44,32 @@ public class ValueStore
 		return localStorage.getItem("_" + val);
 	}
 
+	int getOrPutUUID(String uuid)
+	{
+		uuid = uuid.toUpperCase(); //default java UUID representation is in uppercase A-F
+		int val = Utils.getAsInteger(uid_to_id.get(uuid));
+		if (val == 0)
+		{
+			// now first scan
+			for (int i = 0; i < localStorage.getLength(); i++)
+			{
+				String key = localStorage.key(i);
+				if (key.startsWith("_"))
+				{
+					String item = localStorage.getItem(key);
+					if (item.equals(uuid))
+					{
+						val = Utils.getAsInteger(key.substring(1));
+						uid_to_id.put(uuid, val);
+						return val;
+					}
+				}
+			}
+			return putUUID(uuid);
+		}
+		return val;
+	}
+
 	int putUUID(String uuid)
 	{
 		uuid = uuid.toUpperCase(); //default java UUID representation is in uppercase A-F

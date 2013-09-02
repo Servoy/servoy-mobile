@@ -376,6 +376,95 @@ public class MobileClient implements EntryPoint
 		Window.alert(msg);
 	}
 
+
+	/**
+	 * @param foundset
+	 * @param successCallback
+	 * @param errorHandler
+	 */
+	public void load(final FoundSet foundset, final JavaScriptObject successCallback, final JavaScriptObject errorHandler)
+	{
+		if (flattenedSolution.getMustAuthenticate() && !offlineDataProxy.hasCredentials() && !(offlineDataProxy.hasUncheckedCredentials()))
+		{
+			// TODO what to do if there are no credentials, because this call will now call a sync if the users gives its credentials through the login form
+			formManager.showLogin(successCallback, errorHandler);
+		}
+		else
+		{
+
+			offlineDataProxy.loadOfflineData(foundset, new Callback<Integer, Failure>()
+			{
+				@Override
+				public void onSuccess(Integer result)
+				{
+					log("Done, loaded size: " + result);
+					if (successCallback != null)
+					{
+						try
+						{
+							foundset.search();
+						}
+						catch (Exception e)
+						{
+							// shouldn't happen.
+							Log.error("error calling search on foundset after remoteSearch", e);
+						}
+						JsArrayMixed jsArray = JavaScriptObject.createArray().cast();
+						jsArray.set(0, foundset.getJavaScriptInstance());
+						Executor.call(successCallback, jsArray);
+					}
+				}
+
+				@Override
+				public void onFailure(Failure reason)
+				{
+					StringBuilder detail = new StringBuilder();
+					if (reason.getStatusCode() != 0)
+					{
+						detail.append(reason.getStatusCode());
+					}
+					if (reason.getException() != null)
+					{
+						detail.append(",");
+						detail.append(reason.getException().getMessage());
+					}
+					if (detail.length() > 0)
+					{
+						detail.insert(0, " (");
+						detail.append(")");
+					}
+					GWT.log(detail.toString());
+					Log.error(detail.toString());
+					if (errorHandler != null)
+					{
+						JsArrayMixed jsArray = JavaScriptObject.createArray().cast();
+						jsArray.set(0, reason.getStatusCode());
+						jsArray.set(1, reason.getMessage());
+						jsArray.set(2, foundset.getJavaScriptInstance());
+						Executor.call(errorHandler, jsArray);
+					}
+					else
+					{
+						error(reason.getMessage());
+						if (reason.getStatusCode() != 0)
+						{
+							// if authentication failed, clear the current checked/unchecked credentials
+							if (reason.getStatusCode() == Response.SC_UNAUTHORIZED)
+							{
+								// for solutions that have mustAuthenticate == false - this will be a bit weird, but the server does ask for authentication it seems, and the server is leading
+								setUncheckedLoginCredentials(null, null);
+								formManager.showLogin(null, null); // TODO we should have this available in scripting - so that the developer can use it in callback methods as well
+								// should we also make onSolutionOpen get called again after this happens - after successful re-login?
+							}
+						}
+					}
+				}
+			});
+
+		}
+
+	}
+
 	public void load(final JavaScriptObject successCallback, final JavaScriptObject errorHandler)
 	{
 		offlineDataProxy.loadOfflineData(getSolutionName(), new Callback<Integer, Failure>()
@@ -508,6 +597,12 @@ public class MobileClient implements EntryPoint
 		offlineDataProxy.setUncheckedLoginCredentials(identifier, password);
 	}
 
+	public void clearCredentials()
+	{
+		offlineDataProxy.setUncheckedLoginCredentials(null, null);
+
+	}
+
 	//check to see if currently connected to IP network
 	// seems this is not really reliable, especially when using phonegap
 	public final native boolean isOnline()
@@ -588,5 +683,4 @@ public class MobileClient implements EntryPoint
 	{
 		return offlineDataProxy;
 	}
-
 }

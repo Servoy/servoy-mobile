@@ -57,6 +57,48 @@ public class Entities
 		}
 	}
 
+
+	/**
+	 * @param entities2
+	 * @param valueStore
+	 */
+	public void update(JsArray<EntityDescription> e, ValueStore valueStore)
+	{
+		for (int i = 0; i < e.length(); i++)
+		{
+			EntityDescription ed = e.get(i);
+			EntityDescription currentEd = eds.get(ed.getEntityName());
+			if (currentEd != null)
+			{
+				JsArray<RelationDescription> relations = ed.getPrimaryRelations();
+				JsArray<RelationDescription> currentRelations = currentEd.getPrimaryRelations();
+				int currentLength = currentRelations.length();
+				outer : for (int j = 0; j < relations.length(); j++)
+				{
+					RelationDescription rd = relations.get(j);
+					for (int k = 0; k < currentLength; k++)
+					{
+						if (currentRelations.get(k).getName().equals(rd.getName()))
+						{
+							continue outer;
+						}
+					}
+					currentRelations.set(currentRelations.length(), rd);
+					fillInRelationId(valueStore, rd);
+				}
+			}
+			else
+			{
+				// its a new entity, store it and add the columns.
+				eds.put(ed.getEntityName(), ed);
+				entities.set(entities.length(), ed);
+				if (valueStore != null) addMissingColumns(ed);
+				fillInRelationIds(valueStore, ed);
+			}
+
+		}
+	}
+
 	EntityDescription getDescription(String entityName)
 	{
 		return eds.get(entityName);
@@ -124,20 +166,51 @@ public class Entities
 		for (int i = 0; i < entities.length(); i++)
 		{
 			EntityDescription ed = entities.get(i);
-			JsArray<RelationDescription> rels = ed.getPrimaryRelations();
-			if (rels != null)
+			fillInRelationIds(valueStore, ed);
+		}
+	}
+
+
+	/**
+	 * @param valueStore
+	 * @param ed
+	 */
+	private void fillInRelationIds(ValueStore valueStore, EntityDescription ed)
+	{
+		JsArray<RelationDescription> rels = ed.getPrimaryRelations();
+		if (rels != null)
+		{
+			for (int j = 0; j < rels.length(); j++)
 			{
-				for (int j = 0; j < rels.length(); j++)
+				RelationDescription rd = rels.get(j);
+				fillInRelationId(valueStore, rd);
+			}
+		}
+	}
+
+
+	/**
+	 * @param valueStore
+	 * @param rd
+	 */
+	private void fillInRelationId(ValueStore valueStore, RelationDescription rd)
+	{
+		int id = rd.getID();
+		if (id == 0)
+		{
+			Integer currentId = relationIDs.get(rd.getName());
+			if (currentId == null)
+			{
+				if (id == 0 && valueStore != null)
 				{
-					RelationDescription rd = rels.get(j);
-					int id = rd.getID();
-					if (id == 0 && valueStore != null)
-					{
-						id = valueStore.getNextVal();
-						rd.setID(id);
-					}
-					relationIDs.put(rd.getName(), new Integer(id));
+					id = valueStore.getNextVal();
+					rd.setID(id);
 				}
+				relationIDs.put(rd.getName(), new Integer(id));
+			}
+			else
+			{
+				rd.setID(currentId.intValue());
 			}
 		}
 	}

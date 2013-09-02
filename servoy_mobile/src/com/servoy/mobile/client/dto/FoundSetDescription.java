@@ -179,7 +179,7 @@ public class FoundSetDescription extends JavaScriptObject
 		setRecordDescriptions(newArray);
 	}
 
-	private final native void setRecordDescriptions(JsArray<RecordDescription> newArray) /*-{
+	public final native void setRecordDescriptions(JsArray<RecordDescription> newArray) /*-{
 		this.records = newArray;
 	}-*/;
 }

@@ -752,7 +752,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 	/**
 	 * @return
 	 */
-	public Object getJavaScriptInstance()
+	public JavaScriptObject getJavaScriptInstance()
 	{
 		return javascriptInstance;
 	}
@@ -781,9 +781,35 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		{
 			for (Record record : records)
 			{
-				record.flush();
+				if (record != null) record.flush();
 			}
 			records.clear();
+		}
+	}
+
+
+	/**
+	 * @param currentFSD
+	 */
+	public void updateFoundSetDescription(FoundSetDescription currentFSD)
+	{
+		// if this foundset has editing records then we have to make it a filtered foundset 
+		// so a foundset where the "records" list is leading instead of the FoundSetDescription
+		if (!filteredFoundset && !findMode && foundSetManager.getEditRecordList().hasEditedRecords(this))
+		{
+			// load in all records and then set the filtered to true.
+			for (int i = 0; i < getSize(); i++)
+			{
+				getRecord(i);
+			}
+			filteredFoundset = true;
+		}
+		foundSetDescription.setRecordDescriptions(currentFSD.getRecords());
+		if (!filteredFoundset && !findMode)
+		{
+			// if there are outstanding edits then this will delete the records.
+			flushAllRecords();
+			fireContentChanged();
 		}
 	}
 }

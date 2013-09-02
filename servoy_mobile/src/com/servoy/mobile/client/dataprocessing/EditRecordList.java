@@ -59,7 +59,7 @@ public class EditRecordList
 		while (it.hasNext())
 		{
 			String entityName = it.next();
-			foundSetManager.storeRowData(entityName, toStore.get(entityName), true);
+			foundSetManager.storeRowData(entityName, toStore.get(entityName), true, false);
 		}
 
 		Iterator<FoundSet> it2 = toCheck.iterator();

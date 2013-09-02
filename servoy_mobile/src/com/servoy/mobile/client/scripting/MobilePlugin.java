@@ -26,6 +26,7 @@ import org.timepedia.exporter.client.Getter;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.servoy.mobile.client.MobileClient;
+import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.scripting.solutionhelper.SolutionHelper;
 import com.sksamuel.jqm4gwt.Mobile;
 
@@ -87,6 +88,18 @@ public class MobilePlugin implements Exportable
 	{
 		Mobile.showLoadingDialog(client.getI18nMessageWithFallback("loading"));
 		client.load(successCallback, errorHandler);
+	}
+
+	public void remoteSearch(FoundSet foundset, JavaScriptObject successCallback, JavaScriptObject errorHandler)
+	{
+		if (foundset.isInFind())
+		{
+			client.load(foundset, successCallback, errorHandler);
+		}
+		else
+		{
+			throw new RuntimeException("Foundset must be in find mode when calling remoteSearch()");
+		}
 	}
 
 	public void syncData()

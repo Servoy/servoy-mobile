@@ -20,13 +20,17 @@ package com.servoy.mobile.client.dataprocessing;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.JsDate;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
@@ -34,6 +38,7 @@ import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
@@ -66,6 +71,106 @@ public class OfflineDataProxy
 		foundSetManager = fsm;
 		this.serverURL = serverURL;
 		this.timeout = timeout;
+		credentials = fsm.getCredentials();
+	}
+
+
+	/**
+	 * @param name
+	 * @param foundset
+	 * @param cb
+	 */
+	@SuppressWarnings("nls")
+	public void loadOfflineData(final FoundSet foundset, Callback<Integer, Failure> cb)
+	{
+		this.loadCallback = cb;
+
+		//requires a REST url like: serverURL/offline_data/version/name
+		RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, serverURL + "/offline_data/" + version + "/search");
+		setRequestParameters(builder);
+
+		JSONObject payload = new JSONObject();
+		payload.put("entity", new JSONString(foundset.getEntityName()));
+		payload.put("entityPrefix", new JSONString(foundSetManager.getEntityPrefix()));
+		JSONArray findstates = new JSONArray();
+		payload.put("findstates", findstates);
+		for (int i = 0; i < foundset.getSize(); i++)
+		{
+			FindState fs = (FindState)foundset.getRecord(i);
+			Map<String, Object> columnData = fs.getColumnData();
+			JSONObject json = new JSONObject();
+			for (Entry<String, Object> entry : columnData.entrySet())
+			{
+				Object value = entry.getValue();
+				if (value instanceof String)
+				{
+					json.put(entry.getKey(), new JSONString((String)value));
+				}
+				else if (value instanceof Number)
+				{
+					json.put(entry.getKey(), new JSONNumber(((Number)value).doubleValue()));
+				}
+				else if (value instanceof Date)
+				{
+					json.put(entry.getKey(), new JSONNumber(((Date)value).getTime()));
+				}
+				else if (value instanceof JsDate)
+				{
+					json.put(entry.getKey(), new JSONNumber(((JsDate)value).getTime()));
+				}
+				else
+				{
+					Log.error("value unknown", value.toString());
+				}
+			}
+			findstates.set(i, json);
+		}
+
+		builder.setHeader("Accept", "application/json");
+		builder.setHeader("Content-Type", "application/json");
+		try
+		{
+			builder.sendRequest(payload.toString(), new RequestCallback()
+			{
+				public void onError(Request request, Throwable exception)
+				{
+					loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback(
+						"cannotLoadJSON"), exception));
+					loadCallback = null;
+				}
+
+				public void onResponseReceived(Request request, Response response)
+				{
+					if (Response.SC_OK == response.getStatusCode())
+					{
+						successfullRestAuthResponseReceived();
+
+						String content = response.getText();
+						totalLength = 0;
+						totalLength += content.length();
+						OfflineDataDescription offlineData = getOfflineData(content);
+						content = null;
+
+						if (offlineData != null)
+						{
+							foundSetManager.mergeOfflineData(OfflineDataProxy.this, offlineData);
+						}
+					}
+					else
+					{
+						loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback(
+							"cannotLoadJSON"), response.getStatusCode()));
+						loadCallback = null;
+					}
+				}
+			});
+		}
+		catch (RequestException e)
+		{
+			loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback("cannotLoadJSON"),
+				e));
+			loadCallback = null;
+		}
 	}
 
 	@SuppressWarnings("nls")
@@ -128,7 +233,7 @@ public class OfflineDataProxy
 	}
 
 	@SuppressWarnings("nls")
-	public void requestRowData(final HashMap<String, HashSet<Object>> entitiesToPKs)
+	public void requestRowData(final HashMap<String, HashSet<Object>> entitiesToPKs, final boolean updateMode)
 	{
 		final String entityName = getNextItem(entitiesToPKs.keySet());
 		if (entityName == null)
@@ -143,7 +248,7 @@ public class OfflineDataProxy
 		if (coll.size() == 0) //deal/skip with empty coll
 		{
 			entitiesToPKs.remove(entityName);//remove current when empty
-			requestRowData(entitiesToPKs);//process the next
+			requestRowData(entitiesToPKs, updateMode);//process the next
 			return;
 		}
 		Iterator<Object> pks = coll.iterator();
@@ -182,14 +287,14 @@ public class OfflineDataProxy
 						JsArray<RowDescription> rowData = getRows(content);
 						content = null;
 
-						if (rowData != null) foundSetManager.storeRowData(entityName, rowData);
+						if (rowData != null) foundSetManager.storeRowData(entityName, rowData, updateMode);
 
 						if (entitiesToPKs.get(entityName).size() == 0)
 						{
 							entitiesToPKs.remove(entityName);//remove current when empty
 						}
 
-						requestRowData(entitiesToPKs);//process the next
+						requestRowData(entitiesToPKs, updateMode);//process the next
 					}
 					else
 					{
@@ -214,6 +319,9 @@ public class OfflineDataProxy
 		{
 			credentials = uncheckedCredentials; // login confirmed
 			uncheckedCredentials = null;
+
+			foundSetManager.storeCredentials(credentials[0], credentials[1]);
+
 		}
 	}
 
@@ -508,6 +616,7 @@ public class OfflineDataProxy
 	public void setUncheckedLoginCredentials(String identifier, String password)
 	{
 		credentials = null;
+		foundSetManager.clearCredentials();
 		if (identifier != null && password != null)
 		{
 			uncheckedCredentials = new String[] { identifier, password };
