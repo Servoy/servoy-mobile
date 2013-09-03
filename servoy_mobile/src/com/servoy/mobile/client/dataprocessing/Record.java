@@ -151,6 +151,11 @@ public class Record extends Scope implements IJSRecord, IRowChangeListener
 					return;
 				}
 			}
+			String pkDataProviderID = parent.getPKDataProviderID();
+			if (recordDescription != null && pkDataProviderID != null && pkDataProviderID.equals(dataProviderID))
+			{
+				recordDescription.setPK(obj);
+			}
 			rd.setValue(dataProviderID, obj);
 		}
 	}

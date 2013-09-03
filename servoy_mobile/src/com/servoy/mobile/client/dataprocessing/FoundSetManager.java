@@ -740,6 +740,19 @@ public class FoundSetManager
 
 	}
 
+	String getPKDataProviderID(String entityName)
+	{
+		if (entities != null)
+		{
+			DataproviderIdAndTypeHolder dataProviderID = entities.getPKDataProviderID(entityName);
+			if (dataProviderID != null)
+			{
+				return dataProviderID.getDataproviderId();
+			}
+		}
+		return null;
+	}
+
 	public void recordPushedToServer(String entityName, String pk)
 	{
 		HashSet<FoundSet> set = getCreatedFoundsets(entityName);

@@ -749,6 +749,11 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 	}
 
 
+	String getPKDataProviderID()
+	{
+		return foundSetManager.getPKDataProviderID(getEntityName());
+	}
+
 	/**
 	 * @return
 	 */
