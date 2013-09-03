@@ -66,6 +66,13 @@ public class FindState extends Record
 	}
 
 	@Override
+	public FoundSet getRelatedFoundSet(String relationName)
+	{
+		// related search not supported
+		return null;
+	}
+
+	@Override
 	public Object getPK()
 	{
 		return null;
