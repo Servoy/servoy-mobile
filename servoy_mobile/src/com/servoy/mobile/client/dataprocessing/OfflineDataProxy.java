@@ -90,8 +90,8 @@ public class OfflineDataProxy
 		setRequestParameters(builder);
 
 		JSONObject payload = new JSONObject();
-		payload.put("entity", new JSONString(foundset.getEntityName()));
-		payload.put("entityPrefix", new JSONString(foundSetManager.getEntityPrefix()));
+
+		payload.put("datasource", new JSONString(foundSetManager.getEntityDescription(foundset.getEntityName()).getDataSource()));
 		JSONArray findstates = new JSONArray();
 		payload.put("findstates", findstates);
 		for (int i = 0; i < foundset.getSize(); i++)
