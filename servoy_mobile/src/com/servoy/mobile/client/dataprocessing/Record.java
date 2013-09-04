@@ -95,20 +95,29 @@ public class Record extends Scope implements IJSRecord, IRowChangeListener
 			return jsValue;
 		}
 
+
 		if (!variableTypes.containsKey(dataProviderID))
 		{
-			FoundSet rfs = getRelatedFoundSet(dataProviderID);
-			if (rfs != null)
+			Record relatedRecord = getRelatedRecord(dataProviderID, false);
+			if (relatedRecord != null)
 			{
-				return rfs;
+				return relatedRecord.getValue(getRelatedDataprovideID(dataProviderID));
+			}
+			if (dataProviderID.indexOf('.') == -1)
+			{
+				FoundSet rfs = getRelatedFoundSet(dataProviderID);
+				if (rfs != null)
+				{
+					return rfs;
+				}
+			}
+			else
+			{
+				// todo this could be (laxy)maxRecordIndex should that return 0 or nothing/null?
+				return null;
 			}
 		}
 
-		Record relatedRecord = getRelatedRecord(dataProviderID, false);
-		if (relatedRecord != null)
-		{
-			return relatedRecord.getValue(getRelatedDataprovideID(dataProviderID));
-		}
 
 		RowDescription rd = getRow();
 		if (rd == null || rd.getValue(dataProviderID) == null) return null;
@@ -304,7 +313,7 @@ public class Record extends Scope implements IJSRecord, IRowChangeListener
 	@Override
 	public String getDataSource()
 	{
-		return parent.getEntityName(); // TODO entity -> datasource??
+		return parent.getDataSource();
 	}
 
 
