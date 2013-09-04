@@ -67,4 +67,17 @@ public class JSSecurity implements Exportable, IJSSecurity
 	{
 		application.clearCredentials();
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.base.scripting.api.IJSSecurity#getUserName()
+	 */
+	@Override
+	public String getUserName() throws Exception
+	{
+		String[] credentials = application.getFoundSetManager().getCredentials();
+		if (credentials != null && credentials.length > 0) return credentials[0];
+		return null;
+	}
 }
