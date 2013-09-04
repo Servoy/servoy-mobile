@@ -29,6 +29,7 @@ import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
 import com.servoy.base.dataprocessing.BaseSQLGenerator;
 import com.servoy.base.dataprocessing.ITypeConverter;
 import com.servoy.base.dataprocessing.IValueConverter;
@@ -45,6 +46,7 @@ import com.servoy.base.scripting.api.IJSFoundSet;
 import com.servoy.base.scripting.api.IJSRecord;
 import com.servoy.mobile.client.dto.FoundSetDescription;
 import com.servoy.mobile.client.dto.RecordDescription;
+import com.servoy.mobile.client.dto.RelationDescription;
 import com.servoy.mobile.client.dto.RowDescription;
 import com.servoy.mobile.client.scripting.Scope;
 import com.servoy.mobile.client.util.Debug;
@@ -650,6 +652,11 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		return foundSetDescription.getEntityName();
 	}
 
+	public String getDataSource()
+	{
+		return foundSetManager.getEntityDescription(getEntityName()).getDataSource();
+	}
+
 	RowDescription getRowDescription(Object pk)
 	{
 		return foundSetManager.getRowDescription(getEntityName(), pk);
@@ -815,6 +822,14 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 			// if there are outstanding edits then this will delete the records.
 			flushAllRecords();
 			fireContentChanged();
+		}
+
+		// (re) export all relations
+		JsArray<RelationDescription> primaryRelations = foundSetManager.getEntityDescription(getEntityName()).getPrimaryRelations();
+		for (int i = 0; i < primaryRelations.length(); i++)
+		{
+			String name = primaryRelations.get(i).getName();
+			this.exportProperty(javascriptInstance, name);
 		}
 	}
 }
