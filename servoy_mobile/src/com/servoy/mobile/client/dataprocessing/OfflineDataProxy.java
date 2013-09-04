@@ -91,39 +91,51 @@ public class OfflineDataProxy
 
 		JSONObject payload = new JSONObject();
 
-		payload.put("datasource", new JSONString(foundSetManager.getEntityDescription(foundset.getEntityName()).getDataSource()));
-		JSONArray findstates = new JSONArray();
-		payload.put("findstates", findstates);
-		for (int i = 0; i < foundset.getSize(); i++)
+		if (foundset instanceof RelatedFoundSet)
 		{
-			FindState fs = (FindState)foundset.getRecord(i);
-			Map<String, Object> columnData = fs.getColumnData();
-			JSONObject json = new JSONObject();
-			for (Entry<String, Object> entry : columnData.entrySet())
+			RelatedFoundSet relFoundset = (RelatedFoundSet)foundset;
+			payload.put("relationname", new JSONString(relFoundset.getRelationName()));
+			Record parentRecord = relFoundset.getParents()[0];
+			payload.put("datasource", new JSONString(parentRecord.getDataSource()));
+			String remotepk = foundSetManager.getRemotePK(parentRecord.getFoundset().getEntityName(), parentRecord.getPK().toString(), parentRecord.getRow());
+			payload.put("pk", new JSONString(remotepk));
+		}
+		else
+		{
+			payload.put("datasource", new JSONString(foundSetManager.getEntityDescription(foundset.getEntityName()).getDataSource()));
+			JSONArray findstates = new JSONArray();
+			payload.put("findstates", findstates);
+			for (int i = 0; i < foundset.getSize(); i++)
 			{
-				Object value = entry.getValue();
-				if (value instanceof String)
+				FindState fs = (FindState)foundset.getRecord(i);
+				Map<String, Object> columnData = fs.getColumnData();
+				JSONObject json = new JSONObject();
+				for (Entry<String, Object> entry : columnData.entrySet())
 				{
-					json.put(entry.getKey(), new JSONString((String)value));
+					Object value = entry.getValue();
+					if (value instanceof String)
+					{
+						json.put(entry.getKey(), new JSONString((String)value));
+					}
+					else if (value instanceof Number)
+					{
+						json.put(entry.getKey(), new JSONNumber(((Number)value).doubleValue()));
+					}
+					else if (value instanceof Date)
+					{
+						json.put(entry.getKey(), new JSONNumber(((Date)value).getTime()));
+					}
+					else if (value instanceof JsDate)
+					{
+						json.put(entry.getKey(), new JSONNumber(((JsDate)value).getTime()));
+					}
+					else
+					{
+						Log.error("value unknown", value.toString());
+					}
 				}
-				else if (value instanceof Number)
-				{
-					json.put(entry.getKey(), new JSONNumber(((Number)value).doubleValue()));
-				}
-				else if (value instanceof Date)
-				{
-					json.put(entry.getKey(), new JSONNumber(((Date)value).getTime()));
-				}
-				else if (value instanceof JsDate)
-				{
-					json.put(entry.getKey(), new JSONNumber(((JsDate)value).getTime()));
-				}
-				else
-				{
-					Log.error("value unknown", value.toString());
-				}
+				findstates.set(i, json);
 			}
-			findstates.set(i, json);
 		}
 
 		builder.setHeader("Accept", "application/json");
