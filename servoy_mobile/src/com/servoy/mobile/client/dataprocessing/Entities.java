@@ -206,13 +206,13 @@ public class Entities
 					id = valueStore.getNextVal();
 					rd.setID(id);
 				}
-				relationIDs.put(rd.getName(), new Integer(id));
 			}
 			else
 			{
 				rd.setID(currentId.intValue());
 			}
 		}
+		relationIDs.put(rd.getName(), new Integer(id));
 	}
 
 	private final HashMap<String, Integer> relationIDs = new HashMap<String, Integer>();
