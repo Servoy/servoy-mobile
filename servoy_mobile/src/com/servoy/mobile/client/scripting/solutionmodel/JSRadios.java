@@ -46,7 +46,7 @@ public class JSRadios extends JSField implements IMobileSMField, IMobileSMRadios
 	@Override
 	public boolean getHorizontal()
 	{
-		return IMobileProperties.RADIO_STYLE_HORIZONTAL.equals(getMobileProperty(IMobileProperties.RADIO_STYLE));
+		return IMobileProperties.RADIO_STYLE_HORIZONTAL.intValue() == getMobileProperty(IMobileProperties.RADIO_STYLE).intValue();
 	}
 
 	@Setter
