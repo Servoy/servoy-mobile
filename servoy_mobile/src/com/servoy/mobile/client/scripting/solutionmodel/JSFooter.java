@@ -31,7 +31,6 @@ import com.google.gwt.core.client.JsArray;
 import com.servoy.base.persistence.IMobileProperties;
 import com.servoy.base.persistence.constants.IFieldConstants;
 import com.servoy.base.persistence.constants.IPartConstants;
-import com.servoy.base.solutionmodel.IBaseSMComponent;
 import com.servoy.base.solutionmodel.IBaseSMMethod;
 import com.servoy.base.solutionmodel.IBaseSMVariable;
 import com.servoy.base.solutionmodel.mobile.IMobileSMFooter;
@@ -247,7 +246,7 @@ public class JSFooter extends JSPart implements IMobileSMFooter, Exportable
 	}
 
 	@Override
-	public IBaseSMComponent[] getComponents()
+	public JSComponent[] getComponents()
 	{
 		List<JSComponent> footerComponents = new ArrayList<JSComponent>();
 		for (JSComponent comp : getParent().getComponents())
@@ -258,7 +257,7 @@ public class JSFooter extends JSPart implements IMobileSMFooter, Exportable
 				footerComponents.add(comp);
 			}
 		}
-		return footerComponents.toArray(new IBaseSMComponent[footerComponents.size()]);
+		return footerComponents.toArray(new JSComponent[footerComponents.size()]);
 	}
 
 	@NoExport
