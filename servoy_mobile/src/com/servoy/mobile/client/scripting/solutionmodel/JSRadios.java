@@ -27,6 +27,7 @@ import com.servoy.base.persistence.IMobileProperties;
 import com.servoy.base.solutionmodel.mobile.IMobileSMRadios;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMField;
+import com.servoy.mobile.client.util.Utils;
 
 /**
  * Solution model radios field component.
@@ -46,7 +47,8 @@ public class JSRadios extends JSField implements IMobileSMField, IMobileSMRadios
 	@Override
 	public boolean getHorizontal()
 	{
-		return IMobileProperties.RADIO_STYLE_HORIZONTAL.intValue() == getMobileProperty(IMobileProperties.RADIO_STYLE).intValue();
+		// getMobileProperty may return a Double
+		return Utils.equalObjects(IMobileProperties.RADIO_STYLE_HORIZONTAL, getMobileProperty(IMobileProperties.RADIO_STYLE));
 	}
 
 	@Setter
