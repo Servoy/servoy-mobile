@@ -236,7 +236,7 @@ public class JSField extends JSComponent implements IMobileSMField, Exportable
 		{
 			comp.setGroupID(cGroup = Utils.createStringUUID());
 		}
-		JSLabel titleLabel = parentForm.newLabel(null, comp.getX() - 1, comp.getY() - 1, comp.getWidth(), comp.getHeight());
+		JSLabel titleLabel = parentForm.newLabel(null, comp.getX(), comp.getY(), comp.getWidth(), comp.getHeight());
 		titleLabel.setGroupID(cGroup);
 		titleLabel.putMobileProperty(IMobileProperties.COMPONENT_TITLE, Boolean.TRUE);
 		return titleLabel;
