@@ -31,8 +31,8 @@ import com.servoy.mobile.client.scripting.solutionhelper.SolutionHelper;
 import com.sksamuel.jqm4gwt.Mobile;
 
 /**
+ * Mobile implementation side for the plugin seen in Servoy developer
  * @author lvostinar
- *
  */
 @Export
 public class MobilePlugin implements Exportable
