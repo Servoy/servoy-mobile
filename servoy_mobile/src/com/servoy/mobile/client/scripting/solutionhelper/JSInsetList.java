@@ -230,9 +230,15 @@ public class JSInsetList extends BaseSHInsetList implements Exportable
 
 	@Setter
 	@Override
-	public void setListStyleClass(String styleClass)
+	public void setY(int y)
 	{
-		super.setListStyleClass(styleClass);
+		super.setY(y);
 	}
 
+	@Getter
+	@Override
+	public int getY()
+	{
+		return super.getY();
+	}
 }

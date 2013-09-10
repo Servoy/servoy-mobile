@@ -912,6 +912,7 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 	@Setter
 	public void setOnShow(JSMethod method)
 	{
+		verifyEventHandler("onShow", null, method, getName());
 		cloneIfNeeded();
 		getBase().setOnShowCall(method != null ? method.getReferenceString() : null);
 	}
@@ -932,6 +933,7 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 	@Setter
 	public void setOnLoad(JSMethod method)
 	{
+		verifyEventHandler("onLoad", null, method, getName());
 		cloneIfNeeded();
 		getBase().setOnLoadCall(method != null ? method.getReferenceString() : null);
 	}
@@ -952,6 +954,7 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 	@Setter
 	public void setOnHide(JSMethod method)
 	{
+		verifyEventHandler("onHide", null, method, getName());
 		cloneIfNeeded();
 		getBase().setOnHideCall(method != null ? method.getReferenceString() : null);
 	}
@@ -972,6 +975,7 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 	@Setter
 	public void setOnRecordSelection(JSMethod method)
 	{
+		verifyEventHandler("onRecordSelection", null, method, getName());
 		cloneIfNeeded();
 		getBase().setOnRecordSelectionCall(method != null ? method.getReferenceString() : null);
 	}

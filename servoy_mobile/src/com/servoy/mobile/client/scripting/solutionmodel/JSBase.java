@@ -111,4 +111,20 @@ public class JSBase
 		return model;
 	}
 
+	/**
+	*  This is called at every setOnAction , setOnLoad ... to validate if the method assigned to the event handler
+	*   is in the same form of the component/form
+	*/
+	@NoExport
+	public void verifyEventHandler(String eventHandlerName, String componentName, JSMethod method, String formName)
+	{
+		if (method.getScopeName() == null && !formName.equals(method.getParentForm().getName()))
+		{
+			String componentMessage = componentName == null ? "" : " for '" + componentName + "'";
+
+			throw new IllegalArgumentException("Cannot set " + eventHandlerName + componentName + " in form " + formName +
+				". The method is declared in a different form " + (method).getParentForm().getName());
+		}
+	}
+
 }

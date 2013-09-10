@@ -43,6 +43,7 @@ public class JSGraphicalComponent extends JSTextComponent implements IBaseSMGrap
 	@Setter
 	public void setOnAction(IBaseSMMethod method)
 	{
+		verifyEventHandler("onAction", this.getName() == null ? "" : this.getName(), (JSMethod)method, formName);
 		cloneIfNeeded();
 		((GraphicalComponent)getBase()).setOnActionMethodCall(method != null ? ((JSMethod)method).getReferenceString() : null);
 	}

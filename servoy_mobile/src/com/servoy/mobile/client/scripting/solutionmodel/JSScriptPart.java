@@ -94,4 +94,13 @@ public abstract class JSScriptPart implements Exportable
 		if (parentForm != null) parentForm.cloneIfNeeded();
 	}
 
+	/**
+	 *  Returns this method's parent form if it is a form method
+	 */
+	@NoExport
+	public JSForm getParentForm()
+	{
+		return parentForm;
+	}
+
 }

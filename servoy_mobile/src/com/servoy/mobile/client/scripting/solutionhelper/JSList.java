@@ -116,7 +116,7 @@ public class JSList extends BaseSHList implements IBaseSHFormList, Exportable
 	@Getter
 	public String getSubtextDataProviderID()
 	{
-		return super.getSubtext();
+		return super.getSubtextDataProviderID();
 	}
 
 	@Override
