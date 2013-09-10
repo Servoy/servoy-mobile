@@ -114,13 +114,18 @@ public class JSBase
 	/**
 	*  This is called at every setOnAction , setOnLoad ... to validate if the method assigned to the event handler
 	*   is in the same form of the component/form
+	*   @param componentName  - this parameter should not be null if the event handler is on a component ,(for unnamed components use  "")
 	*/
 	@NoExport
 	public void verifyEventHandler(String eventHandlerName, String componentName, JSMethod method, String formName)
 	{
 		if ((method.getScopeName() == null && method.getParentForm() != null && formName != null) && !formName.equals(method.getParentForm().getName()))
 		{
-			String componentMessage = componentName == null ? "'unnamed'" : " for '" + componentName + "'";
+			if (componentName != null && componentName.length() == 0)
+			{
+				componentName = "unnamed";
+			}
+			String componentMessage = componentName == null ? "" : " for '" + componentName + "'";
 			throw new IllegalArgumentException("Cannot set " + eventHandlerName + componentMessage + " in form " + formName +
 				". The method is declared in a different form '" + (method).getParentForm().getName() + "'");
 		}
