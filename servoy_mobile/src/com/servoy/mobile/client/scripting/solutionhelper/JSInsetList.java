@@ -221,6 +221,13 @@ public class JSInsetList extends BaseSHInsetList implements Exportable
 		return super.getHeaderStyleClass();
 	}
 
+	@Setter
+	@Override
+	public void setListStyleClass(String styleClass)
+	{
+		super.setListStyleClass(styleClass);
+	}
+
 	@Getter
 	@Override
 	public String getListStyleClass()

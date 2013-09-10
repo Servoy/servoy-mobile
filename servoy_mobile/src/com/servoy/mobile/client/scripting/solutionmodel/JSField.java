@@ -192,7 +192,6 @@ public class JSField extends JSComponent implements IMobileSMField, Exportable
 	{
 		verifyEventHandler("onDataChange", this.getName() == null ? "" : this.getName(), method, formName);
 		cloneIfNeeded();
-		cloneIfNeeded();
 		((Field)getBase()).setDataChangeMethodCall(method != null ? method.getReferenceString() : null);
 	}
 

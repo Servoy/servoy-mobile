@@ -118,12 +118,11 @@ public class JSBase
 	@NoExport
 	public void verifyEventHandler(String eventHandlerName, String componentName, JSMethod method, String formName)
 	{
-		if (method.getScopeName() == null && !formName.equals(method.getParentForm().getName()))
+		if (method.getScopeName() == null && method.getParentForm() != null && !formName.equals(method.getParentForm().getName()))
 		{
 			String componentMessage = componentName == null ? "" : " for '" + componentName + "'";
-
-			throw new IllegalArgumentException("Cannot set " + eventHandlerName + componentName + " in form " + formName +
-				". The method is declared in a different form " + (method).getParentForm().getName());
+			throw new IllegalArgumentException("Cannot set " + eventHandlerName + componentMessage + " in form " + formName +
+				". The method is declared in a different form '" + (method).getParentForm().getName() + "'");
 		}
 	}
 
