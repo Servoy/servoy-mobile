@@ -832,4 +832,20 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 			this.exportProperty(javascriptInstance, name);
 		}
 	}
+
+
+	@Export("getRecordIndex")
+	@Override
+	public int js_getRecordIndex(IJSRecord record)
+	{
+		return js_getRecordIndex((Record)record);
+	}
+
+	@Export("getRecordIndex")
+	public int js_getRecordIndex(Record record)
+	{
+		int recordIndex = getRecordIndex(record);
+		if (recordIndex == -1) return -1;
+		return recordIndex + 1;
+	}
 }
