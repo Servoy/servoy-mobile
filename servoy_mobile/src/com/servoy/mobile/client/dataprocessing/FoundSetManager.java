@@ -273,17 +273,9 @@ public class FoundSetManager
 					Object[] coldata = new Object[pdp.length()];
 					for (int j = 0; j < coldata.length; j++)
 					{
-						String pdpValue = pdp.get(j);
-						if (pdpValue.startsWith(LITERAL_PREFIX))
-						{
-							coldata[j] = Utils.parseJSExpression(pdpValue.substring(LITERAL_PREFIX.length()));
-						}
-						else
-						{
-							Object obj = rec.getValue(pdpValue);
-							if (obj == null) return null;
-							coldata[j] = obj;
-						}
+						Object obj = getRecordValue(rec, pdp.get(j));
+						if (obj == null) return null;
+						coldata[j] = obj;
 					}
 					key = relationID + "|" + Utils.createPKHashKey(coldata);
 				}
@@ -794,7 +786,7 @@ public class FoundSetManager
 			{
 				Object pk = newRecord.substring(idx + 1);
 				RowDescription rowd = getRowDescription(entityName, pk);
-				if (matchesRelatedFoundset(parentRecord, relationName, rowd))
+				if ((rowd != null) && ((relationName == null) || matchesRelatedFoundset(parentRecord, relationName, rowd)))
 				{
 					boolean foundRecord = false;
 					JsArray<RecordDescription> recs = fsd.getRecords();
@@ -828,7 +820,7 @@ public class FoundSetManager
 				Object[] coldata = new Object[pdp.length()];
 				for (int j = 0; j < coldata.length; j++)
 				{
-					Object obj = parentRecord.getValue(pdp.get(j));
+					Object obj = getRecordValue(parentRecord, pdp.get(j));
 					if (obj == null) return false;
 					coldata[j] = obj;
 				}
@@ -918,6 +910,7 @@ public class FoundSetManager
 		if (json == null) return null;
 		FoundSetDescription fsd = JSONParser.parseStrict(json).isObject().getJavaScriptObject().cast();
 		removeDeletedRecords(fsd);
+		addNewRecords(fsd, null, entityName, null);
 		FoundSet foundset = new FoundSet(this, fsd);
 		addFoundsetInList(foundset, null, shared);
 		return foundset;
@@ -1049,16 +1042,7 @@ public class FoundSetManager
 				Object[] coldata = new Object[pdp.length()];
 				for (int j = 0; j < coldata.length; j++)
 				{
-					String pdpValue = pdp.get(j);
-					Object obj = null;
-					if (pdpValue != null && pdpValue.startsWith(LITERAL_PREFIX))
-					{
-						obj = Utils.parseJSExpression(pdpValue.substring(LITERAL_PREFIX.length()));
-					}
-					else
-					{
-						obj = parentRecords[0].getValue(pdpValue);
-					}
+					Object obj = getRecordValue(parentRecords[0], pdp.get(j));
 					retval.setValue(fdp.get(j), obj);
 				}
 			}
@@ -1092,7 +1076,7 @@ public class FoundSetManager
 			Object[] coldata = new Object[pdp.length()];
 			for (int j = 0; j < coldata.length; j++)
 			{
-				Object obj = record.getValue(pdp.get(j));
+				Object obj = getRecordValue(record, pdp.get(j));
 				if (obj == null) return null;//we cannot relate based on null
 				coldata[j] = obj;
 			}
@@ -1251,6 +1235,22 @@ public class FoundSetManager
 	{
 		String uuid = Utils.createStringUUID();
 		return String.valueOf(valueStore.putUUID(uuid));
+	}
+
+	private static Object getRecordValue(Record record, String dataProviderID)
+	{
+		if (dataProviderID != null)
+		{
+			if (dataProviderID.startsWith(LITERAL_PREFIX))
+			{
+				return Utils.parseJSExpression(dataProviderID.substring(LITERAL_PREFIX.length()));
+			}
+			else
+			{
+				return record.getValue(dataProviderID);
+			}
+		}
+		return null;
 	}
 
 	/**
