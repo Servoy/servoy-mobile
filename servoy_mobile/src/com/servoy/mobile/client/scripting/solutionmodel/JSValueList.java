@@ -21,16 +21,22 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.Getter;
+import org.timepedia.exporter.client.Setter;
 
-import com.servoy.base.solutionmodel.IBaseSMValueList;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArrayMixed;
+import com.google.gwt.core.client.JsArrayString;
+import com.servoy.base.util.TagParser;
 import com.servoy.mobile.client.persistence.ValueList;
+import com.servoy.mobile.client.scripting.solutionmodel.i.IMobileSMValuelist;
+import com.servoy.mobile.client.util.Utils;
 
 /**
  * @author acostescu
  */
 @Export
 @ExportPackage("")
-public class JSValueList /* extends JSBase */implements IBaseSMValueList, Exportable // TODO ac when ValueListDescription becomes a persist, please extends JSBase
+public class JSValueList /* extends JSBase */implements IMobileSMValuelist, Exportable // TODO ac when ValueListDescription becomes a persist, please extends JSBase
 {
 
 	private final ValueList vl;
@@ -50,6 +56,61 @@ public class JSValueList /* extends JSBase */implements IBaseSMValueList, Export
 	public String getUUID()
 	{
 		return vl.getUUID();
+	}
+
+	@Getter
+	@Override
+	public String getCustomValues()
+	{
+		JsArrayString displayValues = vl.getRawDiplayValues();
+		JsArrayMixed realValues = vl.getRealValues();
+		String values = "";
+		for (int i = 0; i < displayValues.length(); i++)
+		{
+			values += displayValues.get(i);
+			if (realValues != null && i < realValues.length())
+			{
+				values += "|" + realValues.getString(i);
+			}
+			if (i < displayValues.length() - 1)
+			{
+				values += "\n";
+			}
+		}
+		return values;
+	}
+
+	@Setter
+	@Override
+	public void setCustomValues(String arg)
+	{
+		JsArrayString displayValues = JavaScriptObject.createArray().cast();
+		JsArrayMixed realValues = JavaScriptObject.createArray().cast();
+		if (arg != null && arg.length() > 0)
+		{
+			String[] rows = TagParser.split(arg, '\n');
+			for (int i = 0; i < rows.length; i++)
+			{
+				if (!Utils.equalObjects(rows[i], "\n"))
+				{
+					if (rows[i].contains("|"))
+					{
+						String[] values = TagParser.split(rows[i], '|');
+						if (values.length == 3)
+						{
+							displayValues.set(displayValues.length(), values[0]);
+							realValues.set(realValues.length(), values[2]);
+						}
+					}
+					else
+					{
+						displayValues.set(displayValues.length(), rows[i]);
+						realValues.set(realValues.length(), rows[i]);
+					}
+				}
+			}
+		}
+		vl.setValues(displayValues, realValues);
 	}
 
 }

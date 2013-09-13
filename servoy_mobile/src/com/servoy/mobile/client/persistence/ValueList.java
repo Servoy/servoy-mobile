@@ -44,7 +44,7 @@ public class ValueList extends AbstractBase
 		return rawDisplayValues;
 	}
 
-	private final native JsArrayString getRawDiplayValues() /*-{
+	public final native JsArrayString getRawDiplayValues() /*-{
 		return this.displayValues;
 	}-*/;
 

@@ -183,6 +183,20 @@ public class JSSolutionModel implements IMobileSolutionModel, Exportable
 	}
 
 	@Override
+	public JSValueList newValueList(String name, int type)
+	{
+		if (name != null)
+		{
+			JSValueList valuelist = getValueList(name);
+			if (valuelist == null)
+			{
+				return new JSValueList(solution.newValueList(name));
+			}
+		}
+		return null;
+	}
+
+	@Override
 	public JSVariable newGlobalVariable(String scopeName, String name, int type)
 	{
 		String scope = (scopeName == null ? "globals" : scopeName); //$NON-NLS-1$
