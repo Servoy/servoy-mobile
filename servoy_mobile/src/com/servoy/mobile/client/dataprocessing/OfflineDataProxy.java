@@ -701,6 +701,7 @@ public class OfflineDataProxy
 	private void setRequestParameters(RequestBuilder builder)
 	{
 		if (nodebug) builder.setHeader("servoy.nodebug", "true");
+		builder.setIncludeCredentials(true);
 		String[] credentialsToUse = credentials != null ? credentials : uncheckedCredentials != null ? uncheckedCredentials : null;
 		if (credentialsToUse != null)
 		{
