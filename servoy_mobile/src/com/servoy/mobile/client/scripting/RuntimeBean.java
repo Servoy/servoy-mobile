@@ -70,15 +70,28 @@ public class RuntimeBean extends AbstractRuntimeBaseComponent<BeanComponent, Bea
 	}
 
 	@Getter
+	@Deprecated
 	public String getText()
 	{
-		return component.getText();
+		return getInnerHTML();
 	}
 
 	@Setter
+	@Deprecated
 	public void setText(String text)
 	{
-		component.setText(text);
+		setInnerHTML(text);
 	}
 
+	@Getter
+	public String getInnerHTML()
+	{
+		return component.getInnerHTML();
+	}
+
+	@Setter
+	public void setInnerHTML(String innerHTML)
+	{
+		component.setInnerHTML(innerHTML);
+	}
 }

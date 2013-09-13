@@ -19,7 +19,6 @@ package com.servoy.mobile.client.ui;
 
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Widget;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.persistence.Bean;
@@ -33,7 +32,7 @@ import com.sksamuel.jqm4gwt.JQMWidget;
  * @author gboros
  *
  */
-public class BeanComponent extends JQMWidget implements IComponent, IRuntimeComponentProvider, HasText, IDestroyable
+public class BeanComponent extends JQMWidget implements IComponent, IRuntimeComponentProvider, IDestroyable
 {
 	private DivWidget divWidget;
 	private RuntimeBean scriptable;
@@ -41,6 +40,8 @@ public class BeanComponent extends JQMWidget implements IComponent, IRuntimeComp
 	public BeanComponent(Bean bean, Executor executor, MobileClient application)
 	{
 		initWidget(divWidget = new DivWidget());
+		String innerHTML = bean.getInnerHTML();
+		if (innerHTML != null) setInnerHTML(innerHTML);
 		setId();
 		scriptable = new RuntimeBean(application, executor, this, bean);
 	}
@@ -55,26 +56,14 @@ public class BeanComponent extends JQMWidget implements IComponent, IRuntimeComp
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.google.gwt.user.client.ui.HasText#getText()
-	 */
-	@Override
-	public String getText()
+	public String getInnerHTML()
 	{
 		return divWidget.divElement.getInnerHTML();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.google.gwt.user.client.ui.HasText#setText(java.lang.String)
-	 */
-	@Override
-	public void setText(String text)
+	public void setInnerHTML(String innerHTML)
 	{
-		divWidget.divElement.setInnerHTML(text);
+		divWidget.divElement.setInnerHTML(innerHTML);
 	}
 
 	/*

@@ -17,6 +17,7 @@
 
 package com.servoy.mobile.client.persistence;
 
+import com.servoy.base.persistence.constants.IContentSpecConstantsBase;
 import com.servoy.base.persistence.constants.IRepositoryConstants;
 import com.servoy.mobile.client.util.Utils;
 
@@ -38,5 +39,15 @@ public class Bean extends Component
 	public final static Bean castIfPossible(AbstractBase ab)
 	{
 		return ab.getTypeID() == IRepositoryConstants.BEANS ? (Bean)ab.cast() : null;
+	}
+
+	public final void setInnerHTML(String innerHTML)
+	{
+		setAttributeValueString(IContentSpecConstantsBase.PROPERTY_BEANXML, innerHTML);
+	}
+
+	public final String getInnerHTML()
+	{
+		return getAttributeValueString(IContentSpecConstantsBase.PROPERTY_BEANXML, null);
 	}
 }

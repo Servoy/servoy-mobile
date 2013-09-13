@@ -36,4 +36,25 @@ public class JSBean extends JSComponent implements IBaseSMBean, Exportable
 	{
 		super(bean, model, parent);
 	}
+
+	/**
+	 * Get the mobile bean innerHTML.
+	 * 
+	 * @return a String object containing the mobile bean innerHTML
+	 */
+	public String getInnerHTML()
+	{
+		return ((Bean)getBase()).getInnerHTML();
+	}
+
+
+	/**
+	 * Set the mobile bean innerHTML
+	 * 
+	 * @param innerHTML the mobile bean innerHTML
+	 */
+	public void setInnerHTML(String innerHTML)
+	{
+		((Bean)getBase()).setInnerHTML(innerHTML);
+	}
 }
