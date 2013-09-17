@@ -21,7 +21,7 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 
-import com.servoy.base.solutionmodel.IBaseSMBean;
+import com.servoy.base.solutionmodel.mobile.IMobileSMBean;
 import com.servoy.mobile.client.persistence.Bean;
 
 /**
@@ -30,29 +30,18 @@ import com.servoy.mobile.client.persistence.Bean;
  */
 @Export
 @ExportPackage("")
-public class JSBean extends JSComponent implements IBaseSMBean, Exportable
+public class JSBean extends JSComponent implements IMobileSMBean, Exportable
 {
 	public JSBean(Bean bean, JSSolutionModel model, JSForm parent)
 	{
 		super(bean, model, parent);
 	}
 
-	/**
-	 * Get the mobile bean innerHTML.
-	 * 
-	 * @return a String object containing the mobile bean innerHTML
-	 */
 	public String getInnerHTML()
 	{
 		return ((Bean)getBase()).getInnerHTML();
 	}
 
-
-	/**
-	 * Set the mobile bean innerHTML
-	 * 
-	 * @param innerHTML the mobile bean innerHTML
-	 */
 	public void setInnerHTML(String innerHTML)
 	{
 		((Bean)getBase()).setInnerHTML(innerHTML);
