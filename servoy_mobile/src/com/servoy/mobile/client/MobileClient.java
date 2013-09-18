@@ -80,6 +80,8 @@ public class MobileClient implements EntryPoint
 	private SolutionI18nProvider i18nProvider;
 	protected boolean firstFormFirstShow = true;
 
+	private IAfterLoginHandler afterLoginHandler;
+
 
 	@Override
 	public void onModuleLoad()
@@ -277,7 +279,15 @@ public class MobileClient implements EntryPoint
 		if (flattenedSolution.getMustAuthenticate() && !offlineDataProxy.hasCredentials() &&
 			!(offlineDataProxy.hasUncheckedCredentials() && useUncheckedCredentials))
 		{
-			formManager.showLogin(successCallback, errorHandler);
+			afterLoginHandler = new IAfterLoginHandler()
+			{
+				@Override
+				public void execute()
+				{
+					sync(successCallback, errorHandler, true);
+				}
+			};
+			formManager.showLogin();
 		}
 		else
 		{
@@ -386,8 +396,17 @@ public class MobileClient implements EntryPoint
 	{
 		if (flattenedSolution.getMustAuthenticate() && !offlineDataProxy.hasCredentials() && !(offlineDataProxy.hasUncheckedCredentials()))
 		{
-			// TODO what to do if there are no credentials, because this call will now call a sync if the users gives its credentials through the login form
-			formManager.showLogin(successCallback, errorHandler);
+			final FormController currentForm = formManager.getCurrentForm();
+			afterLoginHandler = new IAfterLoginHandler()
+			{
+				@Override
+				public void execute()
+				{
+					if (currentForm != null) formManager.showForm(currentForm);
+					load(foundset, successCallback, errorHandler);
+				}
+			};
+			formManager.showLogin();
 		}
 		else
 		{
@@ -452,8 +471,18 @@ public class MobileClient implements EntryPoint
 							if (reason.getStatusCode() == Response.SC_UNAUTHORIZED)
 							{
 								// for solutions that have mustAuthenticate == false - this will be a bit weird, but the server does ask for authentication it seems, and the server is leading
-								setUncheckedLoginCredentials(null, null);
-								formManager.showLogin(null, null); // TODO we should have this available in scripting - so that the developer can use it in callback methods as well
+								clearCredentials();
+								final FormController currentForm = formManager.getCurrentForm();
+								afterLoginHandler = new IAfterLoginHandler()
+								{
+									@Override
+									public void execute()
+									{
+										if (currentForm != null) formManager.showForm(currentForm);
+										load(foundset, successCallback, errorHandler);
+									}
+								};
+								formManager.showLogin(); // TODO we should have this available in scripting - so that the developer can use it in callback methods as well
 								// should we also make onSolutionOpen get called again after this happens - after successful re-login?
 							}
 						}
@@ -467,85 +496,112 @@ public class MobileClient implements EntryPoint
 
 	public void load(final JavaScriptObject successCallback, final JavaScriptObject errorHandler)
 	{
-		offlineDataProxy.loadOfflineData(getSolutionName(), new Callback<Integer, Failure>()
+		if (flattenedSolution.getMustAuthenticate() && !offlineDataProxy.hasCredentials() && !(offlineDataProxy.hasUncheckedCredentials()))
 		{
-			@Override
-			public void onSuccess(Integer result)
+			final FormController currentForm = formManager.getCurrentForm();
+			afterLoginHandler = new IAfterLoginHandler()
 			{
-				try
+				@Override
+				public void execute()
 				{
-					Mobile.hideLoadingDialog();
-					log("Done, loaded size: " + result);
-					if (successCallback != null)
+					if (currentForm != null) formManager.showForm(currentForm);
+					load(successCallback, errorHandler);
+				}
+			};
+			formManager.showLogin();
+		}
+		else
+		{
+			offlineDataProxy.loadOfflineData(getSolutionName(), new Callback<Integer, Failure>()
+			{
+				@Override
+				public void onSuccess(Integer result)
+				{
+					try
 					{
-						JsArrayMixed jsArray = JavaScriptObject.createArray().cast();
-						jsArray.set(0, result.doubleValue());
-						Executor.call(successCallback, jsArray);
+						Mobile.hideLoadingDialog();
+						log("Done, loaded size: " + result);
+						if (successCallback != null)
+						{
+							JsArrayMixed jsArray = JavaScriptObject.createArray().cast();
+							jsArray.set(0, result.doubleValue());
+							Executor.call(successCallback, jsArray);
+						}
+						else showFirstForm();
 					}
-					else showFirstForm();
+					finally
+					{
+						flagSyncStop();
+					}
 				}
-				finally
-				{
-					flagSyncStop();
-				}
-			}
 
-			@Override
-			public void onFailure(Failure reason)
-			{
-				try
+				@Override
+				public void onFailure(Failure reason)
 				{
-					Mobile.hideLoadingDialog();
-					StringBuilder detail = new StringBuilder();
-					if (reason.getStatusCode() != 0)
+					try
 					{
-						detail.append(reason.getStatusCode());
-					}
-					if (reason.getException() != null)
-					{
-						detail.append(",");
-						detail.append(reason.getException().getMessage());
-					}
-					if (detail.length() > 0)
-					{
-						detail.insert(0, " (");
-						detail.append(")");
-					}
-					GWT.log(detail.toString());
-					Log.error(detail.toString());
-					if (errorHandler != null)
-					{
-						JsArrayMixed jsArray = JavaScriptObject.createArray().cast();
-						jsArray.set(0, reason.getStatusCode());
-						jsArray.set(1, reason.getMessage());
-						Executor.call(errorHandler, jsArray);
-					}
-					else
-					{
-						error(reason.getMessage());
+						Mobile.hideLoadingDialog();
+						StringBuilder detail = new StringBuilder();
 						if (reason.getStatusCode() != 0)
 						{
-							// if authentication failed, clear the current checked/unchecked credentials
-							if (reason.getStatusCode() == Response.SC_UNAUTHORIZED)
+							detail.append(reason.getStatusCode());
+						}
+						if (reason.getException() != null)
+						{
+							detail.append(",");
+							detail.append(reason.getException().getMessage());
+						}
+						if (detail.length() > 0)
+						{
+							detail.insert(0, " (");
+							detail.append(")");
+						}
+						GWT.log(detail.toString());
+						Log.error(detail.toString());
+						if (errorHandler != null)
+						{
+							JsArrayMixed jsArray = JavaScriptObject.createArray().cast();
+							jsArray.set(0, reason.getStatusCode());
+							jsArray.set(1, reason.getMessage());
+							Executor.call(errorHandler, jsArray);
+						}
+						else
+						{
+							error(reason.getMessage());
+							if (reason.getStatusCode() != 0)
 							{
-								// for solutions that have mustAuthenticate == false - this will be a bit weird, but the server does ask for authentication it seems, and the server is leading
-								setUncheckedLoginCredentials(null, null);
-								formManager.showLogin(null, null); // TODO we should have this available in scripting - so that the developer can use it in callback methods as well
-								// should we also make onSolutionOpen get called again after this happens - after successful re-login?
-							}
-							else
-							{
-								showFirstForm();
+								// if authentication failed, clear the current checked/unchecked credentials
+								if (reason.getStatusCode() == Response.SC_UNAUTHORIZED)
+								{
+									// for solutions that have mustAuthenticate == false - this will be a bit weird, but the server does ask for authentication it seems, and the server is leading
+									clearCredentials();
+									final FormController currentForm = formManager.getCurrentForm();
+									afterLoginHandler = new IAfterLoginHandler()
+									{
+										@Override
+										public void execute()
+										{
+											if (currentForm != null) formManager.showForm(currentForm);
+											load(successCallback, errorHandler);
+										}
+									};
+									formManager.showLogin(); // TODO we should have this available in scripting - so that the developer can use it in callback methods as well
+									// should we also make onSolutionOpen get called again after this happens - after successful re-login?
+								}
+								else
+								{
+									showFirstForm();
+								}
 							}
 						}
 					}
+					finally
+					{
+						flagSyncStop();
+					}
 				}
-				finally
-				{
-					flagSyncStop();
-				}
-			}
-		});
+			});
+		}
 	}
 
 	public ScriptEngine getScriptEngine()
@@ -572,7 +628,16 @@ public class MobileClient implements EntryPoint
 	{
 		if (flattenedSolution.getMustAuthenticate() && !offlineDataProxy.hasCredentials() && !foundSetManager.hasContent())
 		{
-			formManager.showLogin(null, null);
+			afterLoginHandler = new IAfterLoginHandler()
+			{
+				@Override
+				public void execute()
+				{
+					// after login of a show first form we just need to do a full sync using the credentials
+					sync(true);
+				}
+			};
+			formManager.showLogin();
 		}
 		else
 		{
@@ -592,9 +657,15 @@ public class MobileClient implements EntryPoint
 		}
 	}
 
-	public void setUncheckedLoginCredentials(String identifier, String password)
+	public void doLogin(String identifier, String password)
 	{
 		offlineDataProxy.setUncheckedLoginCredentials(identifier, password);
+		if (afterLoginHandler != null)
+		{
+			afterLoginHandler.execute();
+			// can only executed once, then it should be cleared
+			afterLoginHandler = null;
+		}
 	}
 
 	public void clearCredentials()
@@ -682,5 +753,10 @@ public class MobileClient implements EntryPoint
 	protected OfflineDataProxy getOfflineDataProxy()
 	{
 		return offlineDataProxy;
+	}
+
+	public interface IAfterLoginHandler
+	{
+		void execute();
 	}
 }

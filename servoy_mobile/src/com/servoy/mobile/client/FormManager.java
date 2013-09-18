@@ -21,7 +21,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
-import com.google.gwt.core.client.JavaScriptObject;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.scripting.FormScope;
 import com.servoy.mobile.client.scripting.JSHistory;
@@ -74,13 +73,13 @@ public class FormManager
 	}
 
 
-	private JQMPage getLogin(JavaScriptObject successCallback, JavaScriptObject errorHandler)
+	private JQMPage getLogin()
 	{
 		if (login == null)
 		{
 			login = new Login(application);
 		}
-		login.init(successCallback, errorHandler);
+		login.init();
 		return login;
 	}
 
@@ -215,38 +214,17 @@ public class FormManager
 		}
 	}
 
-	private JavaScriptObject loginSuccessCallback = null;
-	private JavaScriptObject loginErrorHandler = null;
-
-	/**
-	 * @return the loginSuccessCallback
-	 */
-	public JavaScriptObject getLoginSuccessCallback()
-	{
-		return loginSuccessCallback;
-	}
-
-	/**
-	 * @return the loginErrorHandler
-	 */
-	public JavaScriptObject getLoginErrorHandler()
-	{
-		return loginErrorHandler;
-	}
-
-	public void showLogin(JavaScriptObject successCallback, JavaScriptObject errorHandler)
+	public void showLogin()
 	{
 		currentForm = null;
 		if (application.getFlattenedSolution().getLoginForm() != null)
 		{
 			if (showForm(application.getFlattenedSolution().getLoginForm()))
 			{
-				loginSuccessCallback = successCallback;
-				loginErrorHandler = errorHandler;
 				return;
 			}
 		}
-		JQMContext.changePage(getLogin(successCallback, errorHandler));
+		JQMContext.changePage(getLogin());
 	}
 
 	public FormScope getFormScope(String name)

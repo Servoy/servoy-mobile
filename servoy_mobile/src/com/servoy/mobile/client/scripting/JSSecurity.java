@@ -51,8 +51,7 @@ public class JSSecurity implements Exportable, IJSSecurity
 	{
 		if (credentials != null && credentials.length == 2)
 		{
-			application.setUncheckedLoginCredentials((String)credentials[0], (String)credentials[1]);
-			application.sync(application.getFormManager().getLoginSuccessCallback(), application.getFormManager().getLoginErrorHandler(), true);
+			application.doLogin((String)credentials[0], (String)credentials[1]);
 		}
 		return null;
 	}

@@ -1,6 +1,5 @@
 package com.servoy.mobile.client;
 
-import com.google.gwt.core.client.JavaScriptObject;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.form.SubmissionHandler;
 import com.sksamuel.jqm4gwt.html.Paragraph;
@@ -9,8 +8,6 @@ import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 public class Login extends JQMPage implements SubmissionHandler<LoginData>
 {
 	private final MobileClient application;
-	private JavaScriptObject successCallback;
-	private JavaScriptObject errorHandler;
 	private final LoginData form;
 
 	public Login(MobileClient mc)
@@ -26,11 +23,8 @@ public class Login extends JQMPage implements SubmissionHandler<LoginData>
 		add(form);
 	}
 
-	public void init(JavaScriptObject successCallback, JavaScriptObject errorHandler)
+	public void init()
 	{
-		this.successCallback = successCallback;
-		this.errorHandler = errorHandler;
-
 		form.init();
 	}
 
@@ -38,7 +32,6 @@ public class Login extends JQMPage implements SubmissionHandler<LoginData>
 	{
 		f.hideFormProcessingDialog();
 		f.clearValidationErrors();
-		application.setUncheckedLoginCredentials(f.getEmailInputText(), f.getPasswordInputText());
-		application.sync(successCallback, errorHandler, true);
+		application.doLogin(f.getEmailInputText(), f.getPasswordInputText());
 	}
 }
