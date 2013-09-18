@@ -192,7 +192,7 @@ public class TestMobileClient extends MobileClient
 						// automatically login in case of test client
 						if (getFlattenedSolution().getMustAuthenticate() && !getOfflineDataProxy().hasCredentials() && result != null)
 						{
-							setUncheckedLoginCredentials(result[0], result[1]);
+							doLogin(result[0], result[1]);
 						}
 						// avoid trial page for testing
 						getFlattenedSolution().setSkipConnect(true);
@@ -259,7 +259,7 @@ public class TestMobileClient extends MobileClient
 		}
 
 		@Override
-		public void showLogin(JavaScriptObject successCallback, JavaScriptObject errorHandler)
+		public void showLogin()
 		{
 			// this is not acceptable in testing
 			((TestMobileClient)getApplication()).reportUnexpectedThrowable(
