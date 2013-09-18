@@ -178,4 +178,11 @@ public class Solution extends JavaScriptObject
 		return vl;
 	}-*/;
 
+	public final native void removeValueList(ValueList valuelist)
+	/*-{
+		if (this.valuelists) {
+			var index = this.valuelists.indexOf(valuelist);
+			this.valuelists.splice(index, 1);
+		}
+	}-*/;
 }

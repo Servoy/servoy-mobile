@@ -197,6 +197,21 @@ public class JSSolutionModel implements IMobileSolutionModel, Exportable
 	}
 
 	@Override
+	public boolean removeValueList(String name)
+	{
+		if (name != null)
+		{
+			ValueList valuelist = application.getFlattenedSolution().getValueList(name);
+			if (valuelist != null)
+			{
+				solution.removeValueList(valuelist);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
 	public JSVariable newGlobalVariable(String scopeName, String name, int type)
 	{
 		String scope = (scopeName == null ? "globals" : scopeName); //$NON-NLS-1$

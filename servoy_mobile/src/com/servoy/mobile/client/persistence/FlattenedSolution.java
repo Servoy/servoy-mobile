@@ -96,6 +96,11 @@ public class FlattenedSolution
 		return solution.instantiateValueList(name);
 	}
 
+	public void removeValueList(ValueList valuelist)
+	{
+		solution.removeValueList(valuelist);
+	}
+
 	public Form cloneFormDeep(Form formToClone)
 	{
 		Form f = formToClone.cloneDeep();
