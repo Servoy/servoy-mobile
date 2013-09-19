@@ -42,6 +42,7 @@ import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
+import com.google.gwt.storage.client.Storage;
 import com.servoy.mobile.client.dto.OfflineDataDescription;
 import com.servoy.mobile.client.dto.RowDescription;
 import com.servoy.mobile.client.request.Base64Coder;
@@ -64,6 +65,10 @@ public class OfflineDataProxy
 	private String[] credentials; //id, password
 	private String[] uncheckedCredentials; //id, password
 	private Boolean hasSingleWsUpdateMethod = null;
+	private final Storage sessionStorage = Storage.getSessionStorageIfSupported();
+
+	public static String WS_NODEBUG_HEADER = "servoy.nodebug";
+	public static String WS_USER_PROPERTIES_HEADER = "servoy.userproperties";
 
 	public OfflineDataProxy(FoundSetManager fsm, String serverURL, boolean nodebug, int timeout)
 	{
@@ -155,6 +160,7 @@ public class OfflineDataProxy
 				{
 					if (Response.SC_OK == response.getStatusCode())
 					{
+						storeUserProperties(response);
 						successfullRestAuthResponseReceived();
 
 						String content = response.getText();
@@ -210,6 +216,7 @@ public class OfflineDataProxy
 				{
 					if (Response.SC_OK == response.getStatusCode())
 					{
+						storeUserProperties(response);
 						successfullRestAuthResponseReceived();
 
 						String content = response.getText();
@@ -292,6 +299,7 @@ public class OfflineDataProxy
 				{
 					if (Response.SC_OK == response.getStatusCode())
 					{
+						storeUserProperties(response);
 						successfullRestAuthResponseReceived();
 
 						String content = response.getText();
@@ -452,6 +460,7 @@ public class OfflineDataProxy
 					{
 						if (Response.SC_OK == response.getStatusCode())
 						{
+							storeUserProperties(response);
 							successfullRestAuthResponseReceived();
 
 							deletes.clear();
@@ -523,6 +532,7 @@ public class OfflineDataProxy
 				{
 					if (Response.SC_OK == response.getStatusCode())
 					{
+						storeUserProperties(response);
 						successfullRestAuthResponseReceived();
 
 						keys.remove(key);//remove current
@@ -601,6 +611,7 @@ public class OfflineDataProxy
 				{
 					if (Response.SC_OK == response.getStatusCode())
 					{
+						storeUserProperties(response);
 						successfullRestAuthResponseReceived();
 
 						keys.remove(key);//remove current
@@ -665,6 +676,7 @@ public class OfflineDataProxy
 				{
 					try
 					{
+						storeUserProperties(response);
 						String header = response.getHeader("Allow");
 						Log.info("options response for offlinedate.ws_update: got header response: " + header);
 						hasSingleWsUpdateMethod = (header != null && header.contains("PUT")) ? Boolean.TRUE : Boolean.FALSE;
@@ -697,11 +709,27 @@ public class OfflineDataProxy
 		this.serverURL = url;
 	}
 
+	/**
+	 * Stores the user properties comming form the request in session storage , for later setting
+	 */
+	private void storeUserProperties(Response response)
+	{
+		String jsonString = response.getHeader(WS_USER_PROPERTIES_HEADER);
+		if (jsonString != null)
+		{
+			sessionStorage.setItem(WS_USER_PROPERTIES_HEADER, jsonString);
+		}
+	}
+
 	@SuppressWarnings("nls")
 	private void setRequestParameters(RequestBuilder builder)
 	{
-		if (nodebug) builder.setHeader("servoy.nodebug", "true");
-		builder.setIncludeCredentials(true);
+		if (nodebug) builder.setHeader(WS_NODEBUG_HEADER, "true");
+		String jsonString = sessionStorage.getItem(WS_USER_PROPERTIES_HEADER);
+		if (jsonString != null)
+		{
+			builder.setHeader(WS_USER_PROPERTIES_HEADER, jsonString);
+		}
 		String[] credentialsToUse = credentials != null ? credentials : uncheckedCredentials != null ? uncheckedCredentials : null;
 		if (credentialsToUse != null)
 		{

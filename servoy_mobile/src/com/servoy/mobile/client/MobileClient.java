@@ -312,7 +312,7 @@ public class MobileClient implements EntryPoint
 						Mobile.hideLoadingDialog();
 						try
 						{
-							if (errorHandler != null)
+							if (errorHandler != null && reason.getStatusCode() != Response.SC_UNAUTHORIZED)
 							{
 								JsArrayMixed jsArray = JavaScriptObject.createArray().cast();
 								jsArray.set(0, reason.getStatusCode());
@@ -322,7 +322,7 @@ public class MobileClient implements EntryPoint
 							else
 							{
 								error(reason.getMessage());
-								if (reason.getStatusCode() != -1)
+								if (reason.getStatusCode() != -1 && reason.getStatusCode() != Response.SC_UNAUTHORIZED)
 								{
 									boolean ok = Window.confirm(getI18nMessageWithFallback("discardLocalChanges"));
 									if (ok)
@@ -387,6 +387,8 @@ public class MobileClient implements EntryPoint
 	}
 
 
+	private FormController currentFormWhenRemoteSearch = null;
+
 	/**
 	 * @param foundset
 	 * @param successCallback
@@ -396,13 +398,12 @@ public class MobileClient implements EntryPoint
 	{
 		if (flattenedSolution.getMustAuthenticate() && !offlineDataProxy.hasCredentials() && !(offlineDataProxy.hasUncheckedCredentials()))
 		{
-			final FormController currentForm = formManager.getCurrentForm();
+			currentFormWhenRemoteSearch = formManager.getCurrentForm();
 			afterLoginHandler = new IAfterLoginHandler()
 			{
 				@Override
 				public void execute()
 				{
-					if (currentForm != null) formManager.showForm(currentForm);
 					load(foundset, successCallback, errorHandler);
 				}
 			};
@@ -416,6 +417,11 @@ public class MobileClient implements EntryPoint
 				@Override
 				public void onSuccess(Integer result)
 				{
+					if (currentFormWhenRemoteSearch != null)
+					{
+						getFormManager().showForm(currentFormWhenRemoteSearch);
+						currentFormWhenRemoteSearch = null;
+					}
 					log("Done, loaded size: " + result);
 					if (successCallback != null)
 					{
@@ -454,7 +460,7 @@ public class MobileClient implements EntryPoint
 					}
 					GWT.log(detail.toString());
 					Log.error(detail.toString());
-					if (errorHandler != null)
+					if (errorHandler != null && reason.getStatusCode() != Response.SC_UNAUTHORIZED)
 					{
 						JsArrayMixed jsArray = JavaScriptObject.createArray().cast();
 						jsArray.set(0, reason.getStatusCode());
@@ -465,46 +471,39 @@ public class MobileClient implements EntryPoint
 					else
 					{
 						error(reason.getMessage());
-						if (reason.getStatusCode() != 0)
+						// if authentication failed, clear the current checked/unchecked credentials
+						if (reason.getStatusCode() == Response.SC_UNAUTHORIZED)
 						{
-							// if authentication failed, clear the current checked/unchecked credentials
-							if (reason.getStatusCode() == Response.SC_UNAUTHORIZED)
+							Log.error("unauthorized calling show login form again");
+							// for solutions that have mustAuthenticate == false - this will be a bit weird, but the server does ask for authentication it seems, and the server is leading
+							clearCredentials();
+							currentFormWhenRemoteSearch = formManager.getCurrentForm();
+							afterLoginHandler = new IAfterLoginHandler()
 							{
-								// for solutions that have mustAuthenticate == false - this will be a bit weird, but the server does ask for authentication it seems, and the server is leading
-								clearCredentials();
-								final FormController currentForm = formManager.getCurrentForm();
-								afterLoginHandler = new IAfterLoginHandler()
+								@Override
+								public void execute()
 								{
-									@Override
-									public void execute()
-									{
-										if (currentForm != null) formManager.showForm(currentForm);
-										load(foundset, successCallback, errorHandler);
-									}
-								};
-								formManager.showLogin(); // TODO we should have this available in scripting - so that the developer can use it in callback methods as well
-								// should we also make onSolutionOpen get called again after this happens - after successful re-login?
-							}
+									load(foundset, successCallback, errorHandler);
+								}
+							};
+							formManager.showLogin(); // TODO we should have this available in scripting - so that the developer can use it in callback methods as well
+							// should we also make onSolutionOpen get called again after this happens - after successful re-login?
 						}
 					}
 				}
 			});
-
 		}
-
 	}
 
 	public void load(final JavaScriptObject successCallback, final JavaScriptObject errorHandler)
 	{
 		if (flattenedSolution.getMustAuthenticate() && !offlineDataProxy.hasCredentials() && !(offlineDataProxy.hasUncheckedCredentials()))
 		{
-			final FormController currentForm = formManager.getCurrentForm();
 			afterLoginHandler = new IAfterLoginHandler()
 			{
 				@Override
 				public void execute()
 				{
-					if (currentForm != null) formManager.showForm(currentForm);
 					load(successCallback, errorHandler);
 				}
 			};
@@ -558,7 +557,7 @@ public class MobileClient implements EntryPoint
 						}
 						GWT.log(detail.toString());
 						Log.error(detail.toString());
-						if (errorHandler != null)
+						if (errorHandler != null && reason.getStatusCode() != Response.SC_UNAUTHORIZED)
 						{
 							JsArrayMixed jsArray = JavaScriptObject.createArray().cast();
 							jsArray.set(0, reason.getStatusCode());
@@ -575,13 +574,11 @@ public class MobileClient implements EntryPoint
 								{
 									// for solutions that have mustAuthenticate == false - this will be a bit weird, but the server does ask for authentication it seems, and the server is leading
 									clearCredentials();
-									final FormController currentForm = formManager.getCurrentForm();
 									afterLoginHandler = new IAfterLoginHandler()
 									{
 										@Override
 										public void execute()
 										{
-											if (currentForm != null) formManager.showForm(currentForm);
 											load(successCallback, errorHandler);
 										}
 									};
