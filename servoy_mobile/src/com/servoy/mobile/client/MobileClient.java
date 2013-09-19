@@ -334,6 +334,10 @@ public class MobileClient implements EntryPoint
 										showFirstForm();
 									}
 								}
+								else if (reason.getStatusCode() == Response.SC_UNAUTHORIZED)
+								{
+									sync(successCallback, errorHandler, false);
+								}
 								else
 								{
 									showFirstForm();
