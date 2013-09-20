@@ -1416,4 +1416,9 @@ public class FoundSetManager
 		localStorage.removeItem("user_password");
 	}
 
+	public String getUUIDPKValueAsString(int intVal)
+	{
+		return valueStore.getUUIDValue(intVal);
+	}
+
 }
