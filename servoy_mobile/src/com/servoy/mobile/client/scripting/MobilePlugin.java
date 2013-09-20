@@ -167,9 +167,9 @@ public class MobilePlugin implements Exportable
 		for (int i = 0; i < pks.length; i++)
 		{
 			Object pk = pks[i];
-			if (pk instanceof Integer)
+			if (pk instanceof Number)
 			{
-				String uuid = client.getFoundSetManager().getUUIDPKValueAsString((Integer)pk);
+				String uuid = client.getFoundSetManager().getUUIDPKValueAsString(((Number)pk).intValue());
 				if (uuid != null)
 				{
 					ret[i] = uuid;
