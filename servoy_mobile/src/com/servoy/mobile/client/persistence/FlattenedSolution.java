@@ -93,7 +93,7 @@ public class FlattenedSolution
 
 	public ValueList newValueList(String name)
 	{
-		return solution.instantiateValueList(name);
+		return solution.instantiateValueList(name, Utils.createStringUUID());
 	}
 
 	public void removeValueList(ValueList valuelist)

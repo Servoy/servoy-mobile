@@ -166,8 +166,9 @@ public class Solution extends JavaScriptObject
 		return this.valuelists[i];
 	}-*/;
 
-	public final native ValueList instantiateValueList(String name) /*-{
+	public final native ValueList instantiateValueList(String name, String uuid) /*-{
 		var vl = {};
+		vl.uuid = uuid;
 		vl.name = name;
 		vl.displayValues = [];
 		vl.realValues = [];

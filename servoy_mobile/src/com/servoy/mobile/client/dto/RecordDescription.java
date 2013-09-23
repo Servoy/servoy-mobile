@@ -44,7 +44,7 @@ public class RecordDescription extends JavaScriptObject
 		if (typeof(this.pk) == 'number')
 		{	
 			//do manual boxing
-			return new Number(this.pk);
+			return $wnd.internal.Utils.wrapIfPrimitive(this.pk);
 		}
 		return this.pk;
 	}-*/;

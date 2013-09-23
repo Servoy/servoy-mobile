@@ -322,7 +322,17 @@ public class MobileClient implements EntryPoint
 							else
 							{
 								error(reason.getMessage());
-								if (reason.getStatusCode() != -1 && reason.getStatusCode() != Response.SC_UNAUTHORIZED)
+								if (reason.getStatusCode() == -1)
+								{
+									showFirstForm();
+								}
+								else if (reason.getStatusCode() == Response.SC_UNAUTHORIZED)
+								{
+									// clear the current credentials and call sync again.
+									clearCredentials();
+									sync(successCallback, errorHandler, false);
+								}
+								else
 								{
 									boolean ok = Window.confirm(getI18nMessageWithFallback("discardLocalChanges"));
 									if (ok)
@@ -333,10 +343,6 @@ public class MobileClient implements EntryPoint
 									{
 										showFirstForm();
 									}
-								}
-								else
-								{
-									showFirstForm();
 								}
 							}
 						}
@@ -474,10 +480,9 @@ public class MobileClient implements EntryPoint
 						// if authentication failed, clear the current checked/unchecked credentials
 						if (reason.getStatusCode() == Response.SC_UNAUTHORIZED)
 						{
-							Log.error("unauthorized calling show login form again");
 							// for solutions that have mustAuthenticate == false - this will be a bit weird, but the server does ask for authentication it seems, and the server is leading
 							clearCredentials();
-							currentFormWhenRemoteSearch = formManager.getCurrentForm();
+							if (currentFormWhenRemoteSearch == null) currentFormWhenRemoteSearch = formManager.getCurrentForm();
 							afterLoginHandler = new IAfterLoginHandler()
 							{
 								@Override
