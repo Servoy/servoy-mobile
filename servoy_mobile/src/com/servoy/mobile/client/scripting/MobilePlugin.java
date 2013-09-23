@@ -160,37 +160,23 @@ public class MobilePlugin implements Exportable
 		return null;
 	}
 
-	public Object getUUIDPKValueAsString(IJSRecord record)
+	public String getUUIDPKValueAsString(IJSRecord record)
 	{
 		Object[] pks = record.getPKs();
-		String[] ret = new String[pks.length];
-		for (int i = 0; i < pks.length; i++)
+		if (pks.length > 1)
 		{
-			Object pk = pks[i];
-			if (pk instanceof Number)
-			{
-				String uuid = client.getFoundSetManager().getUUIDPKValueAsString(((Number)pk).intValue());
-				if (uuid != null)
-				{
-					ret[i] = uuid;
-				}
-				else
-				{
-					ret[i] = pk.toString();
-				}
-			}
-			else
-			{
-				ret[i] = pk.toString();
-			}
-		}
-		if (ret.length == 1)
-		{
-			return ret[0];
+			return null; // don't handle composite pk's
 		}
 		else
 		{
-			return ret;
+			if (pks[0] instanceof Number)
+			{
+				return client.getFoundSetManager().getUUIDPKValueAsString(((Number)pks[0]).intValue());
+			}
+			else
+			{
+				return null;
+			}
 		}
 	}
 }
