@@ -54,6 +54,28 @@ public class JSApplication implements Exportable, IJSApplication
 		GWT.log(output == null ? "<null>" : output.toString()); //$NON-NLS-1$
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.base.scripting.api.IJSApplication#getUserProperty(java.lang.String)
+	 */
+	@Override
+	public String getUserProperty(String name)
+	{
+		return application.getFoundSetManager().getUserProperty(name);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.servoy.base.scripting.api.IJSApplication#setUserProperty(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void setUserProperty(String name, String value)
+	{
+		application.getFoundSetManager().setUserProperty(name, value);
+	}
+
 	@Override
 	public boolean isInDeveloper()
 	{

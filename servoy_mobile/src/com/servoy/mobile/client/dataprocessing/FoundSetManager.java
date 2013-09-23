@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -64,6 +65,7 @@ public class FoundSetManager
 	private static final String ENTITIES_KEY = "_svy_entities";
 	private static final String STORAGE_VERSION_KEY = "_svy_storage_version";
 	private static final String SERVER_DATA_KEY = "|srv";
+	private static final String USER_PROPERTY_PREFIX = "_svy_user_property_";
 
 	private static final int STORAGE_VERSION = 1;
 
@@ -104,7 +106,7 @@ public class FoundSetManager
 		storage_version = Utils.getAsInteger(localStorage.getItem(STORAGE_VERSION_KEY));
 		if (storage_version != STORAGE_VERSION)
 		{
-			localStorage.clear();
+			clearLocalStorage();
 		}
 
 		loadEntitiesInMemory(null);
@@ -339,7 +341,7 @@ public class FoundSetManager
 	void storeOfflineData(OfflineDataProxy offlineDataProxy, String fsname, OfflineDataDescription offlineData)
 	{
 		//first clear existing stuff if there is any
-		clearLocalStorage();
+		clearLocalData();
 
 		HashMap<String, HashSet<Object>> entitiesToPKs = new HashMap<String, HashSet<Object>>();
 
@@ -956,12 +958,9 @@ public class FoundSetManager
 	}
 
 	//delete all local data
-	public void clearLocalStorage()
+	public void clearLocalData()
 	{
-		// do keep the credentials if set.
-		String[] credentials = getCredentials();
-		localStorage.clear();
-		if (credentials != null) storeCredentials(credentials[0], credentials[1]);
+		clearLocalStorage();
 		entities = null;
 
 		editRecordList = new EditRecordList(this);
@@ -977,6 +976,31 @@ public class FoundSetManager
 		valueStore.clearCache();
 
 		application.getFormManager().getHistory().clear();
+	}
+
+	private void clearLocalStorage()
+	{
+		// do keep the credentials if set.
+		String[] credentials = getCredentials();
+		// keep all user properties
+		Map<String, String> userProperties = new HashMap<String, String>();
+		for (int i = 0; i < localStorage.getLength(); i++)
+		{
+			String key = localStorage.key(i);
+			if (key.startsWith(USER_PROPERTY_PREFIX))
+			{
+				userProperties.put(key, localStorage.getItem(key));
+			}
+		}
+		// now clear the local store
+		localStorage.clear();
+		// restore credentials
+		if (credentials != null) storeCredentials(credentials[0], credentials[1]);
+		// restore user properties
+		for (Entry<String, String> entry : userProperties.entrySet())
+		{
+			localStorage.setItem(entry.getKey(), entry.getValue());
+		}
 	}
 
 	//from mem/obj to store
@@ -1419,6 +1443,24 @@ public class FoundSetManager
 	public String getUUIDPKValueAsString(int intVal)
 	{
 		return valueStore.getUUIDValue(intVal);
+	}
+
+	/**
+	 * @param name
+	 * @param value
+	 */
+	public void setUserProperty(String name, String value)
+	{
+		localStorage.setItem(USER_PROPERTY_PREFIX + name, value);
+	}
+
+	/**
+	 * @param name
+	 * @return
+	 */
+	public String getUserProperty(String name)
+	{
+		return localStorage.getItem(USER_PROPERTY_PREFIX + name);
 	}
 
 }
