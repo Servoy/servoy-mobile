@@ -1451,7 +1451,14 @@ public class FoundSetManager
 	 */
 	public void setUserProperty(String name, String value)
 	{
-		localStorage.setItem(USER_PROPERTY_PREFIX + name, value);
+		if (value == null)
+		{
+			localStorage.removeItem(USER_PROPERTY_PREFIX + name);
+		}
+		else
+		{
+			localStorage.setItem(USER_PROPERTY_PREFIX + name, value);
+		}
 	}
 
 	/**
