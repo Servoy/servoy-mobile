@@ -46,4 +46,3 @@ jQuery.extend(jQuery.mobile.datebox.prototype.options.lang, {
 jQuery.extend(jQuery.mobile.datebox.prototype.options, {
 	useLang: 'de'
 });
-
