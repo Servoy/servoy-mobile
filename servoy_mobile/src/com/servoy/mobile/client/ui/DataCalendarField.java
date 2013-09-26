@@ -90,10 +90,16 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 		setType(type);
 		if (!BrowserSupport.isSupportedType(type))
 		{
+			String language = "en";
+			if (application.getI18nProvider() != null && application.getI18nProvider().getLanguage() != null)
+			{
+				language = application.getI18nProvider().getLanguage();
+			}
 			input.getElement().setAttribute("data-role", "datebox");
 			input.getElement().setAttribute(
 				"data-options",
-				"{\"mode\":\"calbox\",\"useFocus\": true,\"theme\":true,\"themeHeader\":\"b\",\"themeDate\":\"b\",\"themeDatePick\":\"a\",\"themeDateToday\":\"a\",\"overrideDateFormat\":\"%Y-%m-%d\"}");
+				"{\"mode\":\"calbox\",\"useFocus\": true,\"theme\":true,\"themeHeader\":\"b\",\"themeDate\":\"b\",\"themeDatePick\":\"a\",\"themeDateToday\":\"a\",\"overrideDateFormat\":\"%Y-%m-%d\",\"useLang\":\"" +
+					language + "\"}");
 		}
 	}
 

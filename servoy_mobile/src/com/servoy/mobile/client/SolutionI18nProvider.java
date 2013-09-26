@@ -91,9 +91,8 @@ public class SolutionI18nProvider implements I18NProvider
 			if (country != null)
 			{
 				this.locale = locale + '_' + country;
-
 			}
-			else if (country == null || country.length() == 0)
+			else
 			{
 				this.locale = locale;
 			}
@@ -109,5 +108,21 @@ public class SolutionI18nProvider implements I18NProvider
 	{
 		// just look the key among exported ones, all keys are now exported
 		return getI18NMessage(I18NProvider.MOBILE_KEY_PREFIX + key);
+	}
+
+	public String getLanguage()
+	{
+		if (locale != null)
+		{
+			if (locale.contains("_"))
+			{
+				return locale.split("_")[0];
+			}
+			else
+			{
+				return locale;
+			}
+		}
+		return null;
 	}
 }
