@@ -41,7 +41,7 @@ public class Record extends Scope implements IJSRecord, IRowChangeListener
 	protected final FoundSet parent;
 	protected final RecordDescription recordDescription;
 	protected RowDescription rowDescription;
-	private final Map<String, Integer> variableTypes;
+	protected final Map<String, Integer> variableTypes;
 
 
 	//existing record
@@ -175,7 +175,7 @@ public class Record extends Scope implements IJSRecord, IRowChangeListener
 		fireModificationEvent(dataProviderID, value);
 	}
 
-	private Record getRelatedRecord(String dataProviderID, boolean create)
+	protected Record getRelatedRecord(String dataProviderID, boolean create)
 	{
 		int index = dataProviderID.indexOf('.');
 		if (index > 0) //check if is related value request
@@ -208,7 +208,7 @@ public class Record extends Scope implements IJSRecord, IRowChangeListener
 		return null;
 	}
 
-	private String getRelatedDataprovideID(String dataProviderID)
+	protected String getRelatedDataprovideID(String dataProviderID)
 	{
 		int index = dataProviderID.indexOf('.');
 		if (index > 0)

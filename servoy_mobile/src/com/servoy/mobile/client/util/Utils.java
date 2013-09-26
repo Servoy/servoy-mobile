@@ -19,6 +19,8 @@ import com.servoy.base.query.BaseCompareCondition;
 import com.servoy.base.query.BaseOrCondition;
 import com.servoy.base.query.BaseQueryColumn;
 import com.servoy.base.query.IBaseSQLCondition;
+import com.servoy.mobile.client.dataprocessing.FoundSet;
+import com.servoy.mobile.client.dataprocessing.JoinCondition;
 import com.servoy.mobile.client.dataprocessing.Record;
 import com.sksamuel.jqm4gwt.DataIcon;
 
@@ -727,6 +729,22 @@ public class Utils implements Exportable
 							conditionResult(IBaseSQLCondition.LTE_OPERATOR, recordValue, ((Object[])conditionValue)[1]);
 					}
 					return conditionResult(operator, recordValue, conditionValue);
+				}
+				return false;
+			}
+			if (condition instanceof JoinCondition)
+			{
+				JoinCondition joinCondition = (JoinCondition)condition;
+				FoundSet relatedFoundset = record.getRelatedFoundSet(joinCondition.getRelationName());
+				if (relatedFoundset != null && relatedFoundset.getSize() > 0)
+				{
+					for (int i = 0; i < relatedFoundset.getSize(); i++)
+					{
+						if (Utils.evalCondition(joinCondition.getRelatedFoundsetCondition(), relatedFoundset.getRecord(i)))
+						{
+							return true;
+						}
+					}
 				}
 				return false;
 			}

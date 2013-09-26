@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -113,32 +114,9 @@ public class OfflineDataProxy
 			for (int i = 0; i < foundset.getSize(); i++)
 			{
 				FindState fs = (FindState)foundset.getRecord(i);
-				Map<String, Object> columnData = fs.getColumnData();
+				Map<String, Object> columnData = fs.getAllData();
 				JSONObject json = new JSONObject();
-				for (Entry<String, Object> entry : columnData.entrySet())
-				{
-					Object value = entry.getValue();
-					if (value instanceof String)
-					{
-						json.put(entry.getKey(), new JSONString((String)value));
-					}
-					else if (value instanceof Number)
-					{
-						json.put(entry.getKey(), new JSONNumber(((Number)value).doubleValue()));
-					}
-					else if (value instanceof Date)
-					{
-						json.put(entry.getKey(), new JSONNumber(((Date)value).getTime()));
-					}
-					else if (value instanceof JsDate)
-					{
-						json.put(entry.getKey(), new JSONNumber(((JsDate)value).getTime()));
-					}
-					else
-					{
-						Log.error("value unknown", value.toString());
-					}
-				}
+				serializeFindState(columnData, json);
 				findstates.set(i, json);
 			}
 		}
@@ -188,6 +166,52 @@ public class OfflineDataProxy
 			loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback("cannotLoadJSON"),
 				e));
 			loadCallback = null;
+		}
+	}
+
+	private void serializeFindState(Map<String, Object> columnData, JSONObject json)
+	{
+		for (Entry<String, Object> entry : columnData.entrySet())
+		{
+			Object value = entry.getValue();
+			if (value instanceof String)
+			{
+				json.put(entry.getKey(), new JSONString((String)value));
+			}
+			else if (value instanceof Number)
+			{
+				json.put(entry.getKey(), new JSONNumber(((Number)value).doubleValue()));
+			}
+			else if (value instanceof Date)
+			{
+				json.put(entry.getKey(), new JSONNumber(((Date)value).getTime()));
+			}
+			else if (value instanceof JsDate)
+			{
+				json.put(entry.getKey(), new JSONNumber(((JsDate)value).getTime()));
+			}
+			else if (value instanceof List)
+			{
+				if (((List)value).size() > 0)
+				{
+					JSONArray relatedStates = new JSONArray();
+					json.put(entry.getKey(), relatedStates);
+					for (int j = 0; j < ((List)value).size(); j++)
+					{
+						Object relatedValues = ((List)value).get(j);
+						if (relatedValues instanceof Map)
+						{
+							JSONObject relatedJSon = new JSONObject();
+							relatedStates.set(j, relatedJSon);
+							serializeFindState((Map<String, Object>)relatedValues, relatedJSon);
+						}
+					}
+				}
+			}
+			else
+			{
+				Log.error("value unknown", value.toString());
+			}
 		}
 	}
 

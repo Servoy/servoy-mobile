@@ -17,12 +17,15 @@
 
 package com.servoy.mobile.client.dataprocessing;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import com.servoy.mobile.client.dto.EntityDescription;
+import com.servoy.mobile.client.dto.FoundSetDescription;
 import com.servoy.mobile.client.dto.RecordDescription;
 import com.servoy.mobile.client.dto.RowDescription;
-import com.servoy.mobile.client.util.Debug;
 
 /**
  * @author lvostinar
@@ -31,6 +34,7 @@ import com.servoy.mobile.client.util.Debug;
 public class FindState extends Record
 {
 	private final Map<String, Object> columndata = new HashMap<String, Object>();
+	private final Map<String, FoundSet> relatedStates = new HashMap<String, FoundSet>();
 
 	public FindState(FoundSet p, RecordDescription rd)
 	{
@@ -45,18 +49,37 @@ public class FindState extends Record
 		{
 			return jsValue;
 		}
+		if (!variableTypes.containsKey(dataProviderID))
+		{
+			Record relatedRecord = getRelatedRecord(dataProviderID, false);
+			if (relatedRecord != null)
+			{
+				return relatedRecord.getValue(getRelatedDataprovideID(dataProviderID));
+			}
+			if (dataProviderID.indexOf('.') == -1)
+			{
+				FoundSet rfs = getRelatedFoundSet(dataProviderID);
+				if (rfs != null)
+				{
+					return rfs;
+				}
+			}
+		}
 		return columndata.get(dataProviderID);
 	}
 
 	@Override
 	public void setValue(String dataProviderID, Object obj)
 	{
-		if (dataProviderID.indexOf('.') > 0)
+		Record relatedRecord = getRelatedRecord(dataProviderID, true);
+		if (relatedRecord != null)
 		{
-			Debug.error("Trying to set a related dataprovider in find state, this is not supported yet in mobile client.", null);
-			return;
+			relatedRecord.setValue(getRelatedDataprovideID(dataProviderID), obj);
 		}
-		columndata.put(dataProviderID, obj);
+		else
+		{
+			columndata.put(dataProviderID, obj);
+		}
 	}
 
 	@Override
@@ -68,7 +91,22 @@ public class FindState extends Record
 	@Override
 	public FoundSet getRelatedFoundSet(String relationName)
 	{
-		// related search not supported
+		if (relationName != null)
+		{
+			if (relatedStates.containsKey(relationName))
+			{
+				return relatedStates.get(relationName);
+			}
+			EntityDescription entityDescription = getFoundset().getFoundSetManager().getRelatedEntityDescription(getFoundset().getEntityName(), relationName);
+			if (entityDescription != null)
+			{
+				FoundSet relatedFoundset = new RelatedFoundSet(getFoundset().getFoundSetManager(), this, FoundSetDescription.newInstance(
+					entityDescription.getEntityName(), relationName, null), relationName);
+				relatedFoundset.setFindMode();
+				relatedStates.put(relationName, relatedFoundset);
+				return relatedFoundset;
+			}
+		}
 		return null;
 	}
 
@@ -104,6 +142,41 @@ public class FindState extends Record
 	public Map<String, Object> getColumnData()
 	{
 		return columndata;
+	}
+
+	public Map<String, Object> getAllData()
+	{
+		Map<String, Object> data = new HashMap<String, Object>(columndata);
+		if (relatedStates.size() > 0)
+		{
+			for (String relationName : relatedStates.keySet())
+			{
+				FoundSet relatedFoundset = relatedStates.get(relationName);
+				if (relatedFoundset != null && relatedFoundset.getSize() > 0)
+				{
+					List<Map<String, Object>> relatedRecordsList = new ArrayList<Map<String, Object>>();
+					for (int i = 0; i < relatedFoundset.getSize(); i++)
+					{
+						FindState relatedFindState = (FindState)relatedFoundset.getRecord(i);
+						if (relatedFindState != null)
+						{
+							Map<String, Object> relatedFindStateData = relatedFindState.getAllData();
+							if (relatedFindStateData != null && relatedFindStateData.size() > 0)
+							{
+								relatedRecordsList.add(relatedFindStateData);
+							}
+						}
+					}
+					data.put(relationName, relatedRecordsList);
+				}
+			}
+		}
+		return data;
+	}
+
+	public Map<String, FoundSet> getRelatedStates()
+	{
+		return relatedStates;
 	}
 
 }

@@ -279,7 +279,42 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 	{
 		if (isInFind())
 		{
-			IBaseSQLCondition moreWhere = null;
+			IBaseSQLCondition moreWhere = getSearchCondition();
+			if (moreWhere != null)
+			{
+				List<Record> result = new ArrayList<Record>();
+				for (int i = 0; i < foundSetDescription.getRecords().length(); i++)
+				{
+					RecordDescription rd = foundSetDescription.getRecords().get(i);
+					if (rd != null)
+					{
+						Record rec = new Record(this, rd);
+						if (Utils.evalCondition(moreWhere, rec))
+						{
+							result.add(rec);
+						}
+					}
+				}
+				filteredFoundset = true;
+				cancelFindMode();
+				records.addAll(result);
+				fireContentChanged();
+				return result.size();
+			}
+			else
+			{
+				cancelFindMode();
+				fireContentChanged();
+			}
+		}
+		return 0;
+	}
+
+	IBaseSQLCondition getSearchCondition()
+	{
+		IBaseSQLCondition moreWhere = null;
+		if (isInFind())
+		{
 			BaseQueryTable table = new BaseQueryTable(getEntityName(), null, null, null);
 			for (Record record : records)
 			{
@@ -366,39 +401,26 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 						}, null, Debug.LOGGER);
 						and1 = BaseAndCondition.and(and1, and2);
 					}
+					Map<String, FoundSet> relatedStates = state.getRelatedStates();
+					for (String relationName : relatedStates.keySet())
+					{
+						FoundSet relatedFoundset = relatedStates.get(relationName);
+						if (relatedFoundset != null)
+						{
+							IBaseSQLCondition relatedFoundsetCondition = relatedFoundset.getSearchCondition();
+							if (relatedFoundsetCondition != null)
+							{
+								and2 = new JoinCondition(relationName, relatedFoundsetCondition);
+								and1 = BaseAndCondition.and(and1, and2);
+							}
+						}
+					}
 					moreWhere = BaseOrCondition.or(moreWhere, and1);
 				}
 			}
-			if (moreWhere != null)
-			{
-				List<Record> result = new ArrayList<Record>();
-				for (int i = 0; i < foundSetDescription.getRecords().length(); i++)
-				{
-					RecordDescription rd = foundSetDescription.getRecords().get(i);
-					if (rd != null)
-					{
-						Record rec = new Record(this, rd);
-						if (Utils.evalCondition(moreWhere, rec))
-						{
-							result.add(rec);
-						}
-					}
-				}
-				filteredFoundset = true;
-				cancelFindMode();
-				records.addAll(result);
-				fireContentChanged();
-				return result.size();
-			}
-			else
-			{
-				cancelFindMode();
-				fireContentChanged();
-			}
 		}
-		return 0;
+		return moreWhere;
 	}
-
 
 	/*
 	 * @see com.servoy.j2db.scripting.api.IJSFoundSet#sort(java.lang.Object)
