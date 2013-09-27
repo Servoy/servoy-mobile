@@ -410,7 +410,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 							IBaseSQLCondition relatedFoundsetCondition = relatedFoundset.getSearchCondition();
 							if (relatedFoundsetCondition != null)
 							{
-								and2 = new JoinCondition(relationName, relatedFoundsetCondition);
+								and2 = new RelatedFindCondition(relationName, relatedFoundsetCondition);
 								and1 = BaseAndCondition.and(and1, and2);
 							}
 						}

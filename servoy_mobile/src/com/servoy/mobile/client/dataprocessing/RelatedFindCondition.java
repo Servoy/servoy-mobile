@@ -23,12 +23,12 @@ import com.servoy.base.query.IBaseSQLCondition;
  * @author lvostinar
  *
  */
-public class JoinCondition implements IBaseSQLCondition
+public class RelatedFindCondition implements IBaseSQLCondition
 {
 	private final IBaseSQLCondition relatedFoundsetCondition;
 	private final String relationName;
 
-	public JoinCondition(String relationName, IBaseSQLCondition relatedFoundsetCondition)
+	public RelatedFindCondition(String relationName, IBaseSQLCondition relatedFoundsetCondition)
 	{
 		this.relationName = relationName;
 		this.relatedFoundsetCondition = relatedFoundsetCondition;

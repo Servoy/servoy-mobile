@@ -20,7 +20,7 @@ import com.servoy.base.query.BaseOrCondition;
 import com.servoy.base.query.BaseQueryColumn;
 import com.servoy.base.query.IBaseSQLCondition;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
-import com.servoy.mobile.client.dataprocessing.JoinCondition;
+import com.servoy.mobile.client.dataprocessing.RelatedFindCondition;
 import com.servoy.mobile.client.dataprocessing.Record;
 import com.sksamuel.jqm4gwt.DataIcon;
 
@@ -732,9 +732,9 @@ public class Utils implements Exportable
 				}
 				return false;
 			}
-			if (condition instanceof JoinCondition)
+			if (condition instanceof RelatedFindCondition)
 			{
-				JoinCondition joinCondition = (JoinCondition)condition;
+				RelatedFindCondition joinCondition = (RelatedFindCondition)condition;
 				FoundSet relatedFoundset = record.getRelatedFoundSet(joinCondition.getRelationName());
 				if (relatedFoundset != null && relatedFoundset.getSize() > 0)
 				{
