@@ -26,6 +26,7 @@ import com.servoy.mobile.client.dto.EntityDescription;
 import com.servoy.mobile.client.dto.FoundSetDescription;
 import com.servoy.mobile.client.dto.RecordDescription;
 import com.servoy.mobile.client.dto.RowDescription;
+import com.servoy.mobile.client.util.Debug;
 
 /**
  * @author lvostinar
@@ -71,14 +72,21 @@ public class FindState extends Record
 	@Override
 	public void setValue(String dataProviderID, Object obj)
 	{
-		Record relatedRecord = getRelatedRecord(dataProviderID, true);
-		if (relatedRecord != null)
+		if (variableTypes.containsKey(dataProviderID))
 		{
-			relatedRecord.setValue(getRelatedDataprovideID(dataProviderID), obj);
+			columndata.put(dataProviderID, obj);
 		}
 		else
 		{
-			columndata.put(dataProviderID, obj);
+			Record relatedRecord = getRelatedRecord(dataProviderID, true);
+			if (relatedRecord != null)
+			{
+				relatedRecord.setValue(getRelatedDataprovideID(dataProviderID), obj);
+			}
+			else
+			{
+				Debug.log("Ignoring unknown data provider '" + dataProviderID + "' in find mode");
+			}
 		}
 	}
 
