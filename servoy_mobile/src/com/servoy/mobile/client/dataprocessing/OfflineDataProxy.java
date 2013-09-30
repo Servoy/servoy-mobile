@@ -759,6 +759,11 @@ public class OfflineDataProxy
 		{
 			try
 			{
+// TODO check should we also set these? so the system knows we did set them?
+//				builder.setUser(credentialsToUse[0]);
+//				builder.setPassword(credentialsToUse[1]);
+// Maybe also set this one, and then don't set the header below, problem is that chrome has a bug: https://code.google.com/p/chromium/issues/detail?id=31582
+//				builder.setIncludeCredentials(true);
 				builder.setHeader("Authorization",
 					"Basic " + new String(Base64Coder.encode((credentialsToUse[0] + ":" + credentialsToUse[1]).getBytes("UTF-8"))));
 			}
