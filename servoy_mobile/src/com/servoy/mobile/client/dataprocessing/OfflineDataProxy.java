@@ -733,6 +733,11 @@ public class OfflineDataProxy
 		this.serverURL = url;
 	}
 
+	public String getServerURL()
+	{
+		return serverURL;
+	}
+
 	/**
 	 * Stores the user properties comming form the request in session storage , for later setting
 	 */
