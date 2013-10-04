@@ -37,9 +37,9 @@ public interface ITestSuiteControllerAsync
 
 	void setFlattenedTestTree(String[] testTree, AsyncCallback<Void> callback);
 
-	void addError(String testName, String[] throwableStack, int reqSequenceNo, AsyncCallback<Void> callback);
+	void addError(String testName, String[][] throwableStack, int reqSequenceNo, AsyncCallback<Void> callback);
 
-	void addFailure(String testName, String[] throwableStack, int reqSequenceNo, AsyncCallback<Void> callback);
+	void addFailure(String testName, String[][] throwableStack, int reqSequenceNo, AsyncCallback<Void> callback);
 
 	void startTest(String testName, int reqSequenceNo, AsyncCallback<Void> callback);
 

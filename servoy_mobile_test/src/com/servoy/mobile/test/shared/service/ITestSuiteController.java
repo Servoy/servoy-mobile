@@ -63,13 +63,13 @@ public interface ITestSuiteController extends RemoteService
 	 * @param reqSequenceNo as calls to methods in this interface can come through multiple threads async, this param. allows the client to specify the sequence in which calls will be processed.
 	 * (useful when calls happen via browser AJAX async requests...) The first sequenceNumber that will be handled is 0, followed by 1, 2, ... .
 	 */
-	void addError(String testName, String[] throwableStack, int reqSequenceNo);
+	void addError(String testName, String[][] throwableStack, int reqSequenceNo);
 
 	/**
 	 * @param reqSequenceNo as calls to methods in this interface can come through multiple threads async, this param. allows the client to specify the sequence in which calls will be processed.
 	 * (useful when calls happen via browser AJAX async requests...) The first sequenceNumber that will be handled is 0, followed by 1, 2, ... .
 	 */
-	void addFailure(String testName, String[] throwableStack, int reqSequenceNo);
+	void addFailure(String testName, String[][] throwableStack, int reqSequenceNo);
 
 	/**
 	 * @param reqSequenceNo as calls to methods in this interface can come through multiple threads async, this param. allows the client to specify the sequence in which calls will be processed.

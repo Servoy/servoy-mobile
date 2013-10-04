@@ -61,32 +61,46 @@ public class JSUnitTestListenerHandler
 		return test == null ? "null" : test.getName();
 	}-*/;
 
-	private String[] getThrowableStack(JavaScriptObject throwable)
+	private String[][] getThrowableStack(JavaScriptObject throwable)
+	{
+		JsArrayString ts = getJSUnitStackInternal(throwable);
+		JsArrayString ds = getDetailedStackInternal(throwable);
+
+		return new String[][] { translateStringArray(ts), translateStringArray(ds) };
+	}
+
+	private String[] translateStringArray(JsArrayString stringArray)
 	{
 		String[] result = null;
-		JsArrayString ts = getThrowableStackInternal(throwable);
-
-		if (ts != null)
+		if (stringArray != null)
 		{
-			result = new String[ts.length()];
-			for (int i = 0; i < ts.length(); i++)
+			result = new String[stringArray.length()];
+			for (int i = 0; i < stringArray.length(); i++)
 			{
-				result[i] = ts.get(i);
+				result[i] = stringArray.get(i);
 			}
 		}
 		return result;
 	}
 
-	private native JsArrayString getThrowableStackInternal(JavaScriptObject throwable)
+	private native JsArrayString getDetailedStackInternal(JavaScriptObject throwable)
 	/*-{
 		try {
 			throw "";
 		} catch (e) {
 		}
+		if (throwable != null && typeof (throwable.stack) != 'undefined'
+				&& throwable.stack != null)
+			return throwable.stack.split(/\r\n|\n|\r/);
+	}-*/;
+
+	private native JsArrayString getJSUnitStackInternal(JavaScriptObject throwable)
+	/*-{
 		if (throwable != null) {
 			if (throwable.mCallStack != null) {
 				var stack = throwable.mCallStack.getStack();
-				if (stack != null) stack.unshift(throwable.toString());
+				if (stack != null)
+					stack.unshift(throwable.toString());
 				return stack == null ? [ throwable.toString() ] : stack;
 			} else {
 				return [ '' + throwable ];
