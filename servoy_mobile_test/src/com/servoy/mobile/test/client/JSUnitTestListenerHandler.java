@@ -85,13 +85,12 @@ public class JSUnitTestListenerHandler
 
 	private native JsArrayString getDetailedStackInternal(JavaScriptObject throwable)
 	/*-{
-		try {
-			throw "";
-		} catch (e) {
-		}
+		var detailedStack = null;
 		if (throwable != null && typeof (throwable.stack) != 'undefined'
-				&& throwable.stack != null)
-			return throwable.stack.split(/\r\n|\n|\r/);
+				&& throwable.stack != null) {
+			detailedStack = throwable.stack.split(/\r\n|\n|\r/);
+		}
+		return detailedStack;
 	}-*/;
 
 	private native JsArrayString getJSUnitStackInternal(JavaScriptObject throwable)
