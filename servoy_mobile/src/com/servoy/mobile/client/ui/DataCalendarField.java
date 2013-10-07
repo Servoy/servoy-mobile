@@ -40,18 +40,23 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 {
 	private RuntimeDataCalenderField scriptable;
 
-	private final String type;
-	private final String format;
+	private String type;
+	private String format;
 
 	public DataCalendarField(Field field, Executor executor, MobileClient application)
 	{
 		this.scriptable = new RuntimeDataCalenderField(application, executor, this, field);
 
 		String frmt = field.getFormat();
+		String[] dateFrmt = new String[2];
+		String[] timeFrmt = new String[2];
+		boolean hasDate = frmt != null && (frmt.indexOf('y') != -1 || frmt.indexOf('M') != -1 || frmt.indexOf('d') != -1);
+		boolean hasTime = frmt != null &&
+			(frmt.indexOf('h') != -1 || frmt.indexOf('H') != -1 || frmt.indexOf('k') != -1 || frmt.indexOf('K') != -1 || frmt.indexOf('m') != -1);
 		if (frmt == null)
 		{
 			// if no format is given, set the type just date and get the format based on if the native dates are used or not. 
-			this.type = "date"; //$NON-NLS-1$
+			this.type = "text"; //$NON-NLS-1$
 			if (BrowserSupport.isSupportedType(type))
 			{
 				this.format = "yyyy-MM-dd"; //$NON-NLS-1$
@@ -64,48 +69,187 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 		}
 		else
 		{
-			boolean hasDate = frmt.indexOf('y') != -1 || frmt.indexOf('M') != -1 || frmt.indexOf('d') != -1;
-			boolean hasTime = frmt.indexOf('h') != -1 || frmt.indexOf('H') != -1 || frmt.indexOf('k') != -1 || frmt.indexOf('K') != -1 ||
-				frmt.indexOf('m') != -1;
 			if (hasDate && hasTime)
 			{
-				this.type = "datetime-local"; //$NON-NLS-1$
+				this.type = "adatetime-local"; //$NON-NLS-1$
 				if (BrowserSupport.isSupportedType(type)) this.format = "yyyy-MM-dd'T'HH:mm"; //$NON-NLS-1$
-				else this.format = "yyyy-MM-dd";//frmt;
+				else
+				{
+					dateFrmt = convertFormatToJQMDate(frmt);
+					String format = dateFrmt[0].replaceAll("%Y", "yyyy"); // year
+					format = format.replaceAll("%m", "MM");
+					format = format.replaceAll("%d", "dd");
+					this.format = format;
+				}
 			}
 			else if (hasTime)
 			{
-				this.type = "time"; //$NON-NLS-1$
+				this.type = "atime"; //$NON-NLS-1$
 				if (BrowserSupport.isSupportedType(type)) this.format = "HH:mm"; //$NON-NLS-1$
-				else this.format = "yyyy-MM-dd";//frmt;
+				else
+				{
+					timeFrmt = convertFormatToJQMTime(frmt);
+					String format = timeFrmt[0].replaceAll("%k", "HH");
+					format = format.replaceAll("%l", "KK");
+					format = format.replaceAll("%M", "mm");
+					format = format.replaceAll("%p", "a");
+					this.format = format;
+				}
 			}
 			else
 			{
-				this.type = "date"; //$NON-NLS-1$
+				this.type = "adate"; //$NON-NLS-1$
 				if (BrowserSupport.isSupportedType(type)) this.format = "yyyy-MM-dd"; //$NON-NLS-1$
-				else this.format = "yyyy-MM-dd";//frmt;
+				else
+				{
+					dateFrmt = convertFormatToJQMDate(frmt);
+					String format = dateFrmt[0].replaceAll("%Y", "yyyy"); // year
+					format = format.replaceAll("%m", "MM");
+					format = format.replaceAll("%d", "dd");
+					this.format = format;
+				}
 			}
 
 		}
 		setType(type);
-		if (!BrowserSupport.isSupportedType(type))
+		if (true)//!BrowserSupport.isSupportedType(type))
 		{
 			String language = "en";
 			if (application.getI18nProvider() != null && application.getI18nProvider().getLanguage() != null)
 			{
 				language = application.getI18nProvider().getLanguage();
 			}
+
+			String themeStr = "\"theme\":true,\"themeHeader\":\"b\",\"themeDate\":\"b\",\"themeDatePick\":\"a\",\"themeDateToday\":\"a\",\"themeButton\":\"b\",\"themeInput\":\"b\"";
+			String mode = "calbox";
+			String timeFormat = "";
+			String dateFormat = "";
+			if (hasDate && (frmt.indexOf('d') != -1))
+			{
+				mode = "calbox";
+				dateFormat = ",\"overrideDateFieldOrder\":" + dateFrmt[1] + ",\"overrideDateFormat\":\"" + dateFrmt[0];
+			}
+			else
+			{
+				mode = "timebox";
+				timeFormat = "";
+				if (frmt.indexOf('k') != -1 || frmt.indexOf('h') != -1)
+				{
+					timeFormat = ",\"overrideTimeFormat\":12,";
+				}
+				else
+				{
+					timeFormat = ",\"overrideTimeFormat\":24,";
+				}
+				timeFormat = timeFormat + "\"overrideTimeOutput\":\"" + timeFrmt[0] + "\", \"overrideTimeFieldOrder\":" + timeFrmt[1];
+			}
+			String modeStr = "\"mode\":\"" + mode + "\""; // datebox
 			input.getElement().setAttribute("data-role", "datebox");
-			input.getElement().setAttribute(
-				"data-options",
-				"{\"mode\":\"calbox\",\"useFocus\": true,\"theme\":true,\"themeHeader\":\"b\",\"themeDate\":\"b\",\"themeDatePick\":\"a\",\"themeDateToday\":\"a\",\"overrideDateFormat\":\"%Y-%m-%d\",\"useLang\":\"" +
-					language + "\"}");
+			input.getElement().setAttribute("data-options",
+				"{" + modeStr + ",\"useFocus\": true," + themeStr + ",\"useLang\":\"" + language + "\"" + timeFormat + dateFormat + "}");
 		}
 	}
 
 	public String getFormat()
 	{
 		return format;
+	}
+
+	/**
+	 * json members values for jqm datepicker initialization params
+	 *  [0] overrideDateFormat 
+	 *  [1] overrideDateFieldOrder
+	 * @param frmt
+	 * @return 
+	 */
+	private String[] convertFormatToJQMDate(String frmt)
+	{
+		String jqmFormat = frmt.replaceAll("y+", "%Y"); // year
+		jqmFormat = jqmFormat.replaceAll("m+", "%i"); // minutes
+		jqmFormat = jqmFormat.replaceAll("M+", "%m"); // month
+		jqmFormat = jqmFormat.replaceAll("d+", "%d"); // day
+		jqmFormat = jqmFormat.replaceAll("a+", "AM"); // resolve am pm 
+		String overwriteFormat = jqmFormat.replaceAll("s+", "%a"); // second
+		String threeTermsRegex = ".*?(%Y|%m|%d)(.*?)(%Y|%m|%d)(.*?)(%Y|%m|%d).*";
+		String twoTermsRegex = ".*?(%Y|%m|%d)(.*?)(%Y|%m|%d).*";
+		String oneTermRegex = ".*?(%Y|%m|%d).*";
+
+		int count = 0;
+		int year = frmt.indexOf('y');
+		int month = frmt.indexOf('M');
+		int day = frmt.indexOf('d');
+
+		if (year != -1) count++;
+		if (month != -1) count++;
+		if (day != -1) count++;
+		String[] ret = new String[2];
+		if (count == 1)
+		{
+			ret[0] = overwriteFormat.replaceAll(oneTermRegex, "$1");
+			String[] s = overwriteFormat.replaceAll(oneTermRegex, "$1").replaceAll("%", "").toLowerCase().split("\\s");
+			ret[1] = "[\"" + s[0] + "\"]";
+			return ret;
+		}
+		else if (count == 2)
+		{
+			ret[0] = overwriteFormat.replaceAll(twoTermsRegex, "$1$2$3");
+			String[] s = overwriteFormat.replaceAll(twoTermsRegex, "$1 $3").replaceAll("%", "").toLowerCase().split("\\s");
+			ret[1] = "[\"" + s[0] + "\" , \"" + s[1] + "\"]";
+			return ret;
+		}
+		else if (count == 3)
+		{
+			ret[0] = overwriteFormat.replaceAll(threeTermsRegex, "$1$2$3$4$5");
+			String[] s = overwriteFormat.replaceAll(threeTermsRegex, "$1 $3 $5").replaceAll("%", "").toLowerCase().split("\\s");
+			ret[1] = "[\"" + s[0] + "\" , \"" + s[1] + "\", \"" + s[2] + "\"]";
+			return ret;
+		}
+		ret[0] = "yyyy-MM-dd";
+		ret[1] = "[\"y\" , \"m\", \"d\"]";
+		return ret;
+	}
+
+	/**
+	 *  [0] overrideTimeOutput
+	 *  [1] overrideTimeFieldOrder
+	 *  
+	 * @param frmt
+	 * @return
+	 */
+	private String[] convertFormatToJQMTime(String frmt)
+	{
+		int time12 = frmt.indexOf('h');
+		if (time12 == -1) time12 = frmt.indexOf('K');
+		int amPmMarker = frmt.indexOf('a');
+
+		String hourChar = "%k";
+		if (time12 != -1) hourChar = "%l";
+		String overrideFormat = frmt.replaceAll("[HkhK]+", hourChar);
+		overrideFormat = overrideFormat.replaceAll("[m]+", "%M");
+		//jqmFormat = jqmFormat.replaceAll("[s]+", "%s");
+		overrideFormat = overrideFormat.replaceAll("[a]+", "%p"); // am pm marker
+
+		if (amPmMarker != -1)
+		{
+			String threeTermsRegex = ".*?(%k|%l|%M)(.*?)(%k|%l|%M)(.*?)(%p).*";
+			String[] ret = new String[2];
+			ret[0] = overrideFormat.replaceAll(threeTermsRegex, "$1$2$3$4$5");
+			String[] s = overrideFormat.replaceAll(threeTermsRegex, "$1 $3 $5").replaceAll("%k", "h").replaceAll("%l", "h").replaceAll("%M", "i").replaceAll(
+				"%p", "a").split("\\s");
+			ret[1] = "[\"" + s[0] + "\" , \"" + s[1] + "\", \"" + s[2] + "\"]";
+			return ret;
+		}
+		else
+		{
+			String threeTermsRegex = ".*?(%k|%l|%M)(.*?)(%k|%l|%M)(.*?).*";
+			String[] ret = new String[2];
+			ret[0] = overrideFormat.replaceAll(threeTermsRegex, "$1$2$3$4");
+			String[] s = overrideFormat.replaceAll(threeTermsRegex, "$1 $3").replaceAll("%k", "h").replaceAll("%l", "h").replaceAll("%M", "i").split("\\s");
+			ret[1] = "[\"" + s[0] + "\" , \"" + s[1] + "\"]";
+			return ret;
+		}
+
+		//	return null;
 	}
 
 	/*
