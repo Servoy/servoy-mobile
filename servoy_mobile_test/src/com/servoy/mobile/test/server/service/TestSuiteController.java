@@ -184,11 +184,13 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 			int detailedIndexDelta = 0; // correlate jsunit stack elements with detailed stack elements if available
 			if (detailedStack != null)
 			{
-				for (int i = 1; i < jsUnitStack.length; i++)
+				boolean foundServoyMethod = false;
+				for (int i = 1; i < jsUnitStack.length && (!foundServoyMethod); i++)
 				{
 					String functionName = jsUnitStack[i];
 					if (functionName.contains(SCOPE_NAME_SEPARATOR))
 					{
+						foundServoyMethod = true;
 						Integer didI = computeDetailedIndexDelta(functionName.substring(0, functionName.length() - 2), i, detailedStack); // drop the extra "()" in function name
 						if (didI == null)
 						{
@@ -196,8 +198,13 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 							detailedStack = null;
 						}
 						else detailedIndexDelta = didI.intValue();
-						i = jsUnitStack.length; // break nicely
 					}
+				}
+
+				if (!foundServoyMethod)
+				{
+					log.warn("Cannot use native stack for line numbers... No servoy method detected in stack."); //$NON-NLS-1$
+					detailedStack = null;
 				}
 			}
 
