@@ -63,11 +63,18 @@ public class JSUnitTestListenerHandler
 
 	private String[][] getThrowableStack(JavaScriptObject throwable)
 	{
-		JsArrayString ts = getJSUnitStackInternal(throwable);
-		JsArrayString ds = getDetailedStackInternal(throwable);
+		JavaScriptObject t = getRealError(throwable);
+		JsArrayString ts = getJSUnitStackInternal(t);
+		JsArrayString ds = getDetailedStackInternal(t);
 
 		return new String[][] { translateStringArray(ts), translateStringArray(ds) };
 	}
+
+	private native JavaScriptObject getRealError(JavaScriptObject throwable)
+	/*-{
+		return (throwable != null && throwable.mException != null) ? throwable.mException
+				: throwable; // in case of a real error in tests we recieve here a wrapper around the real error - TestFailure
+	}-*/;
 
 	private String[] translateStringArray(JsArrayString stringArray)
 	{
