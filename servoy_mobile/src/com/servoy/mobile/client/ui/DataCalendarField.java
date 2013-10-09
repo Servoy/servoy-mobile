@@ -71,7 +71,7 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 		{
 			if (hasDate && hasTime)
 			{
-				this.type = "adatetime-local"; //$NON-NLS-1$
+				this.type = "datetime-local"; //$NON-NLS-1$
 				if (BrowserSupport.isSupportedType(type)) this.format = "yyyy-MM-dd'T'HH:mm"; //$NON-NLS-1$
 				else
 				{
@@ -84,7 +84,7 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 			}
 			else if (hasTime)
 			{
-				this.type = "atime"; //$NON-NLS-1$
+				this.type = "time"; //$NON-NLS-1$
 				if (BrowserSupport.isSupportedType(type)) this.format = "HH:mm"; //$NON-NLS-1$
 				else
 				{
@@ -98,7 +98,7 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 			}
 			else
 			{
-				this.type = "adate"; //$NON-NLS-1$
+				this.type = "date"; //$NON-NLS-1$
 				if (BrowserSupport.isSupportedType(type)) this.format = "yyyy-MM-dd"; //$NON-NLS-1$
 				else
 				{
@@ -112,7 +112,7 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 
 		}
 		setType(type);
-		if (true)//!BrowserSupport.isSupportedType(type))
+		if (!BrowserSupport.isSupportedType(type))
 		{
 			String language = "en";
 			if (application.getI18nProvider() != null && application.getI18nProvider().getLanguage() != null)
