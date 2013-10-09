@@ -62,7 +62,9 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 		}
 		else
 		{
-			items.add(new DataCheckboxSetItem(addCheck(field.getUUID(), field.getText()), null));
+			JQMCheckbox cb = new JQMCheckbox(field.getUUID(), field.getText());
+			addCheckbox(cb);
+			items.add(new DataCheckboxSetItem(cb, null));
 		}
 	}
 
@@ -75,11 +77,13 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 		JsArrayString displayValues = valuelist.getDiplayValues(scriptable.getApplication().getI18nProvider());
 		JsArrayMixed realValues = valuelist.hasRealValues() ? valuelist.getRealValues() : null;
 		String displayValue;
+		JQMCheckbox cb;
 		for (int i = 0; i < displayValues.length(); i++)
 		{
 			displayValue = displayValues.get(i);
-			items.add(new DataCheckboxSetItem(addCheck(scriptable.getComponentPersist().getUUID() + Integer.toString(i), displayValue), realValues != null
-				? realValues.getString(i) : displayValue));
+			cb = new JQMCheckbox(scriptable.getComponentPersist().getUUID() + Integer.toString(i), displayValue);
+			addCheckbox(cb);
+			items.add(new DataCheckboxSetItem(cb, realValues != null ? realValues.getString(i) : displayValue));
 		}
 	}
 
@@ -139,7 +143,7 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 			int checksSize = items.size();
 			for (int i = 0; i < checksSize; i++)
 			{
-				if (items.get(i).checkbox.isSelected())
+				if (items.get(i).checkbox.isChecked())
 				{
 					if (value.length() > 0) value.append('\n');
 					value.append(items.get(i).realValue);
@@ -149,7 +153,7 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 		}
 		else
 		{
-			return Integer.valueOf(items.get(0).checkbox.isSelected() ? 1 : 0);
+			return Integer.valueOf(items.get(0).checkbox.isChecked() ? 1 : 0);
 		}
 	}
 
