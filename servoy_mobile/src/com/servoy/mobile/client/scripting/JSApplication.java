@@ -66,6 +66,12 @@ public class JSApplication implements Exportable, IJSApplication
 		application.setApplicationServerURL(applicationServerURL);
 	}
 
+	@Override
+	public String getServerURL()
+	{
+		return application.getApplicationServerURL();
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

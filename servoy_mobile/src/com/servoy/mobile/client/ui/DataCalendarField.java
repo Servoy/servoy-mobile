@@ -21,7 +21,6 @@ import java.util.Date;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.i18n.shared.DateTimeFormat;
-import com.google.gwt.i18n.shared.DateTimeFormat.PredefinedFormat;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
@@ -60,7 +59,7 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 			else
 			{
 				// no native date then just get the default date_medium pattern.
-				this.format = DateTimeFormat.getFormat(PredefinedFormat.DATE_MEDIUM).getPattern();
+				this.format = "yyyy-MM-dd";//DateTimeFormat.getFormat(PredefinedFormat.DATE_MEDIUM).getPattern();
 			}
 		}
 		else
@@ -72,23 +71,36 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 			{
 				this.type = "datetime-local"; //$NON-NLS-1$
 				if (BrowserSupport.isSupportedType(type)) this.format = "yyyy-MM-dd'T'HH:mm"; //$NON-NLS-1$
-				else this.format = frmt;
+				else this.format = "yyyy-MM-dd";//frmt;
 			}
 			else if (hasTime)
 			{
 				this.type = "time"; //$NON-NLS-1$
 				if (BrowserSupport.isSupportedType(type)) this.format = "HH:mm"; //$NON-NLS-1$
-				else this.format = frmt;
+				else this.format = "yyyy-MM-dd";//frmt;
 			}
 			else
 			{
 				this.type = "date"; //$NON-NLS-1$
 				if (BrowserSupport.isSupportedType(type)) this.format = "yyyy-MM-dd"; //$NON-NLS-1$
-				else this.format = frmt;
+				else this.format = "yyyy-MM-dd";//frmt;
 			}
 
 		}
 		setType(type);
+		if (!BrowserSupport.isSupportedType(type))
+		{
+			String language = "en";
+			if (application.getI18nProvider() != null && application.getI18nProvider().getLanguage() != null)
+			{
+				language = application.getI18nProvider().getLanguage();
+			}
+			input.getElement().setAttribute("data-role", "datebox");
+			input.getElement().setAttribute(
+				"data-options",
+				"{\"mode\":\"calbox\",\"useFocus\": true,\"theme\":true,\"themeHeader\":\"b\",\"themeDate\":\"b\",\"themeDatePick\":\"a\",\"themeDateToday\":\"a\",\"overrideDateFormat\":\"%Y-%m-%d\",\"useLang\":\"" +
+					language + "\"}");
+		}
 	}
 
 	public String getFormat()
@@ -122,10 +134,6 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 			DateTimeFormat dtf = DateTimeFormat.getFormat(getFormat());
 			String parsed = dtf.format((Date)data);
 			setValue(parsed);
-			if (!BrowserSupport.isSupportedType(type))
-			{
-				setDate(((Date)data).getTime());
-			}
 		}
 		else
 		{
@@ -135,6 +143,7 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 
 	private EditProvider editProvider;
 	private HandlerRegistration editBlurHandler;
+	private HandlerRegistration editChangeHandler;
 
 	/*
 	 * @see com.servoy.mobile.client.dataprocessing.IEditListenerSubject#addEditListener(com.servoy.mobile.client.dataprocessing.IEditListener)
@@ -147,6 +156,7 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 			editProvider = new EditProvider(this);
 			editProvider.addEditListener(editListener);
 			editBlurHandler = addBlurHandler(editProvider);
+			editChangeHandler = addChangeHandler(editProvider);
 		}
 	}
 
@@ -207,24 +217,7 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 	{
 		super.onLoad();
 		setPlaceholder(getId(), scriptable.getApplication().getI18nProvider().getI18NMessageIfPrefixed(getRuntimeComponent().getPlaceholderText()));
-		if (!BrowserSupport.isSupportedType(type))
-		{
-			init(getId(), getFormat().toLowerCase()); // java format maps through lowercase
-		}
 	}
-
-	private native void init(String inputId, String format)
-	/*-{
-		this.picker = $wnd.$("#" + inputId).pickadate({
-			format : format
-		}).pickadate('picker');
-	}-*/;
-
-	private native void setDate(double date)
-	/*-{
-		this.picker.set("select", date)
-		this.picker.set('highlight', date)
-	}-*/;
 
 	private native void setPlaceholder(String inputId, String placeholder) /*-{
 		if (placeholder != null) {
@@ -255,6 +248,11 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 		{
 			editBlurHandler.removeHandler();
 			editBlurHandler = null;
+		}
+		if (editChangeHandler != null)
+		{
+			editChangeHandler.removeHandler();
+			editChangeHandler = null;
 		}
 	}
 }

@@ -215,6 +215,7 @@ public class MobileClient implements EntryPoint
 		offlineDataProxy.setServerURL(appendServiceToServerURL(url));
 	}
 
+
 	private String appendServiceToServerURL(String serverURL)
 	{
 		if (serverURL != null)
@@ -227,6 +228,26 @@ public class MobileClient implements EntryPoint
 		}
 		return null;
 	}
+
+	public String getApplicationServerURL()
+	{
+		return removeServiceFromServerURL(offlineDataProxy.getServerURL());
+	}
+
+	private String removeServiceFromServerURL(String serverURL)
+	{
+		if (serverURL != null)
+		{
+			int index = serverURL.lastIndexOf("/servoy-service/rest_ws/");
+			if (index > 0)
+			{
+				return serverURL.substring(0, index);
+			}
+			// else: no service appended?
+		}
+		return serverURL;
+	}
+
 
 	protected int getTimeout()
 	{

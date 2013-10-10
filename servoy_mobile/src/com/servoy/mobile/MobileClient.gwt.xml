@@ -5,12 +5,11 @@
   <stylesheet src="jquery.mobile-1.3.1.min.css"/>
   
   <!-- date stuff -->
-  <script src="datetime/picker.js"/>
-  <script src="datetime/picker.date.js"/>
-  <script src="datetime/picker.time.js"/>
-  <stylesheet src="datetime/themes/default.css"/>
-  <stylesheet src="datetime/themes/default.date.css"/>
-  <stylesheet src="datetime/themes/default.time.css"/>
+  <script src="datetime/jqm-datebox.core.js"/>
+  <script src="datetime/jqm-datebox.mode.calbox.js"/>
+  <script src="datetime/jquery.mobile.datebox.i18n.en.utf8.js"/>
+  <script src="datetime/jquery.mobile.datebox.i18n.de.utf8.js"/>
+  <stylesheet src="datetime/jqm-datebox.css"/>
   
   <script src="solution.js"/>
   <script src="solution_json.js"/>

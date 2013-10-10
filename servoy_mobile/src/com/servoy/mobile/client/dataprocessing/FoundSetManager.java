@@ -403,7 +403,7 @@ public class FoundSetManager
 					{
 						String uuid = (String)rd.getPK();
 						int newPK = valueStore.putUUID(uuid);
-						rd.setPK(String.valueOf(newPK));
+						rd.setPK(newPK);
 					}
 					//replace relation names with relation ids, to save local storage space
 					JsArrayString rfs = rd.getRFS();
@@ -1364,7 +1364,7 @@ public class FoundSetManager
 					{
 						String uuid = (String)rd.getPK();
 						int newPK = valueStore.getOrPutUUID(uuid);
-						rd.setPK(String.valueOf(newPK));
+						rd.setPK(newPK);
 					}
 					//replace relation names with relation ids, to save local storage space
 					JsArrayString rfs = rd.getRFS();
@@ -1414,6 +1414,11 @@ public class FoundSetManager
 	{
 		localStorage.removeItem("user_name");
 		localStorage.removeItem("user_password");
+	}
+
+	public String getUUIDPKValueAsString(int intVal)
+	{
+		return valueStore.getUUIDValue(intVal);
 	}
 
 }

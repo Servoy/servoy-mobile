@@ -25,6 +25,7 @@ import org.timepedia.exporter.client.Getter;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.servoy.base.scripting.api.IJSRecord;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.scripting.solutionhelper.SolutionHelper;
@@ -68,6 +69,7 @@ public class MobilePlugin implements Exportable
 //	private final native JavaScriptObject getSolutionHelperExportedClass() /*-{
 //		return $wnd.SolutionHelper;
 //	}-*/;
+
 
 	public boolean isOnline()
 	{
@@ -156,5 +158,25 @@ public class MobilePlugin implements Exportable
 			return ((AbstractRuntimeBaseComponent< ? , ? >)gwtInstance).getComponent().getId();
 		}
 		return null;
+	}
+
+	public String getUUIDPKValueAsString(IJSRecord record)
+	{
+		Object[] pks = record.getPKs();
+		if (pks.length > 1)
+		{
+			return null; // don't handle composite pk's
+		}
+		else
+		{
+			if (pks[0] instanceof Number)
+			{
+				return client.getFoundSetManager().getUUIDPKValueAsString(((Number)pks[0]).intValue());
+			}
+			else
+			{
+				return null;
+			}
+		}
 	}
 }
