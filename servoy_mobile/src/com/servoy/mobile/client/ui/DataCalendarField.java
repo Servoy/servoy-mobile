@@ -50,67 +50,52 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 		String frmt = field.getFormat();
 		String[] dateFrmt = new String[2];
 		String[] timeFrmt = new String[2];
+		if (frmt == null) frmt = "yyyy-MM-dd";
 		boolean hasDate = frmt != null && (frmt.indexOf('y') != -1 || frmt.indexOf('M') != -1 || frmt.indexOf('d') != -1);
 		boolean hasTime = frmt != null &&
 			(frmt.indexOf('h') != -1 || frmt.indexOf('H') != -1 || frmt.indexOf('k') != -1 || frmt.indexOf('K') != -1 || frmt.indexOf('m') != -1);
-		if (frmt == null)
+
+		if (hasDate && hasTime)
 		{
-			// if no format is given, set the type just date and get the format based on if the native dates are used or not. 
-			this.type = "text"; //$NON-NLS-1$
-			if (BrowserSupport.isSupportedType(type))
-			{
-				this.format = "yyyy-MM-dd"; //$NON-NLS-1$
-			}
+			this.type = "datetime-local"; //$NON-NLS-1$
+			if (BrowserSupport.isSupportedType(type)) this.format = "yyyy-MM-dd'T'HH:mm"; //$NON-NLS-1$
 			else
 			{
-				// no native date then just get the default date_medium pattern.
-				this.format = "yyyy-MM-dd";//DateTimeFormat.getFormat(PredefinedFormat.DATE_MEDIUM).getPattern();
+				dateFrmt = convertFormatToJQMDate(frmt);
+				String format = dateFrmt[0].replaceAll("%Y", "yyyy"); // year
+				format = format.replaceAll("%m", "MM");
+				format = format.replaceAll("%d", "dd");
+				this.format = format;
+			}
+		}
+		else if (hasTime)
+		{
+			this.type = "time"; //$NON-NLS-1$
+			if (BrowserSupport.isSupportedType(type)) this.format = "HH:mm"; //$NON-NLS-1$
+			else
+			{
+				timeFrmt = convertFormatToJQMTime(frmt);
+				String format = timeFrmt[0].replaceAll("%k", "HH");
+				format = format.replaceAll("%l", "KK");
+				format = format.replaceAll("%M", "mm");
+				format = format.replaceAll("%p", "a");
+				this.format = format;
 			}
 		}
 		else
 		{
-			if (hasDate && hasTime)
-			{
-				this.type = "datetime-local"; //$NON-NLS-1$
-				if (BrowserSupport.isSupportedType(type)) this.format = "yyyy-MM-dd'T'HH:mm"; //$NON-NLS-1$
-				else
-				{
-					dateFrmt = convertFormatToJQMDate(frmt);
-					String format = dateFrmt[0].replaceAll("%Y", "yyyy"); // year
-					format = format.replaceAll("%m", "MM");
-					format = format.replaceAll("%d", "dd");
-					this.format = format;
-				}
-			}
-			else if (hasTime)
-			{
-				this.type = "time"; //$NON-NLS-1$
-				if (BrowserSupport.isSupportedType(type)) this.format = "HH:mm"; //$NON-NLS-1$
-				else
-				{
-					timeFrmt = convertFormatToJQMTime(frmt);
-					String format = timeFrmt[0].replaceAll("%k", "HH");
-					format = format.replaceAll("%l", "KK");
-					format = format.replaceAll("%M", "mm");
-					format = format.replaceAll("%p", "a");
-					this.format = format;
-				}
-			}
+			this.type = "date"; //$NON-NLS-1$
+			if (BrowserSupport.isSupportedType(type)) this.format = "yyyy-MM-dd"; //$NON-NLS-1$
 			else
 			{
-				this.type = "date"; //$NON-NLS-1$
-				if (BrowserSupport.isSupportedType(type)) this.format = "yyyy-MM-dd"; //$NON-NLS-1$
-				else
-				{
-					dateFrmt = convertFormatToJQMDate(frmt);
-					String format = dateFrmt[0].replaceAll("%Y", "yyyy"); // year
-					format = format.replaceAll("%m", "MM");
-					format = format.replaceAll("%d", "dd");
-					this.format = format;
-				}
+				dateFrmt = convertFormatToJQMDate(frmt);
+				String format = dateFrmt[0].replaceAll("%Y", "yyyy"); // year
+				format = format.replaceAll("%m", "MM");
+				format = format.replaceAll("%d", "dd");
+				this.format = format;
 			}
-
 		}
+
 		setType(type);
 		if (!BrowserSupport.isSupportedType(type))
 		{
@@ -124,16 +109,16 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 			String mode = "calbox";
 			String timeFormat = "";
 			String dateFormat = "";
-			if (hasDate && (frmt.indexOf('d') != -1))
+			if (hasDate && (this.format.indexOf('d') != -1))
 			{
 				mode = "calbox";
-				dateFormat = ",\"overrideDateFieldOrder\":" + dateFrmt[1] + ",\"overrideDateFormat\":\"" + dateFrmt[0];
+				dateFormat = ",\"overrideDateFieldOrder\":" + dateFrmt[1] + ",\"overrideDateFormat\":\"" + dateFrmt[0] + "\"";
 			}
 			else
 			{
 				mode = "timebox";
 				timeFormat = "";
-				if (frmt.indexOf('k') != -1 || frmt.indexOf('h') != -1)
+				if (this.format.indexOf('k') != -1 || this.format.indexOf('h') != -1)
 				{
 					timeFormat = ",\"overrideTimeFormat\":12,";
 				}
