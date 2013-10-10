@@ -20,8 +20,8 @@ import com.servoy.base.query.BaseOrCondition;
 import com.servoy.base.query.BaseQueryColumn;
 import com.servoy.base.query.IBaseSQLCondition;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
-import com.servoy.mobile.client.dataprocessing.RelatedFindCondition;
 import com.servoy.mobile.client.dataprocessing.Record;
+import com.servoy.mobile.client.dataprocessing.RelatedFindCondition;
 import com.sksamuel.jqm4gwt.DataIcon;
 
 /*
@@ -352,11 +352,20 @@ public class Utils implements Exportable
 		return numberToString;
 	}
 
-	// it will need a further .cast() to really be useable
+	// it will need a further .cast() to really be useable; function properties are not cloned, but copied, can we clone them as well ?
 	public static JavaScriptObject cloneDeep(JavaScriptObject o)
 	{
-		return JSONParser.parseLenient(new JSONObject(o).toString()).isObject().getJavaScriptObject();
+		return copyFunctions(o, JSONParser.parseLenient(new JSONObject(o).toString()).isObject().getJavaScriptObject());
 	}
+
+	private static native JavaScriptObject copyFunctions(JavaScriptObject original, JavaScriptObject clone) /*-{
+		for ( var key in original) {
+			if (typeof original[key] == 'function') {
+				clone[key] = original[key];
+			}
+		}
+		return clone;
+	}-*/;
 
 	public static final double DEFAULT_EQUALS_PRECISION = 1e-7d;
 
