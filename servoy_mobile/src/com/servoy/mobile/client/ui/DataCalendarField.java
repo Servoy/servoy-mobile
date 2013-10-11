@@ -21,6 +21,7 @@ import java.util.Date;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.i18n.shared.DateTimeFormat;
+import com.google.gwt.user.client.Window;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
@@ -55,10 +56,12 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 		boolean hasTime = frmt != null &&
 			(frmt.indexOf('h') != -1 || frmt.indexOf('H') != -1 || frmt.indexOf('k') != -1 || frmt.indexOf('K') != -1 || frmt.indexOf('m') != -1);
 
+		boolean disableNativeDates = application.getFoundSetManager().getUserProperty("disablenativedates") != null ||
+			Window.Location.getParameter("disablenativedates") != null;
 		if (hasDate && hasTime)
 		{
 			this.type = "datetime-local"; //$NON-NLS-1$
-			if (BrowserSupport.isSupportedType(type)) this.format = "yyyy-MM-dd'T'HH:mm"; //$NON-NLS-1$
+			if (!disableNativeDates && BrowserSupport.isSupportedType(type)) this.format = "yyyy-MM-dd'T'HH:mm"; //$NON-NLS-1$
 			else
 			{
 				dateFrmt = convertFormatToJQMDate(frmt);
@@ -71,7 +74,7 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 		else if (hasTime)
 		{
 			this.type = "time"; //$NON-NLS-1$
-			if (BrowserSupport.isSupportedType(type)) this.format = "HH:mm"; //$NON-NLS-1$
+			if (!disableNativeDates && BrowserSupport.isSupportedType(type)) this.format = "HH:mm"; //$NON-NLS-1$
 			else
 			{
 				timeFrmt = convertFormatToJQMTime(frmt);
@@ -85,7 +88,7 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 		else
 		{
 			this.type = "date"; //$NON-NLS-1$
-			if (BrowserSupport.isSupportedType(type)) this.format = "yyyy-MM-dd"; //$NON-NLS-1$
+			if (!disableNativeDates && BrowserSupport.isSupportedType(type)) this.format = "yyyy-MM-dd"; //$NON-NLS-1$
 			else
 			{
 				dateFrmt = convertFormatToJQMDate(frmt);
@@ -95,6 +98,7 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 				this.format = format;
 			}
 		}
+		if (disableNativeDates) this.type = "text";
 
 		setType(type);
 		if (!BrowserSupport.isSupportedType(type))
