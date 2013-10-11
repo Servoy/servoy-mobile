@@ -32,11 +32,11 @@ import org.apache.commons.logging.LogFactory;
 
 import com.google.gwt.rpc.server.Pair;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.servoy.base.nongwt.test.ILineMapper;
+import com.servoy.base.nongwt.test.LineMapper;
+import com.servoy.base.nongwt.test.ILineMapper.LineMapping;
 import com.servoy.base.test.IJSUnitSuiteHandler;
 import com.servoy.base.test.IJSUnitSuiteHandler.TestCycleListener;
-import com.servoy.base.test.ILineMapper;
-import com.servoy.base.test.ILineMapper.LineMapping;
-import com.servoy.base.test.LineMapper;
 import com.servoy.mobile.test.shared.service.ITestSuiteController;
 
 /**

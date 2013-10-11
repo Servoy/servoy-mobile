@@ -32,6 +32,7 @@
 			<arg value="com.servoy.mobile.MobileClient"/>
 			<arg value="-style"/>
 			<arg value="DETAILED"/>
+			<arg value="-strict"/>
 		</java>
 	</target>
 
@@ -49,6 +50,7 @@
 			<arg value="com.servoy.mobile.MobileClientDeploy"/>
 			<arg value="-style"/>
 			<arg value="PRETTY"/>
+			<arg value="-strict"/>
 		</java>
 	</target>
 	

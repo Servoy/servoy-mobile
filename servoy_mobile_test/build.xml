@@ -8,7 +8,7 @@
 	<property name="cse.model.src.dir" location="../com.servoy.eclipse.model/src" />
 	<property name="cse.model.mobiletestwar.rel" value="com/servoy/eclipse/model/mobile/exporter/resources/servoy_mobile_test.war" />
 
-	<property name="gwt.args" value="" />
+	<property name="gwt.args" value="-strict" />
 	<property name="gwt.jars" location="${servoy_mobile.dir}/lib" />
 	
 	<property name="javacDebugInfo" value="true" />
