@@ -78,7 +78,7 @@ public class MobilePlugin implements Exportable
 
 	public void clearLocalData()
 	{
-		client.getFoundSetManager().clearLocalStorage();
+		client.getFoundSetManager().clearLocalData();
 	}
 
 	public void loadData()

@@ -7,6 +7,7 @@
   <!-- date stuff -->
   <script src="datetime/jqm-datebox.core.js"/>
   <script src="datetime/jqm-datebox.mode.calbox.js"/>
+  <script src="datetime/jqm-datebox.mode.datebox.js"/>
   <script src="datetime/jquery.mobile.datebox.i18n.en.utf8.js"/>
   <script src="datetime/jquery.mobile.datebox.i18n.de.utf8.js"/>
   <stylesheet src="datetime/jqm-datebox.css"/>
