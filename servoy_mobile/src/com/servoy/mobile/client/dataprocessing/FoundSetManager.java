@@ -421,14 +421,14 @@ public class FoundSetManager
 				}
 
 				//store data in offline db
-				storeFoundSetDescription(fd, false);
+				storeFoundSetDescription(fd, false, true, null);
 			}
 		}
 
 		exportDataproviders();
 
 		//initiate load of all row data
-		offlineDataProxy.requestRowData(entitiesToPKs, false);
+		offlineDataProxy.requestRowData(entitiesToPKs, false, null);
 	}
 
 	private void initLocalStorage(String entitiesJSON, String entityPrefixArg)
@@ -457,7 +457,7 @@ public class FoundSetManager
 		exportDataproviders();
 	}
 
-	private void storeFoundSetDescription(FoundSetDescription fd, boolean updateMode)
+	private void storeFoundSetDescription(FoundSetDescription fd, boolean updateMode, boolean fireContentChanged, ArrayList<FoundSet> contentChangedFoundSets)
 	{
 		boolean omitForKeyinfo = false;
 		String key = fd.getEntityName();
@@ -513,11 +513,16 @@ public class FoundSetManager
 						{
 							for (FoundSet foundSet : set)
 							{
-								foundSet.updateFoundSetDescription(currentFSD);
+								foundSet.updateFoundSetDescription(currentFSD, fireContentChanged);
+								if (contentChangedFoundSets != null && contentChangedFoundSets.indexOf(foundSet) == -1) contentChangedFoundSets.add(foundSet);
 							}
 						}
 						FoundSet foundSet = sharedFoundsets.get(key);
-						if (foundSet != null) foundSet.updateFoundSetDescription(currentFSD);
+						if (foundSet != null)
+						{
+							foundSet.updateFoundSetDescription(currentFSD, fireContentChanged);
+							if (contentChangedFoundSets != null && contentChangedFoundSets.indexOf(foundSet) == -1) contentChangedFoundSets.add(foundSet);
+						}
 					}
 					return;
 				}
@@ -539,7 +544,11 @@ public class FoundSetManager
 					if (map != null)
 					{
 						FoundSet foundSet = map.get(key);
-						if (foundSet != null) foundSet.updateFoundSetDescription(fd);
+						if (foundSet != null)
+						{
+							foundSet.updateFoundSetDescription(fd, fireContentChanged);
+							if (contentChangedFoundSets != null && contentChangedFoundSets.indexOf(foundSet) == -1) contentChangedFoundSets.add(foundSet);
+						}
 					}
 				}
 			}
@@ -1080,7 +1089,7 @@ public class FoundSetManager
 		FoundSetDescription fd = fs.needToSaveFoundSetDescription();
 		if (fd != null)
 		{
-			storeFoundSetDescription(fd, false);
+			storeFoundSetDescription(fd, false, true, null);
 		}
 	}
 
@@ -1361,6 +1370,7 @@ public class FoundSetManager
 		}
 		localStorage.setItem(ENTITIES_KEY, entities.toJSONArray());
 
+		ArrayList<FoundSet> contentChangedFoundSets = new ArrayList<FoundSet>();
 		JsArray<FoundSetDescription> fsds = offlineData.getFoundSets();
 		if (fsds != null)
 		{
@@ -1403,14 +1413,14 @@ public class FoundSetManager
 					}
 				}
 
-				storeFoundSetDescription(fd, true);
+				storeFoundSetDescription(fd, true, false, contentChangedFoundSets);
 			}
 		}
 
 		exportDataproviders();
 
 		//initiate load of all row data
-		offlineDataProxy.requestRowData(entitiesToPKs, true);
+		offlineDataProxy.requestRowData(entitiesToPKs, true, contentChangedFoundSets);
 	}
 
 	/**
