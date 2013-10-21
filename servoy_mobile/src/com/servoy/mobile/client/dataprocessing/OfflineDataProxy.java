@@ -282,8 +282,6 @@ public class OfflineDataProxy
 		if (entityName == null)
 		{
 			//when empty stop
-			loadCallback.onSuccess(Integer.valueOf(totalLength));
-			loadCallback = null;
 			if (contentChangedFoundsets != null)
 			{
 				for (FoundSet fs : contentChangedFoundsets)
@@ -291,6 +289,8 @@ public class OfflineDataProxy
 					if (!fs.isFoundsetFiltered() && !fs.isInFind()) fs.fireContentChanged();
 				}
 			}
+			loadCallback.onSuccess(Integer.valueOf(totalLength));
+			loadCallback = null;
 			return;
 		}
 
