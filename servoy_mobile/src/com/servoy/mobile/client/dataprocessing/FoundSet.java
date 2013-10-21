@@ -830,7 +830,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 	/**
 	 * @param currentFSD
 	 */
-	public void updateFoundSetDescription(FoundSetDescription currentFSD, boolean fireContentChanged)
+	public void updateFoundSetDescription(FoundSetDescription currentFSD)
 	{
 		// if this foundset has editing records then we have to make it a filtered foundset 
 		// so a foundset where the "records" list is leading instead of the FoundSetDescription
@@ -848,7 +848,6 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		{
 			// if there are outstanding edits then this will delete the records.
 			flushAllRecords();
-			if (fireContentChanged) fireContentChanged();
 		}
 
 		// (re) export all relations

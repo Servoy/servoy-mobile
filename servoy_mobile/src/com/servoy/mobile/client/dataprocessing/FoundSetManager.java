@@ -421,7 +421,7 @@ public class FoundSetManager
 				}
 
 				//store data in offline db
-				storeFoundSetDescription(fd, false, true, null);
+				storeFoundSetDescription(fd, false, null);
 			}
 		}
 
@@ -457,7 +457,7 @@ public class FoundSetManager
 		exportDataproviders();
 	}
 
-	private void storeFoundSetDescription(FoundSetDescription fd, boolean updateMode, boolean fireContentChanged, ArrayList<FoundSet> contentChangedFoundSets)
+	private void storeFoundSetDescription(FoundSetDescription fd, boolean updateMode, ArrayList<FoundSet> contentChangedFoundSets)
 	{
 		boolean omitForKeyinfo = false;
 		String key = fd.getEntityName();
@@ -513,14 +513,14 @@ public class FoundSetManager
 						{
 							for (FoundSet foundSet : set)
 							{
-								foundSet.updateFoundSetDescription(currentFSD, fireContentChanged);
+								foundSet.updateFoundSetDescription(currentFSD);
 								if (contentChangedFoundSets != null && contentChangedFoundSets.indexOf(foundSet) == -1) contentChangedFoundSets.add(foundSet);
 							}
 						}
 						FoundSet foundSet = sharedFoundsets.get(key);
 						if (foundSet != null)
 						{
-							foundSet.updateFoundSetDescription(currentFSD, fireContentChanged);
+							foundSet.updateFoundSetDescription(currentFSD);
 							if (contentChangedFoundSets != null && contentChangedFoundSets.indexOf(foundSet) == -1) contentChangedFoundSets.add(foundSet);
 						}
 					}
@@ -546,7 +546,7 @@ public class FoundSetManager
 						FoundSet foundSet = map.get(key);
 						if (foundSet != null)
 						{
-							foundSet.updateFoundSetDescription(fd, fireContentChanged);
+							foundSet.updateFoundSetDescription(fd);
 							if (contentChangedFoundSets != null && contentChangedFoundSets.indexOf(foundSet) == -1) contentChangedFoundSets.add(foundSet);
 						}
 					}
@@ -1089,7 +1089,7 @@ public class FoundSetManager
 		FoundSetDescription fd = fs.needToSaveFoundSetDescription();
 		if (fd != null)
 		{
-			storeFoundSetDescription(fd, false, true, null);
+			storeFoundSetDescription(fd, false, null);
 		}
 	}
 
@@ -1413,7 +1413,7 @@ public class FoundSetManager
 					}
 				}
 
-				storeFoundSetDescription(fd, true, false, contentChangedFoundSets);
+				storeFoundSetDescription(fd, true, contentChangedFoundSets);
 			}
 		}
 
