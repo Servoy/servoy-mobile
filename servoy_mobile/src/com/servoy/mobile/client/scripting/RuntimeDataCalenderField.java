@@ -24,7 +24,6 @@ import com.servoy.base.scripting.api.IJSEvent;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.ui.DataCalendarField;
-import com.servoy.mobile.client.ui.DataTextField;
 import com.servoy.mobile.client.ui.Executor;
 
 /**
@@ -43,9 +42,8 @@ public class RuntimeDataCalenderField extends AbstractRuntimeFieldComponent
 	{
 		if (command != null)
 		{
-			addHandlerRegistration(((DataTextField)component).addKeyUpHandler(new KeyUpHandler()
+			addHandlerRegistration(((DataCalendarField)component).addKeyUpHandler(new KeyUpHandler()
 			{
-
 				@Override
 				public void onKeyUp(KeyUpEvent event)
 				{
