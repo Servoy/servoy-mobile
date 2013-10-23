@@ -21,6 +21,8 @@ import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.dataprocessing.IEditListener;
 
@@ -28,7 +30,7 @@ import com.servoy.mobile.client.dataprocessing.IEditListener;
  * Listener object for various listeners influencing the edit state
  * @author gboros
  */
-public class EditProvider implements BlurHandler, ChangeHandler
+public class EditProvider implements BlurHandler, ChangeHandler, ValueChangeHandler
 {
 	private IDisplayData display;
 	private IEditListener listener;
@@ -70,5 +72,11 @@ public class EditProvider implements BlurHandler, ChangeHandler
 	{
 		display = null;
 		listener = null;
+	}
+
+	@Override
+	public void onValueChange(ValueChangeEvent event)
+	{
+		commitEdit();
 	}
 }
