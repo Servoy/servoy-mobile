@@ -18,7 +18,6 @@ package com.servoy.mobile.client.ui;
  */
 
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasText;
@@ -30,6 +29,7 @@ import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.servoy.mobile.client.scripting.IRuntimeComponent;
 import com.servoy.mobile.client.scripting.RuntimeDataLabel;
 import com.sksamuel.jqm4gwt.JQMWidget;
+import com.sksamuel.jqm4gwt.events.TapHandler;
 import com.sksamuel.jqm4gwt.html.FormLabel;
 import com.sksamuel.jqm4gwt.html.Heading;
 
@@ -101,13 +101,11 @@ public class DataLabel extends JQMWidget implements HasText, IDisplayData, IGrap
 		return scriptable;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.google.gwt.event.dom.client.HasClickHandlers#addClickHandler(com.google.gwt.event.dom.client.ClickHandler)
+	/**
+	 * NOT SUPPORTED!
 	 */
 	@Override
-	public HandlerRegistration addClickHandler(ClickHandler handler)
+	public HandlerRegistration addTapHandler(TapHandler handler)
 	{
 		// TODO Auto-generated method stub
 		return null;

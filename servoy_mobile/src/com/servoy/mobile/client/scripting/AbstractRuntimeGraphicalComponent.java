@@ -20,8 +20,6 @@ package com.servoy.mobile.client.scripting;
 import java.util.Date;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.servoy.base.scripting.api.IJSEvent;
@@ -32,6 +30,8 @@ import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.servoy.mobile.client.ui.Executor;
 import com.servoy.mobile.client.ui.IGraphicalComponent;
 import com.servoy.mobile.client.util.Utils;
+import com.sksamuel.jqm4gwt.events.TapEvent;
+import com.sksamuel.jqm4gwt.events.TapHandler;
 
 /**
  * @author gboros
@@ -117,10 +117,10 @@ public class AbstractRuntimeGraphicalComponent extends AbstractRuntimeBaseCompon
 	{
 		if (command != null)
 		{
-			addHandlerRegistration(component.addClickHandler(new ClickHandler()
+			addHandlerRegistration(component.addTapHandler(new TapHandler()
 			{
 				@Override
-				public void onClick(ClickEvent event)
+				public void onTap(TapEvent event)
 				{
 					executor.fireEventCommand(IJSEvent.ACTION, command, AbstractRuntimeGraphicalComponent.this, null);
 				}

@@ -17,8 +17,6 @@ package com.servoy.mobile.client.ui;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Element;
 import com.servoy.mobile.client.MobileClient;
@@ -28,6 +26,10 @@ import com.servoy.mobile.client.dataprocessing.IEditListenerSubject;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.scripting.IRuntimeComponent;
 import com.servoy.mobile.client.scripting.RuntimeDataTextArea;
+import com.sksamuel.jqm4gwt.events.JQMComponentEvents;
+import com.sksamuel.jqm4gwt.events.JQMHandlerRegistration;
+import com.sksamuel.jqm4gwt.events.TapEvent;
+import com.sksamuel.jqm4gwt.events.TapHandler;
 import com.sksamuel.jqm4gwt.form.elements.JQMTextArea;
 
 /**
@@ -123,9 +125,11 @@ public class DataTextArea extends JQMTextArea implements IDisplayData, ISupportT
 		// not supported
 	}
 
-	public HandlerRegistration addClickHandler(ClickHandler handler)
+	@Override
+	public HandlerRegistration addTapHandler(TapHandler handler)
 	{
-		return addDomHandler(handler, ClickEvent.getType());
+		HandlerRegistration defaultRegistration = addHandler(handler, TapEvent.getType());
+		return new JQMHandlerRegistration(getElement(), JQMComponentEvents.TAP_EVENT, defaultRegistration);
 	}
 
 	public void setPlaceholderText(String placeholder)

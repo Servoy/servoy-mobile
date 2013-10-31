@@ -17,13 +17,13 @@
 
 package com.servoy.mobile.client.ui;
 
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.IDisplayData;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.servoy.mobile.client.scripting.IRuntimeComponent;
 import com.servoy.mobile.client.scripting.RuntimeDataFormHeader;
+import com.sksamuel.jqm4gwt.events.TapHandler;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 
 /**
@@ -61,33 +61,21 @@ public class DataFormHeader extends JQMHeader implements IDisplayData, IGraphica
 		scriptable.setText(data);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.scripting.IScriptableProvider#getScriptObject()
-	 */
 	@Override
 	public IRuntimeComponent getRuntimeComponent()
 	{
 		return scriptable;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.google.gwt.event.dom.client.HasClickHandlers#addClickHandler(com.google.gwt.event.dom.client.ClickHandler)
+	/**
+	 * NOT SUPPORTED!
 	 */
 	@Override
-	public HandlerRegistration addClickHandler(ClickHandler handler)
+	public HandlerRegistration addTapHandler(TapHandler handler)
 	{
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.util.IDestroyable#destroy()
-	 */
 	@Override
 	public void destroy()
 	{

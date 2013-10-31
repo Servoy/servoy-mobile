@@ -17,11 +17,11 @@
 
 package com.servoy.mobile.client;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HTML;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.button.JQMButton;
+import com.sksamuel.jqm4gwt.events.TapEvent;
+import com.sksamuel.jqm4gwt.events.TapHandler;
 
 /**
  * @author lvostinar
@@ -41,10 +41,10 @@ public class TrialModePage extends JQMPage
 		htmlText.setWordWrap(true);
 		add(htmlText);
 		JQMButton next = new JQMButton("Launch App");
-		next.addClickHandler(new ClickHandler()
+		next.addTapHandler(new TapHandler()
 		{
 			@Override
-			public void onClick(ClickEvent event)
+			public void onTap(TapEvent event)
 			{
 				if (!application.getFoundSetManager().hasContent())
 				{

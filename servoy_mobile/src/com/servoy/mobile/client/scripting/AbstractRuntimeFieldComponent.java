@@ -21,14 +21,14 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Getter;
 import org.timepedia.exporter.client.Setter;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.servoy.base.scripting.api.IJSEvent;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.ui.Executor;
 import com.servoy.mobile.client.ui.IFieldComponent;
 import com.servoy.mobile.client.ui.ISupportsPlaceholderComponent;
+import com.sksamuel.jqm4gwt.events.TapEvent;
+import com.sksamuel.jqm4gwt.events.TapHandler;
 
 /**
  * @author gboros
@@ -68,10 +68,10 @@ public class AbstractRuntimeFieldComponent extends AbstractRuntimeBaseComponent<
 	{
 		if (command != null)
 		{
-			addHandlerRegistration(component.addClickHandler(new ClickHandler()
+			addHandlerRegistration(component.addTapHandler(new TapHandler()
 			{
 				@Override
-				public void onClick(ClickEvent event)
+				public void onTap(TapEvent event)
 				{
 					executor.fireEventCommand(IJSEvent.ACTION, command, AbstractRuntimeFieldComponent.this, null);
 				}

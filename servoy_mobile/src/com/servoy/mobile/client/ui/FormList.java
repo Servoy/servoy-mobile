@@ -46,6 +46,8 @@ import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.servoy.mobile.client.scripting.IRuntimeComponent;
+import com.sksamuel.jqm4gwt.events.TapEvent;
+import com.sksamuel.jqm4gwt.events.TapHandler;
 import com.sksamuel.jqm4gwt.list.JQMList;
 import com.sksamuel.jqm4gwt.list.JQMListItem;
 
@@ -65,7 +67,7 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 	private String listItemOnAction;
 	private String listItemDataIcon;
 	private String listItemStyleclass;
-	private final ArrayList<HandlerRegistration> clickRegistrations = new ArrayList<HandlerRegistration>();
+	private final ArrayList<HandlerRegistration> tapRegistrations = new ArrayList<HandlerRegistration>();
 	private HandlerRegistration listClickHandler;
 
 	public FormList(FormController formController, JsArray<Component> formComponents, DataAdapterList dal, String relationName)
@@ -251,9 +253,9 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 //		Iterator<JQMListItem> listItemIte = getItems().iterator();
 //		while (listItemIte.hasNext())
 //			listItemIte.next().removeFromParent();
-		for (int i = 0; i < clickRegistrations.size(); i++)
-			clickRegistrations.get(i).removeHandler();
-		clickRegistrations.clear();
+		for (int i = 0; i < tapRegistrations.size(); i++)
+			tapRegistrations.get(i).removeHandler();
+		tapRegistrations.clear();
 		super.clear();
 	}
 
@@ -305,10 +307,10 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 				final int selIndex = i;
 				if (listItemOnAction != null)
 				{
-					clickRegistrations.add(listItem.addClickHandler(new ClickHandler()
+					tapRegistrations.add(listItem.addTapHandler(new TapHandler()
 					{
 						@Override
-						public void onClick(ClickEvent event)
+						public void onTap(TapEvent event)
 						{
 							foundSet.setSelectedIndexInternal(selIndex);
 							formController.getExecutor().fireEventCommand(IJSEvent.ACTION, listItemOnAction, getRuntimeComponent(), null);

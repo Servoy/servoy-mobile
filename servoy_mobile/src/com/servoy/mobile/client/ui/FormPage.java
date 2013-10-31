@@ -17,8 +17,6 @@ package com.servoy.mobile.client.ui;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Widget;
 import com.servoy.mobile.client.FormController;
@@ -28,6 +26,8 @@ import com.sksamuel.jqm4gwt.IconPos;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.Mobile;
 import com.sksamuel.jqm4gwt.button.JQMButton;
+import com.sksamuel.jqm4gwt.events.TapEvent;
+import com.sksamuel.jqm4gwt.events.TapHandler;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.sksamuel.jqm4gwt.toolbar.JQMPanel;
@@ -222,10 +222,10 @@ public class FormPage extends JQMPage implements IFormComponent
 				}
 				navigatorLeftButton = headerComponent.setLeftButton("", DataIcon.BARS); //$NON-NLS-1$
 				navigatorLeftButton.setIconPos(IconPos.NOTEXT);
-				navigatorLeftButtonHandler = navigatorLeftButton.addClickHandler(new ClickHandler()
+				navigatorLeftButtonHandler = navigatorLeftButton.addTapHandler(new TapHandler()
 				{
 					@Override
-					public void onClick(ClickEvent event)
+					public void onTap(TapEvent event)
 					{
 						formNavigator.toggle();
 					}
