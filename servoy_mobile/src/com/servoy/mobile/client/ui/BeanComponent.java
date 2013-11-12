@@ -41,6 +41,10 @@ public class BeanComponent extends JQMWidget implements IComponent, IRuntimeComp
 	{
 		initWidget(divWidget = new DivWidget());
 		String innerHTML = bean.getInnerHTML();
+		if (innerHTML != null && innerHTML.contains("\\n")) //$NON-NLS-1$
+		{
+			innerHTML = innerHTML.replaceAll("\\\\n", "\n"); //$NON-NLS-1$//$NON-NLS-2$
+		}
 		if (innerHTML != null) setInnerHTML(innerHTML);
 		setId();
 		scriptable = new RuntimeBean(application, executor, this, bean);
