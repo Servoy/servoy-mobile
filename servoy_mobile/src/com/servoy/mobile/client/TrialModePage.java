@@ -21,7 +21,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.events.TapEvent;
-import com.sksamuel.jqm4gwt.events.TapHandler;
+import com.sksamuel.jqm4gwt.events.TapHandlerForPageSwitch;
 
 /**
  * @author lvostinar
@@ -41,10 +41,10 @@ public class TrialModePage extends JQMPage
 		htmlText.setWordWrap(true);
 		add(htmlText);
 		JQMButton next = new JQMButton("Launch App");
-		next.addTapHandler(new TapHandler()
+		next.addTapHandler(new TapHandlerForPageSwitch()
 		{
 			@Override
-			public void onTap(TapEvent event)
+			public void onSafeTap(TapEvent event)
 			{
 				if (!application.getFoundSetManager().hasContent())
 				{

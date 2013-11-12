@@ -31,7 +31,7 @@ import com.servoy.mobile.client.ui.Executor;
 import com.servoy.mobile.client.ui.IGraphicalComponent;
 import com.servoy.mobile.client.util.Utils;
 import com.sksamuel.jqm4gwt.events.TapEvent;
-import com.sksamuel.jqm4gwt.events.TapHandler;
+import com.sksamuel.jqm4gwt.events.TapHandlerForPageSwitch;
 
 /**
  * @author gboros
@@ -117,10 +117,10 @@ public class AbstractRuntimeGraphicalComponent extends AbstractRuntimeBaseCompon
 	{
 		if (command != null)
 		{
-			addHandlerRegistration(component.addTapHandler(new TapHandler()
+			addHandlerRegistration(component.addTapHandler(new TapHandlerForPageSwitch()
 			{
 				@Override
-				public void onTap(TapEvent event)
+				public void onSafeTap(TapEvent event)
 				{
 					executor.fireEventCommand(IJSEvent.ACTION, command, AbstractRuntimeGraphicalComponent.this, null);
 				}

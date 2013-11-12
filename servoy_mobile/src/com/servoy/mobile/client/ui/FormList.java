@@ -47,7 +47,7 @@ import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
 import com.servoy.mobile.client.scripting.IRuntimeComponent;
 import com.sksamuel.jqm4gwt.events.TapEvent;
-import com.sksamuel.jqm4gwt.events.TapHandler;
+import com.sksamuel.jqm4gwt.events.TapHandlerForPageSwitch;
 import com.sksamuel.jqm4gwt.list.JQMList;
 import com.sksamuel.jqm4gwt.list.JQMListItem;
 
@@ -243,8 +243,8 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 	}
 
 	protected native void forceRefresh(String id) /*-{
-		$wnd.$("#" + id).listview('refresh', true);
-	}-*/;
+													$wnd.$("#" + id).listview('refresh', true);
+													}-*/;
 
 
 	@Override
@@ -307,10 +307,10 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 				final int selIndex = i;
 				if (listItemOnAction != null)
 				{
-					tapRegistrations.add(listItem.addTapHandler(new TapHandler()
+					tapRegistrations.add(listItem.addTapHandler(new TapHandlerForPageSwitch()
 					{
 						@Override
-						public void onTap(TapEvent event)
+						public void onSafeTap(TapEvent event)
 						{
 							foundSet.setSelectedIndexInternal(selIndex);
 							formController.getExecutor().fireEventCommand(IJSEvent.ACTION, listItemOnAction, getRuntimeComponent(), null);
