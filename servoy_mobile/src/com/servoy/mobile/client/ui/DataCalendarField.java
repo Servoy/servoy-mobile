@@ -17,6 +17,7 @@ package com.servoy.mobile.client.ui;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
+import java.util.Arrays;
 import java.util.Date;
 
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -107,6 +108,11 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 			if (application.getI18nProvider() != null && application.getI18nProvider().getLanguage() != null)
 			{
 				language = application.getI18nProvider().getLanguage();
+				// add a list of all the languages we support 
+				if (!Arrays.asList(new String[] { "de", "it", "nl", "es", "fr" }).contains(language))
+				{
+					language = "en";
+				}
 			}
 
 			String themeStr = "\"theme\":true,\"themeHeader\":\"b\",\"themeDate\":\"b\",\"themeDatePick\":\"a\",\"themeDateToday\":\"a\",\"themeButton\":\"b\",\"themeInput\":\"b\"";
