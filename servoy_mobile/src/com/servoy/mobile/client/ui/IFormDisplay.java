@@ -34,6 +34,8 @@ public interface IFormDisplay
 
 	FormController getFormController();
 
+	void initWithRecord(Record record);
+
 	void refreshRecord(Record record);
 
 	void cleanup();

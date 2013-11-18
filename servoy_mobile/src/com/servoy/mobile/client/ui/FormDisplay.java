@@ -61,6 +61,7 @@ public class FormDisplay implements IFormDisplay
 	protected JQMFooter footer;
 	protected ArrayList<Widget> content;
 	protected DataAdapterList dal;
+	private boolean firstTime = true;
 
 	public FormDisplay(MobileClient application, FormController formController)
 	{
@@ -128,6 +129,16 @@ public class FormDisplay implements IFormDisplay
 		dal.destroy();
 		formController = null;
 		dal = null;
+	}
+
+	@Override
+	public void initWithRecord(Record record)
+	{
+		if (firstTime)
+		{
+			firstTime = false;
+			refreshRecord(record);
+		}
 	}
 
 	public void refreshRecord(Record record)
@@ -399,7 +410,7 @@ public class FormDisplay implements IFormDisplay
 	@Override
 	public boolean isShow()
 	{
-		if (formPage != null && formPage.isShow())
+		if (formPage != null && formPage.isShown())
 		{
 			return true;
 		}
@@ -407,7 +418,7 @@ public class FormDisplay implements IFormDisplay
 		{
 			for (FormPanel formPanel : formPanelMap.values())
 			{
-				if (formPanel.isShow())
+				if (formPanel.isShown())
 				{
 					return true;
 				}
@@ -416,4 +427,5 @@ public class FormDisplay implements IFormDisplay
 
 		return false;
 	}
+
 }

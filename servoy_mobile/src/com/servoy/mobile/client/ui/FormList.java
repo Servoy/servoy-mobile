@@ -21,10 +21,6 @@ import java.util.ArrayList;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.JsArray;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.EventTarget;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Widget;
@@ -37,6 +33,7 @@ import com.servoy.mobile.client.dataprocessing.DataAdapterList;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.dataprocessing.FoundSetManager;
 import com.servoy.mobile.client.dataprocessing.IDisplayRelatedData;
+import com.servoy.mobile.client.dataprocessing.IFoundSetDataChangeListener;
 import com.servoy.mobile.client.dataprocessing.IFoundSetListener;
 import com.servoy.mobile.client.dataprocessing.Record;
 import com.servoy.mobile.client.dto.EntityDescription;
@@ -45,7 +42,13 @@ import com.servoy.mobile.client.persistence.AbstractBase;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
+import com.servoy.mobile.client.scripting.IModificationListener;
 import com.servoy.mobile.client.scripting.IRuntimeComponent;
+import com.servoy.mobile.client.scripting.ModificationEvent;
+import com.sksamuel.jqm4gwt.JQMPage;
+import com.sksamuel.jqm4gwt.JQMPageEvent;
+import com.sksamuel.jqm4gwt.JQMPageEvent.Handler;
+import com.sksamuel.jqm4gwt.Mobile;
 import com.sksamuel.jqm4gwt.events.TapEvent;
 import com.sksamuel.jqm4gwt.events.TapHandlerForPageSwitch;
 import com.sksamuel.jqm4gwt.list.JQMList;
@@ -56,8 +59,10 @@ import com.sksamuel.jqm4gwt.list.JQMListItem;
  *
  * @author gboros
  */
-public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetListener
+public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetListener, IFoundSetDataChangeListener, IModificationListener
 {
+	private static final int MAX_LIST_SIZE_FOR_QUICK_ENOUGH_TRANSITION = 50;
+
 	private FormController formController;
 	private DataAdapterList dal;
 	private final String relationName;
@@ -68,7 +73,8 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 	private String listItemDataIcon;
 	private String listItemStyleclass;
 	private final ArrayList<HandlerRegistration> tapRegistrations = new ArrayList<HandlerRegistration>();
-	private HandlerRegistration listClickHandler;
+	private boolean mustRefreshBeforeShow = true;
+	private boolean willRefreshWithTimeout = false; // refresh lists on a timeout - useful in case multiple change events want to trigger a list refresh as part of the same JS call (no use refreshing a list more then 1 time in this case)
 
 	public FormList(FormController formController, JsArray<Component> formComponents, DataAdapterList dal, String relationName)
 	{
@@ -76,7 +82,10 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 		this.dal = dal;
 		this.relationName = relationName;
 
-		this.formController.addFoundsetListener(this);
+		this.formController.addFoundsetListener(this); // this actually listens for foundset - changed in form events
+		formController.getApplication().getScriptEngine().getGlobalScopeModificationDelegate().addModificationListener(this);
+		formController.getFormScope().addModificationListener(this);
+
 		if (relationName != null && formController.getForm().getDataSource() != null)
 		{
 			String[] relationItems = relationName.split("\\."); //$NON-NLS-1$
@@ -152,23 +161,6 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 		}
 
 		setInset(true);
-		listClickHandler = addHandler(new ClickHandler()
-		{
-			@Override
-			public void onClick(ClickEvent event)
-			{
-				EventTarget target = event.getNativeEvent().getEventTarget();
-				Element element = Element.as(target);
-				for (JQMListItem listItem : getItems())
-				{
-					if (listItem != null && listItem.getElement().isOrHasChild(element))
-					{
-						listItem.fireEvent(event);
-						break;
-					}
-				}
-			}
-		}, ClickEvent.getType());
 	}
 
 	private String fixRelatedDataproviderID(String dataProviderID)
@@ -182,6 +174,8 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 
 	private FoundSet relatedFoundset;
 	private FoundSet foundSet;
+	private boolean isShowing = false;
+	private HandlerRegistration pageHandler;
 
 	/*
 	 * @see com.servoy.mobile.client.dataprocessing.IDisplayRelatedData#setRecord(com.servoy.mobile.client.dataprocessing.Record)
@@ -221,25 +215,224 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 	@Override
 	public void contentChanged()
 	{
+		// form's foundset instance changed or the list of records in the list's foundset changed
+		// TODO make this refresh only some indexes - make it get more detailed information & handle it as deltas, not full refresh when possible
 		refreshList();
+	}
+
+	@Override
+	public void recordDataProviderChanged(Record record, String dataProviderID, Object value)
+	{
+		// one of the records in current foundset changed content
+		// TODO don't refresh the whole list - just the affected list item
+		if (isListAffectedByDataProvider(dataProviderID))
+		{
+			refreshList();
+		}
+	}
+
+	@Override
+	public void valueChanged(ModificationEvent e)
+	{
+		// some dataprovider in either the formscope or a global scope changed
+		// TODO don't refresh the whole list, just the affected list items or header
+		if (isListAffectedByDataProvider(e.getName()))
+		{
+			refreshList();
+		}
+	}
+
+	protected boolean isListAffectedByDataProvider(String dataProviderID)
+	{
+		if (dataProviderID == null) return false;
+		return (dataProviderID.equals(listItemHeaderDP) || dataProviderID.equals(listItemImageDP) || dataProviderID.equals(listItemCountDP) ||
+			dataProviderID.equals(listItemSubtextDP) || dataProviderID.equals(listItemTextDP) ||
+			TagParser.staticStringUsesDataproviderAsTag(listItemStaticHeader, dataProviderID) ||
+			TagParser.staticStringUsesDataproviderAsTag(listItemStaticSubtext, dataProviderID) || TagParser.staticStringUsesDataproviderAsTag(
+			listItemStaticText, dataProviderID));
 	}
 
 	public void destroy()
 	{
-		listClickHandler.removeHandler();
-		listClickHandler = null;
 		clear();
 		removeFromParent();
-		if (this.foundSet != null) this.foundSet.removeFoundSetListener(this);
-		formController.removeFoundsetListener(this);
-		formController = null;
+		if (this.foundSet != null)
+		{
+			this.foundSet.removeFoundSetListener(this);
+			this.foundSet.removeFoundSetDataChangeListener(this);
+			foundSet = null;
+		}
+		if (formController != null)
+		{
+			formController.getApplication().getScriptEngine().getGlobalScopeModificationDelegate().addModificationListener(this);
+			formController.getFormScope().addModificationListener(this);
+			formController.removeFoundsetListener(this);
+			formController = null;
+		}
 		dal = null;
 	}
 
-	public void refreshList()
+	protected JQMPage getJQMPage()
 	{
-		createList(relatedFoundset != null ? relatedFoundset : formController.getFormModel());
+		Widget p = this;
+		while (!(p instanceof JQMPage) && p != null)
+		{
+			p = p.getParent();
+		}
+		return (JQMPage)p;
+	}
+
+	@Override
+	protected void onLoad()
+	{
+		super.onLoad();
+		JQMPage page = getJQMPage();
+		pageHandler = page.addPageHandler(new Handler()
+		{
+			@Override
+			public void onShow(JQMPageEvent event)
+			{
+				isShowing = true;
+				refreshListIfNeeded();
+			}
+
+			@Override
+			public void onHide(JQMPageEvent event)
+			{
+				isShowing = false;
+			}
+
+			@Override
+			public void onBeforeShow(JQMPageEvent event)
+			{
+				refreshListBeforeShowIfNeeded();
+			}
+
+			@Override
+			public void onInit(JQMPageEvent event)
+			{
+			}
+
+
+			@Override
+			public void onBeforeHide(JQMPageEvent event)
+			{
+			}
+		});
+	}
+
+	@Override
+	protected void onUnload()
+	{
+		pageHandler.removeHandler();
+		super.onLoad();
+	}
+
+	private final native String getTransitionType() /*-{
+															return $wnd.$.mobile.defaultPageTransition ? $wnd.$.mobile.defaultPageTransition : null;
+															}-*/;
+
+	protected void refreshListIfNeeded()
+	{
+		if (isShowing && mustRefreshBeforeShow) // refresh only if it is showing and it needs refresh
+		{
+			mustRefreshBeforeShow = false;
+
+			if (!willRefreshWithTimeout)
+			{
+				willRefreshWithTimeout = true;
+				setRefreshTimeout(false);
+			}
+		}
+	}
+
+	protected void refreshNowWhenShowing()
+	{
+		// this gets called by a setTimeout(1) when a list refresh was needed while list was showing (setTimeout is used to only do the actual refresh once if it is called multiple times by the same JS burst)
+		willRefreshWithTimeout = false;
+		if (!isShowing)
+		{
+			// if it was already closed before the timeout happened, no need to refresh it now, just when it's shown again
+			mustRefreshBeforeShow = true;
+			return;
+		}
+
+		FoundSet foundset = getListFoundset();
+		if (foundset != null && foundset.getSize() > MAX_LIST_SIZE_FOR_QUICK_ENOUGH_TRANSITION)
+		{
+			Mobile.showLoadingDialog(""); // this needs to always happen after page transition (so on page onShow for example), otherwise it is closed immediately by other code in JQM/JQM4GWT
+
+			// setTimeout follows
+			setRefreshTimeout(true);
+		}
+		else
+		{
+			actualRefresh();
+		}
+	}
+
+	protected void actualRefresh()
+	{
+		Mobile.hideLoadingDialog();
+
+		// TODO : try to only update a delta when possible
+		createList(getListFoundset());
 		forceRefresh(getId());
+	}
+
+	protected FoundSet getListFoundset()
+	{
+		return relatedFoundset != null ? relatedFoundset : formController.getFormModel();
+	}
+
+	protected void refreshList()
+	{
+		mustRefreshBeforeShow = true;
+		refreshListIfNeeded();
+	}
+
+	protected boolean hasTransition()
+	{
+		String t = getTransitionType();
+		return (t != null && !("none".equals(t)));
+	}
+
+	public final native void setRefreshTimeout(boolean actual) /*-{
+																var th = this;
+																var f = function() {
+																th.@com.servoy.mobile.client.ui.FormList::refreshTimeoutFinished(Z)(actual);
+																}
+																$wnd.setTimeout(f, 1);
+																}-*/;
+
+	public void refreshTimeoutFinished(boolean actual)
+	{
+		if (actual) actualRefresh();
+		else refreshNowWhenShowing();
+	}
+
+	protected void refreshListBeforeShowIfNeeded()
+	{
+		if (mustRefreshBeforeShow)
+		{
+			// if it does have transitions in order to make transition look nice we have to load it now
+			FoundSet foundset = getListFoundset();
+			if ((foundset != null && foundset.getSize() > MAX_LIST_SIZE_FOR_QUICK_ENOUGH_TRANSITION) || !hasTransition())
+			{
+				// exception - for large lists - make transitions but show loading gif; unfortunately we can't show loading
+				// then load then hide cause it's all in the same thread that will do the switch and UI is not going to be updated
+
+				// if it doesn't use transitions, just show a clear list in next form and let it load afterwards - to be responsive
+				clear();
+			}
+			else
+			{
+				// just prepare it directly; it should be fast enough
+				isShowing = true;
+				mustRefreshBeforeShow = false;
+				actualRefresh();
+			}
+		}
 	}
 
 	protected native void forceRefresh(String id) /*-{
@@ -250,9 +443,6 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 	@Override
 	public void clear()
 	{
-//		Iterator<JQMListItem> listItemIte = getItems().iterator();
-//		while (listItemIte.hasNext())
-//			listItemIte.next().removeFromParent();
 		for (int i = 0; i < tapRegistrations.size(); i++)
 			tapRegistrations.get(i).removeHandler();
 		tapRegistrations.clear();
@@ -261,9 +451,17 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 
 	private void createList(FoundSet foundset)
 	{
-		if (this.foundSet != null) this.foundSet.removeFoundSetListener(this);
+		if (this.foundSet != null)
+		{
+			this.foundSet.removeFoundSetDataChangeListener(this);
+			this.foundSet.removeFoundSetListener(this);
+		}
 		this.foundSet = foundset;
-		if (this.foundSet != null) this.foundSet.addFoundSetListener(this);
+		if (this.foundSet != null)
+		{
+			this.foundSet.addFoundSetListener(this);
+			this.foundSet.addFoundSetDataChangeListener(this);
+		}
 		clear();
 		if (foundset != null)
 		{

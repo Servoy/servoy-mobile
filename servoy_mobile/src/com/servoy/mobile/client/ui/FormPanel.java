@@ -33,7 +33,7 @@ import com.sksamuel.jqm4gwt.toolbar.JQMPanel;
 public class FormPanel extends JQMPanel implements IFormComponent
 {
 	private final IFormDisplay formDisplay;
-	private boolean isShow;
+	private boolean isShown;
 
 	public FormPanel(IFormDisplay formDisplay)
 	{
@@ -81,14 +81,14 @@ public class FormPanel extends JQMPanel implements IFormComponent
 	@Override
 	protected void onPanelOpen()
 	{
-		isShow = true;
+		isShown = true;
 		formDisplay.getFormController().executeOnShowMethod();
 	}
 
 	@Override
 	protected void onPanelClose()
 	{
-		isShow = false;
+		isShown = false;
 		FormController formDisplayController = formDisplay.getFormController();
 		formDisplayController.executeOnHideMethod();
 		if (formDisplayController.isMarkedForCleanup())
@@ -144,14 +144,9 @@ public class FormPanel extends JQMPanel implements IFormComponent
 		return formDisplay;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.mobile.client.ui.IFormComponent#isShow()
-	 */
 	@Override
-	public boolean isShow()
+	public boolean isShown()
 	{
-		return isShow;
+		return isShown;
 	}
 }

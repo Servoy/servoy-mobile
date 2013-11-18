@@ -45,5 +45,5 @@ public interface IFormComponent
 
 	IFormDisplay getFormDisplay();
 
-	boolean isShow();
+	boolean isShown();
 }

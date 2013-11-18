@@ -40,18 +40,6 @@ public class ListFormDisplay extends FormDisplay
 	}
 
 	@Override
-	protected FormPage createDisplayPage()
-	{
-		return new ListFormPage(this);
-	}
-
-	@Override
-	protected FormPanel createDisplayPanel()
-	{
-		return new ListFormPanel(this);
-	}
-
-	@Override
 	protected ArrayList<Widget> createContent(ArrayList<Component> contentComponents)
 	{
 		ArrayList<Widget> contentList = new ArrayList<Widget>();
@@ -70,33 +58,4 @@ public class ListFormDisplay extends FormDisplay
 		super.cleanup();
 	}
 
-	class ListFormPage extends FormPage
-	{
-		public ListFormPage(IFormDisplay formDisplay)
-		{
-			super(formDisplay);
-		}
-
-		@Override
-		protected void onPageBeforeShow()
-		{
-			super.onPageBeforeShow();
-			formList.refreshList();
-		}
-	}
-
-	class ListFormPanel extends FormPanel
-	{
-		public ListFormPanel(IFormDisplay formDisplay)
-		{
-			super(formDisplay);
-		}
-
-		@Override
-		protected void onPanelBeforeOpen()
-		{
-			super.onPanelBeforeOpen();
-			formList.refreshList();
-		}
-	}
 }

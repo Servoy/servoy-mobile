@@ -41,8 +41,7 @@ public class RecordDescription extends JavaScriptObject
 
 	public final native Object getPK()
 	/*-{
-		if (typeof(this.pk) == 'number')
-		{	
+		if (typeof (this.pk) == 'number') {
 			//do manual boxing
 			return $wnd.internal.Utils.wrapIfPrimitive(this.pk);
 		}
@@ -51,7 +50,8 @@ public class RecordDescription extends JavaScriptObject
 
 	public final native JsArrayString getRFS()
 	/*-{
-		if (!this.rfs) this.rfs = new Array();
+		if (!this.rfs)
+			this.rfs = new Array();
 		return this.rfs;
 	}-*/;
 

@@ -79,8 +79,9 @@ public class FormPage extends JQMPage implements IFormComponent
 	{
 		formDisplay.getFormController().getApplication().getFormManager().setChangingFormPage(true);
 		FoundSet foundSet = formDisplay.getFormController().getFormModel();
-		if (foundSet != null) formDisplay.refreshRecord(foundSet.getSelectedRecord());
-		else formDisplay.refreshRecord(null);
+		if (foundSet != null) formDisplay.initWithRecord(foundSet.getSelectedRecord());
+		else formDisplay.initWithRecord(null);
+
 		if (headerComponent != null)
 		{
 			setDocumentTitle(headerComponent.getText());
@@ -104,7 +105,7 @@ public class FormPage extends JQMPage implements IFormComponent
 		if (formDisplay.getFormController().isMarkedForCleanup()) formDisplay.getFormController().cleanup();
 	}
 
-	public boolean isShow()
+	public boolean isShown()
 	{
 		return isShow;
 	}

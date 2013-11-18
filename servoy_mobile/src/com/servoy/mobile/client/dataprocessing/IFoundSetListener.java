@@ -18,7 +18,7 @@
 package com.servoy.mobile.client.dataprocessing;
 
 /**
- * The listener that's notified when a foundset  selection value changes.
+ * The listener that's notified when a foundset selection/record list changes.
  * 
  * @author jcompagner
  */

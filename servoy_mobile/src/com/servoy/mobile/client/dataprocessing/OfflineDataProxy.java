@@ -384,7 +384,7 @@ public class OfflineDataProxy
 			Object pk = pks.next();
 			pks.remove();
 			sb.append(pk);
-			if (sb.length() > 1700) break;//prevent going over 2000 URL length 
+			if (sb.length() > 1700) break; //prevent going over 2000 URL length TODO don't we then need to split it somehow?
 			if (pks.hasNext()) sb.append(',');
 		}
 		return sb.toString();

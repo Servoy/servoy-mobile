@@ -173,6 +173,13 @@ public class Record extends Scope implements IJSRecord, IRowChangeListener
 	public void notifyChange(String dataProviderID, Object value)
 	{
 		fireModificationEvent(dataProviderID, value);
+
+		// for things that need to listen to all data changes in a foundset:
+		FoundSet parentFoundset = getParent();
+		if (parentFoundset != null)
+		{
+			parentFoundset.fireRecordDataProviderChanged(this, dataProviderID, value);
+		}
 	}
 
 	protected Record getRelatedRecord(String dataProviderID, boolean create)

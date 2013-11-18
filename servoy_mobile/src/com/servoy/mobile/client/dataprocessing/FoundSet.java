@@ -62,6 +62,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 	private final FoundSetDescription foundSetDescription;
 	private final ArrayList<Record> records = new ArrayList<Record>();
 	private final ArrayList<IFoundSetListener> foundSetListeners = new ArrayList<IFoundSetListener>();
+	private final ArrayList<IFoundSetDataChangeListener> foundSetDataChangeListeners = new ArrayList<IFoundSetDataChangeListener>();
 	private final JavaScriptObject javascriptInstance;
 	private Date lastTouched = new Date();
 	protected boolean findMode = false;
@@ -498,7 +499,12 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		if (changeSelection)
 		{
 			selectedIndex = index;
+			fireContentChanged();
 			fireSelectionChanged();
+		}
+		else
+		{
+			adjustSelectionAndContentOnListChange(index, false);
 		}
 		if (!isInFind())
 		{
@@ -515,7 +521,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		foundSetDescription.insertRecord(index, recd);
 		fillNotLoadedRecordsWithNull(index);
 		records.add(index, retval);
-		fireContentChanged();
+		adjustSelectionAndContentOnListChange(index, false);
 	}
 
 	public Record getRecord(int index)
@@ -584,6 +590,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		if (recordIndex >= 0)
 		{
 			records.remove(record);
+			record.flush();
 			int listIndex = getRecordIndexInDescription(record.getPK());
 			if (listIndex >= 0)
 			{
@@ -591,26 +598,46 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 			}
 			getFoundSetManager().getEditRecordList().removeEditedRecord(record);
 			if (!isInFind()) getFoundSetManager().deleteRowData(getEntityName(), record.getRow(), record.isNew());
-			adjustSelectionAndContent(recordIndex);
+			adjustSelectionAndContentOnListChange(recordIndex, true);
 			return true;
 		}
 		return false;
 	}
 
-	private void adjustSelectionAndContent(int recordIndex)
+	/**
+	 * @param deleted if it's not deleted then it's added 
+	 */
+	private void adjustSelectionAndContentOnListChange(int recordIndex, boolean deleted)
 	{
-		fireContentChanged();
+		fireContentChanged(); // record was added or removed - foundset content has changed
+
+		boolean fireSelectionChanged = false;
 		int newSelectedIndex = selectedIndex;
 		if (recordIndex < selectedIndex)
 		{
-			newSelectedIndex--;
+			fireSelectionChanged = true;
+			if (deleted) newSelectedIndex--;
+			else newSelectedIndex++;
 		}
+		else if (recordIndex == selectedIndex)
+		{
+			if (!deleted) newSelectedIndex++; // if deleted, the index doesn't change but we should still do a fire cause the selected record did change just the index didn't
+			fireSelectionChanged = true;
+		}
+
+		if (newSelectedIndex < 0)
+		{
+			fireSelectionChanged = true;
+			newSelectedIndex = 0;
+		}
+
 		if (newSelectedIndex >= getSize())
 		{
+			fireSelectionChanged = true;
 			newSelectedIndex = getSize() - 1;
 		}
-		// the selection could be deleted, do make sure it refreshes, always set this selection
-		setSelectedIndexInternal(newSelectedIndex);
+
+		if (fireSelectionChanged) setSelectedIndexInternal(newSelectedIndex);
 	}
 
 	private int getRecordIndexInDescription(Object pk)
@@ -654,9 +681,10 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		{
 			if (index < records.size())
 			{
-				records.remove(index);
+				Record r = records.remove(index);
+				if (r != null) r.flush();
 			}
-			adjustSelectionAndContent(index);
+			adjustSelectionAndContentOnListChange(index, true);
 		}
 	}
 
@@ -777,6 +805,29 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 			l.contentChanged();
 	}
 
+	public void addFoundSetDataChangeListener(IFoundSetDataChangeListener listener)
+	{
+		if (foundSetDataChangeListeners.indexOf(listener) == -1) foundSetDataChangeListeners.add(listener);
+	}
+
+	public void removeFoundSetDataChangeListener(IFoundSetListener listener)
+	{
+		foundSetDataChangeListeners.remove(listener);
+	}
+
+	/**
+	 * Called when the data of a record has changed.
+	 * 
+	 * @param record the record that was changed.
+	 * @param dataProviderID the dataprovider that was changed
+	 * @param value the new value of that dataprovider.
+	 */
+	protected void fireRecordDataProviderChanged(Record record, String dataProviderID, Object value)
+	{
+		for (IFoundSetDataChangeListener l : foundSetDataChangeListeners)
+			l.recordDataProviderChanged(record, dataProviderID, value);
+	}
+
 	int getRelationID(String relationName)
 	{
 		return foundSetManager.getRelationID(relationName);
@@ -803,7 +854,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 
 	public void flushIfPossible()
 	{
-		if (!filteredFoundset && foundSetListeners.size() == 0 && selectionListeners.size() == 0)
+		if (!filteredFoundset && foundSetListeners.size() == 0 && selectionListeners.size() == 0 && foundSetDataChangeListeners.size() == 0)
 		{
 			Date currentTime = new Date();
 			if (currentTime.getTime() - lastTouched.getTime() > 15000)
@@ -874,4 +925,5 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		if (recordIndex == -1) return -1;
 		return recordIndex + 1;
 	}
+
 }

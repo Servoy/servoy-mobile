@@ -738,7 +738,8 @@ public class FoundSetManager
 		DataproviderIdAndTypeHolder dataProviderID = entities.getPKDataProviderID(entityName);
 		if (dataProviderID == null) throw new IllegalStateException(application.getI18nMessageWithFallback("cannotWorkWithoutPK"));
 
-		Object pk = rowData.getValue(dataProviderID.getDataproviderId(), dataProviderID.getType());
+//		Object pk = rowData.getValue(dataProviderID.getDataproviderId()); // uncomment for GWT debug mode (closer to what RecordDescription.getPK() does so that toString for both will match)
+		Object pk = rowData.getValue(dataProviderID.getDataproviderId(), dataProviderID.getType()); // comment out for GWT debug mode (otherwise pk_keys are stored as "entity_1234" but accessed as "entity_1234.0" => doesn't work); maybe we could always use the line above instead of this
 		return new String[] { pk.toString(), entityName + '|' + pk };
 
 	}
