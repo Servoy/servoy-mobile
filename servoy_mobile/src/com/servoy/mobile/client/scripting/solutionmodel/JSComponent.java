@@ -28,6 +28,7 @@ import com.servoy.base.persistence.IMobileProperties;
 import com.servoy.base.persistence.constants.IRepositoryConstants;
 import com.servoy.base.solutionmodel.IBaseSMComponent;
 import com.servoy.mobile.client.persistence.AbstractBase.MobileProperties;
+import com.servoy.mobile.client.persistence.Bean;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.persistence.GraphicalComponent;
@@ -96,6 +97,14 @@ public class JSComponent extends JSBase implements IBaseSMComponent, Exportable
 			if (tabPanel != null)
 			{
 				return new JSTabPanel(tabPanel, model, parent);
+			}
+		}
+		if (componentType == null || componentType.intValue() == IRepositoryConstants.BEANS)
+		{
+			Bean bean = Bean.castIfPossible(component);
+			if (bean != null)
+			{
+				return new JSBean(bean, model, parent);
 			}
 		}
 		return null;
