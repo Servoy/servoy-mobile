@@ -37,6 +37,7 @@ public class FormManager
 	private final JSHistory history = new JSHistory(this);
 	private final MobileClient application;
 	private Login login;
+	boolean showFormExecutedInCode = false; // this will cause showFirstForm to ignore the call if a showForm was called before in onSolutionOpen for ex
 
 	private final LinkedHashMap<String, FormController> formControllerMap = new LinkedHashMap<String, FormController>()
 	{
@@ -125,6 +126,10 @@ public class FormManager
 
 	public boolean showForm(FormController formController, boolean restoreScrollPosition)
 	{
+		if (!formController.getName().equals(application.getFlattenedSolution().getLoginForm()))
+		{
+			showFormExecutedInCode = true;
+		}
 		if (currentForm == formController) return true;
 		if (isChangingFormPage) return false;
 		formControllerMap.put(formController.getName(), formController);
@@ -208,7 +213,9 @@ public class FormManager
 	{
 		// if showing the first form (when startup or after a sync)
 		// first just clear all existing forms to be fully refreshed.
-		if (!isChangingFormPage)
+
+
+		if (!isChangingFormPage && !showFormExecutedInCode)
 		{
 			showForm(getFirstForm());
 		}
