@@ -825,7 +825,8 @@
 				})
 				.focus(function(){
 					if ( w.disabled === false && o.useFocus === true ) {
-						w.d.input.trigger('datebox', {'method': 'open'}); w.d.wrap.addClass('ui-focus'); w.d.input.removeClass('ui-focus');
+						if (useNewStyle === true) w.d.input.trigger('datebox', {'method': 'open'}); 
+						w.d.wrap.addClass('ui-focus'); w.d.input.removeClass('ui-focus');
 						if ( o.useNewStyle === false ) { w.d.input.parent().removeClass('ui-focus'); w.d.wrap.parent().addClass('ui-focus'); }
 					} 
 					if ( o.useNewStyle === false ) { w.d.input.removeClass('ui-focus'); }
@@ -848,7 +849,7 @@
 				w.d.input.parent().css('border', 'none').removeClass('ui-shadow-inset');
 			}
 			
-			w.d.wrap.parent().on(o.clickEvent, function() {
+			w.d.wrap.parent().on(o.clickEventAlt, function() {
 				if ( !w.disabled && o.useFocus === true && o.useNewStyle === false ) {
 					w.d.input.trigger('datebox', {'method': 'open'}); w.d.wrap.addClass('ui-focus'); w.d.input.removeClass('ui-focus');
 					setTimeout(function(){
@@ -979,7 +980,7 @@
 				basepop = {'history':false},
 				qns = 'data-'+this.ns,
 				trans = o.useAnimation ? o.transition : 'none';
-			
+
 			if ( o.useFocus === true && w.fastReopen === true ) { w.d.input.blur(); return false; }
 			if ( w.clearFunc !== false ) {
 				clearTimeout(w.clearFunc); w.clearFunc = false;
