@@ -448,6 +448,11 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		filteredFoundset = true;
 	}
 
+	public boolean isFoundsetFiltered()
+	{
+		return filteredFoundset;
+	}
+
 	public int newRecord(int index, boolean changeSelection)
 	{
 		Record retval = null;
@@ -821,7 +826,6 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		{
 			// if there are outstanding edits then this will delete the records.
 			flushAllRecords();
-			fireContentChanged();
 		}
 
 		// (re) export all relations

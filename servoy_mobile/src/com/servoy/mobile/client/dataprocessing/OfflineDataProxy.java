@@ -252,12 +252,19 @@ public class OfflineDataProxy
 	}
 
 	@SuppressWarnings("nls")
-	public void requestRowData(final HashMap<String, HashSet<Object>> entitiesToPKs, final boolean updateMode)
+	public void requestRowData(final HashMap<String, HashSet<Object>> entitiesToPKs, final boolean updateMode, final ArrayList<FoundSet> contentChangedFoundsets)
 	{
 		final String entityName = getNextItem(entitiesToPKs.keySet());
 		if (entityName == null)
 		{
 			//when empty stop
+			if (contentChangedFoundsets != null)
+			{
+				for (FoundSet fs : contentChangedFoundsets)
+				{
+					if (!fs.isFoundsetFiltered() && !fs.isInFind()) fs.fireContentChanged();
+				}
+			}
 			loadCallback.onSuccess(Integer.valueOf(totalLength));
 			loadCallback = null;
 			return;
@@ -267,7 +274,7 @@ public class OfflineDataProxy
 		if (coll.size() == 0) //deal/skip with empty coll
 		{
 			entitiesToPKs.remove(entityName);//remove current when empty
-			requestRowData(entitiesToPKs, updateMode);//process the next
+			requestRowData(entitiesToPKs, updateMode, contentChangedFoundsets);//process the next
 			return;
 		}
 		Iterator<Object> pks = coll.iterator();
@@ -314,7 +321,7 @@ public class OfflineDataProxy
 							entitiesToPKs.remove(entityName);//remove current when empty
 						}
 
-						requestRowData(entitiesToPKs, updateMode);//process the next
+						requestRowData(entitiesToPKs, updateMode, contentChangedFoundsets);//process the next
 					}
 					else
 					{
