@@ -196,6 +196,16 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		return newRecord(integer - 1, Utils.getAsBoolean(changeSelection, true)) + 1;
 	}
 
+	@Export("newRecord")
+	public int js_newRecord(int index, boolean changeSelection)
+	{
+		if (index > 0)
+		{
+			return newRecord(index - 1, changeSelection) + 1;
+		}
+		return -1;
+	}
+
 	@Override
 	@Export("deleteRecord")
 	public boolean js_deleteRecord() throws Exception
