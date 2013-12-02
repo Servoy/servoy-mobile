@@ -91,12 +91,12 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 	@Override
 	public void valueChanged(ModificationEvent e)
 	{
-		if (editBlurHandler != null) editBlurHandler.removeHandler();
+		removeChangeListeners();
 		clear();
 		items.clear();
 		fillByValueList();
 		recreate(getId());
-		if (editProvider != null) editBlurHandler = addBlurHandler(editProvider);
+		addChangeListeners();
 	}
 
 	private native void recreate(String id) /*-{
@@ -120,11 +120,7 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 			editProvider.clean();
 			editProvider = null;
 		}
-		if (editBlurHandler != null)
-		{
-			editBlurHandler.removeHandler();
-			editBlurHandler = null;
-		}
+		removeChangeListeners();
 	}
 
 	/*
@@ -190,7 +186,7 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 	}-*/;
 
 	private EditProvider editProvider;
-	private HandlerRegistration editBlurHandler;
+	private final List<HandlerRegistration> changeHandlers = new ArrayList<HandlerRegistration>();
 
 	/*
 	 * @see com.servoy.mobile.client.dataprocessing.IEditListenerSubject#addEditListener(com.servoy.mobile.client.dataprocessing.IEditListener)
@@ -202,7 +198,34 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 		{
 			editProvider = new EditProvider(this);
 			editProvider.addEditListener(editListener);
-			editBlurHandler = addBlurHandler(editProvider);
+			addChangeListeners();
+		}
+	}
+
+	private void addChangeListeners()
+	{
+		if (editProvider != null && items != null && items.size() > 0)
+		{
+			for (int i = 0; i < items.size(); i++)
+			{
+				HandlerRegistration handler = items.get(i).checkbox.addValueChangeHandler(editProvider);
+				if (handler != null)
+				{
+					changeHandlers.add(handler);
+				}
+			}
+		}
+	}
+
+	private void removeChangeListeners()
+	{
+		if (changeHandlers != null)
+		{
+			for (HandlerRegistration handler : changeHandlers)
+			{
+				handler.removeHandler();
+			}
+			changeHandlers.clear();
 		}
 	}
 
