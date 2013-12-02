@@ -27,6 +27,7 @@ import java.util.Map;
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
+import org.timepedia.exporter.client.Getter;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
@@ -44,6 +45,7 @@ import com.servoy.base.query.BaseQueryTable;
 import com.servoy.base.query.IBaseSQLCondition;
 import com.servoy.base.scripting.api.IJSFoundSet;
 import com.servoy.base.scripting.api.IJSRecord;
+import com.servoy.mobile.client.dto.DataProviderDescription;
 import com.servoy.mobile.client.dto.FoundSetDescription;
 import com.servoy.mobile.client.dto.RecordDescription;
 import com.servoy.mobile.client.dto.RelationDescription;
@@ -852,4 +854,33 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		if (recordIndex == -1) return -1;
 		return recordIndex + 1;
 	}
+	@Getter("alldataproviders")
+	public String[] getAlldataproviders()
+	{
+		return alldataproviders();
+	}
+
+	// we can't annotate this with getter - as it will bump into an timepedia exporter bug right now - and do stackoverflow (when calling in JS
+	// the method (alldataproviders()) it actually references it's property who's getter tries to do all this again)
+	public String[] alldataproviders()
+	{
+		String[] dp;
+		JsArray<DataProviderDescription> dpArray = foundSetManager.getEntityDescription(getEntityName()).getDataProviders();
+
+		if (dpArray != null)
+		{
+			dp = new String[dpArray.length()];
+			for (int i = 0; i < dpArray.length(); i++)
+			{
+				dp[i] = dpArray.get(i).getDataProviderID();
+			}
+		}
+		else
+		{
+			dp = new String[0];
+		}
+
+		return dp;
+	}
+
 }
