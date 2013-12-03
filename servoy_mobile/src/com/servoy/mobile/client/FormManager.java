@@ -84,16 +84,6 @@ public class FormManager
 		return login;
 	}
 
-	public boolean showForm(String formName)
-	{
-		FormController form = getForm(formName);
-		if (form != null)
-		{
-			return showForm(form);
-		}
-		return false;
-	}
-
 	public FormController getForm(String name)
 	{
 		FormController formController = formControllerMap.get(name);
@@ -114,7 +104,7 @@ public class FormManager
 
 	public boolean showForm(FormController formController)
 	{
-		return showForm(formController, false);
+		return showForm(formController, false, false);
 	}
 
 	private boolean isChangingFormPage;
@@ -126,7 +116,12 @@ public class FormManager
 
 	public boolean showForm(FormController formController, boolean restoreScrollPosition)
 	{
-		if (!formController.getName().equals(application.getFlattenedSolution().getLoginForm()))
+		return showForm(formController, restoreScrollPosition, false);
+	}
+
+	private boolean showForm(FormController formController, boolean restoreScrollPosition, boolean isLoginForm)
+	{
+		if (!isLoginForm)
 		{
 			showFormExecutedInCode = true;
 		}
@@ -226,7 +221,8 @@ public class FormManager
 		currentForm = null;
 		if (application.getFlattenedSolution().getLoginForm() != null)
 		{
-			if (showForm(application.getFlattenedSolution().getLoginForm()))
+			FormController form = getForm(application.getFlattenedSolution().getLoginForm());
+			if (form != null && showForm(form, false, true))
 			{
 				return;
 			}
