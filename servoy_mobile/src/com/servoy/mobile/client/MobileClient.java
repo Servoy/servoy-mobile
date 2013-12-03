@@ -593,28 +593,26 @@ public class MobileClient implements EntryPoint
 						else
 						{
 							error(reason.getMessage());
-							if (reason.getStatusCode() != 0)
+							// if authentication failed, clear the current checked/unchecked credentials
+							if (reason.getStatusCode() == Response.SC_UNAUTHORIZED ||
+								(reason.getStatusCode() == 0 && flattenedSolution.getMustAuthenticate() && !offlineDataProxy.hasCredentials()))
 							{
-								// if authentication failed, clear the current checked/unchecked credentials
-								if (reason.getStatusCode() == Response.SC_UNAUTHORIZED)
+								// for solutions that have mustAuthenticate == false - this will be a bit weird, but the server does ask for authentication it seems, and the server is leading
+								clearCredentials();
+								afterLoginHandler = new IAfterLoginHandler()
 								{
-									// for solutions that have mustAuthenticate == false - this will be a bit weird, but the server does ask for authentication it seems, and the server is leading
-									clearCredentials();
-									afterLoginHandler = new IAfterLoginHandler()
+									@Override
+									public void execute()
 									{
-										@Override
-										public void execute()
-										{
-											load(successCallback, errorHandler);
-										}
-									};
-									formManager.showLogin(); // TODO we should have this available in scripting - so that the developer can use it in callback methods as well
-									// should we also make onSolutionOpen get called again after this happens - after successful re-login?
-								}
-								else
-								{
-									showFirstForm();
-								}
+										load(successCallback, errorHandler);
+									}
+								};
+								formManager.showLogin(); // TODO we should have this available in scripting - so that the developer can use it in callback methods as well
+								// should we also make onSolutionOpen get called again after this happens - after successful re-login?
+							}
+							else if (reason.getStatusCode() != 0)
+							{
+								showFirstForm();
 							}
 						}
 					}
