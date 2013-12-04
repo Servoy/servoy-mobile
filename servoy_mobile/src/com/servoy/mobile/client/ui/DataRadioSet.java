@@ -234,7 +234,6 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 		// not supported
 	}
 
-	@Override
 	public void refresh()
 	{
 		refreshIfPresent(getId());
