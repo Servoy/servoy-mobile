@@ -50,7 +50,6 @@ import com.sksamuel.jqm4gwt.JQMPageEvent;
 import com.sksamuel.jqm4gwt.JQMPageEvent.Handler;
 import com.sksamuel.jqm4gwt.Mobile;
 import com.sksamuel.jqm4gwt.events.TapEvent;
-import com.sksamuel.jqm4gwt.events.TapHandlerForPageSwitch;
 import com.sksamuel.jqm4gwt.list.JQMList;
 import com.sksamuel.jqm4gwt.list.JQMListItem;
 
@@ -329,8 +328,9 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 	}
 
 	private final native String getTransitionType() /*-{
-															return $wnd.$.mobile.defaultPageTransition ? $wnd.$.mobile.defaultPageTransition : null;
-															}-*/;
+		return $wnd.$.mobile.defaultPageTransition ? $wnd.$.mobile.defaultPageTransition
+				: null;
+	}-*/;
 
 	protected void refreshListIfNeeded()
 	{
@@ -398,12 +398,12 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 	}
 
 	public final native void setRefreshTimeout(boolean actual) /*-{
-																var th = this;
-																var f = function() {
-																th.@com.servoy.mobile.client.ui.FormList::refreshTimeoutFinished(Z)(actual);
-																}
-																$wnd.setTimeout(f, 1);
-																}-*/;
+		var th = this;
+		var f = function() {
+			th.@com.servoy.mobile.client.ui.FormList::refreshTimeoutFinished(Z)(actual);
+		}
+		$wnd.setTimeout(f, 1);
+	}-*/;
 
 	public void refreshTimeoutFinished(boolean actual)
 	{
@@ -436,8 +436,8 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 	}
 
 	protected native void forceRefresh(String id) /*-{
-													$wnd.$("#" + id).listview('refresh', true);
-													}-*/;
+		$wnd.$("#" + id).listview('refresh', true);
+	}-*/;
 
 
 	@Override
@@ -505,10 +505,10 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 				final int selIndex = i;
 				if (listItemOnAction != null)
 				{
-					tapRegistrations.add(listItem.addTapHandler(new TapHandlerForPageSwitch()
+					tapRegistrations.add(listItem.addTapHandler(new TapHandlerForPageSwitchWithBlur()
 					{
 						@Override
-						public void onSafeTap(TapEvent event)
+						public void onTapAfterBlur(TapEvent event)
 						{
 							foundSet.setSelectedIndexInternal(selIndex);
 							formController.getExecutor().fireEventCommand(IJSEvent.ACTION, listItemOnAction, getRuntimeComponent(), null);

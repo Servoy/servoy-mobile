@@ -18,10 +18,10 @@
 package com.servoy.mobile.client;
 
 import com.google.gwt.user.client.ui.HTML;
+import com.servoy.mobile.client.ui.TapHandlerForPageSwitchWithBlur;
 import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.events.TapEvent;
-import com.sksamuel.jqm4gwt.events.TapHandlerForPageSwitch;
 
 /**
  * @author lvostinar
@@ -41,10 +41,10 @@ public class TrialModePage extends JQMPage
 		htmlText.setWordWrap(true);
 		add(htmlText);
 		JQMButton next = new JQMButton("Launch App");
-		next.addTapHandler(new TapHandlerForPageSwitch()
+		next.addTapHandler(new TapHandlerForPageSwitchWithBlur()
 		{
 			@Override
-			public void onSafeTap(TapEvent event)
+			public void onTapAfterBlur(TapEvent event)
 			{
 				if (!application.getFoundSetManager().hasContent())
 				{

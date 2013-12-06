@@ -27,8 +27,8 @@ import com.servoy.mobile.client.persistence.Field;
 import com.servoy.mobile.client.ui.Executor;
 import com.servoy.mobile.client.ui.IFieldComponent;
 import com.servoy.mobile.client.ui.ISupportsPlaceholderComponent;
+import com.servoy.mobile.client.ui.TapHandlerForPageSwitchWithBlur;
 import com.sksamuel.jqm4gwt.events.TapEvent;
-import com.sksamuel.jqm4gwt.events.TapHandlerForPageSwitch;
 
 /**
  * @author gboros
@@ -68,10 +68,10 @@ public class AbstractRuntimeFieldComponent extends AbstractRuntimeBaseComponent<
 	{
 		if (command != null)
 		{
-			addHandlerRegistration(component.addTapHandler(new TapHandlerForPageSwitch()
+			addHandlerRegistration(component.addTapHandler(new TapHandlerForPageSwitchWithBlur()
 			{
 				@Override
-				public void onSafeTap(TapEvent event)
+				public void onTapAfterBlur(TapEvent event)
 				{
 					executor.fireEventCommand(IJSEvent.ACTION, command, AbstractRuntimeFieldComponent.this, null);
 				}

@@ -27,7 +27,6 @@ import com.sksamuel.jqm4gwt.JQMPage;
 import com.sksamuel.jqm4gwt.Mobile;
 import com.sksamuel.jqm4gwt.button.JQMButton;
 import com.sksamuel.jqm4gwt.events.TapEvent;
-import com.sksamuel.jqm4gwt.events.TapHandlerForPageSwitch;
 import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
 import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 import com.sksamuel.jqm4gwt.toolbar.JQMPanel;
@@ -223,12 +222,14 @@ public class FormPage extends JQMPage implements IFormComponent
 				}
 				navigatorLeftButton = headerComponent.setLeftButton("", DataIcon.BARS); //$NON-NLS-1$
 				navigatorLeftButton.setIconPos(IconPos.NOTEXT);
-				navigatorLeftButtonHandler = navigatorLeftButton.addTapHandler(new TapHandlerForPageSwitch()
+				navigatorLeftButtonHandler = navigatorLeftButton.addTapHandler(new TapHandlerForPageSwitchWithBlur()
 				{
+
 					@Override
-					public void onSafeTap(TapEvent event)
+					public void onTapAfterBlur(TapEvent event)
 					{
 						formNavigator.toggle();
+
 					}
 				});
 			}
