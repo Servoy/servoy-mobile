@@ -47,6 +47,12 @@ public class JSSecurity implements Exportable, IJSSecurity
 	}-*/;
 
 	@Override
+	public Object authenticate(Object[] credentials)
+	{
+		return authenticate(null, null, credentials);
+	}
+
+	@Override
 	public Object authenticate(String authenticator_solution, String method, Object[] credentials)
 	{
 		if (credentials != null && credentials.length == 2)

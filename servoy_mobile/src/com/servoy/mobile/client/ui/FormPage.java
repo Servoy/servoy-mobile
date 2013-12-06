@@ -198,6 +198,7 @@ public class FormPage extends JQMPage implements IFormComponent
 			{
 				remove(headerComponent);
 				headerComponent = null;
+				headerAddedByNavigator = false;
 			}
 			else headerComponent.setLeftButton(replacedLeftButton);
 		}
@@ -218,7 +219,11 @@ public class FormPage extends JQMPage implements IFormComponent
 			{
 				if (headerComponent == null)
 				{
-					headerComponent = new JQMHeader();
+					headerComponent = new JQMHeader("");
+					headerComponent.setTheme("b");
+					headerComponent.setFixed(true);
+					add(headerComponent);
+					headerAddedByNavigator = true;
 				}
 				navigatorLeftButton = headerComponent.setLeftButton("", DataIcon.BARS); //$NON-NLS-1$
 				navigatorLeftButton.setIconPos(IconPos.NOTEXT);
@@ -236,6 +241,11 @@ public class FormPage extends JQMPage implements IFormComponent
 
 			add(formNavigator);
 		}
+	}
+
+	public void closeNavigator()
+	{
+		if (formNavigator != null && !isTablet()) formNavigator.close();
 	}
 
 	public void removeWidget(Widget w)

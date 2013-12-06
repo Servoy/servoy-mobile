@@ -125,7 +125,11 @@ public class FormManager
 		{
 			showFormExecutedInCode = true;
 		}
-		if (currentForm == formController) return true;
+		if (currentForm == formController)
+		{
+			if (currentForm != null) currentForm.getView().getDisplayPage().closeNavigator();
+			return true;
+		}
 		if (isChangingFormPage) return false;
 		formControllerMap.put(formController.getName(), formController);
 		String currentNavigatorName = null;

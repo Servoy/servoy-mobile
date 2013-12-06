@@ -242,20 +242,20 @@ public class FormDisplay implements IFormDisplay
 
 		JQMHeader headerComponent = null;
 		if (label != null) headerComponent = (JQMHeader)createWidget(label);
-		if (headerComponent == null) headerComponent = new JQMHeader(""); //$NON-NLS-1$  
-
 		if (leftToolbarButton != null || rightToolbarButton != null)
 		{
+			if (headerComponent == null) headerComponent = new JQMHeader(""); //$NON-NLS-1$
 			if (leftToolbarButton != null) headerComponent.setLeftButton(leftToolbarButton);
 			if (rightToolbarButton != null) headerComponent.setRightButton(rightToolbarButton);
 		}
 
-		if (headerPart != null)
+		if (headerComponent != null)
 		{
-			headerComponent.setTheme(headerPart.getStyleClass());
-			headerComponent.setFixed(headerPart.getPartType() == IPartConstants.TITLE_HEADER);
+			headerComponent.setTheme(headerPart != null ? headerPart.getStyleClass() : "b");
+			headerComponent.setFixed(headerPart != null ? (headerPart.getPartType() == IPartConstants.TITLE_HEADER) : true);
+
+			if (headerDecorator != null) headerDecorator.decorateHeader(headerPart, headerComponent);
 		}
-		if (headerDecorator != null) headerDecorator.decorateHeader(headerPart, headerComponent);
 
 		return headerComponent;
 	}

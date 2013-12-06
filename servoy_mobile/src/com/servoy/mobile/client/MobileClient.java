@@ -592,12 +592,13 @@ public class MobileClient implements EntryPoint
 						}
 						else
 						{
-							error(reason.getMessage());
 							// if authentication failed, clear the current checked/unchecked credentials
 							if (reason.getStatusCode() == Response.SC_UNAUTHORIZED ||
 								(reason.getStatusCode() == 0 && flattenedSolution.getMustAuthenticate() && !offlineDataProxy.hasCredentials()))
 							{
-								// for solutions that have mustAuthenticate == false - this will be a bit weird, but the server does ask for authentication it seems, and the server is leading
+								// for solutions that have mustAuthenticate == false - this will be a bit weird, but the server does ask for authentication it seems, and the server is leading,
+								// so we don't show it as an error but will forward to the login page
+								if (reason.getStatusCode() != Response.SC_UNAUTHORIZED || flattenedSolution.getMustAuthenticate()) error(reason.getMessage());
 								clearCredentials();
 								afterLoginHandler = new IAfterLoginHandler()
 								{
@@ -612,7 +613,12 @@ public class MobileClient implements EntryPoint
 							}
 							else if (reason.getStatusCode() != 0)
 							{
+								error(reason.getMessage());
 								showFirstForm();
+							}
+							else
+							{
+								error(reason.getMessage());
 							}
 						}
 					}
