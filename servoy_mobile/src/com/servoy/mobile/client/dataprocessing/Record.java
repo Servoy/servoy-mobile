@@ -422,17 +422,33 @@ public class Record extends Scope implements IJSRecord, IRowChangeListener
 		return sb.toString();
 	}
 
-	/**
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((parent == null) ? 0 : parent.hashCode());
+		result = prime * result + ((recordDescription == null) ? 0 : recordDescription.hashCode());
+		return result;
+	}
+
 	@Override
 	public boolean equals(Object obj)
 	{
-		if (obj instanceof Record)
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		Record other = (Record)obj;
+		if (parent == null)
 		{
-			Record rec = (Record)obj;
-			return recordDescription == rec.recordDescription && parent == rec.parent;
+			if (other.parent != null) return false;
 		}
-		return false;
+		else if (!parent.equals(other.parent)) return false;
+		if (recordDescription == null)
+		{
+			if (other.recordDescription != null) return false;
+		}
+		else if (!recordDescription.equals(other.recordDescription)) return false;
+		return true;
 	}
 }
