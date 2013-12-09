@@ -421,4 +421,18 @@ public class Record extends Scope implements IJSRecord, IRowChangeListener
 		sb.append("]");
 		return sb.toString();
 	}
+
+	/**
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (obj instanceof Record)
+		{
+			Record rec = (Record)obj;
+			return recordDescription == rec.recordDescription && parent == rec.parent;
+		}
+		return false;
+	}
 }
