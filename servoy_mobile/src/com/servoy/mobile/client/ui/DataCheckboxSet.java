@@ -256,6 +256,13 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 		return scriptable;
 	}
 
+	@Override
+	public void setText(String text)
+	{
+		super.setText(text);
+		setTitleTextVisible(text != null && text.length() > 0);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -286,6 +293,6 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 	@Override
 	public void setTitleTextVisible(boolean visible)
 	{
-		// not supported
+		setLabelHidden(!visible);
 	}
 }

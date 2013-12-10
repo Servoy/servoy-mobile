@@ -150,6 +150,13 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 		return scriptable;
 	}
 
+	@Override
+	public void setText(String text)
+	{
+		super.setText(text);
+		setTitleTextVisible(text != null && text.length() > 0);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -180,7 +187,7 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 	@Override
 	public void setTitleTextVisible(boolean visible)
 	{
-		// not supported
+		setLabelHidden(!visible);
 	}
 
 	public void setPlaceholderText(String placeholder)

@@ -230,6 +230,13 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 		return scriptable;
 	}
 
+	@Override
+	public void setText(String text)
+	{
+		super.setText(text);
+		setTitleTextVisible(text != null && text.length() > 0);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -260,7 +267,7 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 	@Override
 	public void setTitleTextVisible(boolean visible)
 	{
-		// not supported
+		setLabelHidden(!visible);
 	}
 
 	@Override
@@ -270,11 +277,11 @@ public class DataSelect extends JQMSelect implements IDisplayData, IFieldCompone
 	}
 
 	private native void refreshIfPresent(String dataSelectId) /*-{
-																var selectId = $wnd.$("#" + dataSelectId).find("select").attr("id");
-																var select = $wnd.$("select#" + selectId);
-																var selectEl = select.get()[0];
-																if (selectEl && $wnd.$.data(selectEl, "mobile-selectmenu")) {
-																select.selectmenu("refresh");
-																}
-																}-*/;
+		var selectId = $wnd.$("#" + dataSelectId).find("select").attr("id");
+		var select = $wnd.$("select#" + selectId);
+		var selectEl = select.get()[0];
+		if (selectEl && $wnd.$.data(selectEl, "mobile-selectmenu")) {
+			select.selectmenu("refresh");
+		}
+	}-*/;
 }

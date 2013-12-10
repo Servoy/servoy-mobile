@@ -310,6 +310,13 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 		return scriptable;
 	}
 
+	@Override
+	public void setText(String text)
+	{
+		super.setText(text);
+		setTitleTextVisible(text != null && text.length() > 0);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -340,7 +347,7 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 	@Override
 	public void setTitleTextVisible(boolean visible)
 	{
-		// not supported
+		setLabelHidden(!visible);
 	}
 
 	public void setPlaceholderText(String placeholder)

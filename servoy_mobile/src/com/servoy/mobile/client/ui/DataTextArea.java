@@ -94,6 +94,13 @@ public class DataTextArea extends JQMTextArea implements IDisplayData, ISupportT
 		return scriptable;
 	}
 
+	@Override
+	public void setText(String text)
+	{
+		super.setText(text);
+		setTitleTextVisible(text != null && text.length() > 0);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -124,7 +131,7 @@ public class DataTextArea extends JQMTextArea implements IDisplayData, ISupportT
 	@Override
 	public void setTitleTextVisible(boolean visible)
 	{
-		// not supported
+		setLabelHidden(!visible);
 	}
 
 	@Override
