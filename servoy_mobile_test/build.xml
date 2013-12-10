@@ -70,6 +70,8 @@
 			<arg line="-war"/>
 			<arg value="war"/>
 			<!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+		    <arg value="-localWorkers"/>
+		    <arg value="8"/>
 			<arg value="-style"/>
 			<arg value="PRETTY"/>
 			<arg line="${gwt.args}"/>
