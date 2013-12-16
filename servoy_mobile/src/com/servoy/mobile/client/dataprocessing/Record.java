@@ -359,15 +359,10 @@ public class Record extends Scope implements IJSRecord, IRowChangeListener
 		return parent.getFoundSetManager().getEditRecordList().isEditting(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.j2db.scripting.api.IJSRecord#isNew()
-	 */
 	@Override
 	public boolean isNew()
 	{
-		return getRow().isCreatedOnDevice(); // TODO is created on device and is still editing??
+		return getRow().isCreatedOnDevice() && parent.getLocalStorageRowDescription(getPK()) == null;
 	}
 
 	public void pushedToServer()
