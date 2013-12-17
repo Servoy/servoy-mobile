@@ -762,7 +762,7 @@ public class OfflineDataProxy
 	{
 		if (nodebug) builder.setHeader(WS_NODEBUG_HEADER, "true");
 		String jsonString = sessionStorage.getItem(WS_USER_PROPERTIES_HEADER);
-		if (jsonString != null)
+		if (jsonString != null && !"".equals(jsonString))
 		{
 			builder.setHeader(WS_USER_PROPERTIES_HEADER, jsonString);
 		}
