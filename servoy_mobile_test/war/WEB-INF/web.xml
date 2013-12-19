@@ -10,16 +10,9 @@
     <servlet-name>gwt-log-remote-logger-servlet</servlet-name>
     <servlet-class>com.allen_sauer.gwt.log.server.RemoteLoggerServiceImpl</servlet-class>
 
-    <!-- for developer as cwd -->
     <init-param>
       <param-name>symbolMaps0</param-name>
       <param-value>../application_server/server/webapps/___DEPLOYED_CONTEXT_NAME___/WEB-INF/deploy/mobiletestclient/symbolMaps/</param-value>
-    </init-param>
-    
-    <!-- for app. server as cwd -->
-    <init-param>
-      <param-name>symbolMaps2</param-name>
-      <param-value>server/webapps/___DEPLOYED_CONTEXT_NAME___/WEB-INF/deploy/mobiletestclient/symbolMaps/</param-value>
     </init-param>
   </servlet>
 
