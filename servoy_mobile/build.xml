@@ -9,7 +9,9 @@
 
 <project name="servoy_mobile" basedir="." default="gwtc">
 
-	<path id="project.class.path">
+	<property name="cse.model.exporter.mobile.mobilewar.rel" value="../com.servoy.eclipse.model.exporter.mobile/src/com/servoy/eclipse/model/mobile/exporter/resources" />
+
+    <path id="project.class.path">
 		<pathelement location="war/WEB-INF/classes"/>
 		<pathelement location="../servoy_base/bin"/>
 			<!-- Add any additional non-server libs (such as JUnit) -->
@@ -32,6 +34,11 @@
 			<arg value="com.servoy.mobile.MobileClient"/>
 			<arg value="-style"/>
 			<arg value="DETAILED"/>
+<!--			<arg value="-optimize"/>
+			<arg value="0"/>
+			<arg value="-draftCompile"/>
+		    <arg value="-localWorkers"/>
+		    <arg value="8"/> -->
 			<arg value="-strict"/>
 		</java>
 	</target>
@@ -50,6 +57,11 @@
 			<arg value="com.servoy.mobile.MobileClientDeploy"/>
 			<arg value="-style"/>
 			<arg value="PRETTY"/>
+<!--			<arg value="-optimize"/>
+			<arg value="0"/>
+			<arg value="-draftCompile"/>
+		    <arg value="-localWorkers"/>
+		    <arg value="8"/>-->
 			<arg value="-strict"/>
 		</java>
 	</target>
@@ -61,7 +73,7 @@
 				duplicate="fail"
 				excludes="**/*.war,**/WEB-INF/classes/**,**/solution_json.js,**/solution.js,**/media/**,**/index.html"
 		/>
-		<move tofile="../com.servoy.eclipse.model/src/com/servoy/eclipse/model/mobile/exporter/resources/servoy_mobile.war" file="servoy_mobile.war"/>
+		<move tofile="${cse.model.exporter.mobile.mobilewar.rel}/servoy_mobile.war" file="servoy_mobile.war"/>
 	</target>
 	
 	<target name="build_mobile_in_developer" depends="build_mobile, gwtc"/> <!-- compile back for developer debug - gwtc (to avoid cross-site scripting error dialog when debugging GWT from eclipse) -->

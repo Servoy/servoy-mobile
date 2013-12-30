@@ -5,8 +5,7 @@
 	<property name="servoy_base.classes" location="../servoy_base/bin" /> <!-- this relies on eclipse workspace builds to generate the classes; with ant builds - please declare the correct value before referencing this script -->
 	<property name="servoy_mobile.dir" location="../servoy_mobile" />
 	<property name="servoy_mobile.dir" location="../servoy_mobile" />
-	<property name="cse.model.src.dir" location="../com.servoy.eclipse.model/src" />
-	<property name="cse.model.mobiletestwar.rel" value="com/servoy/eclipse/model/mobile/exporter/resources/servoy_mobile_test.war" />
+	<property name="cse.model.exporter.mobile.mobilewar.rel" value="../com.servoy.eclipse.model.exporter.mobile/src/com/servoy/eclipse/model/mobile/exporter/resources" />
 
 	<property name="gwt.args" value="-strict" />
 	<property name="gwt.jars" location="${servoy_mobile.dir}/lib" />
@@ -120,7 +119,7 @@
 			duplicate="fail"
 			excludes="**/*.war,**/solution_json.js,**/solution.js,**/media/**,**/index.html"
 		/>
-		<move tofile="${cse.model.src.dir}/${cse.model.mobiletestwar.rel}" file="servoy_mobile_test.war"/>
+		<move tofile="${cse.model.exporter.mobile.mobilewar.rel}/servoy_mobile_test.war" file="servoy_mobile_test.war"/>
 		<delete dir="gwt-unitCache"/>
 	</target>
 
