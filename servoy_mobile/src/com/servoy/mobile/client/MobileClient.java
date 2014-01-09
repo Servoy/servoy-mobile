@@ -170,7 +170,7 @@ public class MobileClient implements EntryPoint
 		{
 			JQMContext.changePage(new TrialModePage(this));
 		}
-		else if (!foundSetManager.hasContent())
+		else if (hasFirstFormADataSource() && !foundSetManager.hasContent())
 		{
 			sync(false);
 		}
@@ -651,9 +651,14 @@ public class MobileClient implements EntryPoint
 		return flattenedSolution;
 	}
 
+	public boolean hasFirstFormADataSource()
+	{
+		return !Utils.stringIsEmpty(getFlattenedSolution().getFirstForm().getDataSource());
+	}
+
 	public void showFirstForm()
 	{
-		if (flattenedSolution.getMustAuthenticate() && !offlineDataProxy.hasCredentials() && !foundSetManager.hasContent())
+		if (hasFirstFormADataSource() && flattenedSolution.getMustAuthenticate() && !offlineDataProxy.hasCredentials() && !foundSetManager.hasContent())
 		{
 			afterLoginHandler = new IAfterLoginHandler()
 			{

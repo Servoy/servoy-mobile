@@ -46,7 +46,7 @@ public class TrialModePage extends JQMPage
 			@Override
 			public void onTapAfterBlur(TapEvent event)
 			{
-				if (!application.getFoundSetManager().hasContent())
+				if (application.hasFirstFormADataSource() && !application.getFoundSetManager().hasContent())
 				{
 					application.sync();
 				}

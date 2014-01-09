@@ -685,6 +685,11 @@ public class Utils implements Exportable
 		return null;
 	}
 
+	public static boolean stringIsEmpty(final CharSequence str)
+	{
+		return str == null || str.length() == 0 || str.toString().trim().length() == 0;
+	}
+
 	public static String[] unwrapArray(JsArrayString jsArrayString)
 	{
 		String[] result = new String[jsArrayString.length()];
