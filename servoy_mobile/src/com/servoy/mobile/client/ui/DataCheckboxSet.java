@@ -95,11 +95,13 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 	@Override
 	public void valueChanged(ModificationEvent e)
 	{
+		Object val = e.getValue() != null ? e.getValue() : getValueObject();
 		removeChangeListeners();
 		clear();
 		items.clear();
 		fillByValueList();
 		recreate(getId());
+		setValueObject(val);
 		addChangeListeners();
 	}
 
