@@ -81,10 +81,12 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 	@Override
 	public void valueChanged(ModificationEvent e)
 	{
+		Object val = e.getValue() != null ? e.getValue() : getValueObject();
 		if (editBlurHandler != null) editBlurHandler.removeHandler();
 		clear();
 		fillByValueList();
 		recreate(getId());
+		setValueObject(val);
 		if (editProvider != null) editBlurHandler = addBlurHandler(editProvider);
 	}
 
@@ -130,7 +132,7 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 				if (valueIdx > -1)
 				{
 					JsArrayObject objectArray = valuelist.getRealValues().cast();
-					return objectArray.getObject(valueIdx);
+					return objectArray.getNumberObject(valueIdx);
 				}
 			}
 			else
