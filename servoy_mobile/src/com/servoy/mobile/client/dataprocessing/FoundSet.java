@@ -672,10 +672,14 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 	{
 		for (int i = 0; i < records.size(); i++)
 		{
-			RecordDescription rd = records.get(i).getRecordDescription();
-			if (rd != null && rd.getPK().toString().equals(pk.toString()))
+			Record r = records.get(i);
+			if (r != null)
 			{
-				return i;
+				RecordDescription rd = r.getRecordDescription();
+				if (rd != null && rd.getPK().toString().equals(pk.toString()))
+				{
+					return i;
+				}
 			}
 		}
 		return -1;
