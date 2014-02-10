@@ -31,7 +31,6 @@ import org.timepedia.exporter.client.Setter;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
-import com.google.gwt.thirdparty.javascript.jscomp.mozilla.rhino.annotations.JSFunction;
 import com.servoy.base.persistence.IMobileProperties;
 import com.servoy.base.persistence.IMobileProperties.MobileProperty;
 import com.servoy.base.persistence.PersistUtils;
@@ -980,7 +979,6 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 		getBase().setOnRecordSelectionCall(method != null ? method.getReferenceString() : null);
 	}
 
-	@JSFunction
 	@Override
 	public JSPart getPart(int type)
 	{
@@ -996,14 +994,12 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 		return null;
 	}
 
-	@JSFunction
 	@Override
 	public JSFooter newFooterPart(int height)
 	{
 		return newFooter();
 	}
 
-	@JSFunction
 	@Override
 	public JSFooter newFooter()
 	{
@@ -1015,7 +1011,6 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 		return (JSFooter)getOrCreatePart(IPartConstants.TITLE_FOOTER);
 	}
 
-	@JSFunction
 	@Override
 	public JSFooter getFooter()
 	{
@@ -1027,21 +1022,18 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 		return footer;
 	}
 
-	@JSFunction
 	@Override
 	public boolean removeFooter()
 	{
 		return removePart(false);
 	}
 
-	@JSFunction
 	@Override
 	public JSHeader newHeaderPart(int height)
 	{
 		return newHeader();
 	}
 
-	@JSFunction
 	@Override
 	public JSHeader newHeader()
 	{
@@ -1053,7 +1045,6 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 		return (JSHeader)getOrCreatePart(IPartConstants.TITLE_HEADER);
 	}
 
-	@JSFunction
 	@Override
 	public JSHeader getHeader()
 	{
@@ -1065,7 +1056,6 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 		return header;
 	}
 
-	@JSFunction
 	@Override
 	public boolean removeHeader()
 	{
