@@ -175,6 +175,7 @@ public class FormManager
 		}
 		formControllerMap.clear();
 		currentForm = null;
+		showFormExecutedInCode = false;
 	}
 
 	public boolean removeForm(String formName)
