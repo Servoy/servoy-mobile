@@ -280,6 +280,11 @@ public class Record extends Scope implements IJSRecord, IRowChangeListener
 		return rowDescription;
 	}
 
+	public boolean hasRowDescription()
+	{
+		return parent.getRowDescription(getPK()) != null;
+	}
+
 	void clearRelationCaches()
 	{
 		if (recordDescription != null) recordDescription.clearRFS();

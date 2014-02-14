@@ -33,27 +33,38 @@ public class EditRecordList
 	{
 		HashSet<FoundSet> toCheck = new HashSet<FoundSet>();
 		HashMap<String, ArrayList<RowDescription>> toStore = new HashMap<String, ArrayList<RowDescription>>();
+		ArrayList<Record> deletedRecords = new ArrayList<Record>();
 
 		for (Record rec : editedRecords)
 		{
-			rec.clearRelationCaches();
+			if (!rec.hasRowDescription()) // record was deleted
+			{
+				deletedRecords.add(rec);
+			}
+			else
+			{
+				rec.clearRelationCaches();
 
-			FoundSet fs = rec.getParent();
-			toCheck.add(fs);
-			String entityName = fs.getEntityName();
-			ArrayList<RowDescription> rows = toStore.get(entityName);
-			if (rows == null)
-			{
-				rows = new ArrayList<RowDescription>();
-				toStore.put(entityName, rows);
+				FoundSet fs = rec.getParent();
+				toCheck.add(fs);
+				String entityName = fs.getEntityName();
+				ArrayList<RowDescription> rows = toStore.get(entityName);
+				if (rows == null)
+				{
+					rows = new ArrayList<RowDescription>();
+					toStore.put(entityName, rows);
+				}
+				RowDescription row = rec.getRow();
+				if (!rows.contains(row))
+				{
+					rows.add(row);
+				}
+				foundSetManager.checkForNewRecord(entityName, row);
 			}
-			RowDescription row = rec.getRow();
-			if (!rows.contains(row))
-			{
-				rows.add(row);
-			}
-			foundSetManager.checkForNewRecord(entityName, row);
 		}
+
+		for (Record rec : deletedRecords)
+			removeEditedRecord(rec);
 
 		Iterator<String> it = toStore.keySet().iterator();
 		while (it.hasNext())
