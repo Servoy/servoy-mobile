@@ -492,7 +492,7 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 					dpValue = TagParser.processTags(formController.getApplication().getI18nProvider().getI18NMessageIfPrefixed(listItemStaticText),
 						listItemTagResolver, formController.getApplication().getI18nProvider());
 				}
-				JQMListItem listItem = addItem(listWidgetCount, dpValue != null ? dpValue.toString() : "", "#"); //$NON-NLS-1$ //$NON-NLS-2$
+				JQMListItem listItem = addItem(listWidgetCount, dpValue != null ? dpValue.toString() : ""); //$NON-NLS-1$ 
 				listWidgetCount++;
 
 				dpValue = dal.getRecordValue(listItemRecord, listItemCountDP);
@@ -505,6 +505,7 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 				final int selIndex = i;
 				if (listItemOnAction != null)
 				{
+					listItem.setUrl("#"); //$NON-NLS-1$
 					tapRegistrations.add(listItem.addTapHandler(new TapHandlerForPageSwitchWithBlur()
 					{
 						@Override
