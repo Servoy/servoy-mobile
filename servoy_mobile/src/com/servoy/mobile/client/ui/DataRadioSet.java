@@ -167,11 +167,8 @@ public class DataRadioSet extends JQMRadioset implements IDisplayData, IFieldCom
 				selectedValue = data.toString();
 			}
 
-			if (selectedValue != null)
-			{
-				setSelectedValue(selectedValue);
-				refresh();
-			}
+			setSelectedValue(selectedValue);
+			refresh();
 		}
 	}
 
