@@ -29,6 +29,7 @@ import com.servoy.base.scripting.api.IJSRecord;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.scripting.solutionhelper.SolutionHelper;
+import com.servoy.mobile.client.util.Utils;
 import com.sksamuel.jqm4gwt.Mobile;
 
 /**
@@ -173,10 +174,16 @@ public class MobilePlugin implements Exportable
 			{
 				return client.getFoundSetManager().getUUIDPKValueAsString(((Number)pks[0]).intValue());
 			}
-			else
+			else if (pks[0] instanceof String)
 			{
-				return null;
+				// for new records type is wrong
+				int pk = Utils.getAsInteger(pks[0]);
+				if (pk != 0)
+				{
+					return client.getFoundSetManager().getUUIDPKValueAsString(pk);
+				}
 			}
+			return null;
 		}
 	}
 }
