@@ -58,6 +58,10 @@ public class SolutionI18nProvider implements I18NProvider
 			}
 
 		}
+		if (value == null)
+		{
+			return '!' + i18nKey + '!';
+		}
 		return value;
 	}
 
