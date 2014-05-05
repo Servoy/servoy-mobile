@@ -17,6 +17,7 @@
 
 package com.servoy.mobile.client;
 
+import com.google.gwt.core.client.JsArrayString;
 import com.servoy.base.util.I18NProvider;
 import com.servoy.mobile.client.persistence.FlattenedSolution;
 
@@ -38,6 +39,12 @@ public class SolutionI18nProvider implements I18NProvider
 
 	@Override
 	public String getI18NMessage(String i18nKey)
+	{
+		return getI18NMessage(i18nKey, null);
+	}
+
+	@Override
+	public String getI18NMessage(String i18nKey, Object[] array)
 	{
 		String key = locale + "." + i18nKey; //$NON-NLS-1$
 		String value = solution.getI18nValue(key);
@@ -62,14 +69,29 @@ public class SolutionI18nProvider implements I18NProvider
 		{
 			return '!' + i18nKey + '!';
 		}
-		return value;
+		return format(value, array);
 	}
 
-	@Override
-	public String getI18NMessage(String i18nKey, Object[] array)
+	public String format(final String format, final Object[] args)
 	{
-		return getI18NMessage(i18nKey);
+		if (null == args || 0 == args.length) return format;
+		JsArrayString array = newArray();
+		for (Object arg : args)
+		{
+			array.push(String.valueOf(arg));
+		}
+		return nativeFormat(format, array);
 	}
+
+	private static native JsArrayString newArray()/*-{
+		return [];
+	}-*/;
+
+	private static native String nativeFormat(final String format, final JsArrayString args)/*-{
+		return format.replace(/{(\d+)}/g, function(match, number) {
+			return typeof args[number] != 'undefined' ? args[number] : match;
+		});
+	}-*/;
 
 	@Override
 	public String getI18NMessageIfPrefixed(String i18nKey)
