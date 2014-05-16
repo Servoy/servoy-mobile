@@ -57,8 +57,7 @@ public class SolutionTestSuite implements Exportable
 			{
 				application.runSafe(new Runnable()
 				{
-					@Override
-					@SuppressWarnings("nls")
+					@Override
 					public void run()
 					{
 						// unfortunately all JS (libs / suite code) need to be located directly in window scope, otherwise JsUtil's Function.prototype.glue
@@ -89,17 +88,16 @@ public class SolutionTestSuite implements Exportable
 						// method sendTestTreeAndRun() on this object
 					}
 
-				}, "Injecting library code / generating test suite failed."); //$NON-NLS-1$
+				}, "Injecting library code / generating test suite failed.");
 			}
 
 			public void onFailure(Throwable caught)
 			{
-				application.reportUnexpectedThrowable("Cannot get the required JSUnit library code or related JS code...", caught); //$NON-NLS-1$
+				application.reportUnexpectedThrowable("Cannot get the required JSUnit library code or related JS code...", caught);
 			}
 		});
 	}
-
-	@SuppressWarnings("nls")
+
 	@Export
 	public void sendTestTreeAndRun()
 	{
@@ -112,7 +110,7 @@ public class SolutionTestSuite implements Exportable
 				@Override
 				public void onFailure(Throwable caught)
 				{
-					application.reportUnexpectedThrowable("Cannot set flattened test tree...", caught); //$NON-NLS-1$
+					application.reportUnexpectedThrowable("Cannot set flattened test tree...", caught);
 				}
 
 				@Override
@@ -131,7 +129,7 @@ public class SolutionTestSuite implements Exportable
 		}
 		else
 		{
-			application.reportUnexpectedThrowable("Cannot get the javascript JS Unit suite code... Client-side generation not yet supported.", null); //$NON-NLS-1$
+			application.reportUnexpectedThrowable("Cannot get the javascript JS Unit suite code... Client-side generation not yet supported.", null);
 		}
 	}
 
@@ -144,7 +142,7 @@ public class SolutionTestSuite implements Exportable
 			@Override
 			public void onFailure(Throwable caught)
 			{
-				application.reportUnexpectedThrowable("Unable to send the 'doneTesting' signal...", caught); //$NON-NLS-1$
+				application.reportUnexpectedThrowable("Unable to send the 'doneTesting' signal...", caught);
 			}
 
 			@Override

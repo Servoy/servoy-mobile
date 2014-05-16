@@ -46,16 +46,16 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 {
 
 	// this constant is also defined in testing.js inside servoy_mobile_testing and MobileExporter.java; please update those as well if you change the value
-	private static final String SCOPE_NAME_SEPARATOR = "_sNS_"; //$NON-NLS-1$
-	protected static final Pattern DETAILED_STACK_LINE_PARSER = Pattern.compile(".*solution_\\d+\\.js:(\\d+).*"); //$NON-NLS-1$
-	protected static final Pattern DETAILED_STACK_FUNCTION_NAME_PARSER = Pattern.compile("(?:([^/]*)\\@.*)|(?:at (?:Object\\.)?(.*) \\(.*)"); //$NON-NLS-1$
+	private static final String SCOPE_NAME_SEPARATOR = "_sNS_";
+	protected static final Pattern DETAILED_STACK_LINE_PARSER = Pattern.compile(".*solution_\\d+\\.js:(\\d+).*");
+	protected static final Pattern DETAILED_STACK_FUNCTION_NAME_PARSER = Pattern.compile("(?:([^/]*)\\@.*)|(?:at (?:Object\\.)?(.*) \\(.*)");
 
 	// see http://tomcat.apache.org/tomcat-6.0-doc/jndi-datasource-examples-howto.html
 	private IJSUnitSuiteHandler bridge;
 
 	private final Object requestSequenceLock = new Object();
 	private int requestSequenceCounter = -1; // test listener requests should be handled in-sequence
-	private static final Log log = LogFactory.getLog("gwt-log"); //$NON-NLS-1$
+	private static final Log log = LogFactory.getLog("gwt-log");
 
 	private boolean testSessionEnded = false;
 	private ILineMapper lineMapper;
@@ -68,7 +68,7 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 	@Override
 	public void destroy()
 	{
-		if (!testSessionEnded && bridge != null) bridge.reportUnexpectedThrowable("The RPC servlet was destroyed before test session end...", null); //$NON-NLS-1$
+		if (!testSessionEnded && bridge != null) bridge.reportUnexpectedThrowable("The RPC servlet was destroyed before test session end...", null);
 		testSessionEnded();
 		increaseSequenceCounter(); // to notify all waiting requests...
 		super.destroy();
@@ -88,7 +88,7 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 
 			if (bridge == null)
 			{
-				log.error("Cannot locate (lookup) JUnit bridge handler. Is the server-side test environment setup correctly?"); //$NON-NLS-1$
+				log.error("Cannot locate (lookup) JUnit bridge handler. Is the server-side test environment setup correctly?");
 				return -1; // won't match normally
 			}
 			testSessionEnded = false;
@@ -170,9 +170,9 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 		//		TestSuite_run(result)
 		// ]
 
-		log.trace("Recreating throwable from jsunit stack: " + (jsUnitStack != null ? Arrays.asList(jsUnitStack) : null)); //$NON-NLS-1$
-		log.trace("Recreating throwable from native stack: " + (detailedStack != null ? Arrays.asList(detailedStack) : null)); //$NON-NLS-1$
-		String message = "?"; //$NON-NLS-1$
+		log.trace("Recreating throwable from jsunit stack: " + (jsUnitStack != null ? Arrays.asList(jsUnitStack) : null));
+		log.trace("Recreating throwable from native stack: " + (detailedStack != null ? Arrays.asList(detailedStack) : null));
+		String message = "?";
 		if (jsUnitStack != null && jsUnitStack.length > 0)
 		{
 			message = jsUnitStack[0];
@@ -197,7 +197,7 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 						Integer didI = computeDetailedIndexDelta(functionName.substring(0, functionName.length() - 2), i, detailedStack); // drop the extra "()" in function name
 						if (didI == null)
 						{
-							log.warn("Cannot use native stack for line numbers..."); //$NON-NLS-1$
+							log.warn("Cannot use native stack for line numbers...");
 							detailedStack = null;
 						}
 						else detailedIndexDelta = didI.intValue();
@@ -206,7 +206,7 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 
 				if (!foundServoyMethod)
 				{
-					log.warn("Cannot use native stack for line numbers... No servoy method detected in stack."); //$NON-NLS-1$
+					log.warn("Cannot use native stack for line numbers... No servoy method detected in stack.");
 					detailedStack = null;
 				}
 			}
@@ -251,7 +251,7 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 	private Pair<String, String> getFunctionNameAndScopeFromMobileFunctionName(String functionName)
 	{
 		String realFunctionName = functionName;
-		String scopes = "javascript"; //$NON-NLS-1$
+		String scopes = "javascript";
 		if (functionName.contains(SCOPE_NAME_SEPARATOR))
 		{
 			// this is then a function of a Servoy Solution - it also contains the scopes, not only the function name
@@ -301,7 +301,7 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 		{
 			try
 			{
-				lineMapper = LineMapper.fromProperties(getServletContext().getResourceAsStream("/mobiletestclient/lineMapping.properties")); //$NON-NLS-1$
+				lineMapper = LineMapper.fromProperties(getServletContext().getResourceAsStream("/mobiletestclient/lineMapping.properties"));
 			}
 			catch (IOException e)
 			{

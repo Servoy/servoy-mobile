@@ -35,15 +35,15 @@ public class TestMobileClient extends MobileClient
 			@Override
 			public void run()
 			{
-				if (rpcController == null) throw new RuntimeException("Cannot locate GWT RPC Servlet for controlling the test-suite."); //$NON-NLS-1$
+				if (rpcController == null) throw new RuntimeException("Cannot locate GWT RPC Servlet for controlling the test-suite.");
 
-				Log.info("[MobileJSUnitClient] initializing"); //$NON-NLS-1$
+				Log.info("[MobileJSUnitClient] initializing");
 				GWT.create(JSUnitTestListener.class);
 				GWT.create(JSUnitTestListenerHandler.TestResultBridge.class);
 				TestMobileClient.super.initialize();
-				Log.info("[MobileJSUnitClient] initialized; waiting for jQuery mobile page activation"); //$NON-NLS-1$
+				Log.info("[MobileJSUnitClient] initialized; waiting for jQuery mobile page activation");
 			}
-		}, "Cannot initialize test client..."); //$NON-NLS-1$
+		}, "Cannot initialize test client...");
 
 	}
 
@@ -95,7 +95,7 @@ public class TestMobileClient extends MobileClient
 				public void onFailure(Throwable caught)
 				{
 					rpcController.reportUnexpectedThrowableMessage(msg,
-						t != null ? t.getClass().getName() + ": " + t.getMessage() : "", seq, new AsyncCallback<Void>() //$NON-NLS-1$ //$NON-NLS-2$
+						t != null ? t.getClass().getName() + ": " + t.getMessage() : "", seq, new AsyncCallback<Void>()
 						{
 							@Override
 							public void onSuccess(Void result)
@@ -112,15 +112,15 @@ public class TestMobileClient extends MobileClient
 						});
 					if (shouldLog[0])
 					{
-						Log.error("reportUnexpectedThrowable cannot send throwable serverSide: " + msg, t); //$NON-NLS-1$
-						Log.error("Cannot report unexpectedThrowable to test suite controller because of: ", caught); //$NON-NLS-1$
+						Log.error("reportUnexpectedThrowable cannot send throwable serverSide: " + msg, t);
+						Log.error("Cannot report unexpectedThrowable to test suite controller because of: ", caught);
 					} // JavaScriptException we already know it can't be serialised, and this exception is common; don't complain about it if it was sent successfully as a message
 				}
 			});
 		}
 		else
 		{
-			Log.error("Cannot report unexpectedThrowable to test suite controller because the controller is null: " + msg, t); //$NON-NLS-1$
+			Log.error("Cannot report unexpectedThrowable to test suite controller because the controller is null: " + msg, t);
 		}
 	}
 
@@ -139,7 +139,7 @@ public class TestMobileClient extends MobileClient
 				@Override
 				public void onFailure(Throwable caught)
 				{
-					reportUnexpectedThrowable("Cannot check bridge id", caught); //$NON-NLS-1$
+					reportUnexpectedThrowable("Cannot check bridge id", caught);
 				}
 
 				@Override
@@ -157,11 +157,11 @@ public class TestMobileClient extends MobileClient
 							}
 							else
 							{
-								Log.error("Cannot find correct bridge instance. (id is out of sync)"); //$NON-NLS-1$
+								Log.error("Cannot find correct bridge instance. (id is out of sync)");
 							}
 						}
 
-					}, "Cannot login or sync with service solution..."); //$NON-NLS-1$
+					}, "Cannot login or sync with service solution...");
 				}
 			});
 		}
@@ -175,7 +175,7 @@ public class TestMobileClient extends MobileClient
 			@Override
 			public void onFailure(Throwable caught)
 			{
-				reportUnexpectedThrowable("Cannot report bridge ID verification", caught); //$NON-NLS-1$
+				reportUnexpectedThrowable("Cannot report bridge ID verification", caught);
 			}
 
 			@Override
@@ -187,7 +187,7 @@ public class TestMobileClient extends MobileClient
 					@Override
 					public void run()
 					{
-						Log.info("[MobileJSUnitClient] logging in automatically & syncing"); //$NON-NLS-1$
+						Log.info("[MobileJSUnitClient] logging in automatically & syncing");
 
 						// automatically login in case of test client
 						if (getFlattenedSolution().getMustAuthenticate() && !getOfflineDataProxy().hasCredentials() && result != null)
@@ -200,7 +200,7 @@ public class TestMobileClient extends MobileClient
 						// this will do a sync if necessary or simply show the first form if not
 						TestMobileClient.super.onStartPageShown();
 					}
-				}, "Cannot login/sync/show first form (as needed)."); //$NON-NLS-1$
+				}, "Cannot login/sync/show first form (as needed).");
 			}
 		});
 	}
@@ -232,7 +232,7 @@ public class TestMobileClient extends MobileClient
 				{
 					new SolutionTestSuite(TestMobileClient.this, rpcController).runCurrentSolutionTestSuite();
 				}
-			}, "Problems running the solution test suite."); //$NON-NLS-1$
+			}, "Problems running the solution test suite.");
 		}
 		else
 		{
@@ -245,7 +245,7 @@ public class TestMobileClient extends MobileClient
 	public void error(String msg)
 	{
 		// avoid modal dialogs
-		Log.error("[MobileJSUnitClient] (client) Error message:" + msg); //$NON-NLS-1$
+		Log.error("[MobileJSUnitClient] (client) Error message:" + msg);
 		// fail tests
 		reportUnexpectedThrowable(msg, null);
 	}

@@ -51,7 +51,7 @@ public class JSUnitTestListenerHandler
 
 			public void onFailure(Throwable caught)
 			{
-				application.reportUnexpectedThrowable("Cannot send test progress/status to servlet...", caught); //$NON-NLS-1$
+				application.reportUnexpectedThrowable("Cannot send test progress/status to servlet...", caught);
 			}
 		};
 	}
@@ -162,7 +162,7 @@ public class JSUnitTestListenerHandler
 				public void onFailure(Throwable caught)
 				{
 					pollAfterTimeout();
-					application.reportUnexpectedThrowable("Cannot poll for stopped state.", caught); // should we not do this? (as it will try to terminate the test session) //$NON-NLS-1$
+					application.reportUnexpectedThrowable("Cannot poll for stopped state.", caught); // should we not do this? (as it will try to terminate the test session)
 				}
 
 				@Override
@@ -178,7 +178,7 @@ public class JSUnitTestListenerHandler
 							{
 								stopIt(result);
 							}
-						}, "Error stopping javascript test suite"); //$NON-NLS-1$
+						}, "Error stopping javascript test suite");
 					}
 					else
 					{
