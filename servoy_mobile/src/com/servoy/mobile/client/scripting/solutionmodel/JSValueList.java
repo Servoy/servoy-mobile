@@ -36,7 +36,7 @@ import com.servoy.mobile.client.util.Utils;
  */
 @Export
 @ExportPackage("")
-public class JSValueList /* extends JSBase */implements IMobileSMValuelist, Exportable // TODO ac when ValueListDescription becomes a persist, please extends JSBase
+public class JSValueList /* extends JSBase */implements IMobileSMValuelist, Exportable // TODO when ValueListDescription becomes a persist, please extends JSBase
 {
 
 	private final ValueList vl;
