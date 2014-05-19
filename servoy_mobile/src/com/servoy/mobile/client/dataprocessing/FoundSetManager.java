@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -35,6 +34,7 @@ import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.storage.client.Storage;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dto.DataProviderDescription;
@@ -65,7 +65,7 @@ public class FoundSetManager
 	private static final String ENTITIES_KEY = "_svy_entities";
 	private static final String STORAGE_VERSION_KEY = "_svy_storage_version";
 	private static final String SERVER_DATA_KEY = "|srv";
-	private static final String USER_PROPERTY_PREFIX = "_svy_user_property_";
+	static final String USER_PROPERTIES = "_svy_user_properties_";
 
 	private static final int STORAGE_VERSION = 1;
 
@@ -993,24 +993,13 @@ public class FoundSetManager
 		// do keep the credentials if set.
 		String[] credentials = getCredentials();
 		// keep all user properties
-		Map<String, String> userProperties = new HashMap<String, String>();
-		for (int i = 0; i < localStorage.getLength(); i++)
-		{
-			String key = localStorage.key(i);
-			if (key.startsWith(USER_PROPERTY_PREFIX))
-			{
-				userProperties.put(key, localStorage.getItem(key));
-			}
-		}
+		String userProperties = localStorage.getItem(USER_PROPERTIES);
 		// now clear the local store
 		localStorage.clear();
 		// restore credentials
 		if (credentials != null) storeCredentials(credentials[0], credentials[1]);
 		// restore user properties
-		for (Entry<String, String> entry : userProperties.entrySet())
-		{
-			localStorage.setItem(entry.getKey(), entry.getValue());
-		}
+		if (userProperties != null) localStorage.setItem(USER_PROPERTIES, userProperties);
 	}
 
 	//from mem/obj to store
@@ -1462,14 +1451,15 @@ public class FoundSetManager
 	 */
 	public void setUserProperty(String name, String value)
 	{
-		if (value == null)
+		String userProperties = localStorage.getItem(USER_PROPERTIES);
+		JSONObject userPropertiesObj = null;
+		if (userProperties != null && userProperties.length() > 0)
 		{
-			localStorage.removeItem(USER_PROPERTY_PREFIX + name);
+			userPropertiesObj = JSONParser.parseStrict(userProperties).isObject();
 		}
-		else
-		{
-			localStorage.setItem(USER_PROPERTY_PREFIX + name, value);
-		}
+		if (userPropertiesObj == null) userPropertiesObj = new JSONObject();
+		userPropertiesObj.put(name, value != null ? new JSONString(value) : null);
+		localStorage.setItem(USER_PROPERTIES, userPropertiesObj.toString());
 	}
 
 	/**
@@ -1478,7 +1468,18 @@ public class FoundSetManager
 	 */
 	public String getUserProperty(String name)
 	{
-		return localStorage.getItem(USER_PROPERTY_PREFIX + name);
+		String userProperties = localStorage.getItem(USER_PROPERTIES);
+		if (userProperties != null && userProperties.length() > 0)
+		{
+			JSONObject userPropertiesObj = JSONParser.parseStrict(userProperties).isObject();
+			JSONValue userProperty = userPropertiesObj.get(name);
+			if (userProperty != null) return userProperty.toString();
+		}
+		return null;
 	}
 
+	public String getUserProperties()
+	{
+		return localStorage.getItem(USER_PROPERTIES);
+	}
 }
