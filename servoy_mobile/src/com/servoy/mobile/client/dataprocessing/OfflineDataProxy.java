@@ -43,6 +43,7 @@ import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
+import com.google.gwt.storage.client.Storage;
 import com.servoy.mobile.client.dto.OfflineDataDescription;
 import com.servoy.mobile.client.dto.RowDescription;
 import com.servoy.mobile.client.request.Base64Coder;
@@ -65,6 +66,7 @@ public class OfflineDataProxy
 	private String[] credentials; //id, password
 	private String[] uncheckedCredentials; //id, password
 	private Boolean hasSingleWsUpdateMethod = null;
+	private final Storage sessionStorage = Storage.getSessionStorageIfSupported();
 
 	public static String WS_NODEBUG_HEADER = "servoy.nodebug";
 	public static String WS_USER_PROPERTIES_HEADER = "servoy.userproperties";
@@ -749,23 +751,9 @@ public class OfflineDataProxy
 	private void storeUserProperties(Response response)
 	{
 		String jsonString = response.getHeader(WS_USER_PROPERTIES_HEADER);
-		if (jsonString != null && jsonString.length() > 0)
+		if (jsonString != null)
 		{
-			JSONObject userPropertiesObj = JSONParser.parseStrict(jsonString).isObject();
-			if (userPropertiesObj != null)
-			{
-				Iterator<String> userPropertyKeyIte = userPropertiesObj.keySet().iterator();
-				String userPropertyKey;
-				while (userPropertyKeyIte.hasNext())
-				{
-					userPropertyKey = userPropertyKeyIte.next();
-					foundSetManager.setUserProperty(userPropertyKey, userPropertiesObj.get(userPropertyKey).isString().stringValue());
-				}
-			}
-			else
-			{
-				Log.warn("User properties from server are not in json object.");
-			}
+			sessionStorage.setItem(WS_USER_PROPERTIES_HEADER, jsonString);
 		}
 	}
 
@@ -773,7 +761,7 @@ public class OfflineDataProxy
 	private void setRequestParameters(RequestBuilder builder)
 	{
 		if (nodebug) builder.setHeader(WS_NODEBUG_HEADER, "true");
-		String jsonString = foundSetManager.getUserProperties();
+		String jsonString = sessionStorage.getItem(WS_USER_PROPERTIES_HEADER);
 		if (jsonString != null && !"".equals(jsonString))
 		{
 			builder.setHeader(WS_USER_PROPERTIES_HEADER, jsonString);
