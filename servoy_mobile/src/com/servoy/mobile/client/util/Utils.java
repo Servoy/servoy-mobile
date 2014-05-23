@@ -308,6 +308,10 @@ public class Utils implements Exportable
 					// make sure UUID PKs are matched regardless of casing (MSQ Sqlserver returns uppercase UUID strings for uniqueidentifier columns)
 					str = ((String)val).toLowerCase();
 				}
+				else if (val instanceof Date)
+				{
+					str = Long.toString(((Date)val).getTime());
+				}
 				else
 				{
 					str = convertToString(val);
