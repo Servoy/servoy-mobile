@@ -65,11 +65,6 @@ public class JSApplication implements Exportable, IJSApplication
 		return application.getFoundSetManager().getUserProperty(name);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.servoy.base.scripting.api.IJSApplication#setUserProperty(java.lang.String, java.lang.String)
-	 */
 	@Override
 	public void setUserProperty(String name, String value)
 	{
