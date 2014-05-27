@@ -279,7 +279,7 @@ public class FoundSetManager
 						if (obj == null) return null;
 						coldata[j] = obj;
 					}
-					key = relationID + "|" + Utils.createPKHashKey(coldata);
+					key = relationID + "|" + com.servoy.base.util.Utils.createPKHashKey(coldata);
 				}
 			}
 		}
@@ -567,7 +567,7 @@ public class FoundSetManager
 			if (part.startsWith("36."))
 			{
 				//replace
-				retval.append(Utils.createPKHashKey(new Object[] { updateMode ? valueStore.getOrPutUUID(part.substring(3))
+				retval.append(com.servoy.base.util.Utils.createPKHashKey(new Object[] { updateMode ? valueStore.getOrPutUUID(part.substring(3))
 					: valueStore.putUUID(part.substring(3)) }));
 			}
 			else
@@ -1114,7 +1114,7 @@ public class FoundSetManager
 				if (obj == null) return null;//we cannot relate based on null
 				coldata[j] = obj;
 			}
-			String whereArgsHash = Utils.createPKHashKey(coldata);
+			String whereArgsHash = com.servoy.base.util.Utils.createPKHashKey(coldata);
 			String foreignEntityName = rd.getForeignEntityName();
 			FoundSetDescription fsd = FoundSetDescription.newInstance(foreignEntityName, relationName, whereArgsHash);
 			JsArray<RecordDescription> rds = fsd.getRecords();

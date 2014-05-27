@@ -295,67 +295,6 @@ public class Utils implements Exportable
 		return new String(uuid);
 	}
 
-	public static String createPKHashKey(Object[] pk)
-	{
-		StringBuilder sb = new StringBuilder();
-		if (pk != null)
-		{
-			for (Object val : pk)
-			{
-				String str;
-				if (val instanceof String && ((String)val).length() == 36 && ((String)val).split("-").length == 5) //$NON-NLS-1$
-				{
-					// make sure UUID PKs are matched regardless of casing (MSQ Sqlserver returns uppercase UUID strings for uniqueidentifier columns)
-					str = ((String)val).toLowerCase();
-				}
-				else if (val instanceof Date)
-				{
-					str = Long.toString(((Date)val).getTime());
-				}
-				else
-				{
-					str = convertToString(val);
-				}
-				if (val != null)
-				{
-					sb.append(str.length());
-				}
-				sb.append('.');
-				sb.append(str);
-				sb.append(';');
-			}
-		}
-		return sb.toString();
-	}
-
-	/**
-	 * Convert to string representation, remove trailing '.0' for numbers.
-	 * 
-	 * @return the result string
-	 */
-	public static String convertToString(Object o)
-	{
-		if (!(o instanceof Number))
-		{
-			return String.valueOf(o);
-		}
-
-		String numberToString = o.toString();
-		int i;
-		for (i = numberToString.length() - 1; i > 0; i--)
-		{
-			if (numberToString.charAt(i) != '0')
-			{
-				break;
-			}
-		}
-		if (numberToString.charAt(i) == '.')
-		{
-			return numberToString.substring(0, i);
-		}
-		return numberToString;
-	}
-
 	// it will need a further .cast() to really be useable; function properties are not cloned, but copied, can we clone them as well ?
 	public static JavaScriptObject cloneDeep(JavaScriptObject o)
 	{
