@@ -25,9 +25,14 @@ import org.timepedia.exporter.client.Getter;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.storage.client.Storage;
 import com.servoy.base.scripting.api.IJSRecord;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
+import com.servoy.mobile.client.dataprocessing.OfflineDataProxy;
 import com.servoy.mobile.client.scripting.solutionhelper.SolutionHelper;
 import com.servoy.mobile.client.util.Utils;
 import com.sksamuel.jqm4gwt.Mobile;
@@ -185,5 +190,21 @@ public class MobilePlugin implements Exportable
 			}
 			return null;
 		}
+	}
+
+	public String getServiceUserProperty(String name)
+	{
+		Storage sessionStorage = Storage.getSessionStorageIfSupported();
+		if (sessionStorage != null)
+		{
+			String jsonUserProperties = sessionStorage.getItem(OfflineDataProxy.WS_USER_PROPERTIES_HEADER);
+			if (jsonUserProperties != null && jsonUserProperties.length() > 0)
+			{
+				JSONObject jsonUserPropertiesObj = JSONParser.parseStrict(jsonUserProperties).isObject();
+				JSONValue userProperty = jsonUserPropertiesObj.get(name);
+				if (userProperty != null) return userProperty.toString();
+			}
+		}
+		return null;
 	}
 }
