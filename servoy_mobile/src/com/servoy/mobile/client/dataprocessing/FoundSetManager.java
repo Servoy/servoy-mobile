@@ -910,7 +910,9 @@ public class FoundSetManager
 
 	public static String getEntityFromDataSource(String dataSource)
 	{
-		return dataSource.substring(dataSource.lastIndexOf('/') + 1);
+		int nameBeginIdx = dataSource.lastIndexOf('/');
+		if (nameBeginIdx < 0) nameBeginIdx = dataSource.lastIndexOf(':'); // in memory datasource
+		return dataSource.substring(nameBeginIdx + 1);
 	}
 
 	public FoundSet getFoundSet(String entityName, boolean shared)
