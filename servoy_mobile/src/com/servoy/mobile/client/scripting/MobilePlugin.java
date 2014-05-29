@@ -27,6 +27,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.storage.client.Storage;
 import com.servoy.base.scripting.api.IJSRecord;
@@ -201,8 +202,15 @@ public class MobilePlugin implements Exportable
 			if (jsonUserProperties != null && jsonUserProperties.length() > 0)
 			{
 				JSONObject jsonUserPropertiesObj = JSONParser.parseStrict(jsonUserProperties).isObject();
-				JSONValue userProperty = jsonUserPropertiesObj.get(name);
-				if (userProperty != null) return userProperty.toString();
+				if (jsonUserPropertiesObj != null)
+				{
+					JSONValue userProperty = jsonUserPropertiesObj.get(name);
+					if (userProperty != null)
+					{
+						JSONString userPropertyStr = userProperty.isString();
+						if (userPropertyStr != null) return userPropertyStr.stringValue();
+					}
+				}
 			}
 		}
 		return null;
