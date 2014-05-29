@@ -32,6 +32,7 @@ public class TrialModePage extends JQMPage
 
 	public TrialModePage(final MobileClient application)
 	{
+		setTheme("b");
 		HTML htmlText = new HTML();
 		htmlText.setHTML("<p><i>Welcome to</i></p><center><h1><span><b>Servoy</b></span> Mobile</h1></center>"
 			+ "<p>Thank you for evaluating our product!</p>"

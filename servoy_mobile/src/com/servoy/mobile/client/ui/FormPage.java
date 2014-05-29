@@ -54,6 +54,7 @@ public class FormPage extends JQMPage implements IFormComponent
 	public FormPage(IFormDisplay formDisplay)
 	{
 		this.formDisplay = formDisplay;
+		setTheme("b");
 	}
 
 	/**
@@ -213,7 +214,7 @@ public class FormPage extends JQMPage implements IFormComponent
 			{
 				formNavigator.setDismissible(false);
 				formNavigator.setSwipeClose(false);
-				formNavigator.setDisplay(JQMPanel.DISPLAY_PUSH);
+				formNavigator.setDisplay(JQMPanel.Display.PUSH);
 			}
 			else
 			{

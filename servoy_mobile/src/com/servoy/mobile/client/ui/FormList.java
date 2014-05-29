@@ -500,7 +500,7 @@ public class FormList extends JQMList implements IDisplayRelatedData, IFoundSetL
 				else if (dpValue instanceof Double) listItem.setCount(Integer.valueOf(((Double)dpValue).intValue()));
 
 				dpValue = dal.getRecordValue(listItemRecord, listItemImageDP);
-				if (dpValue != null) listItem.setImage(dpValue.toString(), false);
+				if (dpValue != null) listItem.setImage(dpValue.toString());
 
 				final int selIndex = i;
 				if (listItemOnAction != null)

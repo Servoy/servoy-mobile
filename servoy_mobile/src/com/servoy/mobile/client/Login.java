@@ -13,6 +13,7 @@ public class Login extends JQMPage implements SubmissionHandler<LoginData>
 	public Login(MobileClient mc)
 	{
 		this.application = mc;
+		setTheme("b");
 		JQMHeader h = new JQMHeader(application.getI18nMessageWithFallback("loginTitle"));
 		h.setTheme("b");
 		add(h);
