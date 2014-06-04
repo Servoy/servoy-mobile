@@ -36,9 +36,9 @@
 			<arg value="DETAILED"/>
 <!--			<arg value="-optimize"/>
 			<arg value="0"/>
-			<arg value="-draftCompile"/>
+			<arg value="-draftCompile"/> -->
 		    <arg value="-localWorkers"/>
-		    <arg value="8"/> -->
+		    <arg value="8"/>
 			<arg value="-strict"/>
 		</java>
 	</target>
@@ -59,9 +59,9 @@
 			<arg value="PRETTY"/>
 <!--			<arg value="-optimize"/>
 			<arg value="0"/>
-			<arg value="-draftCompile"/>
+			<arg value="-draftCompile"/> -->
 		    <arg value="-localWorkers"/>
-		    <arg value="8"/>-->
+		    <arg value="8"/>
 			<arg value="-strict"/>
 		</java>
 	</target>
