@@ -162,9 +162,24 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 	public void showRecords(FoundSet foundset) throws Exception
 	{
 		setModel(foundset);
-		mc.getFormManager().showForm(this);
+		if (mc.getFormManager().getCurrentForm() != this)
+		{
+			mc.getFormManager().showForm(this);
+		}
+		else
+		{
+			reloadPage("#" + getView().getDisplayPage().getId());
+		}
 		selectionChanged();
 	}
+
+	private native void reloadPage(String url) /*-{
+		$wnd.$.mobile.changePage(url, {
+			allowSamePageTransition : true,
+			transition : 'none',
+			changeHash : false
+		});
+	}-*/;
 
 	/*
 	 * (non-Javadoc)

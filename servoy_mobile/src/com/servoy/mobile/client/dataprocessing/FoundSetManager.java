@@ -247,6 +247,12 @@ public class FoundSetManager
 		return rd;
 	}
 
+	void flushRowDescription(String entityName, Object pk)
+	{
+		String key = entityName + '|' + pk;
+		keyToRowDescription.remove(key);
+	}
+
 	/**
 	 * Returns a new instance for local storage row description (saved data).
 	 */
