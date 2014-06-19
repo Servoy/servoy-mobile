@@ -598,7 +598,7 @@ public class FoundSetManager
 		}
 	}
 
-	void storeRowData(String entityName, JsArray<RowDescription> rowData, boolean updateMode)
+	void storeRowData(String entityName, JsArray<RowDescription> rowData, boolean updateMode, String pkString)
 	{
 		String[] uuidCols = entities != null ? entities.getUUIDDataProviderNames(entityName) : null;
 
@@ -620,6 +620,11 @@ public class FoundSetManager
 			list.add(row);
 		}
 		storeRowData(entityName, list, false, updateMode);
+
+		String[] pks = pkString.split(",");
+		//if the number of received rows is smaller than requested, it means data was removed during sync
+		if (rowData.length() < pks.length) removeNotReceivedRecords(entityName, rowData, pks);
+
 	}
 
 	void storeRowData(String entityName, ArrayList<RowDescription> rowData, boolean local, boolean updateMode)
@@ -1489,4 +1494,26 @@ public class FoundSetManager
 		return localStorage.getItem(USER_PROPERTY_PREFIX + name);
 	}
 
+	/**
+	 * Delete records which were removed server side during sync (between offline_data and data_* request)
+	 * @param entityName 
+	 * @param rowData the data received from the server
+	 * @param pks the pks for which a data request was made
+	 */
+	private void removeNotReceivedRecords(String entityName, JsArray<RowDescription> rowData, String[] pks)
+	{
+		FoundSet fs = getFoundSet(entityName, false);
+		outer : for (String pk : pks)
+		{
+			for (int i = 0; i < rowData.length(); i++)
+			{
+				RowDescription row = rowData.get(i);
+				String rowPK = getRowDataPkAndKey(entityName, row)[0];
+				if (pk.equals(rowPK)) continue outer;
+			}
+
+			fs.removeRecord(pk);
+		}
+		storeFoundSetDescription(fs.getFoundSetDescription(), false, null);
+	}
 }

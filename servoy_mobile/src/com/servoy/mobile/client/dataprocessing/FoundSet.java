@@ -976,4 +976,10 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		return dp;
 	}
 
+
+	FoundSetDescription getFoundSetDescription()
+	{
+		return foundSetDescription;
+	}
+
 }
