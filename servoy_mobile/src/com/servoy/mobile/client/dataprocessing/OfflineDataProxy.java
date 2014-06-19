@@ -302,7 +302,8 @@ public class OfflineDataProxy
 			return;
 		}
 		Iterator<Object> pks = coll.iterator();
-		String params = "?ids=" + concatAsString(pks);
+		final String pkString = concatAsString(pks);
+		String params = "?ids=" + pkString;
 
 		//requires REST urls like:
 		//serverURL/entityName/list?ids=1,2,3,4,12
@@ -338,7 +339,10 @@ public class OfflineDataProxy
 						JsArray<RowDescription> rowData = getRows(content);
 						content = null;
 
-						if (rowData != null) foundSetManager.storeRowData(entityName, rowData, updateMode);
+						if (rowData != null)
+						{
+							foundSetManager.storeRowData(entityName, rowData, updateMode, pkString);
+						}
 
 						if (entitiesToPKs.get(entityName).size() == 0)
 						{
