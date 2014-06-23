@@ -36,7 +36,7 @@ public class Field extends Component implements IBaseFieldCommon
 	{
 		Field f = castIfPossible(createEmptyChildComponent(parent, Utils.createStringUUID(), IRepositoryConstants.FIELDS));
 		f.setDisplayType(type);
-		f.setStyleClass("b");
+		f.setStyleClass("c");
 		return f;
 	}
 

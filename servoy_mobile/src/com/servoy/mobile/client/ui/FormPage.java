@@ -54,7 +54,7 @@ public class FormPage extends JQMPage implements IFormComponent
 	public FormPage(IFormDisplay formDisplay)
 	{
 		this.formDisplay = formDisplay;
-		setTheme("b");
+		setTheme("c");
 	}
 
 	/**
@@ -221,7 +221,7 @@ public class FormPage extends JQMPage implements IFormComponent
 				if (headerComponent == null)
 				{
 					headerComponent = new JQMHeader("");
-					headerComponent.setTheme("b");
+					headerComponent.setTheme("c");
 					headerComponent.setFixed(true);
 					add(headerComponent);
 					headerAddedByNavigator = true;

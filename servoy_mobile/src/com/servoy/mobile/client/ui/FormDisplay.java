@@ -251,7 +251,7 @@ public class FormDisplay implements IFormDisplay
 
 		if (headerComponent != null)
 		{
-			headerComponent.setTheme(headerPart != null ? headerPart.getStyleClass() : "b");
+			headerComponent.setTheme(headerPart != null ? headerPart.getStyleClass() : "c");
 			headerComponent.setFixed(headerPart != null ? (headerPart.getPartType() == IPartConstants.TITLE_HEADER) : true);
 
 			if (headerDecorator != null) headerDecorator.decorateHeader(headerPart, headerComponent);
