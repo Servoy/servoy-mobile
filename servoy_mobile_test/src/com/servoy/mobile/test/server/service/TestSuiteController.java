@@ -27,14 +27,14 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gwt.rpc.server.Pair;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.servoy.base.nongwt.test.ILineMapper;
-import com.servoy.base.nongwt.test.LineMapper;
 import com.servoy.base.nongwt.test.ILineMapper.LineMapping;
+import com.servoy.base.nongwt.test.LineMapper;
 import com.servoy.base.test.IJSUnitSuiteHandler;
 import com.servoy.base.test.IJSUnitSuiteHandler.TestCycleListener;
 import com.servoy.mobile.test.shared.service.ITestSuiteController;
@@ -55,14 +55,13 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 
 	private final Object requestSequenceLock = new Object();
 	private int requestSequenceCounter = -1; // test listener requests should be handled in-sequence
-	private static final Log log = LogFactory.getLog("gwt-log");
+	private static final Logger log = LoggerFactory.getLogger(TestSuiteController.class.getCanonicalName());
 
 	private boolean testSessionEnded = false;
 	private ILineMapper lineMapper;
 
 	public TestSuiteController()
 	{
-
 	}
 
 	@Override
@@ -305,7 +304,7 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 			}
 			catch (IOException e)
 			{
-				log.error(e);
+				log.error("", e);
 			}
 		}
 		return lineMapper;
@@ -510,7 +509,7 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 				}
 				catch (InterruptedException e)
 				{
-					log.error(e);
+					log.error("", e);
 				}
 			}
 		}
