@@ -27,14 +27,14 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gwt.rpc.server.Pair;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.servoy.base.nongwt.test.ILineMapper;
-import com.servoy.base.nongwt.test.LineMapper;
 import com.servoy.base.nongwt.test.ILineMapper.LineMapping;
+import com.servoy.base.nongwt.test.LineMapper;
 import com.servoy.base.test.IJSUnitSuiteHandler;
 import com.servoy.base.test.IJSUnitSuiteHandler.TestCycleListener;
 import com.servoy.mobile.test.shared.service.ITestSuiteController;
@@ -46,29 +46,28 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 {
 
 	// this constant is also defined in testing.js inside servoy_mobile_testing and MobileExporter.java; please update those as well if you change the value
-	private static final String SCOPE_NAME_SEPARATOR = "_sNS_"; //$NON-NLS-1$
-	protected static final Pattern DETAILED_STACK_LINE_PARSER = Pattern.compile(".*solution_\\d+\\.js:(\\d+).*"); //$NON-NLS-1$
-	protected static final Pattern DETAILED_STACK_FUNCTION_NAME_PARSER = Pattern.compile("(?:([^/]*)\\@.*)|(?:at (?:Object\\.)?(.*) \\(.*)"); //$NON-NLS-1$
+	private static final String SCOPE_NAME_SEPARATOR = "_sNS_";
+	protected static final Pattern DETAILED_STACK_LINE_PARSER = Pattern.compile(".*solution_\\d+\\.js:(\\d+).*");
+	protected static final Pattern DETAILED_STACK_FUNCTION_NAME_PARSER = Pattern.compile("(?:([^/]*)\\@.*)|(?:at (?:Object\\.)?(.*) \\(.*)");
 
 	// see http://tomcat.apache.org/tomcat-6.0-doc/jndi-datasource-examples-howto.html
 	private IJSUnitSuiteHandler bridge;
 
 	private final Object requestSequenceLock = new Object();
 	private int requestSequenceCounter = -1; // test listener requests should be handled in-sequence
-	private static final Log log = LogFactory.getLog("gwt-log"); //$NON-NLS-1$
+	private static final Logger log = LoggerFactory.getLogger(TestSuiteController.class.getCanonicalName());
 
 	private boolean testSessionEnded = false;
 	private ILineMapper lineMapper;
 
 	public TestSuiteController()
 	{
-
 	}
 
 	@Override
 	public void destroy()
 	{
-		if (!testSessionEnded && bridge != null) bridge.reportUnexpectedThrowable("The RPC servlet was destroyed before test session end...", null); //$NON-NLS-1$
+		if (!testSessionEnded && bridge != null) bridge.reportUnexpectedThrowable("The RPC servlet was destroyed before test session end...", null);
 		testSessionEnded();
 		increaseSequenceCounter(); // to notify all waiting requests...
 		super.destroy();
@@ -88,7 +87,7 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 
 			if (bridge == null)
 			{
-				log.error("Cannot locate (lookup) JUnit bridge handler. Is the server-side test environment setup correctly?"); //$NON-NLS-1$
+				log.error("Cannot locate (lookup) JUnit bridge handler. Is the server-side test environment setup correctly?");
 				return -1; // won't match normally
 			}
 			testSessionEnded = false;
@@ -157,22 +156,22 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 		// jsUnitStack stack is either null, or a one-element array with the description or something like (what JSUnit offers):
 		// [
 		//		[The description here]
-		//		Assert_assertTrue(msg,cond), 
+		//		Assert_assertTrue(msg,cond),
 		//		scopes_sNS_globals_sNS_testRoundingFailure1()(f:0)
-		//		TestClass0_testThatMustFailWithFailure(), 
-		//		TestCase_runTest(), 
-		//		TestCase_runBare(), 
-		//		TestCase_runBare(), 
-		//		TestResult_runProtected(test,p), 
-		//		TestResult_run(test), 
-		//		TestCase_run(result), 
-		//		TestSuite_runTest(test,result), 
+		//		TestClass0_testThatMustFailWithFailure(),
+		//		TestCase_runTest(),
+		//		TestCase_runBare(),
+		//		TestCase_runBare(),
+		//		TestResult_runProtected(test,p),
+		//		TestResult_run(test),
+		//		TestCase_run(result),
+		//		TestSuite_runTest(test,result),
 		//		TestSuite_run(result)
 		// ]
 
-		log.trace("Recreating throwable from jsunit stack: " + (jsUnitStack != null ? Arrays.asList(jsUnitStack) : null)); //$NON-NLS-1$
-		log.trace("Recreating throwable from native stack: " + (detailedStack != null ? Arrays.asList(detailedStack) : null)); //$NON-NLS-1$
-		String message = "?"; //$NON-NLS-1$
+		log.trace("Recreating throwable from jsunit stack: " + (jsUnitStack != null ? Arrays.asList(jsUnitStack) : null));
+		log.trace("Recreating throwable from native stack: " + (detailedStack != null ? Arrays.asList(detailedStack) : null));
+		String message = "?";
 		if (jsUnitStack != null && jsUnitStack.length > 0)
 		{
 			message = jsUnitStack[0];
@@ -197,7 +196,7 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 						Integer didI = computeDetailedIndexDelta(functionName.substring(0, functionName.length() - 2), i, detailedStack); // drop the extra "()" in function name
 						if (didI == null)
 						{
-							log.warn("Cannot use native stack for line numbers..."); //$NON-NLS-1$
+							log.warn("Cannot use native stack for line numbers...");
 							detailedStack = null;
 						}
 						else detailedIndexDelta = didI.intValue();
@@ -206,7 +205,7 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 
 				if (!foundServoyMethod)
 				{
-					log.warn("Cannot use native stack for line numbers... No servoy method detected in stack."); //$NON-NLS-1$
+					log.warn("Cannot use native stack for line numbers... No servoy method detected in stack.");
 					detailedStack = null;
 				}
 			}
@@ -251,7 +250,7 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 	private Pair<String, String> getFunctionNameAndScopeFromMobileFunctionName(String functionName)
 	{
 		String realFunctionName = functionName;
-		String scopes = "javascript"; //$NON-NLS-1$
+		String scopes = "javascript";
 		if (functionName.contains(SCOPE_NAME_SEPARATOR))
 		{
 			// this is then a function of a Servoy Solution - it also contains the scopes, not only the function name
@@ -301,11 +300,11 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 		{
 			try
 			{
-				lineMapper = LineMapper.fromProperties(getServletContext().getResourceAsStream("/mobiletestclient/lineMapping.properties")); //$NON-NLS-1$
+				lineMapper = LineMapper.fromProperties(getServletContext().getResourceAsStream("/mobiletestclient/lineMapping.properties"));
 			}
 			catch (IOException e)
 			{
-				log.error(e);
+				log.error("", e);
 			}
 		}
 		return lineMapper;
@@ -318,25 +317,25 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 		//		FF:
 		//		myThrowingFunction@file:///C:/Users/X/Desktop/scriptus.js:5
 		//		@file:///C:/Users/X/Desktop/test.html:10
-		//	
+		//
 		//		Chrome:
 		//		Error: my error
 		//		    at Error ()
 		//		    at myThrowingFunction (file:///C:/Users/X/Desktop/scriptus.js:5:19)
 		//		    at file:///C:/Users/X/Desktop/test.html:10:2
-		//					
+		//
 		//		IE 10 (fills the stack on the line it gets thrown, not when created => +1 line number in this case):
 		//		Error: my error
 		//		   at myThrowingFunction (file:///C:/Users/X/Desktop/scriptus.js:6:9)
 		//		   at Global code (file:///C:/Users/X/Desktop/test.html:10:2)
-		//				   
+		//
 		//		Safari:
 		//		Error: my error
 		//		    at Error ()
 		//		    at myThrowingFunction (file://localhost/Users/X/Desktop/bla/scriptus.js:5:19)
 		//		    at file://localhost/Users/X/Desktop/bla/test.html:10:2
 		// ]
-		// 
+		//
 		// real Chrome assertion failure example:
 		// [
 		//		Error: function testRoundingFailure1() {
@@ -510,7 +509,7 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 				}
 				catch (InterruptedException e)
 				{
-					log.error(e);
+					log.error("", e);
 				}
 			}
 		}
