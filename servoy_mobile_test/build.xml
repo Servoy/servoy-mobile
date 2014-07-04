@@ -5,7 +5,7 @@
 	<property name="servoy_base.classes" location="../servoy_base/bin" /> <!-- this relies on eclipse workspace builds to generate the classes; with ant builds - please declare the correct value before referencing this script -->
 	<property name="servoy_mobile.dir" location="../servoy_mobile" />
 	<property name="servoy_mobile.dir" location="../servoy_mobile" />
-	<property name="eclipse_target.dir" location="../eclipse_target" />
+	<property name="servoy.shared.lib" location="../servoy_shared/lib" />
 	<property name="cse.model.exporter.mobile.mobilewar.rel" value="../com.servoy.eclipse.model.exporter.mobile/src/com/servoy/eclipse/model/mobile/exporter/resources" />
 
 	<property name="gwt.args" value="-strict" />
@@ -23,9 +23,8 @@
 		<fileset dir="${gwt.jars}" includes="gwt-dev.jar"/>
 		<!-- Add any additional non-server libs (such as JUnit) -->
 		<fileset dir="war/WEB-INF/lib" includes="**/*.jar"/>
-		<fileset dir="${eclipse_target.dir}/ship_plugins/plugins">
-			<include name="*.jar" />
-			<exclude name="org.eclipse*.jar" />
+		<fileset dir="${servoy.shared.lib}">
+			<include name="slf4j*.jar" />
 		</fileset>
 	</path>
 
