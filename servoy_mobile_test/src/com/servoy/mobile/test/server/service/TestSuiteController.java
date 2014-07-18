@@ -30,8 +30,6 @@ import javax.naming.NamingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gwt.rpc.server.Pair;
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.servoy.base.nongwt.test.ILineMapper;
 import com.servoy.base.nongwt.test.ILineMapper.LineMapping;
 import com.servoy.base.nongwt.test.LineMapper;
@@ -156,16 +154,16 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 		// jsUnitStack stack is either null, or a one-element array with the description or something like (what JSUnit offers):
 		// [
 		//		[The description here]
-		//		Assert_assertTrue(msg,cond), 
+		//		Assert_assertTrue(msg,cond),
 		//		scopes_sNS_globals_sNS_testRoundingFailure1()(f:0)
-		//		TestClass0_testThatMustFailWithFailure(), 
-		//		TestCase_runTest(), 
-		//		TestCase_runBare(), 
-		//		TestCase_runBare(), 
-		//		TestResult_runProtected(test,p), 
-		//		TestResult_run(test), 
-		//		TestCase_run(result), 
-		//		TestSuite_runTest(test,result), 
+		//		TestClass0_testThatMustFailWithFailure(),
+		//		TestCase_runTest(),
+		//		TestCase_runBare(),
+		//		TestCase_runBare(),
+		//		TestResult_runProtected(test,p),
+		//		TestResult_run(test),
+		//		TestCase_run(result),
+		//		TestSuite_runTest(test,result),
 		//		TestSuite_run(result)
 		// ]
 
@@ -317,25 +315,25 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 		//		FF:
 		//		myThrowingFunction@file:///C:/Users/X/Desktop/scriptus.js:5
 		//		@file:///C:/Users/X/Desktop/test.html:10
-		//	
+		//
 		//		Chrome:
 		//		Error: my error
 		//		    at Error ()
 		//		    at myThrowingFunction (file:///C:/Users/X/Desktop/scriptus.js:5:19)
 		//		    at file:///C:/Users/X/Desktop/test.html:10:2
-		//					
+		//
 		//		IE 10 (fills the stack on the line it gets thrown, not when created => +1 line number in this case):
 		//		Error: my error
 		//		   at myThrowingFunction (file:///C:/Users/X/Desktop/scriptus.js:6:9)
 		//		   at Global code (file:///C:/Users/X/Desktop/test.html:10:2)
-		//				   
+		//
 		//		Safari:
 		//		Error: my error
 		//		    at Error ()
 		//		    at myThrowingFunction (file://localhost/Users/X/Desktop/bla/scriptus.js:5:19)
 		//		    at file://localhost/Users/X/Desktop/bla/test.html:10:2
 		// ]
-		// 
+		//
 		// real Chrome assertion failure example:
 		// [
 		//		Error: function testRoundingFailure1() {
@@ -518,7 +516,11 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 	@Override
 	protected void doUnexpectedFailure(Throwable e)
 	{
-		bridge.reportUnexpectedThrowable("Unexpected exception escaped the RPC servlet", e);
+		if (bridge != null) bridge.reportUnexpectedThrowable("Unexpected exception escaped the RPC servlet", e);
+		else
+		{
+			log.error("Unexpected exception escaped the RPC servlet after test session ended!", e);
+		}
 		super.doUnexpectedFailure(e);
 	}
 
