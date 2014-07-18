@@ -30,6 +30,8 @@ import javax.naming.NamingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gwt.rpc.server.Pair;
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.servoy.base.nongwt.test.ILineMapper;
 import com.servoy.base.nongwt.test.ILineMapper.LineMapping;
 import com.servoy.base.nongwt.test.LineMapper;
