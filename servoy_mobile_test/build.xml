@@ -109,6 +109,7 @@
 		<copy file="${servoy_mobile.dir}/war/servoy_mobile.html" toFile="war/servoy_mobile_test.html" overwrite="true" />
 		<replace file="war/servoy_mobile_test.html" summary="true">
 			<replacefilter token="mobileclient/mobileclient" value="mobiletestclient/mobiletestclient"/>
+			<replacefilter token="mobileclient/" value="mobiletestclient/"/>
 			<replacefilter token="&lt;head&gt;" value="&lt;head&gt;&#xA;&#xD;&#x9;&#x9;&lt;link rel=&quot;shortcut icon&quot; type=&quot;image/x-icon&quot; href=&quot;favicon.ico&quot;&gt;"/>
 		</replace>
 	</target>

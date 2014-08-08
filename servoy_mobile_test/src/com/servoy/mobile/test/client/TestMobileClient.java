@@ -14,7 +14,7 @@ import com.servoy.mobile.test.shared.service.ITestSuiteControllerAsync;
 
 /**
  * Mobile client that is able to automate some tasks for unit testing.
- * 
+ *
  * @author acostescu
  */
 public class TestMobileClient extends MobileClient
@@ -94,8 +94,8 @@ public class TestMobileClient extends MobileClient
 				@Override
 				public void onFailure(Throwable caught)
 				{
-					rpcController.reportUnexpectedThrowableMessage(msg,
-						t != null ? t.getClass().getName() + ": " + t.getMessage() : "", seq, new AsyncCallback<Void>()
+					rpcController.reportUnexpectedThrowableMessage(msg, t != null ? t.getClass().getName() + ": " + t.getMessage() : "", seq,
+						new AsyncCallback<Void>()
 						{
 							@Override
 							public void onSuccess(Void result)
@@ -157,7 +157,8 @@ public class TestMobileClient extends MobileClient
 							}
 							else
 							{
-								Log.error("Cannot find correct bridge instance. (id is out of sync)");
+								Log.error("Cannot find correct bridge instance. (id is out of sync; server: " + result + ", url param: " +
+									Window.Location.getParameter(IJSUnitSuiteHandler.BRIDGE_ID_ARG) + ")");
 							}
 						}
 
