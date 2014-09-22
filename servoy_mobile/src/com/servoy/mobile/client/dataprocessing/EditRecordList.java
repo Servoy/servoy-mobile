@@ -37,30 +37,23 @@ public class EditRecordList
 
 		for (Record rec : editedRecords)
 		{
-			if (!rec.hasRowDescription()) // record was deleted
-			{
-				deletedRecords.add(rec);
-			}
-			else
-			{
-				rec.clearRelationCaches();
+			rec.clearRelationCaches();
 
-				FoundSet fs = rec.getParent();
-				toCheck.add(fs);
-				String entityName = fs.getEntityName();
-				ArrayList<RowDescription> rows = toStore.get(entityName);
-				if (rows == null)
-				{
-					rows = new ArrayList<RowDescription>();
-					toStore.put(entityName, rows);
-				}
-				RowDescription row = rec.getRow();
-				if (!rows.contains(row))
-				{
-					rows.add(row);
-				}
-				foundSetManager.checkForNewRecord(entityName, row);
+			FoundSet fs = rec.getParent();
+			toCheck.add(fs);
+			String entityName = fs.getEntityName();
+			ArrayList<RowDescription> rows = toStore.get(entityName);
+			if (rows == null)
+			{
+				rows = new ArrayList<RowDescription>();
+				toStore.put(entityName, rows);
 			}
+			RowDescription row = rec.getRow();
+			if (!rows.contains(row))
+			{
+				rows.add(row);
+			}
+			foundSetManager.checkForNewRecord(entityName, row);
 		}
 
 		for (Record rec : deletedRecords)
