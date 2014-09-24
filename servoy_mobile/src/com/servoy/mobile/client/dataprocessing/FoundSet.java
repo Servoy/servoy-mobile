@@ -108,7 +108,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.mobile.client.scripting.Scope#getValue(java.lang.String)
 	 */
 	@Override
@@ -124,7 +124,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.mobile.client.scripting.Scope#setValue(java.lang.String, java.lang.Object)
 	 */
 	@Override
@@ -602,7 +602,6 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		if (recordIndex >= 0)
 		{
 			records.remove(record);
-			record.flush();
 			int listIndex = getRecordIndexInDescription(record.getPK());
 			if (listIndex >= 0)
 			{
@@ -610,6 +609,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 			}
 			getFoundSetManager().getEditRecordList().removeEditedRecord(record);
 			if (!isInFind()) getFoundSetManager().deleteRowData(getEntityName(), record.getRow(), record.isNew());
+			record.flush();
 			adjustSelectionAndContentOnListChange(recordIndex, true);
 			return true;
 		}
@@ -617,7 +617,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 	}
 
 	/**
-	 * @param deleted if it's not deleted then it's added 
+	 * @param deleted if it's not deleted then it's added
 	 */
 	private void adjustSelectionAndContentOnListChange(int recordIndex, boolean deleted)
 	{
@@ -838,7 +838,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 
 	/**
 	 * Called when the data of a record has changed.
-	 * 
+	 *
 	 * @param record the record that was changed.
 	 * @param dataProviderID the dataprovider that was changed
 	 * @param value the new value of that dataprovider.
@@ -904,7 +904,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 	 */
 	public void updateFoundSetDescription(FoundSetDescription currentFSD)
 	{
-		// if this foundset has editing records then we have to make it a filtered foundset 
+		// if this foundset has editing records then we have to make it a filtered foundset
 		// so a foundset where the "records" list is leading instead of the FoundSetDescription
 		if (!filteredFoundset && !findMode && foundSetManager.getEditRecordList().hasEditedRecords(this))
 		{
