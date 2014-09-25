@@ -33,7 +33,6 @@ public class EditRecordList
 	{
 		HashSet<FoundSet> toCheck = new HashSet<FoundSet>();
 		HashMap<String, ArrayList<RowDescription>> toStore = new HashMap<String, ArrayList<RowDescription>>();
-		ArrayList<Record> deletedRecords = new ArrayList<Record>();
 
 		for (Record rec : editedRecords)
 		{
@@ -55,9 +54,6 @@ public class EditRecordList
 			}
 			foundSetManager.checkForNewRecord(entityName, row);
 		}
-
-		for (Record rec : deletedRecords)
-			removeEditedRecord(rec);
 
 		Iterator<String> it = toStore.keySet().iterator();
 		while (it.hasNext())
