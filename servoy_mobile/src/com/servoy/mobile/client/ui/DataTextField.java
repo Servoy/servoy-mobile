@@ -53,17 +53,19 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 		this.scriptable = createRuntimeComponent(field, executor, application);
 		if (field.getFormat() != null)
 		{
+			String frmt = field.getFormat();
+			frmt = application.getI18nProvider().getI18NMessageIfPrefixed(frmt);
 			if (dataproviderType == IColumnTypeConstants.NUMBER || dataproviderType == IColumnTypeConstants.INTEGER)
 			{
-				numberFormat = NumberFormat.getFormat(field.getFormat());
+				numberFormat = NumberFormat.getFormat(frmt);
 			}
 			else if (dataproviderType == IColumnTypeConstants.DATETIME)
 			{
-				dateFormat = DateTimeFormat.getFormat(field.getFormat());
+				dateFormat = DateTimeFormat.getFormat(frmt);
 			}
 			else
 			{
-				Log.error("Format is set: " + field.getFormat() + ", on dataprovider: " + field.getDataProviderID() + " that has a not supported type: " + dataproviderType); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
+				Log.error("Format is set: " + field.getFormat() + ", on dataprovider: " + field.getDataProviderID() + " that has a not supported type: " + dataproviderType); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			}
 		}
 	}
@@ -141,7 +143,7 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.mobile.client.scripting.IScriptableProvider#getScriptObject()
 	 */
 	@Override
@@ -159,7 +161,7 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.mobile.client.ui.ISupportTitleText#setTitleText(java.lang.String)
 	 */
 	@Override
@@ -170,7 +172,7 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.mobile.client.ui.ISupportTitleText#getTitleText()
 	 */
 	@Override
@@ -181,7 +183,7 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.mobile.client.ui.ISupportTitleText#setTitleTextVisible(boolean)
 	 */
 	@Override
@@ -215,7 +217,7 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.mobile.client.util.IDestroyable#destroy()
 	 */
 	@Override

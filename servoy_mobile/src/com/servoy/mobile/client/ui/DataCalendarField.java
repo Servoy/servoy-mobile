@@ -50,6 +50,7 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 		this.scriptable = new RuntimeDataCalenderField(application, executor, this, field);
 
 		String frmt = field.getFormat();
+		frmt = application.getI18nProvider().getI18NMessageIfPrefixed(frmt);
 		String[] dateFrmt = new String[2];
 		String[] timeFrmt = new String[2];
 		if (frmt == null) frmt = "yyyy-MM-dd";
@@ -108,7 +109,7 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 			if (application.getI18nProvider() != null && application.getI18nProvider().getLanguage() != null)
 			{
 				language = application.getI18nProvider().getLanguage();
-				// add a list of all the languages we support 
+				// add a list of all the languages we support
 				if (!Arrays.asList(new String[] { "de", "it", "nl", "es", "fr" }).contains(language))
 				{
 					language = "en";
@@ -152,10 +153,10 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 
 	/**
 	 * json members values for jqm datepicker initialization params
-	 *  [0] overrideDateFormat 
+	 *  [0] overrideDateFormat
 	 *  [1] overrideDateFieldOrder
 	 * @param frmt
-	 * @return 
+	 * @return
 	 */
 	private String[] convertFormatToJQMDate(String frmt)
 	{
@@ -163,7 +164,7 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 		jqmFormat = jqmFormat.replaceAll("m+", "%i"); // minutes
 		jqmFormat = jqmFormat.replaceAll("M+", "%m"); // month
 		jqmFormat = jqmFormat.replaceAll("d+", "%d"); // day
-		jqmFormat = jqmFormat.replaceAll("a+", "AM"); // resolve am pm 
+		jqmFormat = jqmFormat.replaceAll("a+", "AM"); // resolve am pm
 		String overwriteFormat = jqmFormat.replaceAll("s+", "%a"); // second
 		String threeTermsRegex = ".*?(%Y|%m|%d)(.*?)(%Y|%m|%d)(.*?)(%Y|%m|%d).*";
 		String twoTermsRegex = ".*?(%Y|%m|%d)(.*?)(%Y|%m|%d).*";
@@ -207,7 +208,7 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 	/**
 	 *  [0] overrideTimeOutput
 	 *  [1] overrideTimeFieldOrder
-	 *  
+	 *
 	 * @param frmt
 	 * @return
 	 */
@@ -301,7 +302,7 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.mobile.client.scripting.IScriptableProvider#getScriptObject()
 	 */
 	@Override
@@ -319,7 +320,7 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.mobile.client.ui.ISupportTitleText#setTitleText(java.lang.String)
 	 */
 	@Override
@@ -330,7 +331,7 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.mobile.client.ui.ISupportTitleText#getTitleText()
 	 */
 	@Override
@@ -341,7 +342,7 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.mobile.client.ui.ISupportTitleText#setTitleTextVisible(boolean)
 	 */
 	@Override
@@ -375,7 +376,7 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.mobile.client.util.IDestroyable#destroy()
 	 */
 	@Override
