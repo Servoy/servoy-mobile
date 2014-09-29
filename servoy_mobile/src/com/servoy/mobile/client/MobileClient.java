@@ -614,11 +614,6 @@ public class MobileClient implements EntryPoint
 							else if (reason.getStatusCode() != 0)
 							{
 								error(reason.getMessage());
-								showFirstForm();
-							}
-							else
-							{
-								error(reason.getMessage());
 							}
 						}
 					}
@@ -740,7 +735,7 @@ public class MobileClient implements EntryPoint
 	private final native boolean testLocalStorage()
 	/*-{
 		var testKey = 'qeTest', storage = $wnd.window.sessionStorage;
-		try { // Try and catch quota exceeded errors 
+		try { // Try and catch quota exceeded errors
 			storage.setItem(testKey, '1');
 			storage.removeItem(testKey);
 		} catch (error) {
