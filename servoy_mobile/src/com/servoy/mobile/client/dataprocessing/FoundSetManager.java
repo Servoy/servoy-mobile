@@ -81,7 +81,7 @@ public class FoundSetManager
 	private ArrayList<String> changes;
 	// deletes of records that exist server side
 	private ArrayList<String> serverRecordsDeletes;
-	// deletes of records that were created client side, then deleted without existing on server; 
+	// deletes of records that were created client side, then deleted without existing on server;
 	// we have to keep track of these also as not all references to these records are deleted, we filter them out at foundset creation
 	private ArrayList<String> clientDeletes;
 
@@ -250,6 +250,7 @@ public class FoundSetManager
 	void flushRowDescription(String entityName, Object pk)
 	{
 		String key = entityName + '|' + pk;
+		getEditRecordList().removeEditedRecord(keyToRowDescription.get(key));
 		keyToRowDescription.remove(key);
 	}
 
@@ -534,7 +535,7 @@ public class FoundSetManager
 				}
 				else
 				{
-					// related fsd that are coming in are just leading only make sure that the new records are kept in the FSD description. 
+					// related fsd that are coming in are just leading only make sure that the new records are kept in the FSD description.
 					JsArray<RecordDescription> records = currentFSD.getRecords();
 					for (int i = 0; i < records.length(); i++)
 					{
@@ -703,6 +704,7 @@ public class FoundSetManager
 			updateListInLocalStorage(NEW_RECORDS_KEY, newRecords);
 		}
 
+		getEditRecordList().removeEditedRecord(keyToRowDescription.get(key));
 		keyToRowDescription.remove(key);
 
 	}
@@ -1496,7 +1498,7 @@ public class FoundSetManager
 
 	/**
 	 * Delete records which were removed server side during sync (between offline_data and data_* request)
-	 * @param entityName 
+	 * @param entityName
 	 * @param rowData the data received from the server
 	 * @param pks the pks for which a data request was made
 	 */

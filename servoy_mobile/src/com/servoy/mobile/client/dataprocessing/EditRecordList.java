@@ -86,6 +86,26 @@ public class EditRecordList
 		editedRecords.remove(record);
 	}
 
+	public void removeEditedRecord(RowDescription rowDescription)
+	{
+		if (rowDescription != null)
+		{
+			Record toRemove = null;
+			for (Record r : editedRecords)
+			{
+				if (r.getRow().equals(rowDescription))
+				{
+					toRemove = r;
+					break;
+				}
+			}
+			if (toRemove != null)
+			{
+				editedRecords.remove(toRemove);
+			}
+		}
+	}
+
 	public int stopIfEditing(FoundSet fs)
 	{
 		if (hasEditedRecords(fs))
