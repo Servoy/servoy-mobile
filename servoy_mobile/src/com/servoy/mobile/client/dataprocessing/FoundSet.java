@@ -108,7 +108,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see com.servoy.mobile.client.scripting.Scope#getValue(java.lang.String)
 	 */
 	@Override
@@ -124,7 +124,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see com.servoy.mobile.client.scripting.Scope#setValue(java.lang.String, java.lang.Object)
 	 */
 	@Override
@@ -389,6 +389,17 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 								return 0;
 							}
 						};
+
+						if (raw instanceof JsArray)
+						{
+							JsArray rawJsArray = (JsArray)raw;
+							String[] rawArray = new String[rawJsArray.length()];
+							for (int i = 0; i < rawJsArray.length(); i++)
+							{
+								rawArray[i] = rawJsArray.get(i).toString();
+							}
+							raw = rawArray;
+						}
 						and2 = BaseSQLGenerator.parseFindExpression(BaseQueryFactory.INSTANCE, raw, qCol, null, dpType, null, col, false, new IValueConverter()
 						{
 
