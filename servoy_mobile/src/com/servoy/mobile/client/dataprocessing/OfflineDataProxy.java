@@ -55,7 +55,6 @@ import com.servoy.mobile.client.util.Failure;
  */
 public class OfflineDataProxy
 {
-	private static final int version = 1;
 	private final FoundSetManager foundSetManager;
 	private String serverURL;
 	private final boolean nodebug;
@@ -92,7 +91,7 @@ public class OfflineDataProxy
 		this.loadCallback = cb;
 
 		//requires a REST url like: serverURL/offline_data/version/name
-		RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, serverURL + "/offline_data/" + version + "/search");
+		RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, serverURL + "/offline_data/" + getVersion() + "/search");
 		setRequestParameters(builder);
 
 		JSONObject payload = new JSONObject();
@@ -221,7 +220,7 @@ public class OfflineDataProxy
 		this.loadCallback = cb;
 
 		//requires a REST url like: serverURL/offline_data/version/name
-		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, serverURL + "/offline_data/" + version + '/' + URL.encode(name));
+		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, serverURL + "/offline_data/" + getVersion() + '/' + URL.encode(name));
 		setRequestParameters(builder);
 
 		builder.setHeader("Accept", "application/json");
@@ -311,7 +310,7 @@ public class OfflineDataProxy
 		//serverURL/entityName/12 GET
 		//serverURL/entityName/12 POST (for new)
 		//serverURL/entityName PUT (for update)
-		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, serverURL + '/' + foundSetManager.getEntityPrefix() + entityName + '/' + version +
+		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, serverURL + '/' + foundSetManager.getEntityPrefix() + entityName + '/' + getVersion() +
 			"/list" + URL.encode(params));
 		setRequestParameters(builder);
 
@@ -476,7 +475,7 @@ public class OfflineDataProxy
 				}
 			}
 
-			RequestBuilder builder = new RequestBuilder(RequestBuilder.PUT, serverURL + "/offline_data/" + version);
+			RequestBuilder builder = new RequestBuilder(RequestBuilder.PUT, serverURL + "/offline_data/" + getVersion());
 			setRequestParameters(builder);
 			builder.setHeader("Content-Type", "application/json");
 			String json = payload.toString();
@@ -548,8 +547,8 @@ public class OfflineDataProxy
 		String remotepk = foundSetManager.getRemotePK(entityName, pk, null);
 
 		//DELETE server side
-		RequestBuilder builder = new RequestBuilder(RequestBuilder.DELETE, serverURL + '/' + foundSetManager.getEntityPrefix() + entityName + '/' + version +
-			'/' + URL.encode(remotepk));
+		RequestBuilder builder = new RequestBuilder(RequestBuilder.DELETE, serverURL + '/' + foundSetManager.getEntityPrefix() + entityName + '/' +
+			getVersion() + '/' + URL.encode(remotepk));
 		setRequestParameters(builder);
 		//builder.setHeader("Access-Control-Request-Method", "DELETE");
 
@@ -627,7 +626,7 @@ public class OfflineDataProxy
 
 		//serverURL/entityName/12 PUT (for update), POST for new
 		RequestBuilder builder = new RequestBuilder(row.isCreatedOnDevice() ? RequestBuilder.POST : RequestBuilder.PUT, serverURL + '/' +
-			foundSetManager.getEntityPrefix() + entityName + '/' + version + '/' + URL.encode(remotepk));
+			foundSetManager.getEntityPrefix() + entityName + '/' + getVersion() + '/' + URL.encode(remotepk));
 		setRequestParameters(builder);
 		//builder.setHeader("Access-Control-Request-Method", row.isCreatedOnDevice() ? "POST" : "PUT");
 
@@ -699,7 +698,7 @@ public class OfflineDataProxy
 	private void testOffLineDataWSUpdate(final Callback<Integer, Failure> callback)
 	{
 		//requires a REST url like: serverURL/offline_data/version/name
-		RequestBuilder builder = new ServoyRequestBuilder("OPTIONS", serverURL + "/offline_data/" + version + "/ws_update");
+		RequestBuilder builder = new ServoyRequestBuilder("OPTIONS", serverURL + "/offline_data/" + getVersion() + "/ws_update");
 		setRequestParameters(builder);
 		try
 		{
@@ -791,6 +790,11 @@ public class OfflineDataProxy
 		builder.setTimeoutMillis(timeout * 1000);
 	}
 
+
+	private int getVersion()
+	{
+		return foundSetManager.getApplication().getVersion();
+	}
 
 	class ServoyRequestBuilder extends RequestBuilder
 	{
