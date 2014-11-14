@@ -81,7 +81,7 @@ public class MobileClient implements EntryPoint
 	protected boolean firstFormFirstShow = true;
 
 	private IAfterLoginHandler afterLoginHandler;
-
+	private int version = 1;
 
 	@Override
 	public void onModuleLoad()
@@ -91,8 +91,8 @@ public class MobileClient implements EntryPoint
 	}
 
 	private static native void loadMediaResources()/*-{
-		$wnd._ServoyUtils_.loadMediaResources();
-	}-*/;
+													$wnd._ServoyUtils_.loadMediaResources();
+													}-*/;
 
 	protected void initialize()
 	{
@@ -785,5 +785,15 @@ public class MobileClient implements EntryPoint
 	public interface IAfterLoginHandler
 	{
 		void execute();
+	}
+
+	public int getVersion()
+	{
+		return version;
+	}
+
+	public void setVersion(int version)
+	{
+		this.version = version;
 	}
 }
