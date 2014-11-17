@@ -148,14 +148,14 @@ public class MobilePlugin implements Exportable
 	}
 
 	private native void simulateClick(String link)/*-{
-		if ($wnd.$.mobile.activePage) {
-			if ($wnd.$("#servoyanchor").length < 1) {
-				$wnd.$.mobile.activePage.append("<a id='servoyanchor'></a>");
-			}
-			$wnd.$("#servoyanchor").attr('href', link);
-			$wnd._ServoyUtils_.simulateClick($wnd.$("#servoyanchor").get(0));
-		}
-	}-*/;
+													if ($wnd.$.mobile.activePage) {
+													if ($wnd.$("#servoyanchor").length < 1) {
+													$wnd.$.mobile.activePage.append("<a id='servoyanchor'></a>");
+													}
+													$wnd.$("#servoyanchor").attr('href', link);
+													$wnd._ServoyUtils_.simulateClick($wnd.$("#servoyanchor").get(0));
+													}
+													}-*/;
 
 	public String getMarkupId(Object element)
 	{
@@ -214,5 +214,15 @@ public class MobilePlugin implements Exportable
 			}
 		}
 		return null;
+	}
+
+	public int getVersion()
+	{
+		return client.getVersion();
+	}
+
+	public void setVersion(int version)
+	{
+		client.setVersion(version);
 	}
 }
