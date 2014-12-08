@@ -154,7 +154,7 @@ public class OfflineDataProxy
 					else
 					{
 						loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback(
-							"cannotLoadJSON"), response.getStatusCode()));
+							"cannotLoadJSON"), getFixedStatusCode(response.getStatusCode())));
 						loadCallback = null;
 					}
 				}
@@ -253,7 +253,7 @@ public class OfflineDataProxy
 					else
 					{
 						loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback(
-							"cannotLoadJSON"), response.getStatusCode()));
+							"cannotLoadJSON"), getFixedStatusCode(response.getStatusCode())));
 						loadCallback = null;
 					}
 				}
@@ -353,7 +353,7 @@ public class OfflineDataProxy
 					else
 					{
 						loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback(
-							"cannotLoadJSON"), response.getStatusCode()));
+							"cannotLoadJSON"), getFixedStatusCode(response.getStatusCode())));
 						loadCallback = null;
 					}
 				}
@@ -512,7 +512,7 @@ public class OfflineDataProxy
 						else
 						{
 							callback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback(
-								"cannotSaveJSON"), response.getStatusCode()));
+								"cannotSaveJSON"), getFixedStatusCode(response.getStatusCode())));
 						}
 					}
 				});
@@ -576,7 +576,7 @@ public class OfflineDataProxy
 					else
 					{
 						callback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback(
-							"cannotDeleteRecord"), response.getStatusCode()));
+							"cannotDeleteRecord"), getFixedStatusCode(response.getStatusCode())));
 					}
 				}
 			});
@@ -586,6 +586,16 @@ public class OfflineDataProxy
 			callback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback("cannotDeleteRecord"),
 				e));
 		}
+	}
+
+	private int getFixedStatusCode(int statusCode)
+	{
+		if (statusCode == 0 && foundSetManager.getApplication().getFlattenedSolution().getMustAuthenticate() && !hasCredentials())
+		{
+			return Response.SC_UNAUTHORIZED;
+		}
+
+		return statusCode;
 	}
 
 	@SuppressWarnings("nls")
@@ -659,7 +669,7 @@ public class OfflineDataProxy
 					else
 					{
 						callback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback(
-							"cannotSaveJSON"), response.getStatusCode()));
+							"cannotSaveJSON"), getFixedStatusCode(response.getStatusCode())));
 					}
 				}
 			});
