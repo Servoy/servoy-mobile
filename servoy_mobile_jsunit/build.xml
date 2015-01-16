@@ -95,7 +95,7 @@
 			</classpath>
 			<jvmarg value="-Xmx256M"/>
 			<arg value="-startupUrl"/>
-			<arg value="http://127.0.0.1:8080/servoy_mobile_test/servoy_mobile_test.html?log_level=DEBUG&amp;noinitsmc=true&amp;bid=0&amp;nodebug=true"/>
+			<arg value="http://127.0.0.1:8080/servoy_mobile_jsunit/servoy_mobile_jsunit.html?log_level=DEBUG&amp;noinitsmc=true&amp;bid=0&amp;nodebug=true"/>
 			<arg line="-war"/>
 			<arg value="war"/>
 			<!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
@@ -105,9 +105,9 @@
 		</java>
 	</target>
 
-	<target name="update_html" description="Update servoy_mobile_test.html; it must always be almost the same as servoy_mobile.html">
-		<copy file="${servoy_mobile.dir}/war/servoy_mobile.html" toFile="war/servoy_mobile_test.html" overwrite="true" />
-		<replace file="war/servoy_mobile_test.html" summary="true">
+	<target name="update_html" description="Update servoy_mobile_jsunit.html; it must always be almost the same as servoy_mobile.html">
+		<copy file="${servoy_mobile.dir}/war/servoy_mobile.html" toFile="war/servoy_mobile_jsunit.html" overwrite="true" />
+		<replace file="war/servoy_mobile_jsunit.html" summary="true">
 			<replacefilter token="mobileclient/mobileclient" value="mobiletestclient/mobiletestclient"/>
 			<replacefilter token="mobileclient/" value="mobiletestclient/"/>
 			<replacefilter token="&lt;head&gt;" value="&lt;head&gt;&#xA;&#xD;&#x9;&#x9;&lt;link rel=&quot;shortcut icon&quot; type=&quot;image/x-icon&quot; href=&quot;favicon.ico&quot;&gt;"/>
@@ -117,17 +117,17 @@
 	<target name="build" depends="gwtc" description="Build this project" />
 
 	<target name="manual_war" depends="build" description="Create a war file">
-		<jar destfile="servoy_mobile_test.war" basedir="war"/>
+		<jar destfile="servoy_mobile_jsunit.war" basedir="war"/>
 	</target>
 
 	<target name="war" depends="build" description="Create a war file">
-		<delete file="servoy_mobile_test.war"/>
-		<jar	destfile="servoy_mobile_test.war"
+		<delete file="servoy_mobile_jsunit.war"/>
+		<jar	destfile="servoy_mobile_jsunit.war"
 			basedir="war"
 			duplicate="fail"
 			excludes="**/*.war,**/solution_json.js,**/solution.js,**/media/**,**/index.html"
 		/>
-		<move tofile="${cse.model.exporter.mobile.mobilewar.rel}/servoy_mobile_test.war" file="servoy_mobile_test.war"/>
+		<move tofile="${cse.model.exporter.mobile.mobilewar.rel}/servoy_mobile_jsunit.war" file="servoy_mobile_jsunit.war"/>
 		<delete dir="gwt-unitCache"/>
 	</target>
 
