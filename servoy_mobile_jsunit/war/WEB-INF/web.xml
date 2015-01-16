@@ -48,7 +48,7 @@
 
   <!-- Default page to serve -->
   <welcome-file-list>
-    <welcome-file>servoy_mobile_test.html</welcome-file>
+    <welcome-file>servoy_mobile_jsunit.html</welcome-file>
   </welcome-file-list>
 
 </web-app>
