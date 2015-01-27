@@ -73,6 +73,7 @@ public class FoundSetManager
 	private final ValueStore valueStore = new ValueStore(localStorage);
 	private final MobileClient application;
 	private EditRecordList editRecordList;
+	private Map<String, List<String>> entityNameToPK = new HashMap<String, List<String>>();
 
 	//fields mapped to local storage
 	private Entities entities;
@@ -252,6 +253,7 @@ public class FoundSetManager
 		String key = entityName + '|' + pk;
 		getEditRecordList().removeEditedRecord(keyToRowDescription.get(key));
 		keyToRowDescription.remove(key);
+		entityNameToPK.remove(entityName);
 	}
 
 	/**
@@ -468,6 +470,7 @@ public class FoundSetManager
 	{
 		boolean omitForKeyinfo = false;
 		String key = fd.getEntityName();
+		entityNameToPK.remove(key);
 		if (fd.getRelationName() != null && entities != null)
 		{
 			int rid = entities.getRelationID(fd.getRelationName());
@@ -631,7 +634,7 @@ public class FoundSetManager
 	void storeRowData(String entityName, ArrayList<RowDescription> rowData, boolean local, boolean updateMode)
 	{
 		int oldSize = changes.size();
-
+		entityNameToPK.remove(entityName);
 		//store data in offline db
 		for (RowDescription row : rowData)
 		{
@@ -685,7 +688,6 @@ public class FoundSetManager
 				updateListInLocalStorage(CLIENT_DELETES_KEY, clientDeletes);
 			}
 		}
-
 		HashSet<FoundSet> set = getCreatedFoundsets(entityName);
 		for (FoundSet foundset : set)
 		{
@@ -706,6 +708,7 @@ public class FoundSetManager
 
 		getEditRecordList().removeEditedRecord(keyToRowDescription.get(key));
 		keyToRowDescription.remove(key);
+		entityNameToPK.remove(entityName);
 
 	}
 
@@ -993,6 +996,7 @@ public class FoundSetManager
 		serverRecordsDeletes = new ArrayList<String>();
 		clientDeletes = new ArrayList<String>();
 		newRecords = new ArrayList<String>();
+		entityNameToPK = new HashMap<String, List<String>>();
 
 		foundsets.clear();
 		relatedFoundsets.clear();
@@ -1097,6 +1101,7 @@ public class FoundSetManager
 			}
 		}
 		keyToRowDescription.put(fs.getEntityName() + '|' + pkval, retval);
+		entityNameToPK.remove(fs.getEntityName());
 		return retval;
 	}
 
@@ -1149,33 +1154,114 @@ public class FoundSetManager
 	//seeks trough all data for matching rhs/foreign records and add these to rds arg
 	private void seek(String entityName, JsArrayString foreignColumns, Object[] coldata, JsArray<RecordDescription> rds)
 	{
+		if (entityNameToPK.containsKey(entityName))
+		{
+			List<String> pks = entityNameToPK.get(entityName);
+			if (pks != null && pks.size() > 0)
+			{
+				for (String pk : pks)
+				{
+					checkRecord(pk, entityName, foreignColumns, coldata, rds, false);
+				}
+			}
+			return;
+		}
+		// we rely on alphabetical order of local storage keys
 		String entityNamePlusPipe = entityName + '|';
 		int length = localStorage.getLength();
-		for (int j = 0; j < length; j++)
+		int index = getKeyIndex(entityNamePlusPipe, 0, length - 1);
+		if (index >= 0)
 		{
-			String key = localStorage.key(j);
-			if (key.startsWith(entityNamePlusPipe))
+			List<String> pks = new ArrayList<String>();
+			for (int j = index; j >= 0; j--)
 			{
-				Object pk = key.substring(entityNamePlusPipe.length());
-				RowDescription rowd = getRowDescription(entityName, pk);
-				boolean foundMatch = false;
-				for (int i = 0; i < coldata.length; i++)
+				String key = localStorage.key(j);
+				if (key.startsWith(entityNamePlusPipe))
 				{
-					if (coldata[i].equals(rowd.getValue(foreignColumns.get(i))))
-					{
-						foundMatch = true;
-					}
-					else
-					{
-						foundMatch = false;
-						break;
-					}
+					String pk = key.substring(entityNamePlusPipe.length());
+					pks.add(0, pk);
+					checkRecord(pk, entityName, foreignColumns, coldata, rds, true);
 				}
-				if (foundMatch)
+				else break;
+			}
+
+			for (int j = index + 1; j < length; j++)
+			{
+				String key = localStorage.key(j);
+				if (key.startsWith(entityNamePlusPipe))
 				{
-					RecordDescription rd = RecordDescription.newInstance(pk);
-					rds.push(rd);
+					String pk = key.substring(entityNamePlusPipe.length());
+					pks.add(pk);
+					checkRecord(pk, entityName, foreignColumns, coldata, rds, false);
 				}
+				else break;
+			}
+			entityNameToPK.put(entityName, pks);
+		}
+	}
+
+	private int getKeyIndex(String entityName, int start, int end)
+	{
+		if (start > end) return -1;
+		if ((end - start) <= 1)
+		{
+			String key = localStorage.key(start);
+			if (key.startsWith(entityName))
+			{
+				return start;
+			}
+			key = localStorage.key(end);
+			if (key.startsWith(entityName))
+			{
+				return end;
+			}
+			return -1;
+		}
+		int middle = (start + end) / 2;
+		String key = localStorage.key(middle);
+		if (key.startsWith(entityName))
+		{
+			return middle;
+		}
+		else if (entityName.compareTo(key) > 0)
+		{
+			return getKeyIndex(entityName, middle, end);
+		}
+		else
+		{
+			return getKeyIndex(entityName, start, middle);
+		}
+	}
+
+	private void checkRecord(String pk, String entityName, JsArrayString foreignColumns, Object[] coldata, JsArray<RecordDescription> rds, boolean addToTop)
+	{
+		RowDescription rowd = getRowDescription(entityName, pk);
+		boolean foundMatch = false;
+		if (rowd != null)
+		{
+			for (int i = 0; i < coldata.length; i++)
+			{
+				if (coldata[i].equals(rowd.getValue(foreignColumns.get(i))))
+				{
+					foundMatch = true;
+				}
+				else
+				{
+					foundMatch = false;
+					break;
+				}
+			}
+		}
+		if (foundMatch)
+		{
+			RecordDescription rd = RecordDescription.newInstance(pk);
+			if (addToTop)
+			{
+				rds.unshift(rd);
+			}
+			else
+			{
+				rds.push(rd);
 			}
 		}
 	}
