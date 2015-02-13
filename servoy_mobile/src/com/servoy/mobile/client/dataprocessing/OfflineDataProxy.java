@@ -153,8 +153,8 @@ public class OfflineDataProxy
 					}
 					else
 					{
-						loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback(
-							"cannotLoadJSON"), getFixedStatusCode(response.getStatusCode())));
+						loadCallback.onFailure(new Failure(foundSetManager.getApplication(), getErrorMessage(response),
+							getFixedStatusCode(response.getStatusCode())));
 						loadCallback = null;
 					}
 				}
@@ -252,8 +252,8 @@ public class OfflineDataProxy
 					}
 					else
 					{
-						loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback(
-							"cannotLoadJSON"), getFixedStatusCode(response.getStatusCode())));
+						loadCallback.onFailure(new Failure(foundSetManager.getApplication(), getErrorMessage(response),
+							getFixedStatusCode(response.getStatusCode())));
 						loadCallback = null;
 					}
 				}
@@ -352,8 +352,8 @@ public class OfflineDataProxy
 					}
 					else
 					{
-						loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback(
-							"cannotLoadJSON"), getFixedStatusCode(response.getStatusCode())));
+						loadCallback.onFailure(new Failure(foundSetManager.getApplication(), getErrorMessage(response),
+							getFixedStatusCode(response.getStatusCode())));
 						loadCallback = null;
 					}
 				}
@@ -511,8 +511,8 @@ public class OfflineDataProxy
 						}
 						else
 						{
-							callback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback(
-								"cannotSaveJSON"), getFixedStatusCode(response.getStatusCode())));
+							callback.onFailure(new Failure(foundSetManager.getApplication(), getErrorMessage(response),
+								getFixedStatusCode(response.getStatusCode())));
 						}
 					}
 				});
@@ -575,8 +575,8 @@ public class OfflineDataProxy
 					}
 					else
 					{
-						callback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback(
-							"cannotDeleteRecord"), getFixedStatusCode(response.getStatusCode())));
+						callback.onFailure(new Failure(foundSetManager.getApplication(), getErrorMessage(response),
+							getFixedStatusCode(response.getStatusCode())));
 					}
 				}
 			});
@@ -668,8 +668,8 @@ public class OfflineDataProxy
 					}
 					else
 					{
-						callback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback(
-							"cannotSaveJSON"), getFixedStatusCode(response.getStatusCode())));
+						callback.onFailure(new Failure(foundSetManager.getApplication(), getErrorMessage(response),
+							getFixedStatusCode(response.getStatusCode())));
 					}
 				}
 			});
@@ -804,6 +804,13 @@ public class OfflineDataProxy
 	private int getVersion()
 	{
 		return foundSetManager.getApplication().getVersion();
+	}
+
+	private String getErrorMessage(Response response)
+	{
+		return (response != null && response.getText() != null && !response.getText().isEmpty())
+			? foundSetManager.getApplication().getI18nProvider().getI18NMessageIfPrefixed(response.getText())
+			: foundSetManager.getApplication().getI18nMessageWithFallback("cannotLoadJSON");
 	}
 
 	class ServoyRequestBuilder extends RequestBuilder
