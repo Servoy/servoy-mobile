@@ -86,12 +86,12 @@ public class FormPage extends JQMPage implements IFormComponent
 		{
 			setDocumentTitle(headerComponent.getText());
 		}
-		if (formNavigator != null && isTablet()) formNavigator.open();
 	}
 
 	@Override
 	protected void onPageShow()
 	{
+		if (formNavigator != null && isTablet()) formNavigator.open();
 		formDisplay.getFormController().getApplication().getFormManager().setChangingFormPage(false);
 		isShow = true;
 		if (scrollTop > 0) Mobile.silentScroll(scrollTop);
@@ -150,7 +150,7 @@ public class FormPage extends JQMPage implements IFormComponent
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.mobile.client.ui.IFormComponent#addHeader(com.sksamuel.jqm4gwt.toolbar.JQMHeader)
 	 */
 	@Override
@@ -162,7 +162,7 @@ public class FormPage extends JQMPage implements IFormComponent
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.mobile.client.ui.IFormComponent#addFooter(com.sksamuel.jqm4gwt.toolbar.JQMFooter)
 	 */
 	@Override
@@ -265,7 +265,7 @@ public class FormPage extends JQMPage implements IFormComponent
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.mobile.client.ui.IFormComponent#getFormDisplay()
 	 */
 	@Override
