@@ -58,6 +58,7 @@ public class FoundSetManager
 {
 	public static final String LITERAL_PREFIX = "LITERAL:"; //$NON-NLS-1$
 	private static final String CHANGES_KEY = "_svy_changes";
+	private static final String ALL_DELETES_KEY = "_svy_all_deletes";
 	private static final String DELETES_KEY = "_svy_deletes";
 	private static final String CLIENT_DELETES_KEY = "_svy_client_deletes";
 	private static final String NEW_RECORDS_KEY = "_svy_client_new_records";
@@ -80,10 +81,12 @@ public class FoundSetManager
 	private String entityPrefix;
 	private final int storage_version;
 	private ArrayList<String> changes;
+
+	// we have to keep track of these as not all references to these records are deleted, we filter them out at foundset creation
+	private ArrayList<String> allRecordDeletes;
 	// deletes of records that exist server side
 	private ArrayList<String> serverRecordsDeletes;
 	// deletes of records that were created client side, then deleted without existing on server;
-	// we have to keep track of these also as not all references to these records are deleted, we filter them out at foundset creation
 	private ArrayList<String> clientDeletes;
 
 	// list of records created on client, we need to keep this because not all foundset description are modified at save
@@ -114,6 +117,9 @@ public class FoundSetManager
 
 		changes = new ArrayList<String>();
 		addItems(localStorage.getItem(CHANGES_KEY), changes);
+
+		allRecordDeletes = new ArrayList<String>();
+		addItems(localStorage.getItem(ALL_DELETES_KEY), allRecordDeletes);
 
 		serverRecordsDeletes = new ArrayList<String>();
 		addItems(localStorage.getItem(DELETES_KEY), serverRecordsDeletes);
@@ -687,6 +693,10 @@ public class FoundSetManager
 
 				updateListInLocalStorage(CLIENT_DELETES_KEY, clientDeletes);
 			}
+
+			if (!allRecordDeletes.contains(key)) allRecordDeletes.add(key);
+			updateAllDeletesInLocalStorage();
+
 		}
 		HashSet<FoundSet> set = getCreatedFoundsets(entityName);
 		for (FoundSet foundset : set)
@@ -773,8 +783,19 @@ public class FoundSetManager
 		return null;
 	}
 
-	public void recordPushedToServer(String entityName, String pk)
+	public void recordPushedToServer(String entityName, String pk, String remotePK)
 	{
+		if (remotePK != null)
+		{
+			try
+			{
+				Integer.parseInt(remotePK); // make sure it is a integer
+				valueStore.setRemoteID(Utils.getAsInteger(pk), remotePK);
+			}
+			catch (NumberFormatException e)
+			{
+			}
+		}
 		HashSet<FoundSet> set = getCreatedFoundsets(entityName);
 		if (set != null)
 		{
@@ -783,7 +804,6 @@ public class FoundSetManager
 				foundset.recordPushedToServer(pk);
 			}
 		}
-
 	}
 
 	private HashSet<FoundSet> getCreatedFoundsets(String entityName)
@@ -873,17 +893,7 @@ public class FoundSetManager
 
 	private void removeDeletedRecords(FoundSetDescription desc)
 	{
-		List<String> allDeletes = new ArrayList<String>();
-		if (serverRecordsDeletes != null)
-		{
-			allDeletes.addAll(serverRecordsDeletes);
-		}
-		if (clientDeletes != null)
-		{
-			allDeletes.addAll(clientDeletes);
-		}
-
-		for (String deletedRecord : allDeletes)
+		for (String deletedRecord : allRecordDeletes)
 		{
 			int idx = deletedRecord.indexOf('|');
 			String entityName = deletedRecord.substring(0, idx);
@@ -896,7 +906,7 @@ public class FoundSetManager
 					RecordDescription rec = recs.get(i);
 					if (rec.getPK() != null && rec.getPK().toString().equals(pk))
 					{
-						desc.removeRecord(i);
+						deleteRecordFromLocalStorage(desc, i);
 					}
 				}
 			}
@@ -911,6 +921,11 @@ public class FoundSetManager
 	void updateDeletesInLocalStorage()
 	{
 		updateListInLocalStorage(DELETES_KEY, serverRecordsDeletes);
+	}
+
+	void updateAllDeletesInLocalStorage()
+	{
+		updateListInLocalStorage(ALL_DELETES_KEY, allRecordDeletes);
 	}
 
 	private void updateListInLocalStorage(String key, List<String> list)
@@ -993,6 +1008,7 @@ public class FoundSetManager
 
 		editRecordList = new EditRecordList(this);
 		changes = new ArrayList<String>();
+		allRecordDeletes = new ArrayList<String>();
 		serverRecordsDeletes = new ArrayList<String>();
 		clientDeletes = new ArrayList<String>();
 		newRecords = new ArrayList<String>();
@@ -1054,9 +1070,30 @@ public class FoundSetManager
 		return changes;
 	}
 
-	ArrayList<String> getDeletes()
+	public ArrayList<String> getDeletes()
 	{
 		return serverRecordsDeletes;
+	}
+
+	public void setDeletes(ArrayList<String> deletes)
+	{
+		localStorage.removeItem(DELETES_KEY);
+		serverRecordsDeletes = deletes;
+		updateDeletesInLocalStorage();
+	}
+
+	void clearChangedStates()
+	{
+		changes.clear();
+		updateListInLocalStorage(CHANGES_KEY, changes);
+		serverRecordsDeletes.clear();
+		updateListInLocalStorage(DELETES_KEY, serverRecordsDeletes);
+		newRecords.clear();
+		updateListInLocalStorage(NEW_RECORDS_KEY, newRecords);
+		clientDeletes.clear();
+		updateListInLocalStorage(CLIENT_DELETES_KEY, clientDeletes);
+
+		editRecordList = new EditRecordList(this);
 	}
 
 	public int getFoundSetSize(FoundSet fs)
@@ -1290,6 +1327,9 @@ public class FoundSetManager
 
 	String getRemotePK(String entityName, String pk, RowDescription row)
 	{
+		String remoteID = valueStore.getRemoteID(Utils.getAsInteger(pk));
+		if (remoteID != null) return remoteID;
+
 		if (entities.isPKUUID(entityName) || (row != null && row.isCreatedOnDevice()))
 		{
 			String uuidPk = valueStore.getUUIDValue(Utils.getAsInteger(pk));
@@ -1297,6 +1337,11 @@ public class FoundSetManager
 			else Log.info("No uuid pk found for pk: " + pk + " of entity: " + entityName);
 		}
 		return pk;
+	}
+
+	public void clearValueFromLocalStorage(String pk)
+	{
+		valueStore.removeValueFromLocalStorage(Utils.getAsInteger(pk));
 	}
 
 	JSONObject toRemoteJSON(String entityName, RowDescription row)
@@ -1358,7 +1403,49 @@ public class FoundSetManager
 			}
 		}
 
+		for (String foreignColumn : getForeignColumns(entityName))
+		{
+			Object localeID = clone.getValue(foreignColumn);
+			if (localeID != null)
+			{
+				String remoteID = valueStore.getRemoteID(Integer.parseInt(localeID.toString()));
+				if (remoteID != null)
+				{
+					clone.setValueInternal(foreignColumn, remoteID);
+				}
+			}
+		}
+
+
 		return clone.toJSONObject();
+	}
+
+	String[] getForeignColumns(String entityName)
+	{
+		ArrayList<String> foreignColumns = new ArrayList<String>();
+
+		JsArray<EntityDescription> eds = entities.getEntityDescriptions();
+		for (int i = 0; i < eds.length(); i++)
+		{
+			EntityDescription ed = eds.get(i);
+			JsArray<RelationDescription> rds = ed.getPrimaryRelations();
+			for (int j = 0; j < rds.length(); j++)
+			{
+				if (entityName.equals(rds.get(j).getForeignEntityName()))
+				{
+					JsArrayString columns = rds.get(j).getForeignColumns();
+					for (int n = 0; n < columns.length(); n++)
+					{
+						if (foreignColumns.indexOf(columns.get(n)) == -1)
+						{
+							foreignColumns.add(columns.get(n));
+						}
+					}
+				}
+			}
+		}
+
+		return foreignColumns.toArray(new String[foreignColumns.size()]);
 	}
 
 	int getRelationID(String relationName)
@@ -1603,5 +1690,11 @@ public class FoundSetManager
 			fs.removeRecord(pk);
 		}
 		storeFoundSetDescription(fs.getFoundSetDescription(), false, null);
+	}
+
+	public void deleteRecordFromLocalStorage(FoundSetDescription desc, int recordIdx)
+	{
+		desc.removeRecord(recordIdx);
+		storeFoundSetDescription(desc, true, null);
 	}
 }

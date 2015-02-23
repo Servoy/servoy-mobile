@@ -108,7 +108,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.mobile.client.scripting.Scope#getValue(java.lang.String)
 	 */
 	@Override
@@ -124,7 +124,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.mobile.client.scripting.Scope#setValue(java.lang.String, java.lang.Object)
 	 */
 	@Override
@@ -616,7 +616,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 			int listIndex = getRecordIndexInDescription(record.getPK());
 			if (listIndex >= 0)
 			{
-				foundSetDescription.removeRecord(listIndex);
+				getFoundSetManager().deleteRecordFromLocalStorage(foundSetDescription, listIndex);
 			}
 			getFoundSetManager().getEditRecordList().removeEditedRecord(record);
 			if (!isInFind()) getFoundSetManager().deleteRowData(getEntityName(), record.getRow(), record.isNew());
@@ -701,7 +701,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		int index = getRecordIndexInDescription(pk);
 		if (index >= 0)
 		{
-			foundSetDescription.removeRecord(index);
+			getFoundSetManager().deleteRecordFromLocalStorage(foundSetDescription, index);
 		}
 		index = getRecordIndexInList(pk);
 		if (index >= 0)
