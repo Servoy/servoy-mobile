@@ -62,6 +62,7 @@ public class OfflineDataProxy
 
 	private Callback<Integer, Failure> loadCallback;
 	private int totalLength;
+	private JSONObject idRemoteIDMap;
 	private String[] credentials; //id, password
 	private String[] uncheckedCredentials; //id, password
 	private Boolean hasSingleWsUpdateMethod = null;
@@ -411,7 +412,7 @@ public class OfflineDataProxy
 	}
 
 	@SuppressWarnings("nls")
-	public void saveOfflineData(final Callback<Integer, Failure> callback)
+	public void saveOfflineData(final Callback<SaveOfflineDataParam, Failure> callback)
 	{
 		if (hasSingleWsUpdateMethod == null)
 		{
@@ -497,17 +498,33 @@ public class OfflineDataProxy
 							storeUserProperties(response);
 							successfullRestAuthResponseReceived();
 
-							deletes.clear();
-							changes.clear();
-
-							foundSetManager.updateDeletesInLocalStorage(); //update deletes
-							foundSetManager.updateChangesInLocalStorage(); //update changes
+							foundSetManager.clearChangedStates();
+							idRemoteIDMap = null;
+							try
+							{
+								idRemoteIDMap = (response.getText() != null && response.getText().length() > 0)
+									? JSONParser.parseStrict(response.getText()).isObject() : null;
+							}
+							catch (Exception ex)
+							{
+								Log.error("error parsing json " + ex.toString());
+							}
+							if (idRemoteIDMap == null) idRemoteIDMap = new JSONObject();
 
 							for (String[] entityAndPk : createdOnDevice)
 							{
-								foundSetManager.recordPushedToServer(entityAndPk[0], entityAndPk[1]); //is present on server, reset flag
+								String pk = entityAndPk[1];
+								String remotePK = null;
+
+								String uuid = foundSetManager.getUUIDPKValueAsString(Integer.parseInt(pk));
+								if (idRemoteIDMap.containsKey(uuid))
+								{
+									remotePK = idRemoteIDMap.get(uuid).toString();
+								}
+
+								foundSetManager.recordPushedToServer(entityAndPk[0], entityAndPk[1], remotePK); //is present on server, reset flag
 							}
-							callback.onSuccess(Integer.valueOf(totalLength));
+							callback.onSuccess(new SaveOfflineDataParam(Integer.valueOf(totalLength), idRemoteIDMap));
 						}
 						else
 						{
@@ -526,24 +543,25 @@ public class OfflineDataProxy
 		else
 		{
 			totalLength = 0;
+			idRemoteIDMap = new JSONObject();
 			postRowData(foundSetManager.getChanges(), callback);
 		}
 	}
 
 	@SuppressWarnings("nls")
-	private void deleteRowData(final ArrayList<String> keys, final Callback<Integer, Failure> callback)
+	private void deleteRowData(final ArrayList<String> keys, final Callback<SaveOfflineDataParam, Failure> callback)
 	{
 		final String key = getNextItem(keys);
 		if (key == null)
 		{
 			//when empty stop
-			callback.onSuccess(Integer.valueOf(totalLength));
+			callback.onSuccess(new SaveOfflineDataParam(Integer.valueOf(totalLength), idRemoteIDMap));
 			return;
 		}
 
 		int idx = key.indexOf('|');
 		final String entityName = key.substring(0, idx);
-		String pk = key.substring(idx + 1, key.length());
+		final String pk = key.substring(idx + 1, key.length());
 		String remotepk = foundSetManager.getRemotePK(entityName, pk, null);
 
 		//DELETE server side
@@ -570,6 +588,7 @@ public class OfflineDataProxy
 						successfullRestAuthResponseReceived();
 
 						keys.remove(key);//remove current
+						foundSetManager.clearValueFromLocalStorage(pk);
 						foundSetManager.updateDeletesInLocalStorage(); //update deletes
 						deleteRowData(keys, callback);
 					}
@@ -599,16 +618,16 @@ public class OfflineDataProxy
 	}
 
 	@SuppressWarnings("nls")
-	private void postRowData(final ArrayList<String> keys, final Callback<Integer, Failure> callback)
+	private void postRowData(final ArrayList<String> keys, final Callback<SaveOfflineDataParam, Failure> callback)
 	{
 		final String key = getNextItem(keys);
 		if (key == null)
 		{
-
 			if (foundSetManager.getDeletes().size() == 0)
 			{
 				//when no updates stop
-				callback.onSuccess(Integer.valueOf(totalLength));
+				foundSetManager.clearChangedStates();
+				callback.onSuccess(new SaveOfflineDataParam(Integer.valueOf(totalLength), idRemoteIDMap));
 			}
 			else
 			{
@@ -662,7 +681,12 @@ public class OfflineDataProxy
 						foundSetManager.updateChangesInLocalStorage(); //update changes
 						if (row.isCreatedOnDevice())
 						{
-							foundSetManager.recordPushedToServer(entityName, pk); //is present on server, reset flag
+							if (response.getText() != null)
+							{
+								idRemoteIDMap.put(foundSetManager.getUUIDPKValueAsString(Integer.parseInt(pk)), new JSONString(response.getText()));
+							}
+
+							foundSetManager.recordPushedToServer(entityName, pk, response.getText()); //is present on server, reset flag
 						}
 						postRowData(keys, callback);//process the next
 					}
@@ -705,7 +729,7 @@ public class OfflineDataProxy
 	}
 
 	@SuppressWarnings("nls")
-	private void testOffLineDataWSUpdate(final Callback<Integer, Failure> callback)
+	private void testOffLineDataWSUpdate(final Callback<SaveOfflineDataParam, Failure> callback)
 	{
 		//requires a REST url like: serverURL/offline_data/version/name
 		RequestBuilder builder = new ServoyRequestBuilder("OPTIONS", serverURL + "/offline_data/" + getVersion() + "/ws_update");
@@ -811,6 +835,18 @@ public class OfflineDataProxy
 		public ServoyRequestBuilder(String method, String url)
 		{
 			super(method, url);
+		}
+	}
+
+	public class SaveOfflineDataParam
+	{
+		public Integer length;
+		public JSONObject idRemoteIDMap;
+
+		SaveOfflineDataParam(Integer length, JSONObject idRemoteIDMap)
+		{
+			this.length = length;
+			this.idRemoteIDMap = idRemoteIDMap;
 		}
 	}
 }

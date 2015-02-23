@@ -31,12 +31,28 @@ public class ValueStore
 {
 	private static final String LAST_VALUE_KEY = "_svy_lastVal";
 
-	private transient HashMap<String, Integer> uid_to_id = new HashMap<String, Integer>();//temp storage for fast lookups 
+	private transient HashMap<String, Integer> uid_to_id = new HashMap<String, Integer>();//temp storage for fast lookups
 	private final Storage localStorage;
 
 	ValueStore(Storage s)
 	{
 		localStorage = s;
+	}
+
+	void setRemoteID(int val, String remoteID)
+	{
+		localStorage.setItem("_" + val + "_r", remoteID);
+	}
+
+	String getRemoteID(int val)
+	{
+		return localStorage.getItem("_" + val + "_r");
+	}
+
+	void removeValueFromLocalStorage(int val)
+	{
+		localStorage.removeItem("_" + val);
+		localStorage.removeItem("_" + val + "_r");
 	}
 
 	String getUUIDValue(int val)

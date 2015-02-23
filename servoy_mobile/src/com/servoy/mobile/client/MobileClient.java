@@ -31,6 +31,7 @@ import com.servoy.base.test.IJSUnitSuiteHandler;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.dataprocessing.FoundSetManager;
 import com.servoy.mobile.client.dataprocessing.OfflineDataProxy;
+import com.servoy.mobile.client.dataprocessing.OfflineDataProxy.SaveOfflineDataParam;
 import com.servoy.mobile.client.persistence.FlattenedSolution;
 import com.servoy.mobile.client.persistence.Solution;
 import com.servoy.mobile.client.scripting.APPLICATION_TYPES;
@@ -91,8 +92,8 @@ public class MobileClient implements EntryPoint
 	}
 
 	private static native void loadMediaResources()/*-{
-													$wnd._ServoyUtils_.loadMediaResources();
-													}-*/;
+		$wnd._ServoyUtils_.loadMediaResources();
+	}-*/;
 
 	protected void initialize()
 	{
@@ -318,12 +319,12 @@ public class MobileClient implements EntryPoint
 			if (foundSetManager.hasChanges())
 			{
 				//save and clear, when successful do load
-				offlineDataProxy.saveOfflineData(new Callback<Integer, Failure>()
+				offlineDataProxy.saveOfflineData(new Callback<SaveOfflineDataParam, Failure>()
 				{
 					@Override
-					public void onSuccess(Integer result)
+					public void onSuccess(SaveOfflineDataParam result)
 					{
-						log("Done, submitted size: " + result);
+						log("Done, submitted size: " + result.length);
 						load(successCallback, errorHandler);
 					}
 
@@ -795,5 +796,105 @@ public class MobileClient implements EntryPoint
 	public void setVersion(int version)
 	{
 		this.version = version;
+	}
+
+	public void push(final JavaScriptObject successCallback, final JavaScriptObject errorHandler)
+	{
+		if (flattenedSolution.getMustAuthenticate() && !offlineDataProxy.hasCredentials() && !(offlineDataProxy.hasUncheckedCredentials()))
+		{
+			afterLoginHandler = new IAfterLoginHandler()
+			{
+				@Override
+				public void execute()
+				{
+					push(successCallback, errorHandler);
+				}
+			};
+			formManager.showLogin();
+		}
+		else
+		{
+			if (isSynchronizing()) return;
+			Mobile.showLoadingDialog(getI18nMessageWithFallback("pushing"));
+			flagSyncStart();
+			if (foundSetManager.hasChanges())
+			{
+				//save and clear, when successful do load
+				offlineDataProxy.saveOfflineData(new Callback<SaveOfflineDataParam, Failure>()
+				{
+					@Override
+					public void onSuccess(SaveOfflineDataParam result)
+					{
+						try
+						{
+							Mobile.hideLoadingDialog();
+							log("Done, submitted size: " + result.length);
+							if (successCallback != null)
+							{
+								JsArrayMixed jsArray = JavaScriptObject.createArray().cast();
+								jsArray.set(0, result.length.doubleValue());
+								jsArray.set(1, result.idRemoteIDMap.getJavaScriptObject());
+								Executor.call(successCallback, jsArray);
+							}
+						}
+						finally
+						{
+							flagSyncStop();
+						}
+					}
+
+					@Override
+					public void onFailure(Failure reason)
+					{
+						try
+						{
+							Mobile.hideLoadingDialog();
+							if (errorHandler != null && reason.getStatusCode() != Response.SC_UNAUTHORIZED)
+							{
+								JsArrayMixed jsArray = JavaScriptObject.createArray().cast();
+								jsArray.set(0, reason.getStatusCode());
+								jsArray.set(1, reason.getMessage());
+								Executor.call(errorHandler, jsArray);
+							}
+							else
+							{
+								error(reason.getMessage());
+								if (reason.getStatusCode() == -1)
+								{
+									showFirstForm();
+								}
+								else if (reason.getStatusCode() == Response.SC_UNAUTHORIZED)
+								{
+									// clear the current credentials and call push again.
+									clearCredentials();
+									push(successCallback, errorHandler);
+								}
+							}
+						}
+						finally
+						{
+							flagSyncStop();
+						}
+					}
+				});
+			}
+			else
+			{
+				try
+				{
+					Mobile.hideLoadingDialog();
+					if (errorHandler != null)
+					{
+						JsArrayMixed jsArray = JavaScriptObject.createArray().cast();
+						jsArray.set(0, -1);
+						Executor.call(errorHandler, jsArray);
+					}
+				}
+				finally
+				{
+					flagSyncStop();
+				}
+			}
+		}
 	}
 }

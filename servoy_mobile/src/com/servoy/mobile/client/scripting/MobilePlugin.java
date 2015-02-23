@@ -17,6 +17,8 @@
 
 package com.servoy.mobile.client.scripting;
 
+import java.util.ArrayList;
+
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.Exporter;
@@ -34,6 +36,7 @@ import com.servoy.base.scripting.api.IJSRecord;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.dataprocessing.OfflineDataProxy;
+import com.servoy.mobile.client.dataprocessing.Record;
 import com.servoy.mobile.client.scripting.solutionhelper.SolutionHelper;
 import com.servoy.mobile.client.util.Utils;
 import com.sksamuel.jqm4gwt.Mobile;
@@ -148,14 +151,14 @@ public class MobilePlugin implements Exportable
 	}
 
 	private native void simulateClick(String link)/*-{
-													if ($wnd.$.mobile.activePage) {
-													if ($wnd.$("#servoyanchor").length < 1) {
-													$wnd.$.mobile.activePage.append("<a id='servoyanchor'></a>");
-													}
-													$wnd.$("#servoyanchor").attr('href', link);
-													$wnd._ServoyUtils_.simulateClick($wnd.$("#servoyanchor").get(0));
-													}
-													}-*/;
+		if ($wnd.$.mobile.activePage) {
+			if ($wnd.$("#servoyanchor").length < 1) {
+				$wnd.$.mobile.activePage.append("<a id='servoyanchor'></a>");
+			}
+			$wnd.$("#servoyanchor").attr('href', link);
+			$wnd._ServoyUtils_.simulateClick($wnd.$("#servoyanchor").get(0));
+		}
+	}-*/;
 
 	public String getMarkupId(Object element)
 	{
@@ -224,5 +227,36 @@ public class MobilePlugin implements Exportable
 	public void setVersion(int version)
 	{
 		client.setVersion(version);
+	}
+
+	public void pushData(JavaScriptObject successCallback, JavaScriptObject errorHandler)
+	{
+		client.push(successCallback, errorHandler);
+	}
+
+	public boolean removeFoundsetFromStorage(FoundSet foundset) throws Exception
+	{
+		ArrayList<String> deletes = new ArrayList<String>(client.getFoundSetManager().getDeletes());
+		try
+		{
+			return foundset.js_deleteAllRecords();
+		}
+		finally
+		{
+			client.getFoundSetManager().setDeletes(deletes);
+		}
+	}
+
+	public boolean removeRecordFromStorage(Record record) throws Exception
+	{
+		ArrayList<String> deletes = new ArrayList<String>(client.getFoundSetManager().getDeletes());
+		try
+		{
+			return record.getFoundset().js_deleteRecord(record);
+		}
+		finally
+		{
+			client.getFoundSetManager().setDeletes(deletes);
+		}
 	}
 }
