@@ -70,13 +70,15 @@ public class FoundSetDescription extends JavaScriptObject
 	}-*/;
 
 	private final native void deleteEmptyAttributes() /*-{
-		if (this.records && this.records.length == 0) {
-			delete this.records;
-		} else {
-			for ( var i = 0; i < this.records.length; i++) {
-				var rec = this.records[i];
-				if (rec.rfs && rec.rfs.length == 0) {
-					delete rec.rfs;
+		if (this.records) {
+			if (this.records.length == 0) {
+				delete this.records;
+			} else {
+				for (var i = 0; i < this.records.length; i++) {
+					var rec = this.records[i];
+					if (rec.rfs && rec.rfs.length == 0) {
+						delete rec.rfs;
+					}
 				}
 			}
 		}
@@ -134,10 +136,15 @@ public class FoundSetDescription extends JavaScriptObject
 	}-*/;
 
 	public final native void removeRecord(int index) /*-{
-		this.records.splice(index, 1);
+		if (this.records) {
+			this.records.splice(index, 1);
+		}
 	}-*/;
 
 	public final native void insertRecord(int index, RecordDescription record) /*-{
+		if (!this.records) {
+			this.records = new Array();
+		}
 		if (index == this.records.length) {
 			this.records.push(record);
 		} else {
