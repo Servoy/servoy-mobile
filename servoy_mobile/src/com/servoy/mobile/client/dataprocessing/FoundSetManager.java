@@ -906,7 +906,7 @@ public class FoundSetManager
 					RecordDescription rec = recs.get(i);
 					if (rec.getPK() != null && rec.getPK().toString().equals(pk))
 					{
-						deleteRecordFromLocalStorage(desc, i);
+						desc.removeRecord(i);
 					}
 				}
 			}
@@ -1690,11 +1690,5 @@ public class FoundSetManager
 			fs.removeRecord(pk);
 		}
 		storeFoundSetDescription(fs.getFoundSetDescription(), false, null);
-	}
-
-	public void deleteRecordFromLocalStorage(FoundSetDescription desc, int recordIdx)
-	{
-		desc.removeRecord(recordIdx);
-		storeFoundSetDescription(desc, true, null);
 	}
 }
