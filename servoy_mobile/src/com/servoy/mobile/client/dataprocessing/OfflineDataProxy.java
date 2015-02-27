@@ -681,12 +681,31 @@ public class OfflineDataProxy
 						foundSetManager.updateChangesInLocalStorage(); //update changes
 						if (row.isCreatedOnDevice())
 						{
-							if (response.getText() != null)
+							try
 							{
-								idRemoteIDMap.put(foundSetManager.getUUIDPKValueAsString(Integer.parseInt(pk)), new JSONString(response.getText()));
+								JSONObject recordPKs = (response.getText() != null && response.getText().length() > 0) ? JSONParser.parseStrict(
+									response.getText()).isObject() : null;
+								if (recordPKs != null)
+								{
+									for (String k : recordPKs.keySet())
+									{
+										idRemoteIDMap.put(k, recordPKs.get(k));
+									}
+								}
+							}
+							catch (Exception ex)
+							{
+								Log.error("error parsing json " + ex.toString());
 							}
 
-							foundSetManager.recordPushedToServer(entityName, pk, response.getText()); //is present on server, reset flag
+							String remotePK = null;
+							String uuid = foundSetManager.getUUIDPKValueAsString(Integer.parseInt(pk));
+							if (idRemoteIDMap.containsKey(uuid))
+							{
+								remotePK = idRemoteIDMap.get(uuid).toString();
+							}
+
+							foundSetManager.recordPushedToServer(entityName, pk, remotePK); //is present on server, reset flag
 						}
 						postRowData(keys, callback);//process the next
 					}
