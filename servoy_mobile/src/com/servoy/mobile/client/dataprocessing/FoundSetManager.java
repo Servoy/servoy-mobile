@@ -787,14 +787,7 @@ public class FoundSetManager
 	{
 		if (remotePK != null)
 		{
-			try
-			{
-				Integer.parseInt(remotePK); // make sure it is a integer
-				valueStore.setRemoteID(Utils.getAsInteger(pk), remotePK);
-			}
-			catch (NumberFormatException e)
-			{
-			}
+			valueStore.setRemoteID(Utils.getAsInteger(pk), remotePK);
 		}
 		HashSet<FoundSet> set = getCreatedFoundsets(entityName);
 		if (set != null)
@@ -1330,7 +1323,7 @@ public class FoundSetManager
 		String remoteID = valueStore.getRemoteID(Utils.getAsInteger(pk));
 		if (remoteID != null) return remoteID;
 
-		if (entities.isPKUUID(entityName) || (row != null && row.isCreatedOnDevice()))
+		if (entities.isPKUUID(entityName) || (row != null && row.isCreatedOnDevice()) || Utils.getAsInteger(pk) < 0)
 		{
 			String uuidPk = valueStore.getUUIDValue(Utils.getAsInteger(pk));
 			if (uuidPk != null) return uuidPk;
@@ -1405,17 +1398,20 @@ public class FoundSetManager
 
 		for (String foreignColumn : getForeignColumns(entityName))
 		{
+			if ((uuidCols != null) && (uuidCols.indexOf(foreignColumn) != -1)) continue;
 			Object localeID = clone.getValue(foreignColumn);
 			if (localeID != null)
 			{
-				String remoteID = valueStore.getRemoteID(Integer.parseInt(localeID.toString()));
-				if (remoteID != null)
+				try
 				{
-					clone.setValueInternal(foreignColumn, remoteID);
+					clone.setValueInternal(foreignColumn, valueStore.getRemoteID(Integer.parseInt(localeID.toString())));
+				}
+				catch (NumberFormatException ex)
+				{
+					Log.error("error parsing localid as integer " + ex.toString());
 				}
 			}
 		}
-
 
 		return clone.toJSONObject();
 	}
