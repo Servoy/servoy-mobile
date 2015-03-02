@@ -25,6 +25,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.http.client.Response;
+import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Window;
 import com.servoy.base.solutionmodel.mobile.IMobileSolutionModel;
 import com.servoy.base.test.IJSUnitSuiteHandler;
@@ -883,11 +884,12 @@ public class MobileClient implements EntryPoint
 				try
 				{
 					Mobile.hideLoadingDialog();
-					if (errorHandler != null)
+					if (successCallback != null)
 					{
 						JsArrayMixed jsArray = JavaScriptObject.createArray().cast();
-						jsArray.set(0, -1);
-						Executor.call(errorHandler, jsArray);
+						jsArray.set(0, 0);
+						jsArray.set(1, new JSONObject().getJavaScriptObject());
+						Executor.call(successCallback, jsArray);
 					}
 				}
 				finally
