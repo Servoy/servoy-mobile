@@ -1404,11 +1404,15 @@ public class FoundSetManager
 			{
 				try
 				{
-					clone.setValueInternal(foreignColumn, valueStore.getRemoteID(Integer.parseInt(localeID.toString())));
+					String remoteID = valueStore.getRemoteID(Integer.parseInt(localeID.toString()));
+					if (remoteID != null)
+					{
+						clone.setValueInternal(foreignColumn, Integer.valueOf(remoteID));
+					}
 				}
 				catch (NumberFormatException ex)
 				{
-					Log.error("error parsing localid as integer " + ex.toString());
+					Log.error("error parsing localid/remoteid as integer " + ex.toString());
 				}
 			}
 		}
