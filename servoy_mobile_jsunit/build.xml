@@ -12,8 +12,8 @@
 	<property name="gwt.jars" location="${servoy_mobile.dir}/lib" />
 	
 	<property name="javacDebugInfo" value="true" />
-	<property name="bundleJavacSource" value="1.6" />
-	<property name="bundleJavacTarget" value="1.6" />
+	<property name="bundleJavacSource" value="1.7" />
+	<property name="bundleJavacTarget" value="1.7" />
 	<property name="javacVerbose" value="false" />
 	<property name="compiler" value="modern" />
 	
@@ -51,7 +51,7 @@
 		<javac srcdir="src" includes="com/servoy/mobile/test/server/**, com/servoy/mobile/test/shared/**" encoding="utf-8"
 			    includeAntRuntime="no"
 			    failonerror="${javacFailOnError}"
-			    executable="${javac_1.6}"
+			    executable="${javac_1.7}"
 			    destdir="war/WEB-INF/classes"
 				compiler="${compiler}"
 				source="${bundleJavacSource}" target="${bundleJavacTarget}" nowarn="true"
