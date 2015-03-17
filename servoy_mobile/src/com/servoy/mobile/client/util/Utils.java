@@ -71,7 +71,7 @@ public class Utils implements Exportable
 
 	/**
 	 * Try to parse the given string as an integer
-	 * 
+	 *
 	 * @param s the string to parse
 	 * @return the parsed integer - or 0 (zero) if the parse doesn't succeed
 	 */
@@ -82,7 +82,7 @@ public class Utils implements Exportable
 
 	/**
 	 * Try to parse the given string as an integer
-	 * 
+	 *
 	 * @param s the string to parse
 	 * @return the parsed integer - or 0 (zero) if the parse doesn't succeed
 	 */
@@ -116,7 +116,7 @@ public class Utils implements Exportable
 
 	/**
 	 * Try to parse the given object as an integer
-	 * 
+	 *
 	 * @param o the object (Number, String, ...) to parse
 	 * @return the parsed integer - or 0 (zero) if the parse doesn't succeed
 	 */
@@ -127,7 +127,7 @@ public class Utils implements Exportable
 
 	/**
 	 * Try to parse the given object as an integer
-	 * 
+	 *
 	 * @param o the object (Number, String, ...) to parse
 	 * @return the parsed integer or the defaultValue if the parse doesn't succeed
 	 */
@@ -148,8 +148,8 @@ public class Utils implements Exportable
 	/**
 	 * helper function to get boolean value of java.lang.Boolean object or default value in case of null
 	 * @param booleanObject
-	 * @param defaultValue 
-	 * @return 
+	 * @param defaultValue
+	 * @return
 	 */
 	public static boolean getAsBoolean(Object object, boolean defaultValue)
 	{
@@ -166,7 +166,7 @@ public class Utils implements Exportable
 
 	/**
 	 * Try to parse the given string as an double
-	 * 
+	 *
 	 * @param s the string to parse
 	 * @return the parsed integer - or 0 (zero) if the parse doesn't succeed
 	 */
@@ -185,7 +185,7 @@ public class Utils implements Exportable
 
 	/**
 	 * Try to parse the given object as an integer
-	 * 
+	 *
 	 * @param o the object (Number, String, ...) to parse
 	 * @return the parsed integer - or 0 (zero) if the parse doesn't succeed
 	 */
@@ -201,7 +201,7 @@ public class Utils implements Exportable
 
 	/**
 	 * Try to parse the given string as an long
-	 * 
+	 *
 	 * @param s the string to parse
 	 * @return the parsed integer - or 0 (zero) if the parse doesn't succeed
 	 */
@@ -220,7 +220,7 @@ public class Utils implements Exportable
 
 	/**
 	 * Try to parse the given object as an long
-	 * 
+	 *
 	 * @param o the object (Number, String, ...) to parse
 	 * @return the parsed integer - or 0 (zero) if the parse doesn't succeed
 	 */
@@ -308,6 +308,14 @@ public class Utils implements Exportable
 			}
 		}
 		return clone;
+	}-*/;
+
+	public static native boolean isDate(JavaScriptObject object) /*-{
+		return Object.prototype.toString.call(object) === '[object Date]';
+	}-*/;
+
+	public static native boolean isArray(JavaScriptObject object) /*-{
+		return Object.prototype.toString.call(object) === '[object Array]';
 	}-*/;
 
 	public static final double DEFAULT_EQUALS_PRECISION = 1e-7d;
@@ -413,7 +421,7 @@ public class Utils implements Exportable
 	/**
 	 * Insert an array into another array at a certain position. Both arrays may be null, resulting array will be extended to fit. Element type will be
 	 * preserved.
-	 * 
+	 *
 	 * @param src
 	 * @param toAdd
 	 * @param position
@@ -455,7 +463,7 @@ public class Utils implements Exportable
 
 	/**
 	 * Join 2 arrays into 1. Element type will be preserved.
-	 * 
+	 *
 	 * @param array1
 	 * @param array2
 	 * @return the resulting array
@@ -476,7 +484,7 @@ public class Utils implements Exportable
 
 	/**
 	 * Add an element to an array. Element type will be preserved.
-	 * 
+	 *
 	 * @param array
 	 * @param element
 	 * @param append
@@ -500,16 +508,16 @@ public class Utils implements Exportable
 
 	/**
 	 * Merge two arrays in 1, the upperArray will be overlaid onto the lowerArray.
-	 * 
+	 *
 	 * <p>
 	 * For example:
-	 * 
+	 *
 	 * <br>
 	 * upper = [x, y] lower = [a,b,c] => overlaid = [x, y, c]
-	 * 
+	 *
 	 * <br>
 	 * upper = [a, b c] lower = [x, y] => overlaid = [a, b, c]
-	 * 
+	 *
 	 * @param upperAarray
 	 * @param lowerAarray
 	 */
@@ -560,7 +568,7 @@ public class Utils implements Exportable
 
 	/**
 	 * Find item in an array of objects
-	 * 
+	 *
 	 * @param array of objects to search
 	 * @param item to find
 	 * @return index of the item in the array or -1 if not found

@@ -31,6 +31,7 @@ import org.timepedia.exporter.client.Getter;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.JsDate;
 import com.servoy.base.dataprocessing.BaseSQLGenerator;
 import com.servoy.base.dataprocessing.ITypeConverter;
 import com.servoy.base.dataprocessing.IValueConverter;
@@ -390,16 +391,24 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 							}
 						};
 
-						if (raw instanceof JsArray)
+						if (raw instanceof JavaScriptObject)
 						{
-							JsArray rawJsArray = (JsArray)raw;
-							String[] rawArray = new String[rawJsArray.length()];
-							for (int i = 0; i < rawJsArray.length(); i++)
+							if (Utils.isDate((JavaScriptObject)raw))
 							{
-								rawArray[i] = rawJsArray.get(i).toString();
+								raw = new Date((long)((JsDate)raw).getTime());
 							}
-							raw = rawArray;
+							else if (Utils.isArray((JavaScriptObject)raw))
+							{
+								JsArray rawJsArray = (JsArray)raw;
+								String[] rawArray = new String[rawJsArray.length()];
+								for (int i = 0; i < rawJsArray.length(); i++)
+								{
+									rawArray[i] = rawJsArray.get(i).toString();
+								}
+								raw = rawArray;
+							}
 						}
+
 						and2 = BaseSQLGenerator.parseFindExpression(BaseQueryFactory.INSTANCE, raw, qCol, null, dpType, null, col, false, new IValueConverter()
 						{
 
