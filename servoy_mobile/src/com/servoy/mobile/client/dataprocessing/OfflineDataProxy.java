@@ -43,6 +43,7 @@ import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.storage.client.Storage;
 import com.servoy.mobile.client.dto.OfflineDataDescription;
 import com.servoy.mobile.client.dto.RowDescription;
@@ -519,7 +520,8 @@ public class OfflineDataProxy
 								String uuid = foundSetManager.getUUIDPKValueAsString(Integer.parseInt(pk));
 								if (idRemoteIDMap.containsKey(uuid))
 								{
-									remotePK = idRemoteIDMap.get(uuid).toString();
+									JSONValue v = idRemoteIDMap.get(uuid);
+									remotePK = v.isString() != null ? v.isString().stringValue() : v.toString();
 								}
 
 								foundSetManager.recordPushedToServer(entityAndPk[0], entityAndPk[1], remotePK); //is present on server, reset flag
@@ -702,7 +704,8 @@ public class OfflineDataProxy
 							String uuid = foundSetManager.getUUIDPKValueAsString(Integer.parseInt(pk));
 							if (idRemoteIDMap.containsKey(uuid))
 							{
-								remotePK = idRemoteIDMap.get(uuid).toString();
+								JSONValue v = idRemoteIDMap.get(uuid);
+								remotePK = v.isString() != null ? v.isString().stringValue() : v.toString();
 							}
 
 							foundSetManager.recordPushedToServer(entityName, pk, remotePK); //is present on server, reset flag
