@@ -61,7 +61,6 @@ public class OfflineDataProxy
 	private final boolean nodebug;
 	private final int timeout;
 
-	private Callback<Integer, Failure> loadCallback;
 	private int totalLength;
 	private JSONObject idRemoteIDMap;
 	private String[] credentials; //id, password
@@ -88,10 +87,8 @@ public class OfflineDataProxy
 	 * @param cb
 	 */
 	@SuppressWarnings("nls")
-	public void loadOfflineData(final FoundSet foundset, Callback<Integer, Failure> cb)
+	public void loadOfflineData(final FoundSet foundset, final Callback<Integer, Failure> cb)
 	{
-		this.loadCallback = cb;
-
 		//requires a REST url like: serverURL/offline_data/version/name
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, serverURL + "/offline_data/" + getVersion() + "/search");
 		setRequestParameters(builder);
@@ -130,9 +127,8 @@ public class OfflineDataProxy
 			{
 				public void onError(Request request, Throwable exception)
 				{
-					loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback(
-						"cannotLoadJSON"), exception));
-					loadCallback = null;
+					cb.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback("cannotLoadJSON"),
+						exception));
 				}
 
 				public void onResponseReceived(Request request, Response response)
@@ -150,23 +146,19 @@ public class OfflineDataProxy
 
 						if (offlineData != null)
 						{
-							foundSetManager.mergeOfflineData(OfflineDataProxy.this, offlineData);
+							foundSetManager.mergeOfflineData(OfflineDataProxy.this, offlineData, cb);
 						}
 					}
 					else
 					{
-						loadCallback.onFailure(new Failure(foundSetManager.getApplication(), getErrorMessage(response),
-							getFixedStatusCode(response.getStatusCode())));
-						loadCallback = null;
+						cb.onFailure(new Failure(foundSetManager.getApplication(), getErrorMessage(response), getFixedStatusCode(response.getStatusCode())));
 					}
 				}
 			});
 		}
 		catch (RequestException e)
 		{
-			loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback("cannotLoadJSON"),
-				e));
-			loadCallback = null;
+			cb.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback("cannotLoadJSON"), e));
 		}
 	}
 
@@ -217,10 +209,8 @@ public class OfflineDataProxy
 	}
 
 	@SuppressWarnings("nls")
-	public void loadOfflineData(final String name, Callback<Integer, Failure> cb)
+	public void loadOfflineData(final String name, final Callback<Integer, Failure> cb)
 	{
-		this.loadCallback = cb;
-
 		//requires a REST url like: serverURL/offline_data/version/name
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, serverURL + "/offline_data/" + getVersion() + '/' + URL.encode(name));
 		setRequestParameters(builder);
@@ -232,9 +222,8 @@ public class OfflineDataProxy
 			{
 				public void onError(Request request, Throwable exception)
 				{
-					loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback(
-						"cannotLoadJSON"), exception));
-					loadCallback = null;
+					cb.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback("cannotLoadJSON"),
+						exception));
 				}
 
 				public void onResponseReceived(Request request, Response response)
@@ -250,22 +239,18 @@ public class OfflineDataProxy
 						OfflineDataDescription offlineData = getOfflineData(content);
 						content = null;
 
-						if (offlineData != null) foundSetManager.storeOfflineData(OfflineDataProxy.this, name, offlineData);
+						if (offlineData != null) foundSetManager.storeOfflineData(OfflineDataProxy.this, name, offlineData, cb);
 					}
 					else
 					{
-						loadCallback.onFailure(new Failure(foundSetManager.getApplication(), getErrorMessage(response),
-							getFixedStatusCode(response.getStatusCode())));
-						loadCallback = null;
+						cb.onFailure(new Failure(foundSetManager.getApplication(), getErrorMessage(response), getFixedStatusCode(response.getStatusCode())));
 					}
 				}
 			});
 		}
 		catch (RequestException e)
 		{
-			loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback("cannotLoadJSON"),
-				e));
-			loadCallback = null;
+			cb.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback("cannotLoadJSON"), e));
 		}
 	}
 
@@ -277,7 +262,8 @@ public class OfflineDataProxy
 	}
 
 	@SuppressWarnings("nls")
-	public void requestRowData(final HashMap<String, HashSet<Object>> entitiesToPKs, final boolean updateMode, final ArrayList<FoundSet> contentChangedFoundsets)
+	public void requestRowData(final HashMap<String, HashSet<Object>> entitiesToPKs, final boolean updateMode,
+		final ArrayList<FoundSet> contentChangedFoundsets, final Callback<Integer, Failure> cb)
 	{
 		final String entityName = getNextItem(entitiesToPKs.keySet());
 		if (entityName == null)
@@ -290,8 +276,7 @@ public class OfflineDataProxy
 					if (!fs.isFoundsetFiltered() && !fs.isInFind()) fs.fireContentChanged();
 				}
 			}
-			loadCallback.onSuccess(Integer.valueOf(totalLength));
-			loadCallback = null;
+			cb.onSuccess(Integer.valueOf(totalLength));
 			return;
 		}
 
@@ -299,7 +284,7 @@ public class OfflineDataProxy
 		if (coll.size() == 0) //deal/skip with empty coll
 		{
 			entitiesToPKs.remove(entityName);//remove current when empty
-			requestRowData(entitiesToPKs, updateMode, contentChangedFoundsets);//process the next
+			requestRowData(entitiesToPKs, updateMode, contentChangedFoundsets, cb);//process the next
 			return;
 		}
 		Iterator<Object> pks = coll.iterator();
@@ -323,9 +308,8 @@ public class OfflineDataProxy
 			{
 				public void onError(Request request, Throwable exception)
 				{
-					loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback(
-						"cannotLoadJSON"), exception));
-					loadCallback = null;
+					cb.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback("cannotLoadJSON"),
+						exception));
 				}
 
 				public void onResponseReceived(Request request, Response response)
@@ -350,22 +334,18 @@ public class OfflineDataProxy
 							entitiesToPKs.remove(entityName);//remove current when empty
 						}
 
-						requestRowData(entitiesToPKs, updateMode, contentChangedFoundsets);//process the next
+						requestRowData(entitiesToPKs, updateMode, contentChangedFoundsets, cb);//process the next
 					}
 					else
 					{
-						loadCallback.onFailure(new Failure(foundSetManager.getApplication(), getErrorMessage(response),
-							getFixedStatusCode(response.getStatusCode())));
-						loadCallback = null;
+						cb.onFailure(new Failure(foundSetManager.getApplication(), getErrorMessage(response), getFixedStatusCode(response.getStatusCode())));
 					}
 				}
 			});
 		}
 		catch (RequestException e)
 		{
-			loadCallback.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback("cannotLoadJSON"),
-				e));
-			loadCallback = null;
+			cb.onFailure(new Failure(foundSetManager.getApplication(), foundSetManager.getApplication().getI18nMessageWithFallback("cannotLoadJSON"), e));
 		}
 	}
 

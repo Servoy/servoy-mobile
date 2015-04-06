@@ -27,6 +27,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.json.client.JSONArray;
@@ -47,6 +48,7 @@ import com.servoy.mobile.client.dto.RowDescription;
 import com.servoy.mobile.client.persistence.Relation;
 import com.servoy.mobile.client.scripting.Scope;
 import com.servoy.mobile.client.util.DataproviderIdAndTypeHolder;
+import com.servoy.mobile.client.util.Failure;
 import com.servoy.mobile.client.util.Utils;
 
 /**
@@ -353,7 +355,7 @@ public class FoundSetManager
 		return (entityPrefix == null ? "" : entityPrefix);
 	}
 
-	void storeOfflineData(OfflineDataProxy offlineDataProxy, String fsname, OfflineDataDescription offlineData)
+	void storeOfflineData(OfflineDataProxy offlineDataProxy, String fsname, OfflineDataDescription offlineData, Callback<Integer, Failure> cb)
 	{
 		//first clear existing stuff if there is any
 		clearLocalData();
@@ -443,7 +445,7 @@ public class FoundSetManager
 		exportDataproviders();
 
 		//initiate load of all row data
-		offlineDataProxy.requestRowData(entitiesToPKs, false, null);
+		offlineDataProxy.requestRowData(entitiesToPKs, false, null, cb);
 	}
 
 	private void initLocalStorage(String entitiesJSON, String entityPrefixArg)
@@ -1526,7 +1528,7 @@ public class FoundSetManager
 	 * @param offlineDataProxy
 	 * @param offlineData
 	 */
-	public void mergeOfflineData(OfflineDataProxy offlineDataProxy, OfflineDataDescription offlineData)
+	public void mergeOfflineData(OfflineDataProxy offlineDataProxy, OfflineDataDescription offlineData, Callback<Integer, Failure> cb)
 	{
 		HashMap<String, HashSet<Object>> entitiesToPKs = new HashMap<String, HashSet<Object>>();
 
@@ -1609,7 +1611,7 @@ public class FoundSetManager
 		exportDataproviders();
 
 		//initiate load of all row data
-		offlineDataProxy.requestRowData(entitiesToPKs, true, contentChangedFoundSets);
+		offlineDataProxy.requestRowData(entitiesToPKs, true, contentChangedFoundSets, cb);
 	}
 
 	/**
