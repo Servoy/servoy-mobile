@@ -163,7 +163,7 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 	{
 		if (valuelist != null)
 		{
-			String[] newValue = data instanceof String ? ((String)data).split("\n") : null; //$NON-NLS-1$
+			Object[] newValue = data instanceof String ? ((String)data).split("\n") : (data != null ? new Object[] { data } : null); //$NON-NLS-1$
 
 			int itemsSize = items.size();
 			DataCheckboxSetItem item;
@@ -171,25 +171,14 @@ public class DataCheckboxSet extends JQMCheckset implements IDisplayData, IField
 			{
 				item = items.get(i);
 				item.checkbox.setValue(Boolean.valueOf(Utils.findInArray(newValue, item.realValue) != -1));
-				refreshCheckbox(item.checkbox.getId());
 			}
 		}
 		else
 		{
 			items.get(0).checkbox.setValue(Boolean.valueOf((data instanceof Number && ((Number)data).intValue() > 0) ||
 				(data instanceof String && "true".equals(data.toString())))); //$NON-NLS-1$
-			refreshCheckbox(items.get(0).checkbox.getId());
 		}
 	}
-
-	private native void refreshCheckbox(String id) /*-{
-		var cbr = $wnd.$("#" + id);
-		var cbrEl = cbr.get()[0];
-		if (cbrEl && $wnd.$.data(cbrEl, "mobile-checkboxradio")) {
-			$wnd.$(cbr[0]).prop("checked", cbr.attr("checked"));
-			cbr.checkboxradio("refresh");
-		}
-	}-*/;
 
 	private EditProvider editProvider;
 	private final List<HandlerRegistration> changeHandlers = new ArrayList<HandlerRegistration>();
