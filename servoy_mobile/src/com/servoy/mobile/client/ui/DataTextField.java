@@ -126,6 +126,7 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 
 	private EditProvider editProvider;
 	private HandlerRegistration editBlurHandler;
+	private HandlerRegistration editChangeHandler;
 
 	/*
 	 * @see com.servoy.mobile.client.dataprocessing.IEditListenerSubject#addEditListener(com.servoy.mobile.client.dataprocessing.IEditListener)
@@ -138,12 +139,13 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 			editProvider = new EditProvider(this);
 			editProvider.addEditListener(editListener);
 			editBlurHandler = addBlurHandler(editProvider);
+			editChangeHandler = addChangeHandler(editProvider);
 		}
 	}
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see com.servoy.mobile.client.scripting.IScriptableProvider#getScriptObject()
 	 */
 	@Override
@@ -161,7 +163,7 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see com.servoy.mobile.client.ui.ISupportTitleText#setTitleText(java.lang.String)
 	 */
 	@Override
@@ -172,7 +174,7 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see com.servoy.mobile.client.ui.ISupportTitleText#getTitleText()
 	 */
 	@Override
@@ -183,7 +185,7 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see com.servoy.mobile.client.ui.ISupportTitleText#setTitleTextVisible(boolean)
 	 */
 	@Override
@@ -217,7 +219,7 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see com.servoy.mobile.client.util.IDestroyable#destroy()
 	 */
 	@Override
@@ -236,6 +238,11 @@ public class DataTextField extends JQMText implements IDisplayData, ISupportTitl
 		{
 			editBlurHandler.removeHandler();
 			editBlurHandler = null;
+		}
+		if (editChangeHandler != null)
+		{
+			editChangeHandler.removeHandler();
+			editChangeHandler = null;
 		}
 	}
 }
