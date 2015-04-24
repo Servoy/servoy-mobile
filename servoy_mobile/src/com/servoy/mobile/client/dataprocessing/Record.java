@@ -337,7 +337,7 @@ public class Record extends Scope implements IJSRecord, IRowChangeListener
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.j2db.scripting.api.IJSRecord#getFoundset()
 	 */
 	@Override
@@ -348,7 +348,7 @@ public class Record extends Scope implements IJSRecord, IRowChangeListener
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.j2db.scripting.api.IJSRecord#getPKs()
 	 */
 	@Override
@@ -361,7 +361,7 @@ public class Record extends Scope implements IJSRecord, IRowChangeListener
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.j2db.scripting.api.IJSRecord#isEditing()
 	 */
 	@Override
@@ -374,6 +374,11 @@ public class Record extends Scope implements IJSRecord, IRowChangeListener
 	public boolean isNew()
 	{
 		return getRow().isCreatedOnDevice() && parent.getLocalStorageRowDescription(getPK()) == null;
+	}
+
+	public boolean isCreatedOnDevice()
+	{
+		return getRow().isCreatedOnDevice();
 	}
 
 	public void pushedToServer()
