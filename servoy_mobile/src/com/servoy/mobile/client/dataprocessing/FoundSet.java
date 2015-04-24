@@ -628,7 +628,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 				foundSetDescription.removeRecord(listIndex);
 			}
 			getFoundSetManager().getEditRecordList().removeEditedRecord(record);
-			if (!isInFind()) getFoundSetManager().deleteRowData(getEntityName(), record.getRow(), record.isNew());
+			if (!isInFind()) getFoundSetManager().deleteRowData(getEntityName(), record.getRow(), record.isCreatedOnDevice());
 			record.flush();
 			adjustSelectionAndContentOnListChange(recordIndex, true);
 			return true;
