@@ -47,8 +47,8 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 
 	// this constant is also defined in testing.js inside servoy_mobile_testing and MobileExporter.java; please update those as well if you change the value
 	private static final String SCOPE_NAME_SEPARATOR = "_sNS_";
-	protected static final Pattern DETAILED_STACK_LINE_PARSER = Pattern.compile(".*solution_\\d+\\.js:(\\d+).*");
-	protected static final Pattern DETAILED_STACK_FUNCTION_NAME_PARSER = Pattern.compile("(?:([^/]*)\\@.*)|(?:at (?:Object\\.)?(.*) \\(.*)");
+	public static final Pattern DETAILED_STACK_LINE_PARSER = Pattern.compile(".*solution_\\d+\\.js:(\\d+).*");
+	public static final Pattern DETAILED_STACK_FUNCTION_NAME_PARSER = Pattern.compile("(?:([^/]*)\\@.*)|(?:at (?:Object\\.)?(.*) \\(.*)");
 
 	// see http://tomcat.apache.org/tomcat-6.0-doc/jndi-datasource-examples-howto.html
 	private IJSUnitSuiteHandler bridge;
