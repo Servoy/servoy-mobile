@@ -85,3 +85,9 @@ label.label-labelfor
 .ui-panel-content-wrap-position-left.ui-panel-content-wrap-display-push.ui-panel-content-wrap-open {
 	margin-right: 17em;
 }
+
+/* Needed because of JQM bug, see SVY-8468 */
+.ui-mobile-viewport-transitioning,
+.ui-mobile-viewport-transitioning .ui-page {
+	overflow: visible;
+}
