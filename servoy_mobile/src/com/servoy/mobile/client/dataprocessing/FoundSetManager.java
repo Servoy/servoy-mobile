@@ -19,6 +19,7 @@ package com.servoy.mobile.client.dataprocessing;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -1198,70 +1199,27 @@ public class FoundSetManager
 			}
 			return;
 		}
-		// we rely on alphabetical order of local storage keys
+
 		String entityNamePlusPipe = entityName + '|';
 		int length = localStorage.getLength();
-		int index = getKeyIndex(entityNamePlusPipe, 0, length - 1);
-		if (index >= 0)
-		{
-			List<String> pks = new ArrayList<String>();
-			for (int j = index; j >= 0; j--)
-			{
-				String key = localStorage.key(j);
-				if (key.startsWith(entityNamePlusPipe))
-				{
-					String pk = key.substring(entityNamePlusPipe.length());
-					pks.add(0, pk);
-					checkRecord(pk, entityName, foreignColumns, coldata, rds, true);
-				}
-				else break;
-			}
+		List<String> pks = new ArrayList<String>();
 
-			for (int j = index + 1; j < length; j++)
+		for (int i = 0; i < length; i++)
+		{
+			String key = localStorage.key(i);
+			if (key.startsWith(entityNamePlusPipe))
 			{
-				String key = localStorage.key(j);
-				if (key.startsWith(entityNamePlusPipe))
-				{
-					String pk = key.substring(entityNamePlusPipe.length());
-					pks.add(pk);
-					checkRecord(pk, entityName, foreignColumns, coldata, rds, false);
-				}
-				else break;
+				pks.add(key.substring(entityNamePlusPipe.length()));
+			}
+		}
+		if (pks.size() > 0)
+		{
+			Collections.sort(pks);
+			for (String pk : pks)
+			{
+				checkRecord(pk, entityName, foreignColumns, coldata, rds, false);
 			}
 			entityNameToPK.put(entityName, pks);
-		}
-	}
-
-	private int getKeyIndex(String entityName, int start, int end)
-	{
-		if (start > end) return -1;
-		if ((end - start) <= 1)
-		{
-			String key = localStorage.key(start);
-			if (key.startsWith(entityName))
-			{
-				return start;
-			}
-			key = localStorage.key(end);
-			if (key.startsWith(entityName))
-			{
-				return end;
-			}
-			return -1;
-		}
-		int middle = (start + end) / 2;
-		String key = localStorage.key(middle);
-		if (key.startsWith(entityName))
-		{
-			return middle;
-		}
-		else if (entityName.compareTo(key) > 0)
-		{
-			return getKeyIndex(entityName, middle, end);
-		}
-		else
-		{
-			return getKeyIndex(entityName, start, middle);
 		}
 	}
 
