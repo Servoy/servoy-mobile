@@ -91,12 +91,18 @@ public class FormPage extends JQMPage implements IFormComponent
 	@Override
 	protected void onPageShow()
 	{
+		removeTransitionClass();
 		if (formNavigator != null && isTablet()) formNavigator.open();
 		formDisplay.getFormController().getApplication().getFormManager().setChangingFormPage(false);
 		isShow = true;
 		if (scrollTop > 0) Mobile.silentScroll(scrollTop);
 		formDisplay.getFormController().executeOnShowMethod();
 	}
+
+	private native void removeTransitionClass() /*-{
+		$wnd.$.mobile.pageContainer
+				.removeClass("ui-mobile-viewport-transitioning");
+	}-*/;
 
 	@Override
 	protected void onPageHide()
@@ -150,7 +156,7 @@ public class FormPage extends JQMPage implements IFormComponent
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see com.servoy.mobile.client.ui.IFormComponent#addHeader(com.sksamuel.jqm4gwt.toolbar.JQMHeader)
 	 */
 	@Override
@@ -162,7 +168,7 @@ public class FormPage extends JQMPage implements IFormComponent
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see com.servoy.mobile.client.ui.IFormComponent#addFooter(com.sksamuel.jqm4gwt.toolbar.JQMFooter)
 	 */
 	@Override
@@ -265,7 +271,7 @@ public class FormPage extends JQMPage implements IFormComponent
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see com.servoy.mobile.client.ui.IFormComponent#getFormDisplay()
 	 */
 	@Override
