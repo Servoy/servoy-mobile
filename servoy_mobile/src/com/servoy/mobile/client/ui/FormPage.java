@@ -91,11 +91,17 @@ public class FormPage extends JQMPage implements IFormComponent
 	@Override
 	protected void onPageShow()
 	{
+		removeTransitionClass();
 		formDisplay.getFormController().getApplication().getFormManager().setChangingFormPage(false);
 		isShow = true;
 		if (scrollTop > 0) Mobile.silentScroll(scrollTop);
 		formDisplay.getFormController().executeOnShowMethod();
 	}
+
+	private native void removeTransitionClass() /*-{
+		$wnd.$.mobile.pageContainer
+				.removeClass("ui-mobile-viewport-transitioning");
+	}-*/;
 
 	@Override
 	protected void onPageHide()
