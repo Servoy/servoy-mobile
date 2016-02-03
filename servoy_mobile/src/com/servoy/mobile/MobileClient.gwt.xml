@@ -2,8 +2,8 @@
 <module rename-to='mobileclient'>
   <script src="jquery-1.9.1.min.js"/>
   <script src="jquery.mobile-1.4.2.min.js"/>
-  <stylesheet src="custom-theme.min.css"/>
-  <stylesheet src="jquery.mobile.icons.min.css"/>
+  <stylesheet src="jquery.mobile.theme.css"/>
+  <stylesheet src="jquery.mobile.icons.css"/>
   <stylesheet src="jquery.mobile.structure-1.4.2.min.css"/>
 
   <!-- date stuff -->
