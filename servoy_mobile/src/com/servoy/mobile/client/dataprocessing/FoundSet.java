@@ -109,7 +109,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see com.servoy.mobile.client.scripting.Scope#getValue(java.lang.String)
 	 */
 	@Override
@@ -125,7 +125,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see com.servoy.mobile.client.scripting.Scope#setValue(java.lang.String, java.lang.Object)
 	 */
 	@Override
@@ -344,7 +344,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 						final String dataProviderID = elem.getKey();
 						Object raw = elem.getValue();
 						final int dpType = state.getVariableType(dataProviderID);
-						BaseQueryColumn qCol = new BaseQueryColumn(table, 0, dataProviderID, dataProviderID, new BaseColumnType(dpType, 0, 0), false);
+						BaseQueryColumn qCol = new BaseQueryColumn(table, 0, dataProviderID, dataProviderID, new BaseColumnType(dpType, 0, 0), 0, false);
 						BaseColumn col = new BaseColumn()
 						{
 
