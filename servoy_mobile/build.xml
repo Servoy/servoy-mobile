@@ -10,6 +10,7 @@
 <project name="servoy_mobile" basedir="." default="gwtc">
 
 	<property name="cse.model.exporter.mobile.mobilewar.rel" value="../com.servoy.eclipse.model.exporter.mobile/src/com/servoy/eclipse/model/mobile/exporter/resources" />
+	<property name="CPU.cores" value="2"/>
 
     <path id="project.class.path">
 		<pathelement location="war/WEB-INF/classes"/>
@@ -29,7 +30,7 @@
 				<path refid="project.class.path"/>
 			</classpath>
 			<!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
-			<jvmarg value="-Xmx256M"/>
+			<jvmarg value="-Xmx512m"/>
 			<!-- Additional arguments like -style PRETTY,DETAILED,OBFUSCATED, or -logLevel DEBUG -->
 			<arg value="com.servoy.mobile.MobileClient"/>
 			<arg value="-style"/>
@@ -38,7 +39,7 @@
 			<arg value="0"/>
 			<arg value="-draftCompile"/> -->
 		    <arg value="-localWorkers"/>
-		    <arg value="8"/>
+		    <arg value="${CPU.cores}"/>
 			<arg value="-strict"/>
 		</java>
 	</target>
@@ -52,7 +53,7 @@
 				<path refid="project.class.path"/>
 			</classpath>
 			<!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
-			<jvmarg value="-Xmx256M"/>
+			<jvmarg value="-Xmx512m"/>
 			<!-- Additional arguments like -style PRETTY,DETAILED,OBFUSCATED, or -logLevel DEBUG -->
 			<arg value="com.servoy.mobile.MobileClientDeploy"/>
 			<arg value="-style"/>
@@ -61,7 +62,7 @@
 			<arg value="0"/>
 			<arg value="-draftCompile"/> -->
 		    <arg value="-localWorkers"/>
-		    <arg value="8"/>
+		    <arg value="${CPU.cores}"/>
 			<arg value="-strict"/>
 		</java>
 	</target>
