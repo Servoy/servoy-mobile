@@ -17,6 +17,8 @@
 	<property name="javacVerbose" value="false" />
 	<property name="compiler" value="modern" />
 	
+	<property name="CPU.cores" value="2"/>
+
 	<path id="project.class.path">
 		<pathelement location="${servoy_base.classes}"/>
 		<pathelement location="${gwt.jars}/gwt-user.jar"/>
@@ -72,12 +74,12 @@
 				<path refid="project.class.path.withsrc"/>
 			</classpath>
 			<!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
-			<jvmarg value="-Xmx256M"/>
+			<jvmarg value="-Xmx512m"/>
 			<arg line="-war"/>
 			<arg value="war"/>
 			<!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
 		    <arg value="-localWorkers"/>
-		    <arg value="8"/>
+		    <arg value="${CPU.cores}"/>
 			<arg value="-style"/>
 			<arg value="PRETTY"/>
 			<arg line="${gwt.args}"/>
@@ -93,7 +95,7 @@
 			<classpath>
 				<path refid="project.class.path.withsrc"/>
 			</classpath>
-			<jvmarg value="-Xmx256M"/>
+			<jvmarg value="-Xmx512m"/>
 			<arg value="-startupUrl"/>
 			<arg value="http://127.0.0.1:8080/servoy_mobile_jsunit/servoy_mobile_jsunit.html?log_level=DEBUG&amp;noinitsmc=true&amp;bid=0&amp;nodebug=true"/>
 			<arg line="-war"/>
