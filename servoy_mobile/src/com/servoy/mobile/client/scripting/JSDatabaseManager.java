@@ -48,7 +48,7 @@ public class JSDatabaseManager implements Exportable, IJSDatabaseManager
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.j2db.scripting.api.IJSDatabaseManager#saveData()
 	 */
 	@Override
@@ -88,7 +88,7 @@ public class JSDatabaseManager implements Exportable, IJSDatabaseManager
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.j2db.scripting.api.IJSDatabaseManager#hasRecords(com.servoy.j2db.scripting.api.IJSFoundSet)
 	 */
 	@Override
@@ -109,7 +109,7 @@ public class JSDatabaseManager implements Exportable, IJSDatabaseManager
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.j2db.scripting.api.IJSDatabaseManager#hasRecords(com.servoy.j2db.scripting.api.IJSRecord, java.lang.String)
 	 */
 	@Override
@@ -126,14 +126,14 @@ public class JSDatabaseManager implements Exportable, IJSDatabaseManager
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.base.scripting.api.IJSDatabaseManager#getFoundSet(java.lang.String)
 	 */
 	@Override
 	public FoundSet getFoundSet(String dataSource) throws Exception
 	{
 		FoundSet foundset = manager.getFoundSet(FoundSetManager.getEntityFromDataSource(dataSource), false);
-		foundset.flagFoundsetFiltered();
+		if (foundset != null) foundset.flagFoundsetFiltered();
 		return foundset;
 	}
 
