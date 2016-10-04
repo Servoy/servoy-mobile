@@ -142,7 +142,7 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 			String modeStr = "\"mode\":\"" + mode + "\""; // datebox
 			input.getElement().setAttribute("data-role", "datebox");
 			input.getElement().setAttribute("data-options",
-				"{" + modeStr + ",\"useFocus\": true," + themeStr + ",\"useLang\":\"" + language + "\"" + timeFormat + dateFormat + "}");
+				"{" + modeStr + ",\"useFocus\": true," + themeStr + ",\"useLang\":\"" + language + "\"" + timeFormat + dateFormat + ",\"zindex\":1100}");
 		}
 	}
 
@@ -367,12 +367,12 @@ public class DataCalendarField extends JQMText implements IDisplayData, ISupport
 	}
 
 	private native void setPlaceholder(String inputId, String placeholder) /*-{
-		if (placeholder != null) {
-			$wnd.$("#" + inputId).attr("placeholder", placeholder);
-		} else {
-			$wnd.$("#" + inputId).removeAttr("placeholder");
-		}
-	}-*/;
+																			if (placeholder != null) {
+																			$wnd.$("#" + inputId).attr("placeholder", placeholder);
+																			} else {
+																			$wnd.$("#" + inputId).removeAttr("placeholder");
+																			}
+																			}-*/;
 
 	/*
 	 * (non-Javadoc)
