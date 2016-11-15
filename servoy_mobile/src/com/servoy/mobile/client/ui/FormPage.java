@@ -155,7 +155,7 @@ public class FormPage extends JQMPage implements IFormComponent
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.mobile.client.ui.IFormComponent#addHeader(com.sksamuel.jqm4gwt.toolbar.JQMHeader)
 	 */
 	@Override
@@ -167,7 +167,7 @@ public class FormPage extends JQMPage implements IFormComponent
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.mobile.client.ui.IFormComponent#addFooter(com.sksamuel.jqm4gwt.toolbar.JQMFooter)
 	 */
 	@Override
@@ -228,6 +228,7 @@ public class FormPage extends JQMPage implements IFormComponent
 					headerComponent = new JQMHeader("");
 					headerComponent.setTheme("b");
 					headerComponent.setFixed(true);
+					headerComponent.setAttribute("data-transition", "none");
 					add(headerComponent);
 					headerAddedByNavigator = true;
 				}
@@ -270,7 +271,7 @@ public class FormPage extends JQMPage implements IFormComponent
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.mobile.client.ui.IFormComponent#getFormDisplay()
 	 */
 	@Override

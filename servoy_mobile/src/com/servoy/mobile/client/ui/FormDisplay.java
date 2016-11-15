@@ -253,6 +253,7 @@ public class FormDisplay implements IFormDisplay
 		{
 			headerComponent.setTheme(headerPart != null ? headerPart.getStyleClass() : "b");
 			headerComponent.setFixed(headerPart != null ? (headerPart.getPartType() == IPartConstants.TITLE_HEADER) : true);
+			headerComponent.setAttribute("data-transition", "none");
 
 			if (headerDecorator != null) headerDecorator.decorateHeader(headerPart, headerComponent);
 		}
@@ -339,6 +340,7 @@ public class FormDisplay implements IFormDisplay
 		{
 			footerComponent.setTheme(footerPart.getStyleClass());
 			footerComponent.setFixed(footerPart.getPartType() == IPartConstants.TITLE_FOOTER);
+			footerComponent.setAttribute("data-transition", "none");
 		}
 		for (Component c : footerComponents)
 			footerComponent.add(createWidget(c));
@@ -404,7 +406,7 @@ public class FormDisplay implements IFormDisplay
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.mobile.client.ui.IFormDisplay#isShow()
 	 */
 	@Override
