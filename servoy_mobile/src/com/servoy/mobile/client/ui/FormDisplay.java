@@ -332,7 +332,7 @@ public class FormDisplay implements IFormDisplay
 
 	protected JQMFooter createFooter(Part footerPart, ArrayList<Component> footerComponents)
 	{
-		//if (footerComponents.size() < 1) return null;
+		if (footerPart == null) return null;
 		Collections.sort(footerComponents, PositionComparator.XY_COMPARATOR);
 		JQMFooter footerComponent = new JQMFooter();
 		if (footerPart != null)
