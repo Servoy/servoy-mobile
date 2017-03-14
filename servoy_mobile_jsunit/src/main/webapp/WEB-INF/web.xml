@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+              http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         version="2.5"
+         xmlns="http://java.sun.com/xml/ns/javaee">
+
+  <!-- Servlets -->
+  <servlet>
+    <servlet-name>gwt-log-remote-logger-servlet</servlet-name>
+    <servlet-class>com.allen_sauer.gwt.log.server.RemoteLoggerServiceImpl</servlet-class>
+
+    <init-param>
+      <param-name>symbolMaps0</param-name>
+      <param-value>../application_server/server/webapps/___DEPLOYED_CONTEXT_NAME___/WEB-INF/deploy/mobiletestclient/symbolMaps/</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>gwt-log-remote-logger-servlet</servlet-name>
+    <url-pattern>/mobiletestclient/gwt-log</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>testSuiteController</servlet-name>
+    <servlet-class>
+      com.servoy.mobile.test.server.service.TestSuiteController
+    </servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>testSuiteController</servlet-name>
+    <url-pattern>/mobiletestclient/testSuiteController</url-pattern>
+  </servlet-mapping>
+  
+  <!-- bridge to Servoy Developer or ant-junit suite via JNDI bean with static field -->
+  <resource-env-ref>
+    <description>
+      A map for sharing objects with the Servoy world outside this WAR.
+    </description>
+    <resource-env-ref-name>
+      servoy/sharedMap
+    </resource-env-ref-name>
+    <resource-env-ref-type>
+      com.servoy.j2db.util.StaticSingletonMap
+    </resource-env-ref-type>
+  </resource-env-ref>
+
+  <!-- Default page to serve -->
+  <welcome-file-list>
+    <welcome-file>servoy_mobile_jsunit.html</welcome-file>
+  </welcome-file-list>
+
+</web-app>

@@ -1,0 +1,5 @@
+<Context swallowOutput="true">
+  <Resource name="servoy/sharedMap" auth="Container"
+            type="com.servoy.j2db.util.StaticSingletonMap"
+            factory="org.apache.naming.factory.BeanFactory"/>
+</Context>

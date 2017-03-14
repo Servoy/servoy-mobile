@@ -10,9 +10,9 @@
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="4"/>
 </listAttribute>
-<stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="com.google.gwt.eclipse.core.moduleClasspathProvider"/>
+<stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="com.google.gdt.eclipse.maven.mavenClasspathProvider"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.google.gwt.dev.DevMode"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-startupUrl http://127.0.0.1:8080/servoy_sample_mobile_TEST/index.html?log_level=DEBUG&amp;noinitsmc=true&amp;nodebug=true&amp;bid=0 -war &quot;${servoy_install}/application_server/server/webapps/servoy_sample_mobile_TEST&quot; -noserver -remoteUI &quot;${gwt_remote_ui_server_port}:${unique_id}&quot; -logLevel INFO -codeServerPort 9997 com.servoy.mobile.test.MobileTestClient"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-nosuperDevMode -startupUrl http://127.0.0.1:8080/servoy_sample_mobile_TEST/index.html?log_level=DEBUG&amp;noinitsmc=true&amp;nodebug=true&amp;bid=0 -war &quot;${servoy_install}/application_server/server/webapps/servoy_sample_mobile_TEST&quot; -noserver -remoteUI &quot;${gwt_remote_ui_server_port}:${unique_id}&quot; -logLevel INFO -codeServerPort 9997 com.servoy.mobile.test.MobileTestClient"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="servoy_mobile_jsunit"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx512m"/>
 </launchConfiguration>
