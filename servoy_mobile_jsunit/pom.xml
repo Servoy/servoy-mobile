@@ -74,6 +74,22 @@
 		     <packagingExcludes>/WEB-INF/classes/com/servoy/mobile/client/**,/WEB-INF/classes/com/servoy/base/**,/WEB-INF/classes/com/servoy/mobile/test/public/**,/WEB-INF/classes/com/servoy/mobile/test/client/**,**/gitignore</packagingExcludes>
 		   </configuration>
 		 </plugin>
+		  <plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-jar-plugin</artifactId>
+	        <version>3.0.2</version>
+	        <executions>
+	          <execution>
+	            <phase>package</phase>
+	            <goals>
+	              <goal>jar</goal>
+	            </goals>
+	            <configuration>
+	              <classifier>jar</classifier>
+	            </configuration>
+	          </execution>
+	        </executions>
+	    </plugin>
   	</plugins>
   </build>
   <dependencies>
