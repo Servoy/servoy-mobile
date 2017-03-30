@@ -4,4 +4,8 @@
   <artifactId>servoy-mobile</artifactId>
   <version>1.0</version>
   <packaging>pom</packaging>
+  <modules>
+    <module>servoy_mobile</module>
+    <module>servoy_mobile_jsunit</module>
+  </modules>
 </project>
