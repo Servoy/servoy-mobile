@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.servoy</groupId>
   <artifactId>servoy_mobile_jsunit</artifactId>
-  <version>1.0</version>
+  <version>8.1.3.3032</version>
   <packaging>war</packaging>
 <build>
   	<plugins>
