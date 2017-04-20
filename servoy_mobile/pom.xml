@@ -88,7 +88,7 @@
 		   <artifactId>maven-war-plugin</artifactId>
 		   <version>3.0.0</version>
 		   <configuration>
-		     <packagingExcludes>/WEB-INF/classes/**,**/gitignore</packagingExcludes>
+		     <packagingExcludes>/WEB-INF/classes/**,/WEB-INF/lib/**,**/gitignore</packagingExcludes>
 		   </configuration>
 		 </plugin>
   	</plugins>
