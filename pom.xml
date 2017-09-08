@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>servoy-mobile</groupId>
-  <artifactId>servoy-mobile</artifactId>
-  <version>1.0</version>
+  <groupId>com.servoy</groupId>
+  <artifactId>servoy-mobile-parent</artifactId>
+  <version>8.3.0.3200_b1</version>
   <packaging>pom</packaging>
   <modules>
     <module>servoy_mobile</module>
