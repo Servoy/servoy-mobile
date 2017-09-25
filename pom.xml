@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.servoy</groupId>
   <artifactId>servoy-mobile-parent</artifactId>
-  <version>8.2.1.3104_rc</version>
+  <version>8.2.1.3105</version>
   <packaging>pom</packaging>
   <modules>
     <module>servoy_mobile</module>
