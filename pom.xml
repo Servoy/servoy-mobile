@@ -4,6 +4,10 @@
   <artifactId>servoy-mobile-parent</artifactId>
   <version>8.3.0.3200_b1</version>
   <packaging>pom</packaging>
+  <properties>
+	<maven.compiler.source>1.7</maven.compiler.source>
+	<maven.compiler.target>1.7</maven.compiler.target>
+  </properties>
   <modules>
     <module>servoy_mobile</module>
     <module>servoy_mobile_jsunit</module>
