@@ -307,6 +307,10 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 						{
 							result.add(rec);
 						}
+						else
+						{
+							rec.flush();
+						}
 					}
 				}
 				filteredFoundset = true;
