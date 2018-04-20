@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.servoy</groupId>
   <artifactId>servoy-mobile-parent</artifactId>
-  <version>8.3.0.3201_rc1</version>
+  <version>8.3.0.3202_rc2</version>
   <packaging>pom</packaging>
   <properties>
 	<maven.compiler.source>1.7</maven.compiler.source>
