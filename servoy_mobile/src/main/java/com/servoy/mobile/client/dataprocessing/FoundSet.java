@@ -109,7 +109,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.mobile.client.scripting.Scope#getValue(java.lang.String)
 	 */
 	@Override
@@ -125,7 +125,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.mobile.client.scripting.Scope#setValue(java.lang.String, java.lang.Object)
 	 */
 	@Override
@@ -306,6 +306,10 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 						if (Utils.evalCondition(moreWhere, rec))
 						{
 							result.add(rec);
+						}
+						else
+						{
+							rec.flush();
 						}
 					}
 				}
