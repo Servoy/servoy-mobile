@@ -9,6 +9,10 @@
 	<artifactId>servoy_mobile_jsunit</artifactId>
 	<packaging>war</packaging>
 	
+	<properties>
+	    <failOnMissingWebXml>false</failOnMissingWebXml>
+	</properties>
+
 	<profiles>
 		<profile>
 			<id>not_dev</id>
