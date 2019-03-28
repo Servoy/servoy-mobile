@@ -1006,4 +1006,9 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 		return foundSetDescription;
 	}
 
+	public boolean dispose()
+	{
+		return false;
+	}
+
 }
