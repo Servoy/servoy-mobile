@@ -40,11 +40,45 @@ public class SolutionI18nProvider implements I18NProvider
 	@Override
 	public String getI18NMessage(String i18nKey)
 	{
-		return getI18NMessage(i18nKey, null);
+		return getI18NMessage(i18nKey, (Object[])null, locale);
 	}
 
 	@Override
 	public String getI18NMessage(String i18nKey, Object[] array)
+	{
+		return getI18NMessage(i18nKey, array, locale);
+	}
+
+	@Override
+	public String getI18NMessage(String i18nKey, Object[] array, String locale, String country)
+	{
+		if (locale != null)
+		{
+			if (country != null)
+			{
+				locale = locale + '_' + country;
+			}
+
+		}
+		return getI18NMessage(i18nKey, array, locale);
+	}
+
+
+	@Override
+	public String getI18NMessage(String i18nKey, String locale, String country)
+	{
+		if (locale != null)
+		{
+			if (country != null)
+			{
+				locale = locale + '_' + country;
+			}
+
+		}
+		return getI18NMessage(i18nKey, (Object[])null, locale);
+	}
+
+	private String getI18NMessage(String i18nKey, Object[] array, String locale)
 	{
 		String key = locale + "." + i18nKey; //$NON-NLS-1$
 		String value = solution.getI18nValue(key);
@@ -84,14 +118,14 @@ public class SolutionI18nProvider implements I18NProvider
 	}
 
 	private static native JsArrayString newArray()/*-{
-		return [];
-	}-*/;
+													return [];
+													}-*/;
 
 	private static native String nativeFormat(final String format, final JsArrayString args)/*-{
-		return format.replace(/{(\d+)}/g, function(match, number) {
-			return typeof args[number] != 'undefined' ? args[number] : match;
-		});
-	}-*/;
+																							return format.replace(/{(\d+)}/g, function(match, number) {
+																							return typeof args[number] != 'undefined' ? args[number] : match;
+																							});
+																							}-*/;
 
 	@Override
 	public String getI18NMessageIfPrefixed(String i18nKey)
