@@ -26,7 +26,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-dependency-plugin</artifactId>
-						<version>3.0.0</version>
+						<version>3.1.1</version>
 						<executions>
 							<execution>
 								<id>unpack</id>
@@ -68,9 +68,9 @@
 						</executions>
 					</plugin>
 					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
+						<groupId>net.ltgt.gwt.maven</groupId>
 						<artifactId>gwt-maven-plugin</artifactId>
-						<version>2.6.1</version>
+						<version>1.0.0</version>
 						<executions>
 							<execution>
 								<id>compile</id>
@@ -80,13 +80,14 @@
 							</execution>
 						</executions>
 						<configuration>
-							<module>com.servoy.mobile.test.MobileTestClient</module>
+							<moduleName>com.servoy.mobile.test.MobileTestClient</moduleName>
 							<style>PRETTY</style>
+							<deploy>${project.build.directory}/${project.build.finalName}/WEB-INF/deploy</deploy>
 						</configuration>
 					</plugin>
 					<plugin>
 						<artifactId>maven-war-plugin</artifactId>
-						<version>3.0.0</version>
+						<version>3.2.3</version>
 						<configuration>
 							<packagingExcludes>/WEB-INF/classes/com/servoy/mobile/client/**,/WEB-INF/classes/com/servoy/base/**,/WEB-INF/classes/com/servoy/mobile/test/public/**,/WEB-INF/classes/com/servoy/mobile/test/client/**,**/gitignore</packagingExcludes>
 						</configuration>
@@ -94,7 +95,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-jar-plugin</artifactId>
-						<version>3.0.2</version>
+						<version>3.1.2</version>
 						<executions>
 							<execution>
 								<phase>package</phase>
