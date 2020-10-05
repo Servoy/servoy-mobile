@@ -348,7 +348,7 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 						final String dataProviderID = elem.getKey();
 						Object raw = elem.getValue();
 						final int dpType = state.getVariableType(dataProviderID);
-						BaseQueryColumn qCol = new BaseQueryColumn(table, 0, dataProviderID, dataProviderID, new BaseColumnType(dpType, 0, 0), 0, false);
+						BaseQueryColumn qCol = new BaseQueryColumn(table, 0, dataProviderID, dataProviderID, new BaseColumnType(dpType, 0, 0), null, 0, false);
 						BaseColumn col = new BaseColumn()
 						{
 
