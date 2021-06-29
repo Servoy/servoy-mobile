@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.servoy</groupId>
 		<artifactId>servoy-mobile-parent</artifactId>
-		<version>2021.6.0.3682_rc3</version>
+		<version>2021.6.0.3683</version>
 	</parent>
 	<artifactId>servoy_mobile_jsunit</artifactId>
 	<packaging>war</packaging>
