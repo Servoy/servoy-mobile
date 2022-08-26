@@ -719,7 +719,7 @@ public class Utils implements Exportable
 
 	private static boolean conditionResult(int operator, Object recordValue, Object conditionValue)
 	{
-		if ((operator & IBaseSQLCondition.CASEINSENTITIVE_MODIFIER) == IBaseSQLCondition.CASEINSENTITIVE_MODIFIER && recordValue instanceof String &&
+		if ((operator & IBaseSQLCondition.CASEINSENSITIVE_MODIFIER) == IBaseSQLCondition.CASEINSENSITIVE_MODIFIER && recordValue instanceof String &&
 			conditionValue instanceof String)
 		{
 			recordValue = recordValue.toString().toUpperCase();
