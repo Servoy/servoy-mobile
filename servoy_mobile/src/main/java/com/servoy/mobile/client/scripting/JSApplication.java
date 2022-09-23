@@ -56,7 +56,7 @@ public class JSApplication implements Exportable, IJSApplication
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.base.scripting.api.IJSApplication#getUserProperty(java.lang.String)
 	 */
 	@Override
@@ -69,6 +69,17 @@ public class JSApplication implements Exportable, IJSApplication
 	public void setUserProperty(String name, String value)
 	{
 		application.getFoundSetManager().setUserProperty(name, value);
+	}
+
+	@Override
+	public void removeUserProperty(String name)
+	{
+		application.getFoundSetManager().removeUserProperty(name);
+	}
+
+	public void removeAllUserProperties()
+	{
+		application.getFoundSetManager().removeAllUserProperties();
 	}
 
 	@Override
@@ -91,7 +102,7 @@ public class JSApplication implements Exportable, IJSApplication
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.j2db.scripting.api.IJSApplication#setValueListItems(java.lang.String, java.lang.Object[])
 	 */
 	@Override
@@ -118,7 +129,7 @@ public class JSApplication implements Exportable, IJSApplication
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.j2db.scripting.api.IJSApplication#setValueListItems(java.lang.String, java.lang.Object[], java.lang.Object[])
 	 */
 	@Override
