@@ -1635,10 +1635,7 @@ public class FoundSetManager
 		for (int i = 0; i < userPropertiesLength; i++)
 		{
 			String key = localStorage.key(i);
-			if (key.contains(USER_PROPERTY_PREFIX))
-			{
-				userPropertiesToDelete.add(key);
-			}
+			userPropertiesToDelete.add(key);
 		}
 		if (userPropertiesToDelete.size() > 0)
 		{
