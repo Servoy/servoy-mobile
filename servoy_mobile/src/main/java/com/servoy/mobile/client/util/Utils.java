@@ -657,23 +657,25 @@ public class Utils implements Exportable
 		{
 			if (condition instanceof BaseAndCondition)
 			{
-				boolean retVal = true;
-				for (IBaseSQLCondition andCondition : ((BaseAndCondition)condition).getConditions())
+				for (IBaseSQLCondition andCondition : ((BaseAndCondition)condition).getAllConditions())
 				{
-					retVal = retVal && evalCondition(andCondition, record);
-					if (!retVal) break;
+					if (!evalCondition(andCondition, record))
+					{
+						return false;
+					}
 				}
-				return retVal;
+				return true;
 			}
 			if (condition instanceof BaseOrCondition)
 			{
-				boolean retVal = false;
-				for (IBaseSQLCondition orCondition : ((BaseOrCondition)condition).getConditions())
+				for (IBaseSQLCondition orCondition : ((BaseOrCondition)condition).getAllConditions())
 				{
-					retVal = retVal || evalCondition(orCondition, record);
-					if (retVal) break;
+					if (evalCondition(orCondition, record))
+					{
+						return true;
+					}
 				}
-				return retVal;
+				return false;
 			}
 			if (condition instanceof BaseCompareCondition)
 			{
@@ -701,11 +703,11 @@ public class Utils implements Exportable
 			{
 				RelatedFindCondition joinCondition = (RelatedFindCondition)condition;
 				FoundSet relatedFoundset = record.getRelatedFoundSet(joinCondition.getRelationName());
-				if (relatedFoundset != null && relatedFoundset.getSize() > 0)
+				if (relatedFoundset != null)
 				{
 					for (int i = 0; i < relatedFoundset.getSize(); i++)
 					{
-						if (Utils.evalCondition(joinCondition.getRelatedFoundsetCondition(), relatedFoundset.getRecord(i)))
+						if (evalCondition(joinCondition.getRelatedFoundsetCondition(), relatedFoundset.getRecord(i)))
 						{
 							return true;
 						}
@@ -719,7 +721,7 @@ public class Utils implements Exportable
 
 	private static boolean conditionResult(int operator, Object recordValue, Object conditionValue)
 	{
-		if ((operator & IBaseSQLCondition.CASEINSENTITIVE_MODIFIER) == IBaseSQLCondition.CASEINSENTITIVE_MODIFIER && recordValue instanceof String &&
+		if ((operator & IBaseSQLCondition.CASEINSENSITIVE_MODIFIER) == IBaseSQLCondition.CASEINSENSITIVE_MODIFIER && recordValue instanceof String &&
 			conditionValue instanceof String)
 		{
 			recordValue = recordValue.toString().toUpperCase();

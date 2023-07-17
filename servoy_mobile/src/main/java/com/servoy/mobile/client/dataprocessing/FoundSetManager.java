@@ -1622,6 +1622,32 @@ public class FoundSetManager
 
 	/**
 	 * @param name
+	 */
+	public void removeUserProperty(String name)
+	{
+		localStorage.removeItem(USER_PROPERTY_PREFIX + name);
+	}
+
+	public void removeAllUserProperties()
+	{
+		int userPropertiesLength = localStorage.getLength();
+		List<String> userPropertiesToDelete = new ArrayList<>();
+		for (int i = 0; i < userPropertiesLength; i++)
+		{
+			String key = localStorage.key(i);
+			userPropertiesToDelete.add(key);
+		}
+		if (userPropertiesToDelete.size() > 0)
+		{
+			for (String prop : userPropertiesToDelete)
+			{
+				localStorage.removeItem(prop);
+			}
+		}
+	}
+
+	/**
+	 * @param name
 	 * @return
 	 */
 	public String getUserProperty(String name)
