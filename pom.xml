@@ -7,7 +7,7 @@
 	</prerequisites>
 	<groupId>com.servoy</groupId>
 	<artifactId>servoy-mobile-parent</artifactId>
-	<version>2022.3.6.3748_LTS</version>
+	<version>2022.3.7.3749_LTS</version>
 	<packaging>pom</packaging>
 	<properties>
 		<maven.compiler.source>1.7</maven.compiler.source>
