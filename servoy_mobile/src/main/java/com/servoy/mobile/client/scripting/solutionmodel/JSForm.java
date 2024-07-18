@@ -17,6 +17,10 @@
 
 package com.servoy.mobile.client.scripting.solutionmodel;
 
+import static com.servoy.base.util.DataSourceUtilsBase.createDBTableDataSource;
+import static com.servoy.base.util.DataSourceUtilsBase.getDBServernameTablename;
+import static com.servoy.base.util.DataSourceUtilsBase.isCompleteDBbServerTable;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -44,7 +48,6 @@ import com.servoy.base.solutionmodel.IBaseSMComponent;
 import com.servoy.base.solutionmodel.IBaseSMMethod;
 import com.servoy.base.solutionmodel.IBaseSMPortal;
 import com.servoy.base.solutionmodel.IBaseSMVariable;
-import com.servoy.base.util.DataSourceUtilsBase;
 import com.servoy.mobile.client.dataprocessing.RelatedFoundSet;
 import com.servoy.mobile.client.persistence.AbstractBase.MobileProperties;
 import com.servoy.mobile.client.persistence.Bean;
@@ -700,7 +703,8 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 						(Boolean.TRUE.equals(mp.getPropertyValue(IMobileProperties.LIST_ITEM_BUTTON)) ||
 							Boolean.TRUE.equals(mp.getPropertyValue(IMobileProperties.LIST_ITEM_COUNT)) ||
 							Boolean.TRUE.equals(mp.getPropertyValue(IMobileProperties.LIST_ITEM_HEADER)) ||
-							Boolean.TRUE.equals(mp.getPropertyValue(IMobileProperties.LIST_ITEM_IMAGE)) || Boolean.TRUE.equals(mp.getPropertyValue(IMobileProperties.LIST_ITEM_SUBTEXT)));
+							Boolean.TRUE.equals(mp.getPropertyValue(IMobileProperties.LIST_ITEM_IMAGE)) ||
+							Boolean.TRUE.equals(mp.getPropertyValue(IMobileProperties.LIST_ITEM_SUBTEXT)));
 				}
 
 				if (showInternals || (!(jsComponent instanceof JSPortal) && !isFormListComponent))
@@ -818,7 +822,7 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 		String ds = form.getDataSource();
 		if (ds != null)
 		{
-			String[] stn = DataSourceUtilsBase.getDBServernameTablename(ds);
+			String[] stn = getDBServernameTablename(ds);
 			if (stn != null && stn.length > 0) return stn[0];
 		}
 		return null;
@@ -831,8 +835,8 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 		String ds = form.getDataSource();
 		if (ds != null)
 		{
-			String[] stn = DataSourceUtilsBase.getDBServernameTablename(ds);
-			if (stn != null && stn.length == 2) return stn[1];
+			String[] stn = getDBServernameTablename(ds);
+			if (isCompleteDBbServerTable(stn)) return stn[1];
 		}
 		return null;
 	}
@@ -848,14 +852,14 @@ public class JSForm extends JSBase implements IBaseSMFormInternal, Exportable
 	@Override
 	public void setServerName(String arg)
 	{
-		setDataSource(DataSourceUtilsBase.createDBTableDataSource(arg, getTableName()));
+		setDataSource(createDBTableDataSource(arg, getTableName()));
 	}
 
 	@Setter
 	@Override
 	public void setTableName(String arg)
 	{
-		setDataSource(DataSourceUtilsBase.createDBTableDataSource(getServerName(), arg));
+		setDataSource(createDBTableDataSource(getServerName(), arg));
 	}
 
 	@Setter
