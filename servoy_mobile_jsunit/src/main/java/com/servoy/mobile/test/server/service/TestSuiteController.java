@@ -30,7 +30,7 @@ import javax.naming.NamingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gwt.rpc.server.Pair;
+import com.google.gwt.dev.util.Pair;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.servoy.base.nongwt.test.ILineMapper;
 import com.servoy.base.nongwt.test.ILineMapper.LineMapping;
@@ -228,7 +228,7 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 					}
 				}
 
-				stackTrace[i - 1] = new StackTraceElement(functionNameAndScope.getB(), functionNameAndScope.getA(), fileName, lineNo);
+				stackTrace[i - 1] = new StackTraceElement(functionNameAndScope.getRight(), functionNameAndScope.getLeft(), fileName, lineNo);
 			}
 			throwable.setStackTrace(stackTrace);
 		}
@@ -268,7 +268,7 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 				scopes = sb.toString();
 			}
 		}
-		return new Pair<String, String>(realFunctionName, scopes);
+		return Pair.create(realFunctionName, scopes);
 	}
 
 	private StackTraceElement[] getTranslatedNativeStack(String[] detailedStack)
@@ -289,7 +289,7 @@ public class TestSuiteController extends RemoteServiceServlet implements ITestSu
 				lineNo = (int)details.lineNumber;
 				fileName = details.file;
 			}
-			stackTrace[i++] = new StackTraceElement(functionNameAndScope.getB(), functionNameAndScope.getA(), fileName, lineNo);
+			stackTrace[i++] = new StackTraceElement(functionNameAndScope.getRight(), functionNameAndScope.getLeft(), fileName, lineNo);
 		}
 		return stackTrace;
 	}

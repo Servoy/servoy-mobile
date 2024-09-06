@@ -25,7 +25,7 @@
 	<target name="gwtc" description="GWT compile for Eclipse Project run">
 		<java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
 			<classpath>
-				<pathelement location="src"/>
+				<pathelement location="src/main/java"/>
 				<pathelement location="../servoy_base/src"/>
 				<path refid="project.class.path"/>
 			</classpath>
@@ -48,7 +48,7 @@
 		<delete dir="gwt-unitCache"/>
 		<java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
 			<classpath>
-				<pathelement location="src"/>
+				<pathelement location="src/main/java"/>
 				<pathelement location="../servoy_base/src"/>
 				<path refid="project.class.path"/>
 			</classpath>

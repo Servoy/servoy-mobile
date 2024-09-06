@@ -25,17 +25,17 @@
 		<fileset dir="${gwt.jars}" includes="gwt-dev.jar"/>
 		<!-- Add any additional non-server libs (such as JUnit) -->
 		<fileset dir="war/WEB-INF/lib" includes="**/*.jar"/>
-		<fileset dir="${eclipse_target.dir}/ship_plugins/plugins">
+		<!--fileset dir="${eclipse_target.dir}/ship_plugins/plugins">
 			<include name="*.jar" />
 			<exclude name="org.eclipse*.jar" />
-		</fileset>
+		</fileset -->
 	</path>
 
 	<path id="project.class.path.withsrc">
-		<pathelement location="${servoy_mobile.dir}/src"/>
+		<pathelement location="${servoy_mobile.dir}/src/main/java"/>
 		<fileset dir="${servoy_mobile.dir}/lib" includes="**/*.jar"/>
 		<pathelement location="${servoy_base.dir}/src"/>
-		<pathelement location="src" />
+		<pathelement location="src/main/java" />
 		<path refid="project.class.path" />
 	</path>
 
