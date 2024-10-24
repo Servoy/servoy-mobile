@@ -1,26 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to='mobileclient'>
-  <script src="jquery-1.9.1.min.js"/>
-  <script src="jquery.mobile-1.4.2.min.js"/>
   <stylesheet src="jquery.mobile.theme.css"/>
   <stylesheet src="jquery.mobile.icons.css"/>
   <stylesheet src="jquery.mobile.structure-1.4.2.min.css"/>
 
   <!-- date stuff -->
-  <script src="datetime/jqm-datebox.core.js"/>
-  <script src="datetime/jqm-datebox.mode.calbox.js"/>
-  <script src="datetime/jqm-datebox.mode.datebox.js"/>
-  <script src="datetime/jquery.mobile.datebox.i18n.en.utf8.js"/>
-  <script src="datetime/jquery.mobile.datebox.i18n.de.utf8.js"/>
-  <script src="datetime/jquery.mobile.datebox.i18n.nl.utf8.js"/>
-  <script src="datetime/jquery.mobile.datebox.i18n.it.utf8.js"/>
-  <script src="datetime/jquery.mobile.datebox.i18n.es.utf8.js"/>
-  <script src="datetime/jquery.mobile.datebox.i18n.fr.utf8.js"/>
   <stylesheet src="datetime/jqm-datebox.css"/>
   
-  <script src="solution.js"/>
-  <script src="solution_json.js"/>
-  <script src="servoy_utils.js"/>
   <stylesheet src="servoy.css"/>
 
   <!-- Inherit the core Web Toolkit stuff.                        -->
