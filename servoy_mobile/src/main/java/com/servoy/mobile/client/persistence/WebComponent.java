@@ -1,5 +1,5 @@
 /*
- This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
+ This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2024 Servoy BV
 
  This program is free software; you can redistribute it and/or modify it under
  the terms of the GNU Affero General Public License as published by the Free
@@ -15,21 +15,28 @@
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
 */
 
-package com.servoy.mobile.client.scripting;
+package com.servoy.mobile.client.persistence;
 
-import com.servoy.mobile.client.MobileClient;
-import com.servoy.mobile.client.persistence.GraphicalComponent;
-import com.servoy.mobile.client.ui.DataFormHeader;
-import com.servoy.mobile.client.ui.Executor;
+import com.servoy.base.persistence.constants.IRepositoryConstants;
+
+import jsinterop.base.JsPropertyMap;
 
 /**
- * @author gboros
+ * @author jcompagner
  *
  */
-public class RuntimeDataFormHeader extends AbstractRuntimeGraphicalComponent
+public class WebComponent extends Component
 {
-	public RuntimeDataFormHeader(MobileClient application, Executor executor, DataFormHeader component, GraphicalComponent componentPersist)
+	public final static WebComponent castIfPossible(AbstractBase ab)
 	{
-		super(application, executor, component, componentPersist);
+		return ab.getTypeID() == IRepositoryConstants.WEBCOMPONENTS ? (WebComponent)ab.cast() : null;
 	}
+
+	protected WebComponent()
+	{
+	}
+
+	public final native JsPropertyMap<Object> getJSON() /*-{
+		return this.json;
+	}-*/;
 }

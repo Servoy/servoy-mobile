@@ -33,7 +33,6 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.servoy.base.scripting.api.IJSHistory;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.FormManager;
-import com.sksamuel.jqm4gwt.JQMContext;
 
 @Export
 public class JSHistory implements Exportable, IJSHistory
@@ -211,7 +210,8 @@ public class JSHistory implements Exportable, IJSHistory
 		{
 			if (Log.isInfoEnabled())
 			{
-				Log.info("hash change to: " + hash + " because of back or forward button, current form: " + currentForm.getName() + " != " + formHistory.controller.getName()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				Log.info("hash change to: " + hash + " because of back or forward button, current form: " + currentForm.getName() + " != " + //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+					formHistory.controller.getName());
 			}
 			go(formHistory.index - historyIndex);
 			if (formManager.getCurrentForm() == currentForm)
@@ -223,9 +223,10 @@ public class JSHistory implements Exportable, IJSHistory
 					{
 						if (Log.isInfoEnabled())
 						{
-							Log.info("current form: " + currentForm.getName() + " couldn't be changed to  " + formHistory.controller.getName() + ", 'reverting' to currrent page in browser"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+							Log.info("current form: " + currentForm.getName() + " couldn't be changed to  " + formHistory.controller.getName() + //$NON-NLS-1$//$NON-NLS-2$
+								", 'reverting' to currrent page in browser"); //$NON-NLS-1$
 						}
-						JQMContext.changePage(currentForm.getView().getDisplayPage());
+//						JQMContext.changePage(currentForm.getView().getDisplayPage());
 					}
 				});
 			}

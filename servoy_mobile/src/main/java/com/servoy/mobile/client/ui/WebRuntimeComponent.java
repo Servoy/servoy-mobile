@@ -1,5 +1,5 @@
 /*
- This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
+ This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2024 Servoy BV
 
  This program is free software; you can redistribute it and/or modify it under
  the terms of the GNU Affero General Public License as published by the Free
@@ -15,21 +15,41 @@
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
 */
 
-package com.servoy.mobile.client.scripting;
+package com.servoy.mobile.client.ui;
 
-import com.servoy.mobile.client.MobileClient;
-import com.servoy.mobile.client.persistence.GraphicalComponent;
-import com.servoy.mobile.client.ui.DataButton;
-import com.servoy.mobile.client.ui.Executor;
+import com.servoy.mobile.client.persistence.WebComponent;
 
 /**
- * @author gboros
+ * @author jcompagner
  *
  */
-public class RuntimeDataButton extends AbstractRuntimeGraphicalComponent
+public class WebRuntimeComponent
 {
-	public RuntimeDataButton(MobileClient application, Executor executor, DataButton component, GraphicalComponent componentPersist)
+
+	private final WebComponent webComponent;
+
+	/**
+	 * @param webComponent
+	 */
+	public WebRuntimeComponent(WebComponent webComponent)
 	{
-		super(application, executor, component, componentPersist);
+		this.webComponent = webComponent;
 	}
+
+
+	public String getProperty(String property)
+	{
+		return webComponent.getJSON().getAsAny(property).asString();
+	}
+
+
+	/**
+	 * @return
+	 */
+	public String getName()
+	{
+		return webComponent.getName();
+	}
+
+
 }

@@ -26,7 +26,6 @@ import com.servoy.mobile.client.scripting.IRuntimeComponentProvider;
 import com.servoy.mobile.client.scripting.IRuntimeField;
 import com.servoy.mobile.client.scripting.IRuntimeGraphicalComponent;
 import com.servoy.mobile.client.scripting.ModificationEvent;
-import com.servoy.mobile.client.ui.TitleText;
 import com.servoy.mobile.client.util.Utils;
 
 /**
@@ -55,7 +54,8 @@ public class DisplaysAdapter implements IDataAdapter, IEditListener
 		if (display instanceof IRuntimeComponentProvider)
 		{
 			IRuntimeComponent runtimeComponent = ((IRuntimeComponentProvider)display).getRuntimeComponent();
-			if (runtimeComponent instanceof IRuntimeGraphicalComponent && runtimeComponent.needEntireState()) ((IRuntimeGraphicalComponent)runtimeComponent).setTagResolver(dal);
+			if (runtimeComponent instanceof IRuntimeGraphicalComponent && runtimeComponent.needEntireState())
+				((IRuntimeGraphicalComponent)runtimeComponent).setTagResolver(dal);
 		}
 	}
 
@@ -80,8 +80,8 @@ public class DisplaysAdapter implements IDataAdapter, IEditListener
 
 	private boolean needEntireState(IDisplayData d)
 	{
-		return (d instanceof IRuntimeComponentProvider && (((IRuntimeComponentProvider)d).getRuntimeComponent().needEntireState() || ((IRuntimeComponentProvider)d).getRuntimeComponent().getDataProviderID() != null)) ||
-			(d instanceof TitleText && (((TitleText)d).getDataProviderID() != null || ((TitleText)d).needEntireState()));
+		return (d instanceof IRuntimeComponentProvider && (((IRuntimeComponentProvider)d).getRuntimeComponent().needEntireState() ||
+			((IRuntimeComponentProvider)d).getRuntimeComponent().getDataProviderID() != null));
 	}
 
 	/*

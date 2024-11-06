@@ -1,5 +1,5 @@
 /*
- This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
+ This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2024 Servoy BV
 
  This program is free software; you can redistribute it and/or modify it under
  the terms of the GNU Affero General Public License as published by the Free
@@ -15,21 +15,35 @@
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
 */
 
-package com.servoy.mobile.client.scripting;
+package com.servoy.mobile.client.angular;
 
-import com.servoy.mobile.client.MobileClient;
-import com.servoy.mobile.client.persistence.Field;
-import com.servoy.mobile.client.ui.DataRadioSet;
-import com.servoy.mobile.client.ui.Executor;
+import com.google.gwt.core.client.JavaScriptObject;
+
+import jsinterop.base.JsPropertyMap;
 
 /**
- * @author gboros
+ * @author jcompagner
  *
  */
-public class RuntimeDataRadioSet extends AbstractRuntimeFieldComponent
+public class ServiceCallObject extends JavaScriptObject
 {
-	public RuntimeDataRadioSet(MobileClient application, Executor executor, DataRadioSet component, Field componentPersist)
+	protected ServiceCallObject()
 	{
-		super(application, executor, component, componentPersist);
 	}
+
+	public final native String getServiceName() /*-{
+		return this.service ? this.service : null;
+	}-*/;
+
+	public final native String getMethodName() /*-{
+		return this.methodname ? this.methodname : null;
+	}-*/;
+
+	public final native JsPropertyMap<Object> getArgs() /*-{
+		return this.args ? this.args : null;
+	}-*/;
+
+	public final native String getCmsgId() /*-{
+		return this.cmsgid ? this.cmsgid : null;
+	}-*/;
 }

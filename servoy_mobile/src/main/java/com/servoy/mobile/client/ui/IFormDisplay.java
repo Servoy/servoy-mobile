@@ -21,15 +21,11 @@ import com.servoy.mobile.client.dataprocessing.Record;
  */
 
 /**
- * Form display interface 
+ * Form display interface
  * @author gboros
  */
 public interface IFormDisplay
 {
-	FormPage getDisplayPage();
-
-	FormPanel getDisplayPanel(String parentFormName);
-
 	void removeDisplayPanel(String parentFormName);
 
 	FormController getFormController();
@@ -41,4 +37,9 @@ public interface IFormDisplay
 	void cleanup();
 
 	boolean isShow();
+
+	/**
+	 * @param beanName
+	 */
+	WebRuntimeComponent getComponent(String beanName);
 }

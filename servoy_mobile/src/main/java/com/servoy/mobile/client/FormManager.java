@@ -1,23 +1,5 @@
 package com.servoy.mobile.client;
 
-/*
- This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
-
- This program is free software; you can redistribute it and/or modify it under
- the terms of the GNU Affero General Public License as published by the Free
- Software Foundation; either version 3 of the License, or (at your option) any
- later version.
-
- This program is distributed in the hope that it will be useful, but WITHOUT
- ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
-
- You should have received a copy of the GNU Affero General Public License along
- with this program; if not, see http://www.gnu.org/licenses or write to the Free
- Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
- */
-
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
@@ -25,8 +7,6 @@ import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.scripting.FormScope;
 import com.servoy.mobile.client.scripting.JSHistory;
 import com.servoy.mobile.client.scripting.ScriptEngine;
-import com.sksamuel.jqm4gwt.JQMContext;
-import com.sksamuel.jqm4gwt.JQMPage;
 
 /**
  * The main form manager, should be subclassed
@@ -36,7 +16,6 @@ public class FormManager
 {
 	private final JSHistory history = new JSHistory(this);
 	private final MobileClient application;
-	private Login login;
 	boolean showFormExecutedInCode = false; // this will cause showFirstForm to ignore the call if a showForm was called before in onSolutionOpen for ex
 
 	private final LinkedHashMap<String, FormController> formControllerMap = new LinkedHashMap<String, FormController>()
@@ -71,17 +50,6 @@ public class FormManager
 	{
 		Form jsForm = application.getFlattenedSolution().getFirstForm();
 		return getForm(jsForm.getName());
-	}
-
-
-	private JQMPage getLogin()
-	{
-		if (login == null)
-		{
-			login = new Login(application);
-		}
-		login.init();
-		return login;
 	}
 
 	public FormController getForm(String name)
@@ -127,7 +95,7 @@ public class FormManager
 		}
 		if (currentForm == formController)
 		{
-			if (currentForm != null) currentForm.getView().getDisplayPage().closeNavigator();
+//			if (currentForm != null) currentForm.getView().getDisplayPage().closeNavigator();
 			return true;
 		}
 		if (isChangingFormPage) return false;
@@ -136,14 +104,19 @@ public class FormManager
 		if (currentForm != null)
 		{
 			if (!currentForm.executeOnHideMethod()) return false;
-			currentForm.getView().getDisplayPage().saveScrollTop();
+			currentForm.setVisible(false);
+//			currentForm.getView().getDisplayPage().saveScrollTop();
 			currentNavigatorName = currentForm.getNavigator();
 		}
 		currentForm = formController;
+		currentForm.setVisible(true);
+		currentForm.executeOnShowMethod();
 		currentForm.updateNavigator(currentNavigatorName);
 		history.add(formController);
-		if (!restoreScrollPosition && currentForm != null) currentForm.getView().getDisplayPage().clearScrollTop();
-		JQMContext.changePage(formController.getView().getDisplayPage());
+//		if (!restoreScrollPosition && currentForm != null) currentForm.getView().getDisplayPage().clearScrollTop();
+
+		application.getAngularBridge().getWindowService().switchForm(currentForm);
+//		JQMContext.changePage(formController.getView().getDisplayPage());
 		return true;
 	}
 
@@ -159,10 +132,8 @@ public class FormManager
 
 	public void removeAllForms()
 	{
-		Iterator<FormController> it = formControllerMap.values().iterator();
-		while (it.hasNext())
+		for (FormController fc : formControllerMap.values())
 		{
-			FormController fc = it.next();
 			if (!fc.getView().isShow())
 			{
 				fc.cleanup();
@@ -232,7 +203,6 @@ public class FormManager
 				return;
 			}
 		}
-		JQMContext.changePage(getLogin());
 	}
 
 	public FormScope getFormScope(String name)
@@ -266,14 +236,6 @@ public class FormManager
 		$wnd._ServoyUtils_.reloadFormScope = function(name) {
 			formManager.@com.servoy.mobile.client.FormManager::reloadScopeIfInitialized(Ljava/lang/String;)(name);
 		}
-		$wnd
-				.$($wnd)
-				.bind(
-						'hashchange',
-						function() {
-							;
-							formManager.@com.servoy.mobile.client.FormManager::hashChanged(Ljava/lang/String;)($wnd.location.hash);
-						});
 	}-*/;
 
 	public void reloadScopeIfInitialized(String formName)

@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to='mobileclient'>
-  <stylesheet src="jquery.mobile.theme.css"/>
-  <stylesheet src="jquery.mobile.icons.css"/>
-  <stylesheet src="jquery.mobile.structure-1.4.2.min.css"/>
-
-  <!-- date stuff -->
-  <stylesheet src="datetime/jqm-datebox.css"/>
-  
-  <stylesheet src="servoy.css"/>
 
   <!-- Inherit the core Web Toolkit stuff.                        -->
   <inherits name='com.google.gwt.user.User'/>
@@ -23,8 +15,8 @@
   <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
 
   <!-- Other module inherits                      -->
-  <inherits name='com.sksamuel.Jqm4gwt' />
   <inherits name='org.timepedia.exporter.Exporter'/>
+  <inherits name="jsinterop.base.Base" />
   <!-- <inherits name='com.google.gwt.modernizr.Gwtmodernizr' /> -->
 
   <!-- 
@@ -39,6 +31,9 @@
   <set-property name="log_FirebugLogger" value="DISABLED" />
   <set-property name="log_GWTLogger" value="DISABLED" />
   <set-property name="log_SystemLogger" value="DISABLED" />
+  
+  <set-property name="compiler.useSourceMaps" value="true"/>
+  <set-configuration-property name="includeSourceMapUrl" value="/mobileclient/src/__HASH___sourceMap__FRAGMENT__.json"/>
   
    <!-- In gwt-log-3.0.3 or later, enable this if you want to have the remote logger enabled
   <inherits name="com.allen_sauer.gwt.log.gwt-log-RemoteLogger" />

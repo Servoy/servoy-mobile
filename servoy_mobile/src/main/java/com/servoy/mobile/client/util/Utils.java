@@ -22,7 +22,6 @@ import com.servoy.base.query.IBaseSQLCondition;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.dataprocessing.Record;
 import com.servoy.mobile.client.dataprocessing.RelatedFindCondition;
-import com.sksamuel.jqm4gwt.DataIcon;
 
 /*
  This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
@@ -620,21 +619,21 @@ public class Utils implements Exportable
 		return new JSONObject(o).toString();
 	}
 
-	public static DataIcon stringToDataIcon(String dataIcon)
-	{
-		if (dataIcon != null)
-		{
-			for (DataIcon icon : DataIcon.values())
-			{
-				if (dataIcon.equals(icon.getJqmValue()))
-				{
-					return icon;
-				}
-			}
-		}
-
-		return null;
-	}
+//	public static DataIcon stringToDataIcon(String dataIcon)
+//	{
+//		if (dataIcon != null)
+//		{
+//			for (DataIcon icon : DataIcon.values())
+//			{
+//				if (dataIcon.equals(icon.getJqmValue()))
+//				{
+//					return icon;
+//				}
+//			}
+//		}
+//
+//		return null;
+//	}
 
 	public static boolean stringIsEmpty(final CharSequence str)
 	{

@@ -29,6 +29,7 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Window;
 import com.servoy.base.solutionmodel.mobile.IMobileSolutionModel;
 import com.servoy.base.test.IJSUnitSuiteHandler;
+import com.servoy.mobile.client.angular.AngularBridge;
 import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.dataprocessing.FoundSetManager;
 import com.servoy.mobile.client.dataprocessing.OfflineDataProxy;
@@ -45,26 +46,11 @@ import com.servoy.mobile.client.scripting.JSI18N;
 import com.servoy.mobile.client.scripting.JSSecurity;
 import com.servoy.mobile.client.scripting.JSUtils;
 import com.servoy.mobile.client.scripting.PluginsScope;
-import com.servoy.mobile.client.scripting.RuntimeBean;
-import com.servoy.mobile.client.scripting.RuntimeDataButton;
-import com.servoy.mobile.client.scripting.RuntimeDataCalenderField;
-import com.servoy.mobile.client.scripting.RuntimeDataCheckboxSet;
-import com.servoy.mobile.client.scripting.RuntimeDataFormHeader;
-import com.servoy.mobile.client.scripting.RuntimeDataFormHeaderButton;
-import com.servoy.mobile.client.scripting.RuntimeDataLabel;
-import com.servoy.mobile.client.scripting.RuntimeDataPassword;
-import com.servoy.mobile.client.scripting.RuntimeDataRadioSet;
-import com.servoy.mobile.client.scripting.RuntimeDataSelect;
-import com.servoy.mobile.client.scripting.RuntimeDataTextArea;
-import com.servoy.mobile.client.scripting.RuntimeDataTextField;
-import com.servoy.mobile.client.scripting.RuntimePortal;
 import com.servoy.mobile.client.scripting.ScriptEngine;
 import com.servoy.mobile.client.scripting.solutionmodel.JSSolutionModel;
 import com.servoy.mobile.client.ui.Executor;
 import com.servoy.mobile.client.util.Failure;
 import com.servoy.mobile.client.util.Utils;
-import com.sksamuel.jqm4gwt.JQMContext;
-import com.sksamuel.jqm4gwt.Mobile;
 
 /**
  * The main mobile client entry point
@@ -84,6 +70,8 @@ public class MobileClient implements EntryPoint
 
 	private IAfterLoginHandler afterLoginHandler;
 	private int version = 1;
+
+	private AngularBridge angularBridge;
 
 	@Override
 	public void onModuleLoad()
@@ -130,20 +118,6 @@ public class MobileClient implements EntryPoint
 		GWT.create(FoundSet.class); // foundset is not a scope yet, if it becomes a scope (aggregates) then this can't be done, or must he exported differently
 		GWT.create(DEFAULTS.class);
 		GWT.create(APPLICATION_TYPES.class);
-		// export all the scriptable ui classes:
-		GWT.create(RuntimeDataButton.class);
-		GWT.create(RuntimeDataCheckboxSet.class);
-		GWT.create(RuntimeDataFormHeader.class);
-		GWT.create(RuntimeDataFormHeaderButton.class);
-		GWT.create(RuntimeDataLabel.class);
-		GWT.create(RuntimeDataRadioSet.class);
-		GWT.create(RuntimeDataSelect.class);
-		GWT.create(RuntimeDataTextField.class);
-		GWT.create(RuntimeDataTextArea.class);
-		GWT.create(RuntimeDataPassword.class);
-		GWT.create(RuntimeDataCalenderField.class);
-		GWT.create(RuntimePortal.class);
-		GWT.create(RuntimeBean.class);
 
 		// non solution related (internal) API
 		GWT.create(Utils.class);
@@ -158,7 +132,9 @@ public class MobileClient implements EntryPoint
 
 //		JQMContext.setDefaultTransition(Transition.FADE);
 
-		addStartPageShowCallback();
+		angularBridge = new AngularBridge(this);
+
+//		onStartPageShown();
 	}
 
 	protected FormManager createFormManager()
@@ -166,13 +142,9 @@ public class MobileClient implements EntryPoint
 		return new FormManager(this);
 	}
 
-	protected void onStartPageShown()
+	public void onStartPageShown()
 	{
-		if (!getFlattenedSolution().getSkipConnect())
-		{
-			JQMContext.changePage(new TrialModePage(this));
-		}
-		else if (hasFirstFormADataSource() && !foundSetManager.hasContent())
+		if (hasFirstFormADataSource() && !foundSetManager.hasContent())
 		{
 			sync(false);
 		}
@@ -315,7 +287,7 @@ public class MobileClient implements EntryPoint
 		else
 		{
 			if (isSynchronizing()) return;
-			Mobile.showLoadingDialog(getI18nMessageWithFallback("syncing"));
+//			Mobile.showLoadingDialog(getI18nMessageWithFallback("syncing"));
 			flagSyncStart();
 			if (foundSetManager.hasChanges())
 			{
@@ -332,7 +304,7 @@ public class MobileClient implements EntryPoint
 					@Override
 					public void onFailure(Failure reason)
 					{
-						Mobile.hideLoadingDialog();
+//						Mobile.hideLoadingDialog();
 						try
 						{
 							if (errorHandler != null && reason.getStatusCode() != Response.SC_UNAUTHORIZED)
@@ -405,10 +377,18 @@ public class MobileClient implements EntryPoint
 		return i18nProvider.getI18nMessageWithFallback(key);
 	}
 
-	public void log(String msg)
+	public static void log(String msg)
 	{
 		GWT.log(msg);
+		jsConsoleLog(msg);
 	}
+
+	native static void jsConsoleLog(String message) /*-{
+    try {
+        console.log(message);
+    } catch (e) {
+    }
+}-*/;
 
 	public void error(String msg)
 	{
@@ -546,7 +526,7 @@ public class MobileClient implements EntryPoint
 				{
 					try
 					{
-						Mobile.hideLoadingDialog();
+//						Mobile.hideLoadingDialog();
 						log("Done, loaded size: " + result);
 						if (successCallback != null)
 						{
@@ -567,7 +547,7 @@ public class MobileClient implements EntryPoint
 				{
 					try
 					{
-						Mobile.hideLoadingDialog();
+//						Mobile.hideLoadingDialog();
 						StringBuilder detail = new StringBuilder();
 						if (reason.getStatusCode() != 0)
 						{
@@ -636,6 +616,11 @@ public class MobileClient implements EntryPoint
 	public FormManager getFormManager()
 	{
 		return formManager;
+	}
+
+	public AngularBridge getAngularBridge()
+	{
+		return angularBridge;
 	}
 
 	public FoundSetManager getFoundSetManager()
@@ -816,7 +801,7 @@ public class MobileClient implements EntryPoint
 		else
 		{
 			if (isSynchronizing()) return;
-			Mobile.showLoadingDialog(getI18nMessageWithFallback("pushing"));
+//			Mobile.showLoadingDialog(getI18nMessageWithFallback("pushing"));
 			flagSyncStart();
 			if (foundSetManager.hasChanges())
 			{
@@ -828,7 +813,7 @@ public class MobileClient implements EntryPoint
 					{
 						try
 						{
-							Mobile.hideLoadingDialog();
+//							Mobile.hideLoadingDialog();
 							log("Done, submitted size: " + result.length);
 							if (successCallback != null)
 							{
@@ -849,7 +834,7 @@ public class MobileClient implements EntryPoint
 					{
 						try
 						{
-							Mobile.hideLoadingDialog();
+//							Mobile.hideLoadingDialog();
 							if (errorHandler != null && reason.getStatusCode() != Response.SC_UNAUTHORIZED)
 							{
 								JsArrayMixed jsArray = JavaScriptObject.createArray().cast();
@@ -883,7 +868,7 @@ public class MobileClient implements EntryPoint
 			{
 				try
 				{
-					Mobile.hideLoadingDialog();
+//					Mobile.hideLoadingDialog();
 					if (successCallback != null)
 					{
 						JsArrayMixed jsArray = JavaScriptObject.createArray().cast();

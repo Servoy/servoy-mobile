@@ -26,7 +26,7 @@
 		<java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
 			<classpath>
 				<pathelement location="src/main/java"/>
-				<pathelement location="../servoy_base/src"/>
+				<pathelement location="../../servoy-client/servoy_base/src"/>
 				<path refid="project.class.path"/>
 			</classpath>
 			<!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
@@ -58,6 +58,8 @@
 			<arg value="com.servoy.mobile.MobileClientDeploy"/>
 			<arg value="-style"/>
 			<arg value="PRETTY"/>
+			<arg value="-logLevel"/>
+			<arg value="DEBUG"/>
 <!--			<arg value="-optimize"/>
 			<arg value="0"/>
 			<arg value="-draftCompile"/> -->

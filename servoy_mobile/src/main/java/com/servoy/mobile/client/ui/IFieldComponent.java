@@ -19,13 +19,12 @@ package com.servoy.mobile.client.ui;
 
 import com.servoy.mobile.client.scripting.IRuntimeComponentProvider;
 import com.servoy.mobile.client.util.IDestroyable;
-import com.sksamuel.jqm4gwt.events.HasTapHandlers;
 
 /**
  * @author gboros
  *
  */
-public interface IFieldComponent extends IComponent, IRuntimeComponentProvider, HasTapHandlers, IDestroyable
+public interface IFieldComponent extends IComponent, IRuntimeComponentProvider, IDestroyable
 {
 
 }

@@ -8,7 +8,6 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsDate;
 import com.servoy.mobile.client.FormController;
-import com.servoy.mobile.client.scripting.IRuntimeComponent;
 import com.servoy.mobile.client.scripting.JSEvent;
 import com.servoy.mobile.client.util.Utils;
 
@@ -27,7 +26,7 @@ public class Executor
 		formController = null;
 	}
 
-	public void fireEventCommand(String type, String command, IRuntimeComponent source, Object[] args)
+	public void fireEventCommand(String type, String command, WebRuntimeComponent source, Object[] args)
 	{
 		JSEvent event = new JSEvent(type, source, formController.getName(), source == null ? null : source.getName());
 		callFunction(command, args, formController.getName(), event);

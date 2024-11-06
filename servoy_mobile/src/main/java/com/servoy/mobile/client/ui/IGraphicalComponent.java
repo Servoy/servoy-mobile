@@ -20,12 +20,11 @@ package com.servoy.mobile.client.ui;
 import com.google.gwt.user.client.ui.HasText;
 import com.servoy.mobile.client.scripting.IRuntimeComponentProvider;
 import com.servoy.mobile.client.util.IDestroyable;
-import com.sksamuel.jqm4gwt.events.HasTapHandlers;
 
 /**
  * @author gboros
  *
  */
-public interface IGraphicalComponent extends IComponent, IRuntimeComponentProvider, HasText, HasTapHandlers, IDestroyable
+public interface IGraphicalComponent extends IComponent, IRuntimeComponentProvider, HasText, IDestroyable
 {
 }

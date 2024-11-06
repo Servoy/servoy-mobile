@@ -18,22 +18,16 @@
 package com.servoy.mobile.client.ui;
 
 import com.google.gwt.user.client.ui.Widget;
-import com.sksamuel.jqm4gwt.toolbar.JQMFooter;
-import com.sksamuel.jqm4gwt.toolbar.JQMHeader;
 
 /**
  * Form component interface
- * 
+ *
  * @author gboros
  *
  */
 public interface IFormComponent
 {
-	void addHeader(JQMHeader header);
-
 	void removeHeader();
-
-	void addFooter(JQMFooter footer);
 
 	void removeFooter();
 

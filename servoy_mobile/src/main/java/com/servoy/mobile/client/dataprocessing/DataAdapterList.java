@@ -18,7 +18,6 @@
 package com.servoy.mobile.client.dataprocessing;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 import com.servoy.base.util.ITagResolver;
@@ -29,7 +28,6 @@ import com.servoy.mobile.client.scripting.GlobalScope;
 import com.servoy.mobile.client.scripting.IModificationListener;
 import com.servoy.mobile.client.scripting.IRuntimeComponentProvider;
 import com.servoy.mobile.client.scripting.ModificationEvent;
-import com.servoy.mobile.client.ui.TitleText;
 import com.servoy.mobile.client.util.IDestroyable;
 
 /**
@@ -62,8 +60,7 @@ public class DataAdapterList implements IModificationListener, ITagResolver
 		{
 			IDisplayData displayData = (IDisplayData)obj;
 			String dataproviderID = displayData instanceof IRuntimeComponentProvider
-				? ((IRuntimeComponentProvider)displayData).getRuntimeComponent().getDataProviderID() : displayData instanceof TitleText
-					? ((TitleText)displayData).getDataProviderID() : null;
+				? ((IRuntimeComponentProvider)displayData).getRuntimeComponent().getDataProviderID() : null;
 
 			IDataAdapter dataAdapter = dataAdapters.get(dataproviderID);
 			if (dataAdapter == null)
@@ -101,10 +98,8 @@ public class DataAdapterList implements IModificationListener, ITagResolver
 		this.record = record;
 		if (this.record != null) this.record.addModificationListener(this);
 
-		Iterator<IDataAdapter> it = dataAdapters.values().iterator();
-		while (it.hasNext())
+		for (IDataAdapter da : dataAdapters.values())
 		{
-			IDataAdapter da = it.next();
 			da.setRecord(record);
 		}
 
@@ -141,10 +136,8 @@ public class DataAdapterList implements IModificationListener, ITagResolver
 	@Override
 	public void valueChanged(ModificationEvent e)
 	{
-		Iterator<IDataAdapter> it = dataAdapters.values().iterator();
-		while (it.hasNext())
+		for (IDataAdapter da : dataAdapters.values())
 		{
-			IDataAdapter da = it.next();
 			da.valueChanged(e);
 		}
 	}
@@ -169,7 +162,7 @@ public class DataAdapterList implements IModificationListener, ITagResolver
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.j2db.util.ITagResolver#getStringValue(java.lang.String)
 	 */
 	@Override

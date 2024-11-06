@@ -19,13 +19,11 @@ package com.servoy.mobile.client.ui;
 
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasVisibility;
-import com.sksamuel.jqm4gwt.HasId;
-import com.sksamuel.jqm4gwt.JQMWidget;
 
 /**
  * @author gboros
  *
  */
-public interface IComponent extends HasVisibility, HasEnabled, HasId<JQMWidget>
+public interface IComponent extends HasVisibility, HasEnabled
 {
 }

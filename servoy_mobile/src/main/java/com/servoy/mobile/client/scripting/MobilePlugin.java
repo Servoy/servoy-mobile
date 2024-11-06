@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.Exporter;
-import org.timepedia.exporter.client.ExporterUtil;
 import org.timepedia.exporter.client.Getter;
 
 import com.google.gwt.core.client.GWT;
@@ -39,7 +38,6 @@ import com.servoy.mobile.client.dataprocessing.OfflineDataProxy;
 import com.servoy.mobile.client.dataprocessing.Record;
 import com.servoy.mobile.client.scripting.solutionhelper.SolutionHelper;
 import com.servoy.mobile.client.util.Utils;
-import com.sksamuel.jqm4gwt.Mobile;
 
 /**
  * Mobile implementation side for the plugin seen in Servoy developer
@@ -98,7 +96,7 @@ public class MobilePlugin implements Exportable
 
 	public void loadData(JavaScriptObject successCallback, JavaScriptObject errorHandler)
 	{
-		Mobile.showLoadingDialog(client.getI18nMessageWithFallback("loading"));
+//		Mobile.showLoadingDialog(client.getI18nMessageWithFallback("loading"));
 		client.load(successCallback, errorHandler);
 	}
 
@@ -160,15 +158,6 @@ public class MobilePlugin implements Exportable
 		}
 	}-*/;
 
-	public String getMarkupId(Object element)
-	{
-		Object gwtInstance = ExporterUtil.gwtInstance(element);
-		if (gwtInstance instanceof AbstractRuntimeBaseComponent< ? , ? >)
-		{
-			return ((AbstractRuntimeBaseComponent< ? , ? >)gwtInstance).getComponent().getId();
-		}
-		return null;
-	}
 
 	public String getUUIDPKValueAsString(IJSRecord record)
 	{

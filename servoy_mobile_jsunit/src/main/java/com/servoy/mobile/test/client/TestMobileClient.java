@@ -125,7 +125,7 @@ public class TestMobileClient extends MobileClient
 	}
 
 	@Override
-	protected void onStartPageShown()
+	public void onStartPageShown()
 	{
 		if (bridgeIdChecked)
 		{

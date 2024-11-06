@@ -20,13 +20,12 @@ import com.servoy.mobile.client.dataprocessing.IFoundSetSelectionListener;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.scripting.FormScope;
 import com.servoy.mobile.client.scripting.JSEvent;
-import com.servoy.mobile.client.ui.ComponentFactory;
 import com.servoy.mobile.client.ui.Executor;
 import com.servoy.mobile.client.ui.IFormDisplay;
 
 /**
  * Representation of a form
- * 
+ *
  * @author gboros
  */
 public class FormController implements Exportable, IFoundSetSelectionListener, IJSController
@@ -40,6 +39,7 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 	private boolean didOnShowOnce = false;
 	private boolean markedForCleanup;
 	private final List<IFoundSetListener> foundsetListeners = new ArrayList<IFoundSetListener>();
+	private boolean enabled;
 
 	public FormController(MobileClient mc, Form form)
 	{
@@ -58,7 +58,7 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 
 	public void createView()
 	{
-		formDisplay = ComponentFactory.createFormDisplay(mc, this);
+		formDisplay = new FormView(this);
 	}
 
 	public FormScope recreateScope()
@@ -133,18 +133,18 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 	@Getter
 	public boolean getEnabled()
 	{
-		return formDisplay.getDisplayPage().isEnabled();
+		return enabled;
 	}
 
 	@Setter
 	public void setEnabled(boolean enabled)
 	{
-		formDisplay.getDisplayPage().setEnabled(enabled);
+		this.enabled = enabled;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.j2db.scripting.api.IJSController#showRecords(com.servoy.j2db.scripting.api.IJSFoundSet)
 	 */
 	@Override
@@ -155,7 +155,7 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.j2db.scripting.api.IJSController#showRecords(com.servoy.j2db.scripting.api.IJSFoundSet)
 	 */
 	@Export
@@ -168,7 +168,7 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 		}
 		else
 		{
-			reloadPage("#" + getView().getDisplayPage().getId());
+//			reloadPage("#" + getView().getDisplayPage().getId());
 		}
 		selectionChanged();
 	}
@@ -183,7 +183,7 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.j2db.scripting.api.IJSController#show()
 	 */
 	@Override
@@ -195,7 +195,7 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.j2db.scripting.api.IJSController#getSelectedIndex()
 	 */
 	@Override
@@ -207,7 +207,7 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.j2db.scripting.api.IJSController#setSelectedIndex(int)
 	 */
 	@Override
@@ -220,7 +220,7 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.base.scripting.api.IJSController#getDataSource()
 	 */
 	@Override
@@ -300,6 +300,7 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 	}
 
 	private String navigatorName;
+	private boolean visible;
 
 	public void updateNavigator(String currentNavigatorName)
 	{
@@ -317,7 +318,6 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 				if (navigatorForm != null) navigatorName = navigatorForm.getName();
 			}
 		}
-		getView().getDisplayPage().addNavigator(navigatorName);
 	}
 
 	public String getNavigator()
@@ -342,5 +342,18 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 	public void removeFoundsetListener(IFoundSetListener foundSetListener)
 	{
 		foundsetListeners.remove(foundSetListener);
+	}
+
+	/**
+	 * @param b
+	 */
+	public void setVisible(boolean b)
+	{
+		this.visible = b;
+	}
+
+	public boolean getVisible()
+	{
+		return this.visible;
 	}
 }

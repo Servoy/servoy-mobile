@@ -1,5 +1,5 @@
 /*
- This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2012 Servoy BV
+ This file belongs to the Servoy development and deployment environment, Copyright (C) 1997-2024 Servoy BV
 
  This program is free software; you can redistribute it and/or modify it under
  the terms of the GNU Affero General Public License as published by the Free
@@ -15,21 +15,42 @@
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
 */
 
-package com.servoy.mobile.client.scripting;
+package com.servoy.mobile.client.angular;
 
 import com.servoy.mobile.client.MobileClient;
-import com.servoy.mobile.client.persistence.GraphicalComponent;
-import com.servoy.mobile.client.ui.DataFormHeaderButton;
-import com.servoy.mobile.client.ui.Executor;
+
+import jsinterop.base.JsPropertyMap;
 
 /**
- * @author gboros
+ * @author jcomp
  *
  */
-public class RuntimeDataFormHeaderButton extends AbstractRuntimeGraphicalComponent
+public class I18NService implements IService
 {
-	public RuntimeDataFormHeaderButton(MobileClient application, Executor executor, DataFormHeaderButton component, GraphicalComponent componentPersist)
+	private final MobileClient client;
+
+	public I18NService(MobileClient client)
 	{
-		super(application, executor, component, componentPersist);
+		this.client = client;
 	}
+
+	@Override
+	public JsPlainObj execute(ServiceCallObject call)
+	{
+		JsPlainObj returnValue = new JsPlainObj();
+		switch (call.getMethodName())
+		{
+			case "getI18NMessages" :
+			{
+				JsPropertyMap<Object> args = call.getArgs();
+				args.forEach(index -> {
+					String i18nKey = args.getAsAny(index).asString();
+					returnValue.set(i18nKey, client.getI18nProvider().getI18NMessage(i18nKey));
+				});
+				return returnValue;
+			}
+		}
+		return null;
+	}
+
 }

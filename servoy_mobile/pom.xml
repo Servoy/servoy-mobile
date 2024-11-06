@@ -13,6 +13,66 @@
 	<packaging>war</packaging>
 	
 	<profiles>
+	   <profile>
+        <id>gwtcompile</id>
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>gwt-maven-plugin</artifactId>
+                    <version>2.10.0</version>
+                    <executions>
+                        <execution>
+                            <id>compile</id>
+                            <phase>compile</phase>
+                            <goals>
+                              <goal>compile</goal>
+                            </goals>
+                       </execution>
+                    </executions>
+                    <configuration>
+                        <moduleName>com.servoy.mobile.MobileClientDeploy</moduleName>
+                        <style>DETAILED</style>
+                        <deploy>${project.build.directory}/${project.build.finalName}/WEB-INF/deploy</deploy>
+                        <compilerArgs>
+                            <arg>-saveSource</arg>
+                        </compilerArgs>
+                    </configuration>
+                </plugin>
+                <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-sourcemap-sourcecode</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/${project.build.finalName}/mobileclient/src
+                            </outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}/${project.build.finalName}/WEB-INF/deploy/mobileclient/symbolMaps</directory>
+                                    <includes>
+                                        <include>*.json</include>
+                                    </includes>
+                                </resource>
+                                <resource>
+                                    <directory>${project.basedir}/src/main/java</directory>
+                                </resource>
+                                <resource>
+                                    <directory>${project.build.directory}/servoy_base</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>                
+            </plugins>
+        </build>
+	   </profile>
 		<profile>
 			<id>not_dev</id>
 			<activation>
@@ -110,6 +170,11 @@
 		</profile>
 	</profiles>
 	<dependencies>
+        <dependency>
+          <groupId>com.google.jsinterop</groupId>
+          <artifactId>base</artifactId>
+          <version>1.0.0</version>
+        </dependency>	
 		<dependency>
 			<groupId>gwt</groupId>
 			<artifactId>gwt-dev</artifactId>
@@ -144,13 +209,6 @@
 			<version>1.0.1</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/gwtmodernizr-1.0.1.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>jqm</groupId>
-			<artifactId>jqm4gwt</artifactId>
-			<version>2.4.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/jqm4gwt.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>gwt</groupId>
