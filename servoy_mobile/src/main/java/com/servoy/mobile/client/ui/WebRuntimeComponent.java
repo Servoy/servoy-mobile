@@ -17,7 +17,15 @@
 
 package com.servoy.mobile.client.ui;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.servoy.mobile.client.FormController;
+import com.servoy.mobile.client.angular.JsPlainObj;
 import com.servoy.mobile.client.persistence.WebComponent;
+import com.servoy.mobile.client.util.Utils;
+
+import jsinterop.base.JsPropertyMap;
 
 /**
  * @author jcompagner
@@ -27,17 +35,24 @@ public class WebRuntimeComponent
 {
 
 	private final WebComponent webComponent;
+	private final JsPropertyMap<String> type;
+	private final Map<String, Object> properties = new HashMap<>();
+	private final FormController controller;
 
 	/**
+	 * @param controller
 	 * @param webComponent
+	 * @param type
 	 */
-	public WebRuntimeComponent(WebComponent webComponent)
+	public WebRuntimeComponent(FormController controller, WebComponent webComponent, JsPropertyMap<String> type)
 	{
+		this.controller = controller;
 		this.webComponent = webComponent;
+		this.type = type;
 	}
 
 
-	public String getProperty(String property)
+	public String getJSONProperty(String property)
 	{
 		return webComponent.getJSON().getAsAny(property).asString();
 	}
@@ -49,6 +64,41 @@ public class WebRuntimeComponent
 	public String getName()
 	{
 		return webComponent.getName();
+	}
+
+
+	/**
+	 *
+	 */
+	public JsPropertyMap<String> getType()
+	{
+		return type;
+	}
+
+
+	/**
+	 * @param key
+	 * @param value
+	 */
+	@SuppressWarnings("nls")
+	public void setProperty(String key, Object value)
+	{
+		Object prevValue = properties.put(key, value);
+		if (!Utils.equalObjects(value, prevValue))
+		{
+			JsPlainObj componentData = new JsPlainObj();
+			componentData.set(key, value);
+			JsPlainObj form = new JsPlainObj();
+			form.set(getName(), componentData);
+			JsPlainObj forms = new JsPlainObj();
+			forms.set(controller.getName(), form);
+			JsPlainObj msg = new JsPlainObj();
+			msg.set("forms", forms);
+			JsPlainObj call = new JsPlainObj();
+			call.set("msg", msg);
+
+			controller.getApplication().getAngularBridge().sendMessage(call.toJSONString());
+		}
 	}
 
 

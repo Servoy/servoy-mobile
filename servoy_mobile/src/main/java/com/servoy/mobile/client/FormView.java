@@ -28,14 +28,19 @@ import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.Part;
 import com.servoy.mobile.client.persistence.WebComponent;
+import com.servoy.mobile.client.scripting.GlobalScope;
+import com.servoy.mobile.client.scripting.IModificationListener;
+import com.servoy.mobile.client.scripting.ModificationEvent;
 import com.servoy.mobile.client.ui.IFormDisplay;
 import com.servoy.mobile.client.ui.WebRuntimeComponent;
+
+import jsinterop.base.JsPropertyMap;
 
 /**
  * @author jcompagner
  *
  */
-public class FormView implements IFormDisplay
+public class FormView implements IFormDisplay, IModificationListener
 {
 	// should be the same as in FormElement
 	public static final String SVY_NAME_PREFIX = "svy_";
@@ -45,20 +50,22 @@ public class FormView implements IFormDisplay
 	private final Map<String, WebRuntimeComponent> components = new HashMap<String, WebRuntimeComponent>();
 	private final List<Part> parts = new ArrayList<Part>();
 
+	private Record record;
+
 	public FormView(FormController controller)
 	{
 		this.controller = controller;
 		createComponents();
+
+		controller.getApplication().getScriptEngine().getGlobalScopeModificationDelegate().addModificationListener(this);
+		controller.getFormScope().addModificationListener(this);
 	}
 
-	/**
-	 *
-	 */
 	private void createComponents()
 	{
 		Form form = controller.getForm();
 		JsArray<Component> formComponents = form.getComponents();
-
+		JsPropertyMap<Object> specData = getSpecData();
 		for (int i = 0; i < formComponents.length(); i++)
 		{
 			Component component = formComponents.get(i);
@@ -77,7 +84,8 @@ public class FormView implements IFormDisplay
 					{
 						name = SVY_NAME_PREFIX + component.getUUID().replace('-', '_');
 					}
-					components.put(name, new WebRuntimeComponent(webComponent));
+					JsPropertyMap<String> type = specData.getAsAny(webComponent.getTypeName()).cast();
+					components.put(name, new WebRuntimeComponent(this.controller, webComponent, type));
 				}
 			}
 		}
@@ -105,15 +113,26 @@ public class FormView implements IFormDisplay
 	@Override
 	public void initWithRecord(Record record)
 	{
-		// TODO Auto-generated method stub
-
 	}
 
-	@Override
 	public void refreshRecord(Record record)
 	{
-		// TODO Auto-generated method stub
-
+		this.record = record;
+		components.values().forEach(c -> {
+			JsPropertyMap<String> type = c.getType();
+			type.forEach(key -> {
+				String typeName = type.get(key);
+				if (typeName != null && typeName.equals("dataprovider"))
+				{
+					String dataprovider = c.getJSONProperty(key);
+					if (dataprovider != null)
+					{
+						Object recordValue = getRecordValue(record, dataprovider);
+						c.setProperty(key, recordValue);
+					}
+				}
+			});
+		});
 	}
 
 	@Override
@@ -128,5 +147,43 @@ public class FormView implements IFormDisplay
 	{
 		return controller.getVisible();
 	}
+
+
+	@Override
+	public void valueChanged(ModificationEvent e)
+	{
+		MobileClient.log("modification event: " + e);
+		refreshRecord(record);
+	}
+
+	public Object getRecordValue(Record record, String dataproviderID)
+	{
+		Object recordValue = null;
+		if (dataproviderID != null)
+		{
+			String[] globalVariableScope = GlobalScope.getVariableScope(dataproviderID);
+
+			if (globalVariableScope[0] != null)
+			{
+				recordValue = controller.getApplication().getScriptEngine().getGlobalScope(globalVariableScope[0]).getValue(globalVariableScope[1]);
+			}
+			else if (controller.getFormScope().hasVariable(dataproviderID))
+			{
+				recordValue = controller.getFormScope().getVariableValue(dataproviderID);
+			}
+			else if (record != null)
+			{
+				recordValue = record.getValue(dataproviderID);
+			}
+		}
+		return recordValue;
+	}
+
+
+	protected native JsPropertyMap<Object> getSpecData()
+	/*-{
+		return $wnd._specdata_;
+	}-*/;
+
 
 }

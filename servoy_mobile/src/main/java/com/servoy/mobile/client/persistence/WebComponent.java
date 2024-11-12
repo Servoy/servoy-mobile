@@ -36,6 +36,10 @@ public class WebComponent extends Component
 	{
 	}
 
+	public final native String getTypeName() /*-{
+		return this.typeName ? this.typeName : null;
+	}-*/;
+
 	public final native JsPropertyMap<Object> getJSON() /*-{
 		return this.json;
 	}-*/;

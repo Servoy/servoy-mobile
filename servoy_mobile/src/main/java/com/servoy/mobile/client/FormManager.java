@@ -3,6 +3,7 @@ package com.servoy.mobile.client;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
+import com.servoy.mobile.client.dataprocessing.FoundSet;
 import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.scripting.FormScope;
 import com.servoy.mobile.client.scripting.JSHistory;
@@ -110,6 +111,9 @@ public class FormManager
 		}
 		currentForm = formController;
 		currentForm.setVisible(true);
+		FoundSet foundSet = currentForm.getFormModel();
+		if (foundSet != null) currentForm.getView().refreshRecord(foundSet.getSelectedRecord());
+		else currentForm.getView().refreshRecord(null);
 		currentForm.executeOnShowMethod();
 		currentForm.updateNavigator(currentNavigatorName);
 		history.add(formController);

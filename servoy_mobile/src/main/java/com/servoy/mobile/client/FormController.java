@@ -173,14 +173,6 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 		selectionChanged();
 	}
 
-	private native void reloadPage(String url) /*-{
-		$wnd.$.mobile.changePage(url, {
-			allowSamePageTransition : true,
-			transition : 'none',
-			changeHash : false
-		});
-	}-*/;
-
 	/*
 	 * (non-Javadoc)
 	 *

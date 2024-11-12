@@ -71,7 +71,7 @@ public class FormService implements IService
 
 		FormController formController = mobileClient.getFormManager().getForm(formName);
 		WebRuntimeComponent component = formController.getView().getComponent(beanName);
-		String command = component.getProperty(eventType);
+		String command = component.getJSONProperty(eventType);
 		formController.getExecutor().fireEventCommand(eventType, command, component, asList.toArray());
 
 	}
