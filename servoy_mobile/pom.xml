@@ -48,7 +48,7 @@
                        </execution>
                     </executions>
                     <configuration>
-                        <moduleName>com.servoy.mobile.MobileClient</moduleName>
+                        <module>com.servoy.mobile.MobileClient</module>
                         <style>DETAILED</style>
                         <deploy>${project.build.directory}/${project.build.finalName}/WEB-INF/deploy</deploy>
                         <compilerArgs>
@@ -108,6 +108,9 @@
 	   </profile>
 		<profile>
 			<id>not_dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>			
  			<build>
 				<plugins>
 					<plugin>
