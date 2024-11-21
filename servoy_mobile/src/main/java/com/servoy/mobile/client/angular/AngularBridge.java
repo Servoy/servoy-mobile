@@ -76,7 +76,6 @@ public class AngularBridge
 			JsPlainObj msg = new JsPlainObj();
 			msg.set("msg", obj);
 			String resultString = msg.toJSONString();
-			MobileClient.log("GWT sending to Angular " + resultString);
 			sendMessage(resultString);
 
 			// now show the first form
@@ -111,6 +110,7 @@ public class AngularBridge
 
 	public void sendMessage(String message)
 	{
+		MobileClient.log("GWT sending to Angular " + message);
 		nativeSendMessage(message);
 	}
 

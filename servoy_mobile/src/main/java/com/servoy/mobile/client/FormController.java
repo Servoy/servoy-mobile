@@ -342,6 +342,7 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 	public void setVisible(boolean b)
 	{
 		this.visible = b;
+		formDisplay.setVisible(b);
 	}
 
 	public boolean getVisible()

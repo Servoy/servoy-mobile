@@ -23,6 +23,7 @@ import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.ui.WebRuntimeComponent;
 
+import jsinterop.base.Any;
 import jsinterop.base.JsArrayLike;
 import jsinterop.base.JsPropertyMap;
 
@@ -61,6 +62,7 @@ public class FormService implements IService
 	/**
 	 * @param args
 	 */
+	@SuppressWarnings("nls")
 	private void executeEvent(JsPropertyMap<Object> args)
 	{
 		String formName = args.getAsAny("formname").asString();
@@ -71,8 +73,10 @@ public class FormService implements IService
 
 		FormController formController = mobileClient.getFormManager().getForm(formName);
 		WebRuntimeComponent component = formController.getView().getComponent(beanName);
-		String command = component.getJSONProperty(eventType);
-		formController.getExecutor().fireEventCommand(eventType, command, component, asList.toArray());
+		Any methodName = component.getJSONProperty(eventType);
+		if (methodName != null)
+			formController.getExecutor().fireEventCommand(eventType, methodName.asString(), component, asList.toArray());
+		else MobileClient.log("No method found for event " + eventType + " on " + formName + "." + beanName);
 
 	}
 

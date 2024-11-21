@@ -33,7 +33,7 @@
   <set-property name="log_SystemLogger" value="DISABLED" />
   
   <set-property name="compiler.useSourceMaps" value="true"/>
-  <set-configuration-property name="includeSourceMapUrl" value="/mobileclient/src/__HASH___sourceMap__FRAGMENT__.json"/>
+  <set-configuration-property name="includeSourceMapUrl" value="mobileclient/src/__HASH___sourceMap__FRAGMENT__.json"/>
   
    <!-- In gwt-log-3.0.3 or later, enable this if you want to have the remote logger enabled
   <inherits name="com.allen_sauer.gwt.log.gwt-log-RemoteLogger" />

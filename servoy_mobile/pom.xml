@@ -18,6 +18,23 @@
         <build>
             <plugins>
                 <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>add-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>${project.basedir}/../../servoy-client/servoy_base/src</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>gwt-maven-plugin</artifactId>
                     <version>2.10.0</version>
@@ -31,7 +48,7 @@
                        </execution>
                     </executions>
                     <configuration>
-                        <moduleName>com.servoy.mobile.MobileClientDeploy</moduleName>
+                        <moduleName>com.servoy.mobile.MobileClient</moduleName>
                         <style>DETAILED</style>
                         <deploy>${project.build.directory}/${project.build.finalName}/WEB-INF/deploy</deploy>
                         <compilerArgs>
@@ -63,11 +80,27 @@
                                     <directory>${project.basedir}/src/main/java</directory>
                                 </resource>
                                 <resource>
-                                    <directory>${project.build.directory}/servoy_base</directory>
+                                    <directory>${project.basedir}/../../servoy-client/servoy_base/src</directory>
                                 </resource>
                             </resources>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>copy-sourcemap-sourcecode_gen</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/${project.build.finalName}/mobileclient/src/gen
+                            </outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}/.generated</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>                    
                 </executions>
             </plugin>                
             </plugins>
@@ -75,12 +108,7 @@
 	   </profile>
 		<profile>
 			<id>not_dev</id>
-			<activation>
-				<property> <!-- this will automatically be enabled when not using m2e/eclipse -->
-					<name>!m2e.version</name>
-				</property>
-			</activation>
-			<build>
+ 			<build>
 				<plugins>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>

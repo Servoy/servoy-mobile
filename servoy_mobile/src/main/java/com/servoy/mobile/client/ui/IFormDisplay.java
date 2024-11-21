@@ -1,6 +1,7 @@
 package com.servoy.mobile.client.ui;
 
 import com.servoy.mobile.client.FormController;
+import com.servoy.mobile.client.angular.JsPlainObj;
 import com.servoy.mobile.client.dataprocessing.Record;
 
 /*
@@ -26,11 +27,8 @@ import com.servoy.mobile.client.dataprocessing.Record;
  */
 public interface IFormDisplay
 {
-	void removeDisplayPanel(String parentFormName);
 
 	FormController getFormController();
-
-	void initWithRecord(Record record);
 
 	void refreshRecord(Record record);
 
@@ -38,8 +36,19 @@ public interface IFormDisplay
 
 	boolean isShow();
 
+	void setVisible(boolean visible);
+
+	Object convertValue(final String key, final Object value, WebRuntimeComponent component);
+
 	/**
 	 * @param beanName
 	 */
 	WebRuntimeComponent getComponent(String beanName);
+
+	/**
+	 * @param formData
+	 */
+	void sendComponentData(JsPlainObj formData);
+
+	Object sendApiCall(WebRuntimeComponent webRuntimeComponent, String key, Object[] args, ApiSpec api);
 }

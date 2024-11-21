@@ -49,6 +49,7 @@ import com.servoy.mobile.client.scripting.PluginsScope;
 import com.servoy.mobile.client.scripting.ScriptEngine;
 import com.servoy.mobile.client.scripting.solutionmodel.JSSolutionModel;
 import com.servoy.mobile.client.ui.Executor;
+import com.servoy.mobile.client.ui.WebRuntimeComponent;
 import com.servoy.mobile.client.util.Failure;
 import com.servoy.mobile.client.util.Utils;
 
@@ -118,6 +119,8 @@ public class MobileClient implements EntryPoint
 		GWT.create(FoundSet.class); // foundset is not a scope yet, if it becomes a scope (aggregates) then this can't be done, or must he exported differently
 		GWT.create(DEFAULTS.class);
 		GWT.create(APPLICATION_TYPES.class);
+
+		GWT.create(WebRuntimeComponent.class);
 
 		// non solution related (internal) API
 		GWT.create(Utils.class);
@@ -383,7 +386,7 @@ public class MobileClient implements EntryPoint
 		jsConsoleLog(msg);
 	}
 
-	native static void jsConsoleLog(String message) /*-{
+	native static void jsConsoleLog(Object message) /*-{
     try {
         console.log(message);
     } catch (e) {

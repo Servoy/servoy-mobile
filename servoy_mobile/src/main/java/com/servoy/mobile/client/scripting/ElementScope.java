@@ -3,11 +3,13 @@ package com.servoy.mobile.client.scripting;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.servoy.mobile.client.angular.Proxy;
+
 public class ElementScope extends Scope
 {
-	private final Map<String, IRuntimeComponent> elements = new HashMap<String, IRuntimeComponent>();
+	private final Map<String, Proxy> elements = new HashMap<>();
 
-	public void addComponent(String name, IRuntimeComponent component)
+	public void addComponent(String name, Proxy component)
 	{
 		exportProperty(name);
 		elements.put(name, component);
@@ -15,7 +17,7 @@ public class ElementScope extends Scope
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.mobile.client.scripting.Scope#getValue(java.lang.String)
 	 */
 	@Override
@@ -26,7 +28,7 @@ public class ElementScope extends Scope
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.mobile.client.scripting.Scope#setValue(java.lang.String, java.lang.Object)
 	 */
 	@Override

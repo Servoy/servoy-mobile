@@ -44,7 +44,6 @@ public class JSApplication implements Exportable, IJSApplication
 	public JSApplication(MobileClient application)
 	{
 		this.application = application;
-		GWT.create(JSApplication.class);
 		export(ExporterUtil.wrap(this));
 	}
 

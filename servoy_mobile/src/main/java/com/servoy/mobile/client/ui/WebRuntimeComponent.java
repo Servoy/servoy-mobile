@@ -20,47 +20,71 @@ package com.servoy.mobile.client.ui;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.timepedia.exporter.client.Export;
+import org.timepedia.exporter.client.Exportable;
+import org.timepedia.exporter.client.NoExport;
+
 import com.servoy.mobile.client.FormController;
+import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.angular.JsPlainObj;
 import com.servoy.mobile.client.persistence.WebComponent;
 import com.servoy.mobile.client.util.Utils;
 
+import jsinterop.base.Any;
+import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 
 /**
  * @author jcompagner
  *
  */
-public class WebRuntimeComponent
+public class WebRuntimeComponent implements Exportable, IRuntimeComponent
 {
-
+	@NoExport
 	private final WebComponent webComponent;
-	private final JsPropertyMap<String> type;
+	@NoExport
+	private final ComponentSpec type;
+	@NoExport
 	private final Map<String, Object> properties = new HashMap<>();
+	@NoExport
 	private final FormController controller;
+
+	@NoExport
+	private JsPropertyMap<PropertySpec> dataproviderProperties;
 
 	/**
 	 * @param controller
 	 * @param webComponent
 	 * @param type
 	 */
-	public WebRuntimeComponent(FormController controller, WebComponent webComponent, JsPropertyMap<String> type)
+	public WebRuntimeComponent(FormController controller, WebComponent webComponent, ComponentSpec type)
 	{
 		this.controller = controller;
 		this.webComponent = webComponent;
 		this.type = type;
 	}
 
-
-	public String getJSONProperty(String property)
+	/**
+	 * @return
+	 */
+	@NoExport
+	public JsPropertyMap<Object> getJSON()
 	{
-		return webComponent.getJSON().getAsAny(property).asString();
+		return webComponent.getJSON();
+	}
+
+
+	@NoExport
+	public Any getJSONProperty(String property)
+	{
+		return webComponent.getJSON().getAsAny(property);
 	}
 
 
 	/**
 	 * @return
 	 */
+	@Export(value = "getName")
 	public String getName()
 	{
 		return webComponent.getName();
@@ -70,36 +94,87 @@ public class WebRuntimeComponent
 	/**
 	 *
 	 */
-	public JsPropertyMap<String> getType()
+	@NoExport
+	public ComponentSpec getType()
 	{
 		return type;
 	}
 
+	@Export
+	public boolean hasProperty(String key)
+	{
+		return type.getModel().has(key);
+	}
 
 	/**
 	 * @param key
 	 * @param value
 	 */
-	@SuppressWarnings("nls")
+	@Export
 	public void setProperty(String key, Object value)
 	{
 		Object prevValue = properties.put(key, value);
 		if (!Utils.equalObjects(value, prevValue))
 		{
 			JsPlainObj componentData = new JsPlainObj();
-			componentData.set(key, value);
-			JsPlainObj form = new JsPlainObj();
-			form.set(getName(), componentData);
-			JsPlainObj forms = new JsPlainObj();
-			forms.set(controller.getName(), form);
-			JsPlainObj msg = new JsPlainObj();
-			msg.set("forms", forms);
-			JsPlainObj call = new JsPlainObj();
-			call.set("msg", msg);
-
-			controller.getApplication().getAngularBridge().sendMessage(call.toJSONString());
+			componentData.set(key, controller.getView().convertValue(key, value, this));
+			JsPlainObj formData = new JsPlainObj();
+			formData.set(getName(), componentData);
+			controller.getView().sendComponentData(formData);
 		}
 	}
 
+	@Export
+	public Object getProperty(String key)
+	{
+		Object object = properties.get(key);
+		if (object == null)
+		{
+			object = getJSONProperty(key);
+		}
+		return object;
+	}
 
+	@Export
+	public boolean hasApi(String key)
+	{
+		return type.getApi().has(key);
+	}
+
+
+	// will this always just be a return a promise??
+	@Export
+	public Object executeApi(String key, Object[] args)
+	{
+		MobileClient.log("args: " + args);
+		ApiSpec apiSpec = type.getApi().get(key);
+		if (apiSpec != null)
+		{
+			return this.controller.getView().sendApiCall(this, key, args, apiSpec);
+		}
+		return null;
+	}
+
+
+	/**
+	 * @return
+	 */
+	@SuppressWarnings("nls")
+	@NoExport
+	public JsPropertyMap<PropertySpec> getDataproviderProperties()
+	{
+		if (dataproviderProperties == null)
+		{
+			dataproviderProperties = Js.uncheckedCast(JsPropertyMap.of());
+			type.getModel().forEach(property -> {
+				PropertySpec propertyType = type.getModel().get(property);
+				if ("dataprovider".equals(propertyType.getType()))
+				{
+					dataproviderProperties.set(property, propertyType);
+				}
+
+			});
+		}
+		return dataproviderProperties;
+	}
 }
