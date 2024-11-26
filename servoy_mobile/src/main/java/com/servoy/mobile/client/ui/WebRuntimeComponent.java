@@ -177,4 +177,15 @@ public class WebRuntimeComponent implements Exportable, IRuntimeComponent
 		}
 		return dataproviderProperties;
 	}
+
+	/**
+	 * @param key
+	 * @param value
+	 */
+	public Object putBrowserProperty(String key, Object value)
+	{
+		// todo value should be converted
+		Object prevValue = properties.put(key, value);
+		return prevValue;
+	}
 }

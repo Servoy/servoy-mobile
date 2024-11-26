@@ -49,7 +49,7 @@
                     </executions>
                     <configuration>
                         <module>com.servoy.mobile.MobileClient</module>
-                        <style>DETAILED</style>
+                        <style>PRETTY</style>
                         <deploy>${project.build.directory}/${project.build.finalName}/WEB-INF/deploy</deploy>
                         <compilerArgs>
                             <arg>-saveSource</arg>

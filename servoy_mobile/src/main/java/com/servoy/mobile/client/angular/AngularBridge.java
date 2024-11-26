@@ -61,7 +61,6 @@ public class AngularBridge
 	{
 		MobileClient.log("GWT received from Angular " + message);
 		ServiceCallObject service = JsonUtils.safeEval(message);
-		Object object = JSON.parse(message);
 		if (service.getServiceName() != null)
 		{
 			handleServiceCall(service);

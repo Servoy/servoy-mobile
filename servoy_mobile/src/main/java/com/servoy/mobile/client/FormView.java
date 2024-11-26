@@ -227,6 +227,27 @@ public class FormView implements IFormDisplay, IModificationListener
 		return recordValue;
 	}
 
+	public void setRecordValue(Record rec, String dataproviderID, Object value)
+	{
+		if (dataproviderID != null)
+		{
+			String[] globalVariableScope = GlobalScope.getVariableScope(dataproviderID);
+
+			if (globalVariableScope[0] != null)
+			{
+				controller.getApplication().getScriptEngine().getGlobalScope(globalVariableScope[0]).setValue(globalVariableScope[1], value);
+			}
+			else if (controller.getFormScope().hasVariable(dataproviderID))
+			{
+				controller.getFormScope().setVariableValue(dataproviderID, value);
+			}
+			else if (rec != null)
+			{
+				rec.setValue(dataproviderID, value);
+			}
+		}
+	}
+
 	public Object convertValue(final String key, final Object value, WebRuntimeComponent component)
 	{
 		Object returnValue = value;
@@ -300,6 +321,22 @@ public class FormView implements IFormDisplay, IModificationListener
 
 		controller.getApplication().getAngularBridge().sendMessage(apiCalls.toJSONString());
 		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see com.servoy.mobile.client.ui.IFormDisplay#pushChanges(com.servoy.mobile.client.ui.WebRuntimeComponent, java.lang.String)
+	 */
+	@Override
+	public void pushChanges(WebRuntimeComponent component, String key)
+	{
+		Any dataprovider = component.getJSONProperty(key);
+		if (dataprovider != null)
+		{
+			setRecordValue(record, dataprovider.asString(), component.getProperty(key));
+		}
+
 	}
 
 

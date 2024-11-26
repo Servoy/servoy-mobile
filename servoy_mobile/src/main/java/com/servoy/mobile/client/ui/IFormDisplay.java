@@ -51,4 +51,10 @@ public interface IFormDisplay
 	void sendComponentData(JsPlainObj formData);
 
 	Object sendApiCall(WebRuntimeComponent webRuntimeComponent, String key, Object[] args, ApiSpec api);
+
+	/**
+	 * @param component
+	 * @param key
+	 */
+	void pushChanges(WebRuntimeComponent component, String key);
 }

@@ -24,6 +24,7 @@ import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.ui.WebRuntimeComponent;
 
 import jsinterop.base.Any;
+import jsinterop.base.Js;
 import jsinterop.base.JsArrayLike;
 import jsinterop.base.JsPropertyMap;
 
@@ -52,8 +53,16 @@ public class FormService implements IService
 		{
 			case "executeEvent" :
 			{
-				dataP1ush(args);
-				executeEvent(args);
+				dataPush(Js.cast(args), false);
+				executeEvent(Js.cast(args));
+			}
+			case "dataPush" :
+			{
+				dataPush(Js.cast(args), false);
+			}
+			case "svyPush" :
+			{
+				dataPush(Js.cast(args), true);
 			}
 		}
 		return null;
@@ -63,12 +72,12 @@ public class FormService implements IService
 	 * @param args
 	 */
 	@SuppressWarnings("nls")
-	private void executeEvent(JsPropertyMap<Object> args)
+	private void executeEvent(EventCall eventCall)
 	{
-		String formName = args.getAsAny("formname").asString();
-		String beanName = args.getAsAny("beanname").asString();
-		String eventType = args.getAsAny("event").asString();
-		JsArrayLike<Object> jsargs = args.getAsAny("args").asArrayLike();
+		String formName = eventCall.getFormname();
+		String beanName = eventCall.getBeanname();
+		String eventType = eventCall.getEvent();
+		JsArrayLike<Object> jsargs = eventCall.getArgs();
 		List<Object> asList = jsargs.asList();
 
 		FormController formController = mobileClient.getFormManager().getForm(formName);
@@ -83,9 +92,28 @@ public class FormService implements IService
 	/**
 	 * @param args
 	 */
-	private void dataP1ush(JsPropertyMap<Object> args)
+	private void dataPush(DataPush dataPush, boolean dataproviderPush)
 	{
 		// TODO Auto-generated method stub
+		MobileClient.log("dataPush" + JSON.stringify(dataPush));
+
+		JsPropertyMap<Object> changes = dataPush.getChanges();
+		String formName = dataPush.getFormname();
+		String beanName = dataPush.getBeanname();
+
+		FormController formController = mobileClient.getFormManager().getForm(formName);
+		WebRuntimeComponent component = formController.getView().getComponent(beanName);
+
+		changes.forEach(key -> {
+			Object value = changes.get(key);
+			component.putBrowserProperty(key, value);
+
+			if (dataproviderPush)
+			{
+				formController.getView().pushChanges(component, key);
+			}
+		});
+
 
 	}
 

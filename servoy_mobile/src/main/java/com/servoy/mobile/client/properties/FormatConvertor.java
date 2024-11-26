@@ -20,6 +20,7 @@ package com.servoy.mobile.client.properties;
 import com.servoy.base.persistence.constants.IColumnTypeConstants;
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.dataprocessing.Record;
+import com.servoy.mobile.client.scripting.GlobalScope;
 import com.servoy.mobile.client.ui.PropertySpec;
 import com.servoy.mobile.client.ui.WebRuntimeComponent;
 
@@ -44,15 +45,17 @@ public class FormatConvertor implements IPropertyConverter
 
 		forProperty.asList().forEach(property -> {
 			String dataprovider = component.getJSONProperty(property).asString();
-			if (controller.getFormScope().hasVariable(dataprovider))
-				dataproviderType[0] = controller.getFormScope().getVariableType(dataprovider);
-			else if (controller.getApplication().getScriptEngine().getGlobalScope("").hasVariable(dataprovider))
+			if (dataprovider != null && dataprovider.trim().length() > 0)
 			{
-				dataproviderType[0] = controller.getApplication().getScriptEngine().getGlobalScope("").getVariableType(dataprovider);
-			}
-			else if (record != null)
-			{
-				dataproviderType[0] = record.getVariableType(dataprovider);
+				String[] variableScope = GlobalScope.getVariableScope(dataprovider);
+				if (variableScope[0] == null)
+				{
+					dataproviderType[0] = controller.getFormScope().getVariableType(dataprovider);
+				}
+				else
+				{
+					dataproviderType[0] = controller.getApplication().getScriptEngine().getGlobalScope(variableScope[0]).getVariableType(variableScope[1]);
+				}
 			}
 		});
 		return FormatParser.parseFormatProperty(Js.asAny(value).asString()).toJsObject(dataproviderType[0]);
