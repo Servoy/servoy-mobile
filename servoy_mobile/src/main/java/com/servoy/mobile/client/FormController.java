@@ -21,7 +21,6 @@ import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.scripting.FormScope;
 import com.servoy.mobile.client.scripting.JSEvent;
 import com.servoy.mobile.client.ui.Executor;
-import com.servoy.mobile.client.ui.IFormDisplay;
 
 /**
  * Representation of a form
@@ -30,7 +29,7 @@ import com.servoy.mobile.client.ui.IFormDisplay;
  */
 public class FormController implements Exportable, IFoundSetSelectionListener, IJSController
 {
-	private IFormDisplay formDisplay;
+	private FormView formDisplay;
 	private FoundSet foundSet;
 	private FormScope scope;
 	private final Form form;
@@ -88,7 +87,7 @@ public class FormController implements Exportable, IFoundSetSelectionListener, I
 		return form.getName();
 	}
 
-	public IFormDisplay getView()
+	public FormView getView()
 	{
 		return formDisplay;
 	}

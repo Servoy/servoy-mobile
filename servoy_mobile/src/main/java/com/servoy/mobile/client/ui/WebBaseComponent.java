@@ -15,38 +15,41 @@
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
 */
 
-package com.servoy.mobile.client.angular;
+package com.servoy.mobile.client.ui;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.timepedia.exporter.client.NoExport;
+
+import com.servoy.mobile.client.FormController;
 
 /**
  * @author jcompagner
  *
  */
-public class JsDate extends com.google.gwt.core.client.JsDate
+public class WebBaseComponent
 {
+	@NoExport
+	protected final Map<String, Object> properties = new HashMap<>();
+	@NoExport
+	protected final FormController controller;
+
 	/**
-	 * Non directly instantiable, use one of the {@link #create()} methods.
+	 *
 	 */
-	protected JsDate()
+	public WebBaseComponent(FormController controller)
 	{
+		this.controller = controller;
 	}
 
 	/**
-	 * Creates a new date with the specified internal representation, which is the
-	 * number of milliseconds since midnight on January 1st, 1970. This is the
-	 * same representation returned by {@link #getTime()}.
+	 * @param key
+	 * @param value
 	 */
-	public static native JsDate create(double milliseconds) /*-{
-	    return new Date(milliseconds);
-	}-*/;
-
-	public static native JsDate create(String isoString) /*-{
-	    return new Date(isoString);
-	}-*/;
-
-	/**
-	 * Returns a date and time string in UTC.
-	 */
-	public final native String toISOString() /*-{
-	    return this.toISOString();
-	  }-*/;
+	public Object putBrowserProperty(String key, Object value)
+	{
+		Object prevValue = properties.put(key, value);
+		return prevValue;
+	}
 }

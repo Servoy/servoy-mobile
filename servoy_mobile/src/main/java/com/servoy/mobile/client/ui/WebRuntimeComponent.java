@@ -17,9 +17,6 @@
 
 package com.servoy.mobile.client.ui;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.NoExport;
@@ -38,16 +35,12 @@ import jsinterop.base.JsPropertyMap;
  * @author jcompagner
  *
  */
-public class WebRuntimeComponent implements Exportable, IRuntimeComponent
+public class WebRuntimeComponent extends WebBaseComponent implements Exportable, IRuntimeComponent
 {
 	@NoExport
 	private final WebComponent webComponent;
 	@NoExport
 	private final ComponentSpec type;
-	@NoExport
-	private final Map<String, Object> properties = new HashMap<>();
-	@NoExport
-	private final FormController controller;
 
 	@NoExport
 	private JsPropertyMap<PropertySpec> dataproviderProperties;
@@ -59,7 +52,7 @@ public class WebRuntimeComponent implements Exportable, IRuntimeComponent
 	 */
 	public WebRuntimeComponent(FormController controller, WebComponent webComponent, ComponentSpec type)
 	{
-		this.controller = controller;
+		super(controller);
 		this.webComponent = webComponent;
 		this.type = type;
 	}
@@ -117,7 +110,7 @@ public class WebRuntimeComponent implements Exportable, IRuntimeComponent
 		if (!Utils.equalObjects(value, prevValue))
 		{
 			JsPlainObj componentData = new JsPlainObj();
-			componentData.set(key, controller.getView().convertValue(key, value, this));
+			componentData.set(key, controller.getView().convertServerValue(key, value, this));
 			JsPlainObj formData = new JsPlainObj();
 			formData.set(getName(), componentData);
 			controller.getView().sendComponentData(formData);
@@ -128,11 +121,17 @@ public class WebRuntimeComponent implements Exportable, IRuntimeComponent
 	public Object getProperty(String key)
 	{
 		Object object = properties.get(key);
-		if (object == null)
+		if (object == null && !properties.containsKey(key))
 		{
 			object = getJSONProperty(key);
 		}
 		return object;
+	}
+
+	@Override
+	public Object putBrowserProperty(String key, Object value)
+	{
+		return super.putBrowserProperty(key, controller.getView().convertClientValue(key, value, this));
 	}
 
 	@Export
@@ -176,16 +175,5 @@ public class WebRuntimeComponent implements Exportable, IRuntimeComponent
 			});
 		}
 		return dataproviderProperties;
-	}
-
-	/**
-	 * @param key
-	 * @param value
-	 */
-	public Object putBrowserProperty(String key, Object value)
-	{
-		// todo value should be converted
-		Object prevValue = properties.put(key, value);
-		return prevValue;
 	}
 }

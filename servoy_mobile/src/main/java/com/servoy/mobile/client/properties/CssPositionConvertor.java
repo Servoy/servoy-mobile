@@ -36,7 +36,7 @@ public class CssPositionConvertor implements IPropertyConverter
 {
 
 	@Override
-	public JsPropertyMap<Object> convertJS(Object value, WebRuntimeComponent component, PropertySpec propertyType, FormController controller,
+	public JsPropertyMap<Object> convertForClient(Object value, WebRuntimeComponent component, PropertySpec propertyType, FormController controller,
 		Record record)
 	{
 		if (value == null) return null;
@@ -80,5 +80,11 @@ public class CssPositionConvertor implements IPropertyConverter
 	{
 		if (Utils.getAsInteger(value, -1) != -1) return value + "px";
 		return value;
+	}
+
+	@Override
+	public Object convertFromClient(String key, Object value, WebRuntimeComponent component, PropertySpec propertyType, FormController controller)
+	{
+		return null; //shouldn't be set from the client
 	}
 }

@@ -21,6 +21,7 @@ import java.util.List;
 
 import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.MobileClient;
+import com.servoy.mobile.client.ui.WebBaseComponent;
 import com.servoy.mobile.client.ui.WebRuntimeComponent;
 
 import jsinterop.base.Any;
@@ -102,15 +103,15 @@ public class FormService implements IService
 		String beanName = dataPush.getBeanname();
 
 		FormController formController = mobileClient.getFormManager().getForm(formName);
-		WebRuntimeComponent component = formController.getView().getComponent(beanName);
+		WebBaseComponent component = beanName.length() > 0 ? formController.getView().getComponent(beanName) : formController.getView();
 
 		changes.forEach(key -> {
 			Object value = changes.get(key);
 			component.putBrowserProperty(key, value);
 
-			if (dataproviderPush)
+			if (dataproviderPush && component instanceof WebRuntimeComponent)
 			{
-				formController.getView().pushChanges(component, key);
+				formController.getView().pushChanges((WebRuntimeComponent)component, key);
 			}
 		});
 

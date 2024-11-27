@@ -22,8 +22,6 @@ import com.servoy.mobile.client.dataprocessing.Record;
 import com.servoy.mobile.client.ui.PropertySpec;
 import com.servoy.mobile.client.ui.WebRuntimeComponent;
 
-import jsinterop.base.JsPropertyMap;
-
 /**
  * @author jcompagner
  *
@@ -38,6 +36,14 @@ public interface IPropertyConverter
 	 * @param record
 	 * @return
 	 */
-	JsPropertyMap<Object> convertJS(Object value, WebRuntimeComponent component, PropertySpec propertyType, FormController controller, Record record);
+	Object convertForClient(Object value, WebRuntimeComponent component, PropertySpec propertyType, FormController controller, Record record);
+
+	/**
+	 * @param key
+	 * @param value
+	 * @param component
+	 * @return
+	 */
+	Object convertFromClient(String key, Object value, WebRuntimeComponent component, PropertySpec propertyType, FormController controller);
 
 }

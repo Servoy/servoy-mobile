@@ -39,6 +39,7 @@ import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.Part;
 import com.servoy.mobile.client.persistence.WebComponent;
 import com.servoy.mobile.client.properties.CssPositionConvertor;
+import com.servoy.mobile.client.properties.DataProviderConvertor;
 import com.servoy.mobile.client.properties.FormatConvertor;
 import com.servoy.mobile.client.properties.IPropertyConverter;
 import com.servoy.mobile.client.scripting.ElementScope;
@@ -49,6 +50,7 @@ import com.servoy.mobile.client.ui.ApiSpec;
 import com.servoy.mobile.client.ui.ComponentSpec;
 import com.servoy.mobile.client.ui.IFormDisplay;
 import com.servoy.mobile.client.ui.PropertySpec;
+import com.servoy.mobile.client.ui.WebBaseComponent;
 import com.servoy.mobile.client.ui.WebRuntimeComponent;
 
 import jsinterop.base.Any;
@@ -59,7 +61,7 @@ import jsinterop.base.JsPropertyMap;
  *
  */
 @SuppressWarnings("nls")
-public class FormView implements IFormDisplay, IModificationListener
+public class FormView extends WebBaseComponent implements IFormDisplay, IModificationListener
 {
 	private static final String MSG = "msg";
 	private static final String COMPONENT_CALLS = "componentApis";
@@ -71,6 +73,7 @@ public class FormView implements IFormDisplay, IModificationListener
 	{
 		converters.put("format", new FormatConvertor());
 		converters.put("cssPosition", new CssPositionConvertor());
+		converters.put("dataprovider", new DataProviderConvertor());
 	}
 
 
@@ -80,17 +83,16 @@ public class FormView implements IFormDisplay, IModificationListener
 	// should be the same as in FormElement
 	public static final String SVY_NAME_PREFIX = "svy_";
 
-	private final FormController controller;
-
 	private final Map<String, WebRuntimeComponent> components = new HashMap<String, WebRuntimeComponent>();
 	private final List<Part> parts = new ArrayList<Part>();
+	private final Map<String, Object> properties = new HashMap<>(); // form properties
 
 	private Record record;
 	private boolean fistShow = true;
 
 	public FormView(FormController controller)
 	{
-		this.controller = controller;
+		super(controller);
 		createComponents();
 
 		controller.getApplication().getScriptEngine().getGlobalScopeModificationDelegate().addModificationListener(this);
@@ -154,7 +156,7 @@ public class FormView implements IFormDisplay, IModificationListener
 				JsPlainObj componentData = new JsPlainObj();
 				webComponent.getType().getModel().forEach(key -> {
 					Object value = webComponent.getProperty(key);
-					value = convertValue(key, value, webComponent);
+					value = convertServerValue(key, value, webComponent);
 					if (value != null)
 					{
 						componentData.set(key, value);
@@ -177,7 +179,7 @@ public class FormView implements IFormDisplay, IModificationListener
 				if (dataprovider != null)
 				{
 					Object recordValue = getRecordValue(rec, dataprovider.asString());
-					c.setProperty(key, convertValue(key, recordValue, c));
+					c.setProperty(key, convertServerValue(key, recordValue, c));
 				}
 			});
 		});
@@ -248,7 +250,7 @@ public class FormView implements IFormDisplay, IModificationListener
 		}
 	}
 
-	public Object convertValue(final String key, final Object value, WebRuntimeComponent component)
+	public Object convertServerValue(final String key, final Object value, WebRuntimeComponent component)
 	{
 		Object returnValue = value;
 		ComponentSpec componentType = component.getType();
@@ -266,11 +268,10 @@ public class FormView implements IFormDisplay, IModificationListener
 		}
 		if (converter != null)
 		{
-			returnValue = converter.convertJS(value, component, propertyType, controller, record);
+			returnValue = converter.convertForClient(value, component, propertyType, controller, record);
 		}
-
 		// some default conversions
-		if (value instanceof Date)
+		else if (value instanceof Date)
 		{
 			JsPlainObj conversionData = new JsPlainObj();
 			conversionData.set(VALUE_KEY, JsDate.create(((Date)value).getTime()).toISOString());
@@ -279,6 +280,31 @@ public class FormView implements IFormDisplay, IModificationListener
 			returnValue = conversionData;
 		}
 		return returnValue;
+	}
+
+
+	@Override
+	public Object convertClientValue(String key, Object value, WebRuntimeComponent component)
+	{
+		Object converted = value;
+		ComponentSpec componentType = component.getType();
+		PropertySpec propertyType = componentType.getModel().get(key);
+		IPropertyConverter converter = null;
+		if (propertyType != null)
+		{
+			String type = propertyType.getType();
+
+			converter = converters.get(type);
+		}
+		else
+		{
+			converter = converters.get(key); // this can be stuff like cssPosition
+		}
+		if (converter != null)
+		{
+			converted = converter.convertFromClient(key, value, component, propertyType, controller);
+		}
+		return converted;
 	}
 
 	public void sendComponentData(JsPlainObj formData)

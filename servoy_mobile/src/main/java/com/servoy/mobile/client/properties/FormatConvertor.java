@@ -36,7 +36,7 @@ public class FormatConvertor implements IPropertyConverter
 {
 	@SuppressWarnings("nls")
 	@Override
-	public JsPropertyMap<Object> convertJS(Object value, WebRuntimeComponent component, PropertySpec propertyType, FormController controller,
+	public JsPropertyMap<Object> convertForClient(Object value, WebRuntimeComponent component, PropertySpec propertyType, FormController controller,
 		Record record)
 	{
 		final int[] dataproviderType = { IColumnTypeConstants.TEXT };
@@ -59,5 +59,11 @@ public class FormatConvertor implements IPropertyConverter
 			}
 		});
 		return FormatParser.parseFormatProperty(Js.asAny(value).asString()).toJsObject(dataproviderType[0]);
+	}
+
+	@Override
+	public Object convertFromClient(String key, Object value, WebRuntimeComponent component, PropertySpec propertyType, FormController controller)
+	{
+		return null; // shouldn't be set from the client
 	}
 }

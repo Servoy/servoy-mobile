@@ -38,7 +38,9 @@ public interface IFormDisplay
 
 	void setVisible(boolean visible);
 
-	Object convertValue(final String key, final Object value, WebRuntimeComponent component);
+	Object convertServerValue(final String key, final Object value, WebRuntimeComponent component);
+
+	Object convertClientValue(final String key, final Object value, WebRuntimeComponent component);
 
 	/**
 	 * @param beanName
