@@ -30,6 +30,9 @@ import com.servoy.mobile.client.MobileClient;
  */
 public class AngularBridge
 {
+	public static final String APPLICATION_SERVICE = "$applicationService";
+
+
 	private final MobileClient mobileClient;
 
 	private final Map<String, IService> services = new HashMap<String, IService>();
@@ -77,6 +80,12 @@ public class AngularBridge
 			String resultString = msg.toJSONString();
 			sendMessage(resultString);
 
+
+			String styleSheet = mobileClient.getFlattenedSolution().getStyleSheet();
+			if (styleSheet != null)
+			{
+				executeServiceCall(APPLICATION_SERVICE, "setStyleSheets", new Object[] { new Object[] { styleSheet } });
+			}
 			// now show the first form
 			mobileClient.onStartPageShown();
 		}

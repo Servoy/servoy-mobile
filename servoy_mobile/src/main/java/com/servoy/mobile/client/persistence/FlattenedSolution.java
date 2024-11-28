@@ -299,6 +299,11 @@ public class FlattenedSolution
 		return solution.getMustAuthenticate();
 	}
 
+	public String getStyleSheet()
+	{
+		return solution.getStyleSheet();
+	}
+
 	public String getI18nValue(String key)
 	{
 		return solution.getI18nValue(key);

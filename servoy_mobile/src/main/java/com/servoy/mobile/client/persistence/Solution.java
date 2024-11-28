@@ -95,6 +95,11 @@ public class Solution extends JavaScriptObject
 		return this.mustAuthenticate;
 	}-*/;
 
+	public final native String getStyleSheet() /*-{
+		return this.styleSheet;
+	}-*/;
+
+
 	public final native String getI18nValue(String key) /*-{
 		if (!this.i18n)
 			this.i18n = {};
