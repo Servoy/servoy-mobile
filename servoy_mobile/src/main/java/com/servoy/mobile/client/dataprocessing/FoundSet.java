@@ -20,9 +20,9 @@ package com.servoy.mobile.client.dataprocessing;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
@@ -341,10 +341,8 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 					final FindState state = (FindState)record;
 					IBaseSQLCondition and1 = null;
 					IBaseSQLCondition and2 = null;
-					Iterator<Map.Entry<String, Object>> it = state.getColumnData().entrySet().iterator();
-					while (it.hasNext())
+					for (Entry<String, Object> elem : state.getColumnData().entrySet())
 					{
-						Map.Entry<String, Object> elem = it.next();
 						final String dataProviderID = elem.getKey();
 						Object raw = elem.getValue();
 						final int dpType = state.getVariableType(dataProviderID);
@@ -958,15 +956,9 @@ public class FoundSet extends Scope implements Exportable, IJSFoundSet //  exten
 
 	@Export("getRecordIndex")
 	@Override
-	public int js_getRecordIndex(IJSRecord record)
+	public int jsFunction_getRecordIndex(IJSRecord record)
 	{
-		return js_getRecordIndex((Record)record);
-	}
-
-	@Export("getRecordIndex")
-	public int js_getRecordIndex(Record record)
-	{
-		int recordIndex = getRecordIndex(record);
+		int recordIndex = getRecordIndex((Record)record);
 		if (recordIndex == -1) return -1;
 		return recordIndex + 1;
 	}
