@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>com.servoy</groupId>
 		<artifactId>servoy-mobile-parent</artifactId>
-		<version>2024.3.9.3952_LTS</version>
+		<version>2024.3.9.qualifier</version>
 	</parent>
 	<artifactId>servoy_mobile</artifactId>
 	<packaging>war</packaging>
