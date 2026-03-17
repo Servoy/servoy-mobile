@@ -36,6 +36,7 @@ import com.servoy.mobile.client.angular.Proxy;
 import com.servoy.mobile.client.dataprocessing.Record;
 import com.servoy.mobile.client.persistence.Component;
 import com.servoy.mobile.client.persistence.Form;
+import com.servoy.mobile.client.persistence.LayoutContainer;
 import com.servoy.mobile.client.persistence.Part;
 import com.servoy.mobile.client.persistence.WebComponent;
 import com.servoy.mobile.client.properties.CssPositionConvertor;
@@ -105,6 +106,20 @@ public class FormView extends WebBaseComponent implements IFormDisplay, IModific
 		ElementScope elementScope = controller.getFormScope().getElementScope();
 		JsArray<Component> formComponents = form.getComponents();
 		JsPropertyMap<ComponentSpec> specData = getSpecData();
+		walkOverItems(elementScope, formComponents, specData);
+	}
+
+	/**
+	 * @param elementScope
+	 * @param formComponents
+	 * @param specData
+	 */
+	private void walkOverItems(ElementScope elementScope, JsArray<Component> formComponents, JsPropertyMap<ComponentSpec> specData)
+	{
+		if (formComponents == null)
+		{
+			return;
+		}
 		for (int i = 0; i < formComponents.length(); i++)
 		{
 			Component component = formComponents.get(i);
@@ -129,6 +144,14 @@ public class FormView extends WebBaseComponent implements IFormDisplay, IModific
 					JavaScriptObject wrap = ExporterUtil.wrap(runtimeComponent);
 					elementScope.addComponent(name, Proxy.create(wrap, Handler.create()));
 
+				}
+				else
+				{
+					LayoutContainer lc = LayoutContainer.castIfPossible(component);
+					if (lc != null)
+					{
+						walkOverItems(elementScope, lc.getComponents(), specData);
+					}
 				}
 			}
 		}
