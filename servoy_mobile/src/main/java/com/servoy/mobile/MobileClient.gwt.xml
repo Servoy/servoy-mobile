@@ -24,7 +24,7 @@
      say `DEBUG`, via the `log_level` URL parameter:
      http[s]://localhost:8888/mobileclient.html?log_level=DEBUG
   -->
-  <inherits name="com.allen_sauer.gwt.log.gwt-log-ERROR" />
+  <inherits name="com.allen_sauer.gwt.log.gwt-log-DEBUG" />
   <extend-property name="log_level" values="DEBUG"/>
   <set-property name="log_ConsoleLogger" value="ENABLED" />
   <set-property name="log_DivLogger" value="DISABLED" />
