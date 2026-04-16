@@ -17,53 +17,83 @@
 
 package com.servoy.mobile.client.scripting;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.ExporterUtil;
-import org.timepedia.exporter.client.Getter;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.servoy.mobile.client.MobileClient;
+import com.servoy.mobile.client.angular.Handler;
+import com.servoy.mobile.client.angular.Proxy;
+import com.servoy.mobile.client.ui.ComponentSpec;
+import com.servoy.mobile.client.ui.WebRuntimeService;
+
+import jsinterop.base.JsPropertyMap;
 
 /**
  * @author acostescu
  */
 @Export
-public class PluginsScope implements Exportable
+public class PluginsScope extends Scope implements Exportable
 {
 
 	private final MobileClient client;
-	private MobilePlugin mobilePlugin;
-	private DialogPlugin dialogsPlugin;
+	private final JavaScriptObject javascriptInstance;
+	private final Map<String, Object> plugins = new HashMap<>();
 
 	public PluginsScope(MobileClient client)
 	{
 		this.client = client;
-		export(ExporterUtil.wrap(this));
+		javascriptInstance = ExporterUtil.wrap(this);
+		JsPropertyMap<ComponentSpec> specData = getSpecData();
+		specData.forEach(pluginName -> {
+			ComponentSpec type = specData.get(pluginName);
+			WebRuntimeService runtimePlugin = new WebRuntimeService(client, pluginName, type);
+			JavaScriptObject wrap = ExporterUtil.wrap(runtimePlugin);
+			addPlugin(pluginName, Proxy.create(wrap, Handler.create()));
+		});
+		addPlugin("mobile", ExporterUtil.wrap(new MobilePlugin(client)));
+		export(javascriptInstance);
+	}
+
+	public void addPlugin(String name, Object component)
+	{
+		exportProperty(javascriptInstance, name);
+		plugins.put(name, component);
+	}
+
+	@Override
+	public Object getValue(String variable)
+	{
+		return plugins.get(variable);
+	}
+
+	@Override
+	public void setValue(String variable, Object value)
+	{
+		// ignore, readonly.
+	}
+
+	@Override
+	public void setVariableType(String variable, int type)
+	{
+	}
+
+	@Override
+	public int getVariableType(String variable)
+	{
+		return -4; // media
 	}
 
 	private native void export(JavaScriptObject javaScriptObject) /*-{
 		$wnd.plugins = javaScriptObject;
 	}-*/;
 
-	@Getter
-	public MobilePlugin getMobile()
-	{
-		if (mobilePlugin == null)
-		{
-			mobilePlugin = new MobilePlugin(client);
-		}
-		return mobilePlugin;
-	}
-
-	@Getter
-	public DialogPlugin getDialogs()
-	{
-		if (dialogsPlugin == null)
-		{
-			dialogsPlugin = new DialogPlugin();
-		}
-		return dialogsPlugin;
-	}
-
+	protected native JsPropertyMap<ComponentSpec> getSpecData()
+	/*-{
+		return $wnd._servicespecdata_;
+	}-*/;
 }
