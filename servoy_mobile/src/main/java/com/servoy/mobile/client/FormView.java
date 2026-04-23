@@ -53,6 +53,7 @@ import com.servoy.mobile.client.ui.IFormDisplay;
 import com.servoy.mobile.client.ui.PropertySpec;
 import com.servoy.mobile.client.ui.WebBaseComponent;
 import com.servoy.mobile.client.ui.WebRuntimeComponent;
+import com.servoy.mobile.client.ui.WebRuntimeLayoutContainer;
 
 import jsinterop.base.Any;
 import jsinterop.base.JsPropertyMap;
@@ -87,6 +88,8 @@ public class FormView extends WebBaseComponent implements IFormDisplay, IModific
 	private final Map<String, WebRuntimeComponent> components = new HashMap<String, WebRuntimeComponent>();
 	private final List<Part> parts = new ArrayList<Part>();
 	private final Map<String, Object> properties = new HashMap<>(); // form properties
+	private final Map<String, Map<String, String>> styles = new HashMap<>(); // containerName -> styleKey -> styleValue
+	private final Map<String, Map<String, List<String>>> containers = new HashMap<>(); //  added/removed -> containerName -> list of classes
 
 	private Record record;
 	private boolean fistShow = true;
@@ -104,9 +107,10 @@ public class FormView extends WebBaseComponent implements IFormDisplay, IModific
 	{
 		Form form = controller.getForm();
 		ElementScope elementScope = controller.getFormScope().getElementScope();
+		ElementScope containersScope = controller.getFormScope().getContainerScope();
 		JsArray<Component> formComponents = form.getComponents();
 		JsPropertyMap<ComponentSpec> specData = getSpecData();
-		walkOverItems(elementScope, formComponents, specData);
+		walkOverItems(elementScope, containersScope, formComponents, specData);
 	}
 
 	/**
@@ -114,7 +118,8 @@ public class FormView extends WebBaseComponent implements IFormDisplay, IModific
 	 * @param formComponents
 	 * @param specData
 	 */
-	private void walkOverItems(ElementScope elementScope, JsArray<Component> formComponents, JsPropertyMap<ComponentSpec> specData)
+	private void walkOverItems(ElementScope elementScope, ElementScope containersScope, JsArray<Component> formComponents,
+		JsPropertyMap<ComponentSpec> specData)
 	{
 		if (formComponents == null)
 		{
@@ -150,7 +155,17 @@ public class FormView extends WebBaseComponent implements IFormDisplay, IModific
 					LayoutContainer lc = LayoutContainer.castIfPossible(component);
 					if (lc != null)
 					{
-						walkOverItems(elementScope, lc.getComponents(), specData);
+						if (lc.getName() != null)
+						{
+							JsArray jsArray = lc.getStyleClasses();
+							ArrayList<String> classes = new ArrayList<String>();
+							for (int j = 0; j < jsArray.length(); j++)
+							{
+								classes.add(jsArray.get(j).toString());
+							}
+							containersScope.addComponent(lc.getName(), new WebRuntimeLayoutContainer(this, lc.getName(), classes));
+						}
+						walkOverItems(elementScope, containersScope, lc.getComponents(), specData);
 					}
 				}
 			}
@@ -388,6 +403,121 @@ public class FormView extends WebBaseComponent implements IFormDisplay, IModific
 
 	}
 
+	private void adjustContainersMap(Map<String, List<String>> cacheToRemoveFrom, Map<String, List<String>> cacheToAddTo, String containername,
+		String classname)
+	{
+		// if this was a removed value, then just remove it from the removed cache
+		List<String> containerRemovedCache = cacheToRemoveFrom.get(containername);
+		if (containerRemovedCache != null && containerRemovedCache.indexOf(classname) != -1)
+		{
+			containerRemovedCache.remove(classname);
+			if (containerRemovedCache.size() == 0) cacheToRemoveFrom.remove(containername);
+		}
+		else
+		{
+			List<String> classesToAdd = cacheToAddTo.get(containername);
+			if (classesToAdd == null)
+			{
+				classesToAdd = new ArrayList<>();
+				cacheToAddTo.put(containername, classesToAdd);
+			}
+			classesToAdd.add(classname);
+		}
+	}
+
+	public void addContainerStyleClass(String containerName, String cls)
+	{
+		adjustContainersMap(getRemovedMap(), getAddedMap(), containerName, cls);
+		sendComponentData(getContainersStyleClassData());
+	}
+
+	public void removeContainerStyleClass(String containerName, String cls)
+	{
+		adjustContainersMap(getAddedMap(), getRemovedMap(), containerName, cls);
+		sendComponentData(getContainersStyleClassData());
+	}
+
+	public void addContainerCSSStyle(String containerName, String key, String value)
+	{
+		Map<String, String> style = getCSSStylesMap(containerName);
+		style.put(key, value);
+		sendComponentData(getContainersCSSStyleData());
+	}
+
+	public void removeContainerCSSStyle(String containerName, String key)
+	{
+		Map<String, String> style = getCSSStylesMap(containerName);
+		//.css() with empty value will remove the style
+		style.put(key, "");
+		sendComponentData(getContainersCSSStyleData());
+	}
+
+	private Map<String, String> getCSSStylesMap(String containerName)
+	{
+		Map<String, String> containerStyle = styles.get(containerName);
+		if (containerStyle == null)
+		{
+			containerStyle = new HashMap<>();
+			styles.put(containerName, containerStyle);
+		}
+		return containerStyle;
+	}
+
+	private Map<String, List<String>> getAddedMap()
+	{
+		Map<String, List<String>> added = containers.get("added");
+		if (added == null)
+		{
+			added = new HashMap<>();
+			containers.put("added", added);
+		}
+		return added;
+	}
+
+	private Map<String, List<String>> getRemovedMap()
+	{
+		Map<String, List<String>> removed = containers.get("removed");
+		if (removed == null)
+		{
+			removed = new HashMap<>();
+			containers.put("removed", removed);
+		}
+		return removed;
+	}
+
+	private JsPlainObj getContainersStyleClassData()
+	{
+		JsPlainObj styleClassesData = new JsPlainObj();
+		containers.forEach((changeType, containerMap) -> {
+			JsPlainObj containerChangeTypeObj = new JsPlainObj();
+			containerMap.forEach((containerName, classes) -> {
+				Array<String> classesArray = JsArrayHelper.createArray();
+				classes.forEach(classesArray::push);
+				containerChangeTypeObj.set(containerName, classesArray);
+			});
+			styleClassesData.set(changeType, containerChangeTypeObj);
+		});
+		JsPlainObj formData = new JsPlainObj();
+		formData.set("containers", styleClassesData);
+		JsPlainObj formObj = new JsPlainObj();
+		formObj.set("", formData);
+		return formObj;
+	}
+
+	private JsPlainObj getContainersCSSStyleData()
+	{
+		JsPlainObj cssStylesData = new JsPlainObj();
+		styles.forEach((containerName, styles) -> {
+			JsPlainObj styleObj = new JsPlainObj();
+			styles.forEach(styleObj::set);
+			cssStylesData.set(containerName, styleObj);
+		});
+		JsPlainObj allStylesData = new JsPlainObj();
+		allStylesData.set("cssstyles", cssStylesData);
+		JsPlainObj formObj = new JsPlainObj();
+		formObj.set("", allStylesData);
+		return formObj;
+	}
 
 	protected native JsPropertyMap<ComponentSpec> getSpecData()
 	/*-{

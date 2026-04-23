@@ -3,13 +3,11 @@ package com.servoy.mobile.client.scripting;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.servoy.mobile.client.angular.Proxy;
-
 public class ElementScope extends Scope
 {
-	private final Map<String, Proxy> elements = new HashMap<>();
+	private final Map<String, Object> elements = new HashMap<>();
 
-	public void addComponent(String name, Proxy component)
+	public void addComponent(String name, Object component)
 	{
 		exportProperty(name);
 		elements.put(name, component);

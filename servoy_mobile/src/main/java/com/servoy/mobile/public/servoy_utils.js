@@ -45,6 +45,7 @@ if (typeof(_ServoyUtils_) == "undefined")
 		_ServoyUtils_.defineVariable(form, "foundset");
 		_ServoyUtils_.defineVariable(form, "controller");
 		_ServoyUtils_.defineVariable(form, "elements");
+		_ServoyUtils_.defineVariable(form, "containers");
 	}
 
 	_ServoyUtils_.defineVariable = function(scope, name, defaultValue, type) {

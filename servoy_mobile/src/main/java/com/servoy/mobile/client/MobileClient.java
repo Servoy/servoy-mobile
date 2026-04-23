@@ -51,6 +51,7 @@ import com.servoy.mobile.client.scripting.ScriptEngine;
 import com.servoy.mobile.client.scripting.solutionmodel.JSSolutionModel;
 import com.servoy.mobile.client.ui.Executor;
 import com.servoy.mobile.client.ui.WebRuntimeComponent;
+import com.servoy.mobile.client.ui.WebRuntimeLayoutContainer;
 import com.servoy.mobile.client.ui.WebRuntimeService;
 import com.servoy.mobile.client.util.Failure;
 import com.servoy.mobile.client.util.Utils;
@@ -123,6 +124,7 @@ public class MobileClient implements EntryPoint
 		GWT.create(APPLICATION_TYPES.class);
 
 		GWT.create(WebRuntimeComponent.class);
+		GWT.create(WebRuntimeLayoutContainer.class);
 		GWT.create(WebRuntimeService.class);
 		GWT.create(MobilePlugin.class);
 		// non solution related (internal) API

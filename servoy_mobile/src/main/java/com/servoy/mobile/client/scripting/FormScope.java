@@ -14,7 +14,7 @@ import com.servoy.mobile.client.dto.DataProviderDescription;
 import com.servoy.mobile.client.dto.EntityDescription;
 
 /**
- * 
+ *
  * @author jcompagner
  * @since 7.0
  */
@@ -36,6 +36,7 @@ public class FormScope extends GlobalScope
 		}
 		else recordTypes = new HashMap<String, Integer>();
 		servoyProperties.put("elements", new ElementScope());
+		servoyProperties.put("containers", new ElementScope());
 		servoyProperties.put("controller", formController);
 	}
 
@@ -46,7 +47,7 @@ public class FormScope extends GlobalScope
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.mobile.client.scripting.GlobalScope#getVariableType(java.lang.String)
 	 */
 	@Override
@@ -97,7 +98,7 @@ public class FormScope extends GlobalScope
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.servoy.mobile.client.scripting.GlobalScope#getValue(java.lang.String)
 	 */
 	@Override
@@ -145,12 +146,18 @@ public class FormScope extends GlobalScope
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public ElementScope getElementScope()
 	{
 		return (ElementScope)servoyProperties.get("elements");
 	}
+
+	public ElementScope getContainerScope()
+	{
+		return (ElementScope)servoyProperties.get("containers");
+	}
+
 
 	public void destroy()
 	{
@@ -158,6 +165,10 @@ public class FormScope extends GlobalScope
 		if (getElementScope() != null)
 		{
 			getElementScope().destroy();
+		}
+		if (getContainerScope() != null)
+		{
+			getContainerScope().destroy();
 		}
 		servoyProperties.clear();
 		ScriptEngine.clearScope(this);
