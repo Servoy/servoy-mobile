@@ -42,4 +42,7 @@ public class LayoutContainer extends AbstractBase
 		return this.items ? this.items : [];
 	}-*/;
 
+	public final native JsArray getStyleClasses() /*-{
+		return this.styleclass ? this.styleclass : [];
+	}-*/;
 }
