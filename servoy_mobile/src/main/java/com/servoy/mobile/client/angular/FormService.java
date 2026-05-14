@@ -56,14 +56,29 @@ public class FormService implements IService
 			{
 				dataPush(Js.cast(args), false);
 				executeEvent(Js.cast(args));
+				break;
 			}
 			case "dataPush" :
 			{
 				dataPush(Js.cast(args), false);
+				break;
 			}
 			case "svyPush" :
 			{
-				dataPush(Js.cast(args), true);
+				DataPush dataPush = Js.cast(args);
+				Object oldValue = dataPush(dataPush, true);
+				JsPropertyMap<Object> eventArgs = JsPropertyMap.of();
+				eventArgs.set("formname", dataPush.getFormname());
+				eventArgs.set("beanname", dataPush.getBeanname());
+				eventArgs.set("event", "onDataChangeMethodID");
+				Object[] newValue = new Object[1];
+				dataPush.getChanges().forEach(key -> {
+					newValue[0] = dataPush.getChanges().get(key);
+				});
+				Object[] values = new Object[] { oldValue, newValue[0] };
+				eventArgs.set("args", values);
+				executeEvent(Js.cast(eventArgs));
+				break;
 			}
 		}
 		return null;
@@ -93,7 +108,7 @@ public class FormService implements IService
 	/**
 	 * @param args
 	 */
-	private void dataPush(DataPush dataPush, boolean dataproviderPush)
+	private Object dataPush(DataPush dataPush, boolean dataproviderPush)
 	{
 		// TODO Auto-generated method stub
 		MobileClient.log("dataPush" + JSON.stringify(dataPush));
@@ -105,16 +120,17 @@ public class FormService implements IService
 		FormController formController = mobileClient.getFormManager().getForm(formName);
 		WebBaseComponent component = beanName.length() > 0 ? formController.getView().getComponent(beanName) : formController.getView();
 
+		Object[] oldValue = new Object[1];
 		changes.forEach(key -> {
 			Object value = changes.get(key);
-			component.putBrowserProperty(key, value);
+			oldValue[0] = component.putBrowserProperty(key, value);
 
 			if (dataproviderPush && component instanceof WebRuntimeComponent)
 			{
 				formController.getView().pushChanges((WebRuntimeComponent)component, key);
 			}
 		});
-
+		return oldValue[0];
 
 	}
 
