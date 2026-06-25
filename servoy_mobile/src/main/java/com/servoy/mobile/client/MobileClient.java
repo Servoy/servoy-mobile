@@ -266,17 +266,18 @@ public class MobileClient implements EntryPoint
 		sync(false);
 	}
 
-	public void sync(final JavaScriptObject successCallback, final JavaScriptObject errorHandler)
+	public void sync(final JavaScriptObject successCallback, final JavaScriptObject errorHandler, boolean forceUseSingleWsUpdateMethod)
 	{
-		sync(successCallback, errorHandler, false);
+		sync(successCallback, errorHandler, false, forceUseSingleWsUpdateMethod);
 	}
 
 	public void sync(boolean useUncheckedCredentials)
 	{
-		sync(null, null, useUncheckedCredentials);
+		sync(null, null, useUncheckedCredentials, false);
 	}
 
-	public void sync(final JavaScriptObject successCallback, final JavaScriptObject errorHandler, boolean useUncheckedCredentials)
+	public void sync(final JavaScriptObject successCallback, final JavaScriptObject errorHandler, boolean useUncheckedCredentials,
+		boolean forceUseSingleWsUpdateMethod)
 	{
 		if (!testLocalStorage()) return;
 		if (flattenedSolution.getMustAuthenticate() && !offlineDataProxy.hasCredentials() &&
@@ -287,7 +288,7 @@ public class MobileClient implements EntryPoint
 				@Override
 				public void execute()
 				{
-					sync(successCallback, errorHandler, true);
+					sync(successCallback, errorHandler, true, forceUseSingleWsUpdateMethod);
 				}
 			};
 			formManager.showLogin();
@@ -333,7 +334,7 @@ public class MobileClient implements EntryPoint
 								{
 									// clear the current credentials and call sync again.
 									clearCredentials();
-									sync(successCallback, errorHandler, false);
+									sync(successCallback, errorHandler, false, forceUseSingleWsUpdateMethod);
 								}
 								else
 								{
@@ -354,7 +355,7 @@ public class MobileClient implements EntryPoint
 							flagSyncStop();
 						}
 					}
-				});
+				}, forceUseSingleWsUpdateMethod);
 			}
 			else
 			{
@@ -870,7 +871,7 @@ public class MobileClient implements EntryPoint
 							flagSyncStop();
 						}
 					}
-				});
+				}, false);
 			}
 			else
 			{
