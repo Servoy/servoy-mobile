@@ -119,7 +119,12 @@ public class MobilePlugin implements Exportable
 
 	public void syncData(JavaScriptObject successCallback, JavaScriptObject errorHandler)
 	{
-		client.sync(successCallback, errorHandler);
+		client.sync(successCallback, errorHandler, false);
+	}
+
+	public void syncData(JavaScriptObject successCallback, JavaScriptObject errorHandler, boolean forceUseSingleWsUpdateMethod)
+	{
+		client.sync(successCallback, errorHandler, forceUseSingleWsUpdateMethod);
 	}
 
 	public native int getUsedStorageSpace()
