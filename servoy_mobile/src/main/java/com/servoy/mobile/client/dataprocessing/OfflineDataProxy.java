@@ -393,13 +393,13 @@ public class OfflineDataProxy
 	}
 
 	@SuppressWarnings("nls")
-	public void saveOfflineData(final Callback<SaveOfflineDataParam, Failure> callback)
+	public void saveOfflineData(final Callback<SaveOfflineDataParam, Failure> callback, boolean forceUseSingleWsUpdateMethod)
 	{
-		if (hasSingleWsUpdateMethod == null)
+		if (!forceUseSingleWsUpdateMethod && hasSingleWsUpdateMethod == null)
 		{
 			testOffLineDataWSUpdate(callback);
 		}
-		else if (hasSingleWsUpdateMethod.booleanValue())
+		else if (forceUseSingleWsUpdateMethod || hasSingleWsUpdateMethod.booleanValue())
 		{
 			JSONObject payload = new JSONObject();
 			payload.put("entityPrefix", new JSONString(foundSetManager.getEntityPrefix()));
@@ -756,7 +756,7 @@ public class OfflineDataProxy
 						Log.error("options response for offlinedate.ws_update", e);
 						hasSingleWsUpdateMethod = Boolean.FALSE;
 					}
-					saveOfflineData(callback);
+					saveOfflineData(callback, false);
 				}
 
 				@Override
