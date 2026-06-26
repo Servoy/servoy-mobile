@@ -226,8 +226,9 @@ public class FormView extends WebBaseComponent implements IFormDisplay, IModific
 	@Override
 	public void cleanup()
 	{
-		// TODO Auto-generated method stub
-
+		controller.getApplication().getScriptEngine().getGlobalScopeModificationDelegate().removeModificationListener(this);
+		if (controller.getFormScope() != null)
+			controller.getFormScope().removeModificationListener(this);
 	}
 
 	@Override
