@@ -773,7 +773,7 @@ public class MobileClient implements EntryPoint
 		}
 	}-*/;
 
-	protected OfflineDataProxy getOfflineDataProxy()
+	public OfflineDataProxy getOfflineDataProxy()
 	{
 		return offlineDataProxy;
 	}
