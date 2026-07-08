@@ -730,6 +730,14 @@ public class OfflineDataProxy
 		return uncheckedCredentials != null;
 	}
 
+	public void setUserName(String username)
+	{
+		if (credentials != null && credentials.length > 0)
+		{
+			credentials[0] = username;
+		}
+	}
+
 	@SuppressWarnings("nls")
 	private void testOffLineDataWSUpdate(final Callback<SaveOfflineDataParam, Failure> callback)
 	{

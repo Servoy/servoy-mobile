@@ -23,6 +23,7 @@ import org.timepedia.exporter.client.ExporterUtil;
 
 import com.servoy.base.scripting.api.IJSSecurity;
 import com.servoy.mobile.client.MobileClient;
+import com.servoy.mobile.client.dataprocessing.OfflineDataProxy;
 
 /**
  * @author jcompagner
@@ -84,5 +85,21 @@ public class JSSecurity implements Exportable, IJSSecurity
 		String[] credentials = application.getFoundSetManager().getCredentials();
 		if (credentials != null && credentials.length > 0) return credentials[0];
 		return null;
+	}
+
+	public boolean setUserName(String username)
+	{
+		OfflineDataProxy offlineDataProxy = application.getOfflineDataProxy();
+		if (offlineDataProxy != null && offlineDataProxy.hasCredentials())
+		{
+			offlineDataProxy.setUserName(username);
+			String[] credentials = application.getFoundSetManager().getCredentials();
+			if (credentials != null && credentials.length > 1)
+			{
+				application.getFoundSetManager().storeCredentials(username, credentials[1]);
+			}
+			return true;
+		}
+		return false;
 	}
 }
