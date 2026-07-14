@@ -36,7 +36,7 @@ import com.servoy.mobile.client.util.Utils;
  */
 @Export
 @ExportPackage("")
-public class JSValueList /* extends JSBase */implements IMobileSMValuelist, Exportable // TODO when ValueListDescription becomes a persist, please extends JSBase
+public class JSValueList /* extends JSBase */ implements IMobileSMValuelist, Exportable // TODO when ValueListDescription becomes a persist, please extends JSBase
 {
 
 	private final ValueList vl;
@@ -89,13 +89,13 @@ public class JSValueList /* extends JSBase */implements IMobileSMValuelist, Expo
 		if (arg != null && arg.length() > 0)
 		{
 			String[] rows = TagParser.split(arg, '\n');
-			for (int i = 0; i < rows.length; i++)
+			for (String row : rows)
 			{
-				if (!Utils.equalObjects(rows[i], "\n"))
+				if (!Utils.equalObjects(row, "\n"))
 				{
-					if (rows[i].contains("|"))
+					if (row.contains("|"))
 					{
-						String[] values = TagParser.split(rows[i], '|');
+						String[] values = TagParser.split(row, '|');
 						if (values.length == 3)
 						{
 							displayValues.set(displayValues.length(), values[0]);
@@ -104,8 +104,8 @@ public class JSValueList /* extends JSBase */implements IMobileSMValuelist, Expo
 					}
 					else
 					{
-						displayValues.set(displayValues.length(), rows[i]);
-						realValues.set(realValues.length(), rows[i]);
+						displayValues.set(displayValues.length(), row);
+						realValues.set(realValues.length(), row);
 					}
 				}
 			}
