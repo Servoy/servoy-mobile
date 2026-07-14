@@ -32,6 +32,8 @@ public class AngularBridge
 {
 	public static final String APPLICATION_SERVICE = "$applicationService";
 
+	public static final String TYPES_REGISTRY_SERVICE = "$typesRegistry";
+
 
 	private final MobileClient mobileClient;
 
@@ -86,6 +88,20 @@ public class AngularBridge
 			{
 				executeServiceCall(APPLICATION_SERVICE, "setStyleSheets", new Object[] { new Object[] { styleSheet } });
 			}
+
+			// register the component/service client-side types with the Angular TypesRegistry (same $typesRegistry calls a real
+			// NGClient sends over the websocket). Services first, then components, both before the first form's data (SVY-21262).
+			Object serviceClientSideTypes = getServiceClientSideTypes();
+			if (serviceClientSideTypes != null)
+			{
+				executeServiceCall(TYPES_REGISTRY_SERVICE, "setServiceClientSideSpecs", new Object[] { serviceClientSideTypes });
+			}
+			Object componentClientSideTypes = getComponentClientSideTypes();
+			if (componentClientSideTypes != null)
+			{
+				executeServiceCall(TYPES_REGISTRY_SERVICE, "addComponentClientSideSpecs", new Object[] { componentClientSideTypes });
+			}
+
 			// now show the first form
 			mobileClient.onStartPageShown();
 		}
@@ -134,6 +150,14 @@ public class AngularBridge
 
 	private native static void nativeSendMessage(String message) /*-{
         parent.postMessage({from:'gwt',data:message});
+    }-*/;
+
+	private native static Object getComponentClientSideTypes() /*-{
+        return $wnd._clientsidetypes_;
+    }-*/;
+
+	private native static Object getServiceClientSideTypes() /*-{
+        return $wnd._serviceclientsidetypes_;
     }-*/;
 
 	/**
