@@ -43,6 +43,7 @@ import com.servoy.mobile.client.properties.CssPositionConvertor;
 import com.servoy.mobile.client.properties.DataProviderConvertor;
 import com.servoy.mobile.client.properties.FormatConvertor;
 import com.servoy.mobile.client.properties.IPropertyConverter;
+import com.servoy.mobile.client.properties.ValuelistConvertor;
 import com.servoy.mobile.client.scripting.ElementScope;
 import com.servoy.mobile.client.scripting.GlobalScope;
 import com.servoy.mobile.client.scripting.IModificationListener;
@@ -76,6 +77,7 @@ public class FormView extends WebBaseComponent implements IFormDisplay, IModific
 		converters.put("format", new FormatConvertor());
 		converters.put("cssPosition", new CssPositionConvertor());
 		converters.put("dataprovider", new DataProviderConvertor());
+		converters.put("valuelist", new ValuelistConvertor());
 	}
 
 
