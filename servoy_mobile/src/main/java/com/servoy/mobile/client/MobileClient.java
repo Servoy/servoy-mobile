@@ -17,6 +17,9 @@ package com.servoy.mobile.client;
  Software Foundation,Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  */
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.allen_sauer.gwt.log.client.DivLogger;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Callback;
@@ -36,6 +39,13 @@ import com.servoy.mobile.client.dataprocessing.OfflineDataProxy;
 import com.servoy.mobile.client.dataprocessing.OfflineDataProxy.SaveOfflineDataParam;
 import com.servoy.mobile.client.persistence.FlattenedSolution;
 import com.servoy.mobile.client.persistence.Solution;
+import com.servoy.mobile.client.properties.CssPositionConvertor;
+import com.servoy.mobile.client.properties.DataProviderConvertor;
+import com.servoy.mobile.client.properties.FormConvertor;
+import com.servoy.mobile.client.properties.FormatConvertor;
+import com.servoy.mobile.client.properties.IPropertyConverter;
+import com.servoy.mobile.client.properties.RuntimeComponentConvertor;
+import com.servoy.mobile.client.properties.ValuelistConvertor;
 import com.servoy.mobile.client.scripting.APPLICATION_TYPES;
 import com.servoy.mobile.client.scripting.DEFAULTS;
 import com.servoy.mobile.client.scripting.JSApplication;
@@ -50,6 +60,7 @@ import com.servoy.mobile.client.scripting.PluginsScope;
 import com.servoy.mobile.client.scripting.ScriptEngine;
 import com.servoy.mobile.client.scripting.solutionmodel.JSSolutionModel;
 import com.servoy.mobile.client.ui.Executor;
+import com.servoy.mobile.client.ui.PropertySpec;
 import com.servoy.mobile.client.ui.WebRuntimeComponent;
 import com.servoy.mobile.client.ui.WebRuntimeLayoutContainer;
 import com.servoy.mobile.client.ui.WebRuntimeService;
@@ -74,6 +85,8 @@ public class MobileClient implements EntryPoint
 
 	private IAfterLoginHandler afterLoginHandler;
 	private int version = 1;
+
+	private final Map<String, IPropertyConverter> converters = new HashMap<>();
 
 	private AngularBridge angularBridge;
 
@@ -130,6 +143,8 @@ public class MobileClient implements EntryPoint
 		// non solution related (internal) API
 		GWT.create(Utils.class);
 
+		registerConverters();
+
 		flattenedSolution = new FlattenedSolution(createSolution());
 		i18nProvider = new SolutionI18nProvider(flattenedSolution, getBrowserLocale());
 		foundSetManager = new FoundSetManager(this);
@@ -138,11 +153,36 @@ public class MobileClient implements EntryPoint
 		solutionModel = new JSSolutionModel(this);
 		scriptEngine = new ScriptEngine(this);
 
-//		JQMContext.setDefaultTransition(Transition.FADE);
+		//		JQMContext.setDefaultTransition(Transition.FADE);
 
 		angularBridge = new AngularBridge(this);
 
-//		onStartPageShown();
+		//		onStartPageShown();
+	}
+
+	private void registerConverters()
+	{
+		converters.put("format", new FormatConvertor());
+		converters.put("cssPosition", new CssPositionConvertor());
+		converters.put("dataprovider", new DataProviderConvertor());
+		converters.put("valuelist", new ValuelistConvertor(this));
+		converters.put("form", new FormConvertor());
+		converters.put("runtimecomponent", new RuntimeComponentConvertor());
+	}
+
+	public IPropertyConverter getConverter(String typeName)
+	{
+		return converters.get(typeName);
+	}
+
+	public Object convertValueForType(String typeName, Object value, PropertySpec propertyType)
+	{
+		IPropertyConverter converter = converters.get(typeName);
+		if (converter != null)
+		{
+			return converter.convertForClient(value, null, propertyType);
+		}
+		return value;
 	}
 
 	protected FormManager createFormManager()
@@ -188,8 +228,8 @@ public class MobileClient implements EntryPoint
 			serverURL = "http://127.0.0.1:8080";
 		}
 		return appendServiceToServerURL(serverURL);
-//		String hostPageBaseURL = GWT.getHostPageBaseURL();
-//		return hostPageBaseURL.substring(0, hostPageBaseURL.length() - 1);
+		//		String hostPageBaseURL = GWT.getHostPageBaseURL();
+		//		return hostPageBaseURL.substring(0, hostPageBaseURL.length() - 1);
 	}
 
 	public void setApplicationServerURL(String url)
@@ -296,7 +336,7 @@ public class MobileClient implements EntryPoint
 		else
 		{
 			if (isSynchronizing()) return;
-//			Mobile.showLoadingDialog(getI18nMessageWithFallback("syncing"));
+			//			Mobile.showLoadingDialog(getI18nMessageWithFallback("syncing"));
 			flagSyncStart();
 			if (foundSetManager.hasChanges())
 			{
@@ -313,7 +353,7 @@ public class MobileClient implements EntryPoint
 					@Override
 					public void onFailure(Failure reason)
 					{
-//						Mobile.hideLoadingDialog();
+						//						Mobile.hideLoadingDialog();
 						try
 						{
 							if (errorHandler != null && reason.getStatusCode() != Response.SC_UNAUTHORIZED)
@@ -535,7 +575,7 @@ public class MobileClient implements EntryPoint
 				{
 					try
 					{
-//						Mobile.hideLoadingDialog();
+						//						Mobile.hideLoadingDialog();
 						log("Done, loaded size: " + result);
 						if (successCallback != null)
 						{
@@ -556,7 +596,7 @@ public class MobileClient implements EntryPoint
 				{
 					try
 					{
-//						Mobile.hideLoadingDialog();
+						//						Mobile.hideLoadingDialog();
 						StringBuilder detail = new StringBuilder();
 						if (reason.getStatusCode() != 0)
 						{
@@ -810,7 +850,7 @@ public class MobileClient implements EntryPoint
 		else
 		{
 			if (isSynchronizing()) return;
-//			Mobile.showLoadingDialog(getI18nMessageWithFallback("pushing"));
+			//			Mobile.showLoadingDialog(getI18nMessageWithFallback("pushing"));
 			flagSyncStart();
 			if (foundSetManager.hasChanges())
 			{
@@ -822,7 +862,7 @@ public class MobileClient implements EntryPoint
 					{
 						try
 						{
-//							Mobile.hideLoadingDialog();
+							//							Mobile.hideLoadingDialog();
 							log("Done, submitted size: " + result.length);
 							if (successCallback != null)
 							{
@@ -843,7 +883,7 @@ public class MobileClient implements EntryPoint
 					{
 						try
 						{
-//							Mobile.hideLoadingDialog();
+							//							Mobile.hideLoadingDialog();
 							if (errorHandler != null && reason.getStatusCode() != Response.SC_UNAUTHORIZED)
 							{
 								JsArrayMixed jsArray = JavaScriptObject.createArray().cast();
@@ -877,7 +917,7 @@ public class MobileClient implements EntryPoint
 			{
 				try
 				{
-//					Mobile.hideLoadingDialog();
+					//					Mobile.hideLoadingDialog();
 					if (successCallback != null)
 					{
 						JsArrayMixed jsArray = JavaScriptObject.createArray().cast();
