@@ -28,6 +28,7 @@ import com.servoy.mobile.client.persistence.ValueList;
 import com.servoy.mobile.client.ui.PropertySpec;
 import com.servoy.mobile.client.ui.WebRuntimeComponent;
 
+import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 
 /**
@@ -81,14 +82,91 @@ public class ValuelistConvertor implements IPropertyConverter
 		return map;
 	}
 
-	private static native Object getRealValue(JsArrayMixed real, int index) /*-{
-		return real[index];
-	}-*/;
-
 	@Override
 	public Object convertFromClient(String key, Object value, WebRuntimeComponent component, PropertySpec propertyType, FormController controller)
 	{
-		return null; // shouldn't be set from the client
+		if (value == null) return getStoredUUID(key, component);
+
+		JsPropertyMap<Object> request = Js.uncheckedCast(value);
+		if (request.has("filter"))
+		{
+			String filter = Js.cast(request.get("filter"));
+			int id = (int)Js.asDouble(request.get("id"));
+
+			String uuid = getStoredUUID(key, component);
+			if (uuid != null)
+			{
+				ValueList vl = controller.getApplication().getFlattenedSolution().getValueListByUUID(uuid);
+				if (vl != null)
+				{
+					JsPlainObj response = buildFilteredResponse(vl, filter, id, controller);
+					JsPlainObj componentData = new JsPlainObj();
+					componentData.set(key, response);
+					JsPlainObj formData = new JsPlainObj();
+					formData.set(component.getName(), componentData);
+					controller.getView().sendComponentData(formData);
+				}
+			}
+			return uuid;
+		}
+
+		return getStoredUUID(key, component);
 	}
+
+	private String getStoredUUID(String key, WebRuntimeComponent component)
+	{
+		Object current = component.getProperty(key);
+		if (current instanceof String)
+		{
+			return (String)current;
+		}
+		Object jsonProp = component.getJSONProperty(key);
+		return jsonProp != null ? jsonProp.toString() : null;
+	}
+
+	private JsPlainObj buildFilteredResponse(ValueList vl, String filter, int id, FormController controller)
+	{
+		JsArrayString display = vl.getDiplayValues(controller.getApplication().getI18nProvider());
+		JsArrayMixed real = vl.getRealValues();
+
+		Array<Object> values = JsArrayHelper.createArray();
+		if (display != null)
+		{
+			String lowerFilter = filter != null ? filter.toLowerCase() : "";
+			for (int i = 0; i < display.length(); i++)
+			{
+				String displayVal = display.get(i);
+				if (lowerFilter.isEmpty() || (displayVal != null && displayVal.toLowerCase().startsWith(lowerFilter)))
+				{
+					JsPlainObj entry = new JsPlainObj();
+					entry.set("displayValue", displayVal);
+					if (real != null && i < real.length())
+					{
+						entry.set("realValue", getRealValue(real, i));
+					}
+					else
+					{
+						entry.set("realValue", displayVal);
+					}
+					values.push(entry);
+				}
+			}
+		}
+
+		JsPlainObj response = new JsPlainObj();
+		response.set("hasRealValues", vl.hasRealValues());
+		response.set("values", values);
+
+		JsPlainObj handledID = new JsPlainObj();
+		handledID.set("id", id);
+		handledID.set("value", true);
+		response.set("handledID", handledID);
+
+		return response;
+	}
+
+	private static native Object getRealValue(JsArrayMixed real, int index) /*-{
+		return real[index];
+	}-*/;
 
 }
