@@ -24,23 +24,17 @@ import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.FormView;
 import com.servoy.mobile.client.angular.JsDate;
 import com.servoy.mobile.client.angular.JsPlainObj;
-import com.servoy.mobile.client.dataprocessing.Record;
 import com.servoy.mobile.client.scripting.GlobalScope;
 import com.servoy.mobile.client.ui.PropertySpec;
 import com.servoy.mobile.client.ui.WebRuntimeComponent;
 
 import jsinterop.base.Any;
 
-/**
- * @author jcomp
- *
- */
 public class DataProviderConvertor implements IPropertyConverter
 {
 
 	@Override
-	public Object convertForClient(Object value, WebRuntimeComponent component, PropertySpec propertyType, FormController controller,
-		Record record)
+	public Object convertForClient(Object value, WebRuntimeComponent component, PropertySpec propertyType)
 	{
 		Object returnValue = value;
 		if (value instanceof Date)
@@ -55,9 +49,11 @@ public class DataProviderConvertor implements IPropertyConverter
 	}
 
 	@Override
-	public Object convertFromClient(String key, Object value, WebRuntimeComponent component, PropertySpec propertyType, FormController controller)
+	public Object convertFromClient(String key, Object value, WebRuntimeComponent component, PropertySpec propertyType)
 	{
-		if (value == null) return null;
+		if (value == null || component == null) return null;
+
+		FormController controller = component.getController();
 		Any jsonProperty = component.getJSONProperty(key);
 		if (jsonProperty != null)
 		{

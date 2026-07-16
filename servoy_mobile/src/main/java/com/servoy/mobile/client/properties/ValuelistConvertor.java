@@ -20,10 +20,10 @@ package com.servoy.mobile.client.properties;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
 import com.servoy.mobile.client.FormController;
+import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.angular.Array;
 import com.servoy.mobile.client.angular.JsArrayHelper;
 import com.servoy.mobile.client.angular.JsPlainObj;
-import com.servoy.mobile.client.dataprocessing.Record;
 import com.servoy.mobile.client.persistence.ValueList;
 import com.servoy.mobile.client.ui.PropertySpec;
 import com.servoy.mobile.client.ui.WebRuntimeComponent;
@@ -31,31 +31,27 @@ import com.servoy.mobile.client.ui.WebRuntimeComponent;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 
-/**
- * Converter for the "valuelist" property type. It looks up the custom value list referenced by its
- * design UUID and emits the JSON envelope the NGClient valuelist type converter expects:
- * <code>{ hasRealValues, values:[{ displayValue, realValue }] }</code>.
- * <p>
- * Only custom value lists are supported; database / foundset-based value lists are out of scope.
- *
- * @author jcompagner
- *
- */
 public class ValuelistConvertor implements IPropertyConverter
 {
+	private final MobileClient application;
+
+	public ValuelistConvertor(MobileClient application)
+	{
+		this.application = application;
+	}
 
 	@Override
-	public Object convertForClient(Object value, WebRuntimeComponent component, PropertySpec propertyType, FormController controller, Record record)
+	public Object convertForClient(Object value, WebRuntimeComponent compdonent, PropertySpec propertyType)
 	{
 		if (value == null) return null;
-		ValueList vl = controller.getApplication().getFlattenedSolution().getValueListByUUID(value.toString());
+
+		ValueList vl = application.getFlattenedSolution().getValueListByUUID(value.toString());
 		if (vl == null) return null;
 
 		JsPropertyMap<Object> map = JsPropertyMap.of();
 		map.set("hasRealValues", Boolean.valueOf(vl.hasRealValues()));
 
-		// display values with i18n applied (getDiplayValues handles "i18n:" prefixes)
-		JsArrayString display = vl.getDiplayValues(controller.getApplication().getI18nProvider());
+		JsArrayString display = vl.getDiplayValues(application.getI18nProvider());
 		JsArrayMixed real = vl.getRealValues();
 
 		Array<Object> values = JsArrayHelper.createArray();
@@ -71,7 +67,6 @@ public class ValuelistConvertor implements IPropertyConverter
 				}
 				else
 				{
-					// no separate real values: mirror the display value so components reading item.realValue still work
 					entry.set("realValue", display.get(i));
 				}
 				values.push(entry);
@@ -83,10 +78,12 @@ public class ValuelistConvertor implements IPropertyConverter
 	}
 
 	@Override
-	public Object convertFromClient(String key, Object value, WebRuntimeComponent component, PropertySpec propertyType, FormController controller)
+	public Object convertFromClient(String key, Object value, WebRuntimeComponent component, PropertySpec propertyType)
 	{
+		if (component == null) return null;
 		if (value == null) return getStoredUUID(key, component);
 
+		FormController controller = component.getController();
 		JsPropertyMap<Object> request = Js.uncheckedCast(value);
 		if (request.has("filter"))
 		{

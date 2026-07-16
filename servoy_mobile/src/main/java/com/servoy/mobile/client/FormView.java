@@ -39,11 +39,7 @@ import com.servoy.mobile.client.persistence.Form;
 import com.servoy.mobile.client.persistence.LayoutContainer;
 import com.servoy.mobile.client.persistence.Part;
 import com.servoy.mobile.client.persistence.WebComponent;
-import com.servoy.mobile.client.properties.CssPositionConvertor;
-import com.servoy.mobile.client.properties.DataProviderConvertor;
-import com.servoy.mobile.client.properties.FormatConvertor;
 import com.servoy.mobile.client.properties.IPropertyConverter;
-import com.servoy.mobile.client.properties.ValuelistConvertor;
 import com.servoy.mobile.client.scripting.ElementScope;
 import com.servoy.mobile.client.scripting.GlobalScope;
 import com.servoy.mobile.client.scripting.IModificationListener;
@@ -68,17 +64,6 @@ public class FormView extends WebBaseComponent implements IFormDisplay, IModific
 {
 	private static final String MSG = "msg";
 	private static final String COMPONENT_CALLS = "componentApis";
-
-
-	private static final Map<String, IPropertyConverter> converters = new HashMap<>();
-
-	static
-	{
-		converters.put("format", new FormatConvertor());
-		converters.put("cssPosition", new CssPositionConvertor());
-		converters.put("dataprovider", new DataProviderConvertor());
-		converters.put("valuelist", new ValuelistConvertor());
-	}
 
 
 	public static final String CONVERSION_CL_SIDE_TYPE_KEY = "_T";
@@ -301,15 +286,15 @@ public class FormView extends WebBaseComponent implements IFormDisplay, IModific
 		{
 			String type = propertyType.getType();
 
-			converter = converters.get(type);
+			converter = controller.getApplication().getConverter(type);
 		}
 		else
 		{
-			converter = converters.get(key); // this can be stuff like cssPosition
+			converter = controller.getApplication().getConverter(key); // this can be stuff like cssPosition
 		}
 		if (converter != null)
 		{
-			returnValue = converter.convertForClient(value, component, propertyType, controller, record);
+			returnValue = converter.convertForClient(value, component, propertyType);
 		}
 		// some default conversions
 		else if (value instanceof Date)
@@ -335,15 +320,15 @@ public class FormView extends WebBaseComponent implements IFormDisplay, IModific
 		{
 			String type = propertyType.getType();
 
-			converter = converters.get(type);
+			converter = controller.getApplication().getConverter(type);
 		}
 		else
 		{
-			converter = converters.get(key); // this can be stuff like cssPosition
+			converter = controller.getApplication().getConverter(key); // this can be stuff like cssPosition
 		}
 		if (converter != null)
 		{
-			converted = converter.convertFromClient(key, value, component, propertyType, controller);
+			converted = converter.convertFromClient(key, value, component, propertyType);
 		}
 		return converted;
 	}

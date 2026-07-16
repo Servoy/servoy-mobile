@@ -19,7 +19,6 @@ package com.servoy.mobile.client.properties;
 
 import com.servoy.base.persistence.constants.IColumnTypeConstants;
 import com.servoy.mobile.client.FormController;
-import com.servoy.mobile.client.dataprocessing.Record;
 import com.servoy.mobile.client.scripting.GlobalScope;
 import com.servoy.mobile.client.ui.PropertySpec;
 import com.servoy.mobile.client.ui.WebRuntimeComponent;
@@ -36,9 +35,11 @@ public class FormatConvertor implements IPropertyConverter
 {
 	@SuppressWarnings("nls")
 	@Override
-	public JsPropertyMap<Object> convertForClient(Object value, WebRuntimeComponent component, PropertySpec propertyType, FormController controller,
-		Record record)
+	public JsPropertyMap<Object> convertForClient(Object value, WebRuntimeComponent component, PropertySpec propertyType)
 	{
+		if (component == null) return Js.cast(value);
+
+		FormController controller = component.getController();
 		final int[] dataproviderType = { IColumnTypeConstants.TEXT };
 
 		JsArrayLike<String> forProperty = propertyType.getFor();
@@ -62,8 +63,8 @@ public class FormatConvertor implements IPropertyConverter
 	}
 
 	@Override
-	public Object convertFromClient(String key, Object value, WebRuntimeComponent component, PropertySpec propertyType, FormController controller)
+	public Object convertFromClient(String key, Object value, WebRuntimeComponent component, PropertySpec propertyType)
 	{
-		return null; // shouldn't be set from the client
+		return null;
 	}
 }
