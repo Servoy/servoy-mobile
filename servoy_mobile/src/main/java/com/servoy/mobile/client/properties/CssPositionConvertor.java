@@ -17,9 +17,7 @@
 
 package com.servoy.mobile.client.properties;
 
-import com.servoy.mobile.client.FormController;
 import com.servoy.mobile.client.angular.JsPlainObj;
-import com.servoy.mobile.client.dataprocessing.Record;
 import com.servoy.mobile.client.ui.PropertySpec;
 import com.servoy.mobile.client.ui.WebRuntimeComponent;
 import com.servoy.mobile.client.util.Utils;
@@ -36,8 +34,7 @@ public class CssPositionConvertor implements IPropertyConverter
 {
 
 	@Override
-	public JsPropertyMap<Object> convertForClient(Object value, WebRuntimeComponent component, PropertySpec propertyType, FormController controller,
-		Record record)
+	public JsPropertyMap<Object> convertForClient(Object value, WebRuntimeComponent component, PropertySpec propertyType)
 	{
 		if (value == null) return null;
 
@@ -83,8 +80,8 @@ public class CssPositionConvertor implements IPropertyConverter
 	}
 
 	@Override
-	public Object convertFromClient(String key, Object value, WebRuntimeComponent component, PropertySpec propertyType, FormController controller)
+	public Object convertFromClient(String key, Object value, WebRuntimeComponent component, PropertySpec propertyType)
 	{
-		return null; //shouldn't be set from the client
+		return null;
 	}
 }

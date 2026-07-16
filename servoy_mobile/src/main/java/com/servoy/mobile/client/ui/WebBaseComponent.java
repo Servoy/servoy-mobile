@@ -43,10 +43,11 @@ public class WebBaseComponent
 		this.controller = controller;
 	}
 
-	/**
-	 * @param key
-	 * @param value
-	 */
+	public FormController getController()
+	{
+		return controller;
+	}
+
 	public Object putBrowserProperty(String key, Object value)
 	{
 		Object prevValue = properties.put(key, value);

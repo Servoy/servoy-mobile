@@ -43,6 +43,8 @@ public class AngularBridge
 
 	private boolean firstCall = true;
 
+	private ServerScriptManager serverScriptManager;
+
 	public AngularBridge(MobileClient mobileClient)
 	{
 		this.mobileClient = mobileClient;
@@ -51,7 +53,7 @@ public class AngularBridge
 		services.put(WindowService.WINDOW_SERVICE, windowService);
 		services.put("i18nService", new I18NService(mobileClient));
 		services.put("formService", new FormService(mobileClient));
-
+		this.serverScriptManager = new ServerScriptManager(this);
 	}
 
 	/**
@@ -60,6 +62,16 @@ public class AngularBridge
 	public WindowService getWindowService()
 	{
 		return windowService;
+	}
+
+	public ServerScriptManager getServerScriptManager()
+	{
+		return serverScriptManager;
+	}
+
+	public MobileClient getMobileClient()
+	{
+		return mobileClient;
 	}
 
 	protected void onAngularEvent(String message)
@@ -116,6 +128,7 @@ public class AngularBridge
 		if (iService != null)
 		{
 			JsPlainObj result = iService.execute(service);
+			serverScriptManager.flushAllChanges();
 			String cmsgId = service.getCmsgId();
 			if (cmsgId != null)
 			{
@@ -130,7 +143,67 @@ public class AngularBridge
 				sendMessage(resultString);
 			}
 		}
+		else if (serverScriptManager != null && service.getMethodName() != null)
+		{
+			String serviceName = service.getServiceName();
+			String methodName = service.getMethodName();
+			if ("applicationServerService".equals(serviceName) && "callServerSideApi".equals(methodName))
+			{
+				String targetService = getArgStringProperty(service.getArgs(), "service");
+				String targetMethod = getArgStringProperty(service.getArgs(), "methodName");
+				Object[] targetArgs = getArgNestedArray(service.getArgs(), "args");
+				if (targetService != null && targetMethod != null)
+				{
+					if (serverScriptManager.hasServerScript(targetService, targetMethod))
+					{
+						serverScriptManager.executeServerScript(targetService, targetMethod, targetArgs);
+					}
+					else if (serverScriptManager.hasInternalHandler(targetService, targetMethod))
+					{
+						serverScriptManager.executeInternalHandler(targetService, targetMethod, targetArgs);
+					}
+				}
+				serverScriptManager.flushAllChanges();
+				String cmsgId = service.getCmsgId();
+				if (cmsgId != null)
+				{
+					JsPlainObj obj = new JsPlainObj();
+					obj.set("cmsgid", cmsgId);
+					obj.set("ret", (Object)null);
+					sendMessage(obj.toJSONString());
+				}
+			}
+			else if (serverScriptManager.hasInternalHandler(serviceName, methodName))
+			{
+				Object[] args = getArgsArray(service.getArgs());
+				serverScriptManager.executeInternalHandler(serviceName, methodName, args);
+				serverScriptManager.flushAllChanges();
+				String cmsgId = service.getCmsgId();
+				if (cmsgId != null)
+				{
+					JsPlainObj obj = new JsPlainObj();
+					obj.set("cmsgid", cmsgId);
+					obj.set("ret", (Object)null);
+					sendMessage(obj.toJSONString());
+				}
+			}
+			else if (serverScriptManager.hasServerScript(serviceName, methodName))
+			{
+				Object[] args = getArgsArray(service.getArgs());
+				serverScriptManager.executeServerScript(serviceName, methodName, args);
+				serverScriptManager.flushAllChanges();
+				String cmsgId = service.getCmsgId();
+				if (cmsgId != null)
+				{
+					JsPlainObj obj = new JsPlainObj();
+					obj.set("cmsgid", cmsgId);
+					obj.set("ret", (Object)null);
+					sendMessage(obj.toJSONString());
+				}
+			}
+		}
 	}
+
 
 	public void sendMessage(String message)
 	{
@@ -160,11 +233,44 @@ public class AngularBridge
         return $wnd._serviceclientsidetypes_;
     }-*/;
 
-	/**
-	 * @param windowService
-	 * @param string
-	 * @param objects
-	 */
+	private native static Object[] getArgsArray(Object args) /*-{
+		if (!args) return null;
+		if (Array.isArray(args)) return args;
+		return Array.prototype.slice.call(args);
+	}-*/;
+
+	private native static String getArgStringProperty(Object args, String key) /*-{
+		if (!args) return null;
+		return args[key] || null;
+	}-*/;
+
+	private native static Object[] getArgNestedArray(Object args, String key) /*-{
+		if (!args || !args[key]) return null;
+		var val = args[key];
+		if (Array.isArray(val)) return val;
+		return [];
+	}-*/;
+
+
+	public void sendServiceModelChange(String serviceName, String propertyName, Object value)
+	{
+		JsPlainObj propertyObj = new JsPlainObj();
+		propertyObj.set(propertyName, value);
+
+		JsPlainObj servicesObj = new JsPlainObj();
+		servicesObj.set(serviceName, propertyObj);
+
+		JsPlainObj msgObj = new JsPlainObj();
+		msgObj.set("services", servicesObj);
+
+		JsPlainObj envelope = new JsPlainObj();
+		envelope.set("msg", msgObj);
+
+		String message = envelope.toJSONString();
+		MobileClient.log("GWT sending SERVICE MODEL to Angular " + message);
+		sendMessage(message);
+	}
+
 	public void executeServiceCall(String serviceName, String call, Object[] args)
 	{
 		JsPlainObj callObject = new JsPlainObj();

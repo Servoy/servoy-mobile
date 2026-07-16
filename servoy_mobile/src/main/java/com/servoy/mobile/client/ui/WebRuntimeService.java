@@ -25,6 +25,7 @@ import com.servoy.mobile.client.MobileClient;
 import com.servoy.mobile.client.angular.Array;
 import com.servoy.mobile.client.angular.JsArrayHelper;
 import com.servoy.mobile.client.angular.JsPlainObj;
+import com.servoy.mobile.client.angular.ServerScriptManager;
 
 /**
  * @author lvostinar
@@ -81,11 +82,15 @@ public class WebRuntimeService implements Exportable
 	}
 
 
-	// will this always just be a return a promise??
 	@Export
 	public Object executeApi(String key, Object[] args)
 	{
 		MobileClient.log("args: " + args);
+		ServerScriptManager serverScriptManager = mobileClient.getAngularBridge().getServerScriptManager();
+		if (serverScriptManager != null && serverScriptManager.hasServerScript(name, key))
+		{
+			return serverScriptManager.executeServerScript(name, key, args);
+		}
 		ApiSpec apiSpec = type.getApi().get(key);
 		if (apiSpec != null)
 		{
@@ -98,7 +103,6 @@ public class WebRuntimeService implements Exportable
 				Array<Object> arguments = JsArrayHelper.createArray();
 				for (Object arg : args)
 				{
-					// TODO should we convert the arguments... based on the api.getParamter types
 					arguments.push(arg);
 				}
 				call.set("args", arguments);
