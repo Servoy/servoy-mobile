@@ -28,6 +28,7 @@ import com.servoy.mobile.client.persistence.ValueList;
 import com.servoy.mobile.client.ui.PropertySpec;
 import com.servoy.mobile.client.ui.WebRuntimeComponent;
 
+import jsinterop.base.Any;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 
@@ -41,15 +42,20 @@ public class ValuelistConvertor implements IPropertyConverter
 	}
 
 	@Override
-	public Object convertForClient(Object value, WebRuntimeComponent compdonent, PropertySpec propertyType)
+	public Object convertForClient(Object value, WebRuntimeComponent component, PropertySpec propertyType)
 	{
 		if (value == null) return null;
 
 		ValueList vl = application.getFlattenedSolution().getValueListByUUID(value.toString());
 		if (vl == null) return null;
 
+		Object rawConfig = getRawConfigValue(component, propertyType);
+		boolean allowNewEntries = ValueListConfigConverter.getAllowNewEntries(rawConfig);
+
 		JsPropertyMap<Object> map = JsPropertyMap.of();
-		map.set("hasRealValues", Boolean.valueOf(vl.hasRealValues()));
+		// same as ValueListTypeSabloValue#toJSON: force hasRealValues to true when new entries are not allowed,
+		// so components only let the user pick from the list instead of typing free text.
+		map.set("hasRealValues", Boolean.valueOf(vl.hasRealValues() || !allowNewEntries));
 
 		JsArrayString display = vl.getDiplayValues(application.getI18nProvider());
 		JsArrayMixed real = vl.getRealValues();
@@ -96,7 +102,8 @@ public class ValuelistConvertor implements IPropertyConverter
 				ValueList vl = controller.getApplication().getFlattenedSolution().getValueListByUUID(uuid);
 				if (vl != null)
 				{
-					JsPlainObj response = buildFilteredResponse(vl, filter, id, controller);
+					Object rawConfig = getRawConfigValue(component, propertyType);
+					JsPlainObj response = buildFilteredResponse(vl, filter, id, controller, rawConfig);
 					JsPlainObj componentData = new JsPlainObj();
 					componentData.set(key, response);
 					JsPlainObj formData = new JsPlainObj();
@@ -110,6 +117,23 @@ public class ValuelistConvertor implements IPropertyConverter
 		return getStoredUUID(key, component);
 	}
 
+	/**
+	 * @param component the component owning both this valuelist property and its sibling config property, may be null
+	 * @param propertyType the PropertySpec of the "valuelist" typed property, used to find the name of the sibling
+	 *            "valuelistConfig" typed property (via {@link PropertySpec#getConfig()}), same as
+	 *            <code>ValueListTypeSabloValue#initializeIfPossibleAndNeeded()</code> looks up
+	 *            <code>propertyDependencies.configPropertyName</code> server side.
+	 * @return the raw (unconverted) value of the sibling config property, or null if there is none configured
+	 */
+	private Object getRawConfigValue(WebRuntimeComponent component, PropertySpec propertyType)
+	{
+		if (component == null || propertyType == null) return null;
+		String configPropertyName = propertyType.getConfig();
+		if (configPropertyName == null) return null;
+		Any jsonProperty = component.getJSONProperty(configPropertyName);
+		return jsonProperty != null ? jsonProperty : null;
+	}
+
 	private String getStoredUUID(String key, WebRuntimeComponent component)
 	{
 		Object current = component.getProperty(key);
@@ -121,8 +145,12 @@ public class ValuelistConvertor implements IPropertyConverter
 		return jsonProp != null ? jsonProp.toString() : null;
 	}
 
-	private JsPlainObj buildFilteredResponse(ValueList vl, String filter, int id, FormController controller)
+	private JsPlainObj buildFilteredResponse(ValueList vl, String filter, int id, FormController controller, Object rawConfig)
 	{
+		boolean filterOnRealValues = ValueListConfigConverter.useFilterOnRealValues(rawConfig);
+		boolean filterWithContains = ValueListConfigConverter.useFilterWithContains(rawConfig);
+		boolean allowNewEntries = ValueListConfigConverter.getAllowNewEntries(rawConfig);
+
 		JsArrayString display = vl.getDiplayValues(controller.getApplication().getI18nProvider());
 		JsArrayMixed real = vl.getRealValues();
 
@@ -133,7 +161,13 @@ public class ValuelistConvertor implements IPropertyConverter
 			for (int i = 0; i < display.length(); i++)
 			{
 				String displayVal = display.get(i);
-				if (lowerFilter.isEmpty() || (displayVal != null && displayVal.toLowerCase().startsWith(lowerFilter)))
+				boolean matches = lowerFilter.isEmpty() || matches(displayVal, lowerFilter, filterWithContains);
+				if (!matches && filterOnRealValues && real != null && i < real.length())
+				{
+					Object realVal = getRealValue(real, i);
+					matches = matches(realVal != null ? realVal.toString() : null, lowerFilter, filterWithContains);
+				}
+				if (matches)
 				{
 					JsPlainObj entry = new JsPlainObj();
 					entry.set("displayValue", displayVal);
@@ -151,7 +185,8 @@ public class ValuelistConvertor implements IPropertyConverter
 		}
 
 		JsPlainObj response = new JsPlainObj();
-		response.set("hasRealValues", vl.hasRealValues());
+		// same as ValueListTypeSabloValue#toJSON: force hasRealValues to true when new entries are not allowed
+		response.set("hasRealValues", vl.hasRealValues() || !allowNewEntries);
 		response.set("values", values);
 
 		JsPlainObj handledID = new JsPlainObj();
@@ -160,6 +195,13 @@ public class ValuelistConvertor implements IPropertyConverter
 		response.set("handledID", handledID);
 
 		return response;
+	}
+
+	private static boolean matches(String value, String lowerFilter, boolean useContains)
+	{
+		if (value == null) return false;
+		String lowerValue = value.toLowerCase();
+		return useContains ? lowerValue.contains(lowerFilter) : lowerValue.startsWith(lowerFilter);
 	}
 
 	private static native Object getRealValue(JsArrayMixed real, int index) /*-{

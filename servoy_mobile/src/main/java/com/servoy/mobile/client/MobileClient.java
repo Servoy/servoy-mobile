@@ -45,6 +45,7 @@ import com.servoy.mobile.client.properties.FormConvertor;
 import com.servoy.mobile.client.properties.FormatConvertor;
 import com.servoy.mobile.client.properties.IPropertyConverter;
 import com.servoy.mobile.client.properties.RuntimeComponentConvertor;
+import com.servoy.mobile.client.properties.ValueListConfigConverter;
 import com.servoy.mobile.client.properties.ValuelistConvertor;
 import com.servoy.mobile.client.scripting.APPLICATION_TYPES;
 import com.servoy.mobile.client.scripting.DEFAULTS;
@@ -166,6 +167,7 @@ public class MobileClient implements EntryPoint
 		converters.put("cssPosition", new CssPositionConvertor());
 		converters.put("dataprovider", new DataProviderConvertor());
 		converters.put("valuelist", new ValuelistConvertor(this));
+		converters.put("valuelistConfig", new ValueListConfigConverter());
 		converters.put("form", new FormConvertor());
 		converters.put("runtimecomponent", new RuntimeComponentConvertor());
 	}
