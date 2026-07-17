@@ -109,6 +109,17 @@ ant build_mobile_in_developer
 > `../../servoy-client/servoy_base` OR access to the `com.servoy:servoy_base` sources
 > artifact. This module does not contain the `servoy_base` sources itself.
 
+> **Run GWT compiles via the command-line `mvn`, not Eclipse's m2e**: use the `bash`
+> tool to run `mvn install -Pgwtcompile` (or `mvn -Pgwtcompile compile`) directly from
+> the repo root. Do **not** use the Eclipse MCP Maven tools
+> (`eclipse-ide_runMavenBuild`, `eclipse-ide_updateMavenProject`, or Eclipse's own
+> incremental builder) for this — m2e's embedded dependency resolution in this
+> workspace fails to resolve `com.servoy:servoy_base:jar:sources`, even though the
+> same artifact/profile resolves fine from a plain command-line Maven invocation. A
+> GWT compile is the only real safety net for `client.*` changes (see "Post-modification
+> compile & quick-fix loop" below), so always fall back to the command-line `mvn`
+> command for it rather than concluding the build can't be verified.
+
 ### GWT modules
 
 - `MobileClient.gwt.xml` — dev module. Entry point `com.servoy.mobile.client.MobileClient`,
@@ -305,9 +316,10 @@ JS-unit stack traces map back to solution methods.
 2. Follow the existing pattern in that package; reuse converters and the exporter/JsInterop
    mechanisms already in place.
 3. Ensure outbound JSON matches the server NGClient protocol.
-4. Verify with a GWT compile (`mvn -Pgwtcompile compile` or `ant gwtc`). GWT compilation is
-   the primary safety net — pure-Java changes can still fail GWT compilation due to
-   unsupported JRE features.
+4. Verify with a GWT compile via the command-line `mvn` (`mvn install -Pgwtcompile` or
+   `mvn -Pgwtcompile compile`), or `ant gwtc`. GWT compilation is the primary safety net —
+   pure-Java changes can still fail GWT compilation due to unsupported JRE features. Do not
+   rely on Eclipse's m2e to run this (see the build dependency note above).
 
 ## Working inside the Eclipse workspace
 
@@ -327,8 +339,10 @@ index, builder, and classpath stay in sync.
 
 > Note: this project is a **GWT module**, not an Eclipse plugin, and its tests run through the
 > GWT/JSUnit exporter flow (not standard JUnit/surefire). The Eclipse test-runner and
-> PDE-plugin-test MCP tools do **not** apply here — use a GWT compile (`mvn -Pgwtcompile compile`
-> or `ant gwtc`) as the verification step instead.
+> PDE-plugin-test MCP tools do **not** apply here — use a GWT compile (command-line
+> `mvn install -Pgwtcompile` or `ant gwtc`) as the verification step instead. See the build
+> dependency note under "Maven profiles" for why this must be run via the `bash` tool rather
+> than Eclipse's own Maven integration.
 
 ## Commit message convention: `[ai]`
 
@@ -353,5 +367,7 @@ After any code change made through the Eclipse MCP tools, run this self-verifica
 4. **Re-check**: verify compilation again to confirm the workspace is clean.
 
 Because Eclipse's Java build does not exercise the GWT compiler, also run a GWT compile
-(`mvn -Pgwtcompile compile` or `ant gwtc`) for changes in `client.*` — GWT compilation is the
-only check that catches use of unsupported JRE features.
+(`mvn install -Pgwtcompile` via the `bash` tool, or `ant gwtc`) for changes in `client.*` —
+GWT compilation is the only check that catches use of unsupported JRE features. Run it with
+the command-line `mvn`, not the Eclipse MCP Maven tools (see the build dependency note under
+"Maven profiles" above).

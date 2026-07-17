@@ -45,4 +45,11 @@ public final class PropertySpec extends JavaScriptObject
 		return this.type;
 	}-*/;
 
+	/**
+	 * @return the name of the sibling property that holds this property's config (e.g. "valuelistConfig" for a "valuelist" typed property), or null if none.
+	 */
+	public native String getConfig()/*-{
+		return this.config;
+	}-*/;
+
 }
