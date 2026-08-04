@@ -52,7 +52,7 @@ pipeline {
         
         failure {
             // Veilige Teams notificatie zonder quotes
-            office365ConnectorSend webhookUrl: TEAMS_WEBHOOK, status: 'Failed'
+            office365ConnectorSend webhookUrl: TEAMS_WEBHOOK, status: 'Failed', adaptiveCards: true
             
             // Mail naar developers bij falen
             emailext body: '$PROJECT_DEFAULT_CONTENT', 
@@ -62,11 +62,11 @@ pipeline {
         }
         
         unstable {
-            office365ConnectorSend webhookUrl: TEAMS_WEBHOOK, status: 'Unstable'
+            office365ConnectorSend webhookUrl: TEAMS_WEBHOOK, status: 'Unstable', adaptiveCards: true
         }
         
         fixed {
-            office365ConnectorSend webhookUrl: TEAMS_WEBHOOK, status: 'Back to Normal'
+            office365ConnectorSend webhookUrl: TEAMS_WEBHOOK, status: 'Back to Normal', adaptiveCards: true
         }
     }
 }
