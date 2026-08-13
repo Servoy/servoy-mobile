@@ -47,6 +47,10 @@ import com.servoy.mobile.client.properties.IPropertyConverter;
 import com.servoy.mobile.client.properties.RuntimeComponentConvertor;
 import com.servoy.mobile.client.properties.ValueListConfigConverter;
 import com.servoy.mobile.client.properties.ValuelistConvertor;
+import com.servoy.mobile.client.properties.VarArgsConvertor;
+import com.servoy.mobile.client.angular.Array;
+import com.servoy.mobile.client.ui.ApiSpec;
+import com.servoy.mobile.client.ui.Parameter;
 import com.servoy.mobile.client.scripting.APPLICATION_TYPES;
 import com.servoy.mobile.client.scripting.DEFAULTS;
 import com.servoy.mobile.client.scripting.JSApplication;
@@ -186,6 +190,56 @@ public class MobileClient implements EntryPoint
 		}
 		return value;
 	}
+
+	/**
+	 * Mobile-client equivalent of the server-side argument conversion that happens before a
+	 * componentApis / serviceApis message is sent to the Angular client.
+	 *
+	 * Must be called <em>after</em> {@link ApiSpec#processVarArgsIfNeeded} has already collapsed
+	 * surplus varargs into a single JS array at the varargs position.  For each declared parameter
+	 * position the method looks up an {@link IPropertyConverter} by the parameter's base type name
+	 * (stripping any trailing {@code "..."} varargs marker).  A varargs position is additionally
+	 * wrapped in the {@code {"vEr":1,"v":[...]}} envelope by {@link VarArgsConvertor}, mirroring
+	 * what the server's {@code CustomVariableArgsType.toJSON()} emits.
+	 *
+	 * @param arguments the args array (already varargs-collapsed)
+	 * @param api       the API spec whose {@code parameters} array supplies the declared types
+	 * @return the converted args array (the same array, mutated in place)
+	 */
+	public Object[] convertApiArgsForClient(Object[] arguments, ApiSpec api)
+	{
+		if (arguments == null || arguments.length == 0 || api == null) return arguments;
+		Array<Parameter> parameters = api.getParameters();
+		if (Array.isEmpty(parameters)) return arguments;
+
+		int paramCount = parameters.getLength();
+		for (int i = 0; i < arguments.length; i++)
+		{
+			// After processVarArgsIfNeeded there are at most paramCount entries; the last
+			// declared parameter covers the (only possible) varargs position.
+			Parameter param = parameters.getAt(i < paramCount ? i : paramCount - 1);
+			if (param == null) continue;
+			String paramType = param.getType();
+			if (paramType == null) continue;
+
+			boolean isVarArgs = paramType.endsWith("..."); //$NON-NLS-1$
+			String baseType = isVarArgs ? paramType.substring(0, paramType.length() - 3) : paramType;
+
+			IPropertyConverter elementConverter = converters.get(baseType);
+			if (isVarArgs)
+			{
+				// Always wrap with VarArgsConvertor regardless of whether there is an element
+				// converter — the envelope is required even for primitive element types.
+				arguments[i] = new VarArgsConvertor(elementConverter).convertForClient(arguments[i], null, null);
+			}
+			else if (elementConverter != null)
+			{
+				arguments[i] = elementConverter.convertForClient(arguments[i], null, null);
+			}
+		}
+		return arguments;
+	}
+
 
 	protected FormManager createFormManager()
 	{

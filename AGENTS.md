@@ -188,6 +188,20 @@ Component/service specs come from JS globals injected into the page:
 keyed by the spec type name. Emit the exact `_T`/`_V` (or other) JSON envelope the NGClient
 expects for that type.
 
+**Varargs and argument conversion for API calls**: When GWT code calls a component or
+service API, arguments must be prepared before sending just as the real server does in
+`BaseWindow`. It's done by reusing code called by both`FormView.sendApiCall()` and
+`WebRuntimeService.executeApi()'. Notes:
+
+- `ApiSpec.processVarArgsIfNeeded(args, api)` — mirrors `BaseWindow.processVarArgsIfNeeded` for mobile
+- `IApiParameters` is the mobile equivalent of sablo's `IFunctionParameters`
+- `VarArgsConvertor` is the mobile equivalent of `CustomVariableArgsType`
+
+**sync API-call return values are currently not supported**: the Angular side executes component/service
+APIs asynchronously (they returns Promises). That worked for normal servers that handled threading, but
+The GWT main thread is single-threaded and cannot block/suspend, so `sendApiCall` / `executeApi` always
+return `null`. There is an idea of supporing all this via a broader async/await impl. in the future.
+
 ### Component instances & the ES6 Proxy
 
 Exported components are `WebRuntimeComponent` (services: `WebRuntimeService`), wrapped in an

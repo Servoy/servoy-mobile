@@ -100,6 +100,8 @@ public class WebRuntimeService implements Exportable
 			call.set("call", key);
 			if (args != null && args.length > 0)
 			{
+				args = ApiSpec.processVarArgsIfNeeded(args, apiSpec);
+				args = mobileClient.convertApiArgsForClient(args, apiSpec);
 				Array<Object> arguments = JsArrayHelper.createArray();
 				for (Object arg : args)
 				{

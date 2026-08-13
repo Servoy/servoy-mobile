@@ -358,10 +358,11 @@ public class FormView extends WebBaseComponent implements IFormDisplay, IModific
 		}
 		if (args != null && args.length > 0)
 		{
+			args = ApiSpec.processVarArgsIfNeeded(args, api);
+			args = controller.getApplication().convertApiArgsForClient(args, api);
 			Array<Object> arguments = JsArrayHelper.createArray();
 			for (Object arg : args)
 			{
-				// TODO should we convert the arguments... based on the api.getParamter types
 				arguments.push(arg);
 			}
 			call.set("args", arguments);

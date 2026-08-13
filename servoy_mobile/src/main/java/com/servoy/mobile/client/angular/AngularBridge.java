@@ -43,7 +43,7 @@ public class AngularBridge
 
 	private boolean firstCall = true;
 
-	private ServerScriptManager serverScriptManager;
+	private final ServerScriptManager serverScriptManager;
 
 	public AngularBridge(MobileClient mobileClient)
 	{
@@ -210,6 +210,7 @@ public class AngularBridge
 		MobileClient.log("GWT sending to Angular " + message);
 		nativeSendMessage(message);
 	}
+
 
 	private native static void addEventListener(AngularBridge bridge) /*-{
         var servoyAngularBridge = bridge;

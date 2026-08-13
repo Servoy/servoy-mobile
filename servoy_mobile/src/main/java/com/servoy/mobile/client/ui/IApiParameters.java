@@ -17,33 +17,26 @@
 
 package com.servoy.mobile.client.ui;
 
-import com.google.gwt.core.client.JavaScriptObject;
-
 /**
- * @author jcompagner
+ * Mobile client equivalent of sablo's IFunctionParameters.
+ * Describes the declared parameters of a component or service API function,
+ * providing enough information to perform varargs collapsing before a call is sent
+ * to the Angular frontend.
  *
+ * @see org.sablo.specification.IFunctionParameters
  */
-public class Parameter extends JavaScriptObject
+public interface IApiParameters
 {
-	protected Parameter()
-	{
-	}
 
-	public final native String getName()/*-{
-    	return this.name;
-	}-*/;
+	/**
+	 * Returns the number of declared parameters (including the varargs parameter if present).
+	 */
+	int getDefinedArgsCount();
 
-	public final native String getType()/*-{
-	    return this.type;
-	}-*/;
+	/**
+	 * Returns true if the last declared parameter is a variable-arguments parameter
+	 * (its type ends with "..." in the spec file).
+	 */
+	boolean isVarArgs();
 
-	public final native boolean getOptional()/*-{
-	    return this.optional;
-	}-*/;
-
-	public final boolean isVarArgs()
-	{
-		String type = getType();
-		return type != null && type.endsWith("...");
-	}
 }
