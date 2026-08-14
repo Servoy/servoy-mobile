@@ -22,6 +22,7 @@ import java.util.Map;
 
 import com.google.gwt.core.client.JsonUtils;
 import com.servoy.mobile.client.MobileClient;
+import com.servoy.mobile.client.ui.ApiSpec;
 
 /**
  * @author jcompagner
@@ -44,6 +45,13 @@ public class AngularBridge
 	private boolean firstCall = true;
 
 	private final ServerScriptManager serverScriptManager;
+
+	/**
+	 * Counter for smsgids GWT includes in outgoing sync serviceApis/componentApis messages.
+	 * Angular echoes the smsgid back in its response so GWT can resolve the matching Promise.
+	 * Starts at 1; the Angular-side nextMessageId (used for cmsgid) is a separate namespace.
+	 */
+	private int nextSmsgId = 1;
 
 	public AngularBridge(MobileClient mobileClient)
 	{
@@ -78,6 +86,25 @@ public class AngularBridge
 	{
 		MobileClient.log("GWT received from Angular " + message);
 		ServiceCallObject service = JsonUtils.safeEval(message);
+
+		// Check first: is this a response to a GWT-initiated sync API call?
+		// Angular echoes back {smsgid, ret} on success or {smsgid, err} on failure after
+		// processing a serviceApis/componentApis message that GWT sent with an smsgid.
+		String incomingSmsgId = service.getSmsgId();
+		if (incomingSmsgId != null)
+		{
+			String err = service.getErr();
+			if (err != null)
+			{
+				rejectPendingApiCall(incomingSmsgId, err);
+			}
+			else
+			{
+				resolvePendingApiCall(incomingSmsgId, service.getRet());
+			}
+			return;
+		}
+
 		if (service.getServiceName() != null)
 		{
 			handleServiceCall(service);
@@ -205,6 +232,89 @@ public class AngularBridge
 	}
 
 
+	/**
+	 * Generates the next smsgid string for a GWT-initiated sync API call.
+	 */
+	public String nextSyncApiCallSmsgId()
+	{
+		return "gwt-" + (nextSmsgId++);
+	}
+
+	/**
+	 * Creates a native JS Promise for a sync API call and stores both its resolve and reject
+	 * functions keyed by smsgid, along with the ApiSpec so the return value can be converted.
+	 * The caller must include that smsgid in the outgoing serviceApis/componentApis message so
+	 * Angular echoes it back; then {@link #resolvePendingApiCall} or {@link #rejectPendingApiCall}
+	 * will settle the promise.
+	 */
+	public native Object createSyncApiCallPromise(String smsgId, ApiSpec apiSpec) /*-{
+		var self = this;
+		if (!self._pendingApiCalls) self._pendingApiCalls = {};
+		return new Promise(function(resolve, reject) {
+			self._pendingApiCalls[smsgId] = { resolve: resolve, reject: reject, apiSpec: apiSpec };
+		});
+	}-*/;
+
+	/**
+	 * Proxy so JSNI in this class can call {@link MobileClient#convertApiReturnValue} without
+	 * needing to chain two field references in JSNI notation.
+	 */
+	public Object convertApiReturnValue(Object rawValue, ApiSpec apiSpec)
+	{
+		return mobileClient.convertApiReturnValue(rawValue, apiSpec);
+	}
+
+	/**
+	 * Resolves the pending Promise stored for the given smsgid with the return value from Angular.
+	 * The raw value is first run through {@link MobileClient#convertApiReturnValue} so that
+	 * typed values (e.g. dates encoded as {_T,_V}) are converted before reaching solution code.
+	 * Called from {@link #onAngularEvent} when it detects an incoming {smsgid, ret} response.
+	 */
+	private native void resolvePendingApiCall(String smsgId, Object retValue) /*-{
+		if (this._pendingApiCalls && this._pendingApiCalls[smsgId]) {
+			var entry = this._pendingApiCalls[smsgId];
+			delete this._pendingApiCalls[smsgId];
+			var converted = this.@com.servoy.mobile.client.angular.AngularBridge::convertApiReturnValue(Ljava/lang/Object;Lcom/servoy/mobile/client/ui/ApiSpec;)(retValue, entry.apiSpec);
+			entry.resolve(converted);
+		} else {
+			@com.servoy.mobile.client.MobileClient::log(Ljava/lang/String;)("GWT: no pending promise found for smsgid: " + smsgId);
+		}
+	}-*/;
+
+	/**
+	 * Rejects the pending Promise stored for the given smsgid with the error from Angular.
+	 * Called from {@link #onAngularEvent} when it detects an incoming {smsgid, err} response,
+	 * which Angular sends when client-side execution of the API call failed.
+	 * The rejection propagates as a thrown exception at the {@code await} site in solution code.
+	 */
+	private native void rejectPendingApiCall(String smsgId, String errorMessage) /*-{
+		if (this._pendingApiCalls && this._pendingApiCalls[smsgId]) {
+			var handlers = this._pendingApiCalls[smsgId];
+			delete this._pendingApiCalls[smsgId];
+			handlers.reject(new Error(errorMessage));
+		} else {
+			@com.servoy.mobile.client.MobileClient::log(Ljava/lang/String;)("GWT: no pending promise found for smsgid (reject): " + smsgId);
+		}
+	}-*/;
+
+	/**
+	 * Rejects all currently pending sync API call promises with the given reason.
+	 * Should be called when the Angular connection is lost or the client is shutting down,
+	 * so that any suspended async solution functions are unblocked with an error rather
+	 * than hanging indefinitely.
+	 */
+	public native void rejectAllPendingApiCalls(String reason) /*-{
+		if (!this._pendingApiCalls) return;
+		var err = new Error(reason);
+		var pending = this._pendingApiCalls;
+		this._pendingApiCalls = {};
+		for (var smsgId in pending) {
+			if (pending.hasOwnProperty(smsgId)) {
+				pending[smsgId].reject(err);
+			}
+		}
+	}-*/;
+
 	public void sendMessage(String message)
 	{
 		MobileClient.log("GWT sending to Angular " + message);
@@ -220,6 +330,15 @@ public class AngularBridge
         {
             servoyAngularBridge.@com.servoy.mobile.client.angular.AngularBridge::onAngularEvent(Ljava/lang/String;)(e.data);
         });
+
+        // Reject all pending sync API call promises when the page is being torn down so that
+        // any suspended async solution functions are unblocked with an error rather than
+        // hanging indefinitely. 'pagehide' fires on mobile browsers; 'unload' is the fallback.
+        var onTeardown = function() {
+            servoyAngularBridge.@com.servoy.mobile.client.angular.AngularBridge::rejectAllPendingApiCalls(Ljava/lang/String;)("Mobile client page unloaded");
+        };
+        window.addEventListener("pagehide", onTeardown);
+        window.addEventListener("unload", onTeardown);
     }-*/;
 
 	private native static void nativeSendMessage(String message) /*-{

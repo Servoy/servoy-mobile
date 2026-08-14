@@ -27,6 +27,7 @@ import org.timepedia.exporter.client.ExporterUtil;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
+import com.servoy.mobile.client.angular.AngularBridge;
 import com.servoy.mobile.client.angular.Array;
 import com.servoy.mobile.client.angular.Handler;
 import com.servoy.mobile.client.angular.JsArrayHelper;
@@ -372,7 +373,19 @@ public class FormView extends WebBaseComponent implements IFormDisplay, IModific
 		JsPlainObj apiCalls = new JsPlainObj();
 		apiCalls.set(COMPONENT_CALLS, calls);
 
-		controller.getApplication().getAngularBridge().sendMessage(apiCalls.toJSONString());
+		AngularBridge bridge = controller.getApplication().getAngularBridge();
+		if (!api.isAsyncApiCall())
+		{
+			// Sync call: include smsgid so Angular echoes it back with the return value.
+			// Return a JS Promise; it will be resolved by AngularBridge when Angular responds.
+			String smsgId = bridge.nextSyncApiCallSmsgId();
+			apiCalls.set("smsgid", smsgId);
+			Object promise = bridge.createSyncApiCallPromise(smsgId, api);
+			bridge.sendMessage(apiCalls.toJSONString());
+			return promise;
+		}
+
+		bridge.sendMessage(apiCalls.toJSONString());
 		return null;
 	}
 

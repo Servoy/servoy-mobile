@@ -109,7 +109,19 @@ public class Executor
 	 */
 	public static native Object call(JavaScriptObject func, JsArrayMixed params)
 	/*-{
-		return $wnd.internal.Utils.wrapIfPrimitive(func.apply(func, params));
+		var result = $wnd.internal.Utils.wrapIfPrimitive(func.apply(func, params));
+		// If the called function is async it returns a Promise. Attach a .catch() so that
+		// unhandled rejections (exceptions thrown inside the async handler after an await)
+		// surface in the GWT log instead of being silently swallowed by the browser.
+		// The promise itself is still returned so any future caller that needs to await it can.
+		// Note: bracket notation is required because 'catch' is a reserved word in JS/GWT.
+		if (result && typeof result.then === 'function') {
+			result['catch'](function(err) {
+				@com.servoy.mobile.client.MobileClient::log(Ljava/lang/String;)(
+					"Unhandled error in async solution function: " + (err && err.message ? err.message : String(err)));
+			});
+		}
+		return result;
 	}-*/;
 
 	/**

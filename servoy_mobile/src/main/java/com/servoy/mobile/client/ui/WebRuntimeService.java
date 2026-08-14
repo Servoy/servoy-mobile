@@ -22,6 +22,7 @@ import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.NoExport;
 
 import com.servoy.mobile.client.MobileClient;
+import com.servoy.mobile.client.angular.AngularBridge;
 import com.servoy.mobile.client.angular.Array;
 import com.servoy.mobile.client.angular.JsArrayHelper;
 import com.servoy.mobile.client.angular.JsPlainObj;
@@ -114,7 +115,19 @@ public class WebRuntimeService implements Exportable
 			JsPlainObj apiCalls = new JsPlainObj();
 			apiCalls.set("serviceApis", calls);
 
-			mobileClient.getAngularBridge().sendMessage(apiCalls.toJSONString());
+			AngularBridge bridge = mobileClient.getAngularBridge();
+			if (!apiSpec.isAsyncApiCall())
+			{
+				// Sync call: include smsgid so Angular echoes it back with the return value.
+				// Return a JS Promise; it will be resolved by AngularBridge when Angular responds.
+				String smsgId = bridge.nextSyncApiCallSmsgId();
+				apiCalls.set("smsgid", smsgId);
+				Object promise = bridge.createSyncApiCallPromise(smsgId, apiSpec);
+				bridge.sendMessage(apiCalls.toJSONString());
+				return promise;
+			}
+
+			bridge.sendMessage(apiCalls.toJSONString());
 		}
 		return null;
 	}

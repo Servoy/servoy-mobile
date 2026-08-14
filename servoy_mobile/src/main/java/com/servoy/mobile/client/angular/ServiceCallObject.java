@@ -46,4 +46,27 @@ public class ServiceCallObject extends JavaScriptObject
 	public final native String getCmsgId() /*-{
 		return this.cmsgid ? this.cmsgid : null;
 	}-*/;
+
+	/**
+	 * Returns the smsgid from a GWT-initiated sync API call response sent back by Angular.
+	 * Angular echoes back whatever smsgid GWT included in the outgoing serviceApis/componentApis message.
+	 */
+	public final native String getSmsgId() /*-{
+		return (this.smsgid !== undefined && this.smsgid !== null) ? String(this.smsgid) : null;
+	}-*/;
+
+	/**
+	 * Returns the ret value from an Angular response to a GWT-initiated sync API call.
+	 */
+	public final native Object getRet() /*-{
+		return this.ret !== undefined ? this.ret : null;
+	}-*/;
+
+	/**
+	 * Returns the err string from an Angular error response to a GWT-initiated sync API call.
+	 * Angular sends {smsgid, err: '...'} when the client-side execution of the call failed.
+	 */
+	public final native String getErr() /*-{
+		return this.err !== undefined ? String(this.err) : null;
+	}-*/;
 }

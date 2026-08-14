@@ -181,6 +181,29 @@ public class MobileClient implements EntryPoint
 		return converters.get(typeName);
 	}
 
+	/**
+	 * Converts a raw return value received from Angular back to a Java-usable value.
+	 * Mirrors what {@code BaseWindow.invokeApi} does via {@code JSONUtils.fromJSON} on the server:
+	 * it runs the wire value through the {@link IPropertyConverter#convertFromClient} that matches
+	 * the API spec's declared return type.
+	 *
+	 * For example a date returned as {@code {"_T":"svy_date","_V":"<ISO>"}} is converted back to
+	 * a Java {@code Date}; primitive types (string, number, boolean) pass through unchanged.
+	 *
+	 * @param rawValue the raw JS value from Angular (from the {@code ret} field of the response)
+	 * @param apiSpec  the spec of the API call whose return value this is
+	 * @return the converted value, or {@code rawValue} unchanged when no converter is registered
+	 */
+	public Object convertApiReturnValue(Object rawValue, ApiSpec apiSpec)
+	{
+		if (rawValue == null || apiSpec == null) return rawValue;
+		String returnType = apiSpec.getReturnType();
+		if (returnType == null) return rawValue;
+		IPropertyConverter converter = converters.get(returnType);
+		if (converter != null) return converter.convertFromClient(returnType, rawValue, null, null);
+		return rawValue;
+	}
+
 	public Object convertValueForType(String typeName, Object value, PropertySpec propertyType)
 	{
 		IPropertyConverter converter = converters.get(typeName);

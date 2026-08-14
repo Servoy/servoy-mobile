@@ -160,8 +160,13 @@ and spec data: `ServiceCallObject`, `DataPush`, `EventCall`, `ComponentSpec`, `P
 
 - **Inbound**: a `window` `message` listener; the JSON payload is in `e.data`.
 - **Outbound**: `parent.postMessage({from:'gwt', data:<jsonString>})`.
-- **Request/response correlation**: Angular includes a `cmsgid`; GWT replies with
+- **Request/response correlation (Angular→GWT)**: Angular includes a `cmsgid`; GWT replies with
   `{cmsgid, ret}`.
+- **Request/response correlation (GWT→Angular, sync API calls)**: GWT includes an `smsgid` in
+  the outgoing `serviceApis`/`componentApis` message; Angular replies with `{smsgid, ret}` (or
+  `{smsgid, err}` on failure). GWT stores a JS Promise keyed by smsgid in `AngularBridge` and
+  resolves/rejects it when the response arrives. Solution functions must be `async` and `await`
+  the call site for this to work — see `SVY-21343-sync-api-calls-async-await.spec.md`.
 - **Handshake**: on the first inbound message the bridge replies with
   `{msg:{windownr:"1", clientnr:"1"}}` (mimicking the server assigning window/client numbers),
   pushes the solution stylesheet via `$applicationService.setStyleSheets`, then triggers the
@@ -197,10 +202,10 @@ service API, arguments must be prepared before sending just as the real server d
 - `IApiParameters` is the mobile equivalent of sablo's `IFunctionParameters`
 - `VarArgsConvertor` is the mobile equivalent of `CustomVariableArgsType`
 
-**sync API-call return values are currently not supported**: the Angular side executes component/service
-APIs asynchronously (they returns Promises). That worked for normal servers that handled threading, but
-The GWT main thread is single-threaded and cannot block/suspend, so `sendApiCall` / `executeApi` always
-return `null`. There is an idea of supporing all this via a broader async/await impl. in the future.
+**Sync API-call return values** are supported via a Promise-based async/await mechanism
+(SVY-21343). `WebRuntimeService.executeApi()` and `FormView.sendApiCall()` return a native JS
+`Promise` for sync calls (spec has a return type); the exporter transforms the calling solution
+function to `async` and inserts `await` at the call site. See the spec for full design details.
 
 ### Component instances & the ES6 Proxy
 
@@ -321,6 +326,9 @@ JS-unit stack traces map back to solution methods.
 - **Adding a new exported scripting class**: implement `Exportable`, annotate with `@Export`/
   `@ExportPackage`, add a `GWT.create(...)` call in `MobileClient.initialize()`, and attach it
   to the right `$wnd.*` global via JSNI if it is a top-level API object.
+- **JSNI reserved words**: JS reserved words used as property names must use bracket notation
+  in JSNI — dot notation causes a GWT compile error. Common cases: `result['catch'](fn)` instead
+  of `result.catch(fn)`, and similarly for `delete`, `class`, `new` as property names.
 
 ## When making changes
 
