@@ -1,13 +1,14 @@
 ﻿---
-description: Run the Spec-Driven Development pipeline (Jira -> triage -> spec -> code -> review -> tests) for this Java / Eclipse-OSGi repo.
+description: Run the Spec-Driven Development pipeline (Jira → triage → spec → code → review → tests) for this GWT / Maven repo (Servoy Mobile).
 agent: build
 ---
 
 Run the full Spec-Driven Development pipeline for this repository.
 
-This repo is a **Java / Eclipse-OSGi** project, so load and follow the **sdd-java-eclipse**
-skill (call the `skill` tool with id `sdd-java-eclipse`). That skill is the orchestrator; it
-defines every phase and the human approval gates.
+This repo is a **plain-Java / standard-Maven** project (the legacy Servoy Mobile GWT client, a
+`war` — NOT an Eclipse-OSGi/Tycho plugin), so load and follow the **sdd-java-plain** skill
+(call the `skill` tool with id `sdd-java-plain`). That skill is the orchestrator; it defines
+every phase and the human approval gates.
 
 As the skill's `PROJECT_CONTEXT`, read the repository-local file
 `.opencode/sdd/project-context.md` (relative to the current working directory) with the
