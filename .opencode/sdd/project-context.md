@@ -1,115 +1,73 @@
-# Project Context — Servoy Eclipse IDE
+# Project Context — Servoy Mobile (GWT / Maven)
 
-This project is the **Servoy Developer IDE** — a large Eclipse RCP application built
-as a multi-module Maven/Tycho project consisting of ~40+ OSGi plugin bundles.
+This project is **Servoy Mobile** — the legacy Servoy mobile client, a **GWT web application**
+built with standard Maven (packaged as a `war`). It is NOT an Eclipse-OSGi/Tycho plugin and
+NOT the Servoy Developer IDE.
+
+## SDD variant
+
+This repo uses the **sdd-java-plain** shared skill (plain-Java / standard-Maven). Dependencies
+live in `pom.xml`, there is no OSGi MANIFEST / target platform, and the build is plain Maven.
 
 ## Technology stack
 
 | Aspect | Value |
 |--------|-------|
-| Java version | 21 |
-| Build system | Maven 3.9.0+ with Eclipse Tycho 4.0.12 |
-| Platform | Eclipse 2025-12 (RCP) |
-| Module system | OSGi (each plugin is a bundle with MANIFEST.MF) |
-| UI framework | Eclipse SWT/JFace + Angular (designer frontends) |
-| Version | 2026.6.0-SNAPSHOT |
+| Java version | 17 |
+| Build system | Maven (multi-module reactor) — standard Maven, no Tycho/OSGi |
+| Frontend | GWT (compiled to JavaScript) |
+| Packaging | `war` (the `servoy_mobile` module) |
+| Version | (see root pom `<version>` — per checkout line) |
 
-## Eclipse plugin development essentials
+## Module structure
 
-When writing code for this project, you are writing **OSGi bundles**, not plain Java:
+```
+servoy-mobile-parent/            # parent reactor pom (packaging=pom)
+├── servoy_mobile/               # the GWT client — packaging=war, has a gwtcompile profile
+└── servoy_mobile_jsunit/        # GWT JSUnit tests
+```
 
-### Dependencies
-- Declare in `META-INF/MANIFEST.MF` under `Require-Bundle` or `Import-Package`
-- Tycho resolves dependencies from the **active target platform** (see `launch_targets/`)
-- Use `eclipse-pde_getActiveTarget` to check what target is currently active
-- If a dependency is already in the target platform, just add it to MANIFEST.MF
-- If a dependency is NOT in the target platform, add it as a Maven dependency in the
-  target definition file (`.target` file) — then it becomes available for MANIFEST.MF
+## Development essentials
 
-### Extension points
-- Register contributions in `plugin.xml`
-- Look at existing plugins for patterns (e.g. `com.servoy.eclipse.core/plugin.xml`)
+This is a **standard Maven / GWT project**:
+- Dependencies are declared in `pom.xml` `<dependencies>`; the parent pom manages versions.
+  There is **no** MANIFEST.MF / Require-Bundle / Import-Package / target platform.
+- The `servoy_mobile` module is GWT: Java is cross-compiled to JavaScript. GWT-client Java is
+  restricted to the GWT JRE emulation subset — not all `java.*` APIs are available client-side.
+- Code edits use ordinary file-editing tools (the Eclipse `eclipse-coder` / `eclipse-pde`
+  workflow does not apply).
 
-### Services & activation
-- Use OSGi Declarative Services or `BundleActivator` for lifecycle
-- Prefer lazy activation (`Bundle-ActivationPolicy: lazy`)
+## Build & test commands
 
-### Packages & visibility
-- Export public API packages in MANIFEST.MF `Export-Package`
-- Keep internal packages unexported (convention: `*.internal.*`)
-- Never reference another plugin's internal packages
-
-### New plugin checklist
-If creating a new plugin bundle:
-1. Create `META-INF/MANIFEST.MF` with proper headers
-2. Create `build.properties` listing source folders and output
-3. Create `plugin.xml` if contributing extension points
-4. Add the module to the parent `pom.xml`
-5. Add to the feature (`com.servoy.eclipse.feature/feature.xml`)
+```bash
+mvn clean install                       # full reactor build
+mvn -q -pl servoy_mobile compile        # quick compile check
+mvn -pl servoy_mobile -Pgwtcompile package   # GWT-compile + war
+mvn test                                # tests (servoy_mobile_jsunit for GWT JSUnit)
+```
 
 ## Code conventions
 
-- Follow existing patterns in neighboring files — consistency over personal preference
-- Use try-with-resources for all `Closeable` resources
-- Use `volatile` or proper synchronization for shared mutable state
-- Log via the plugin's `ILog` or SLF4J (check what the module uses)
-- No `System.out.println` — use proper logging
-- Prefer existing utility classes (check `com.servoy.eclipse.model` and `com.servoy.eclipse.core`)
+- Follow existing patterns in neighboring files.
+- Respect GWT client/server split: client-side code must stay within the GWT emulation subset;
+  shared code goes in the modules/packages GWT is configured to source.
+- No `System.out.println` in production code — use proper logging (server side) / GWT logging.
 
-## Key project structure
+## Testing
 
-| Module | Purpose |
-|--------|---------|
-| `com.servoy.eclipse.core` | Main plugin, launch configs, schemas |
-| `com.servoy.eclipse.model` | Data model layer |
-| `com.servoy.eclipse.ui` | UI components |
-| `com.servoy.eclipse.debug` | Debugger support |
-| `com.servoy.eclipse.designer` | Form designer |
-| `com.servoy.eclipse.ngclient` | NG Client support |
-| `com.servoy.eclipse.tests` | Integration tests (eclipse-test-plugin) |
+- GWT JSUnit tests live in `servoy_mobile_jsunit`. Run via Maven (`mvn test` / the module's
+  configured GWT test goal). This is standard Maven surefire/GWT, not an OSGi/PDE runner.
 
 ## AGENTS.md
 
-Always read `AGENTS.md` at the start of your work — it contains the full tool usage
-policy, workflow requirements, and post-edit checklist that you must follow.
+If an `AGENTS.md` exists at the repo root, read it first for tool policy, workflow, and the
+`[ai]` + Jira-key commit-subject convention.
 
 ## Gotchas
 
-Things that will trip you up if you don't know them:
-
-- **MANIFEST.MF formatting:** The MANIFEST.MF file has strict line-length limits (72 bytes).
-  Use eclipse-coder tools to edit it, not raw text replacement, or let `eclipse-coder_formatFile`
-  handle it. Broken MANIFEST.MF = bundle won't load.
-
-- **Target platform is the source of truth for deps:** You cannot use a library just because
-  it exists on Maven Central. It must be in the active target platform first. If it's not
-  there, add it to the `.target` file's Maven dependencies section, then reload the target
-  (`eclipse-pde_reloadTarget`).
-
-- **Plugin pom.xml is NOT for dependencies:** Unlike normal Maven projects, the `pom.xml`
-  in a Tycho plugin project is only for build configuration (packaging type, parent, etc.).
-  Runtime dependencies come from MANIFEST.MF + target platform. Never add `<dependency>`
-  blocks to a plugin's pom.xml for library usage.
-
-- **Require-Bundle vs Import-Package:** Prefer `Require-Bundle` for Servoy internal bundles.
-  Use `Import-Package` for third-party libraries where you want loose coupling.
-
-- **build.properties matters:** If you add a new folder (e.g. `resources/`), it must be
-  listed in `build.properties` under `bin.includes` or it won't be in the built JAR.
-
-- **Extension point IDs are global:** When contributing to extension points in `plugin.xml`,
-  the `id` attribute must be globally unique across the entire Eclipse platform.
-
-- **Activator vs DS:** Don't create a `BundleActivator` just for service registration.
-  Use OSGi Declarative Services (DS) with component XML or annotations instead. Activators
-  are only for bundle lifecycle hooks (start/stop).
-
-- **SWT threading:** All UI code must run on the SWT display thread. Use
-  `Display.getDefault().asyncExec()` or `syncExec()`. Touching UI from a background
-  thread = instant crash.
-
-- **No JUnit in production MANIFEST:** Never add JUnit dependencies to a production
-  plugin's MANIFEST.MF. Test dependencies belong only in test project bundles.
-
-- **Feature.xml ordering:** When adding a new plugin to `com.servoy.eclipse.feature/feature.xml`,
-  add it alphabetically to maintain consistency.
+- **NOT an Eclipse plugin:** no MANIFEST.MF, no target platform, no Tycho. Do not use PDE /
+  eclipse-pde dependency workflows. Dependencies go in `pom.xml`.
+- **GWT emulation subset:** client-side Java can only use the JRE classes GWT emulates. A
+  server-only API used in client code will fail at GWT compile, not `javac`.
+- **`war` packaging:** the `servoy_mobile` module produces a deployable war; the GWT compile
+  is behind the `gwtcompile` profile.
