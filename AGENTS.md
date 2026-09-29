@@ -327,15 +327,36 @@ This repo lives in a complex, multi-project Eclipse environment. **Always priori
 Eclipse-specific MCP/PDE tools** over generic command-line or filesystem tools so the Eclipse
 index, builder, and classpath stay in sync.
 
-- **File reading**: use `eclipse-ide_readProjectResource` instead of the generic `read` tool.
-- **File writing & creating**: use `eclipse-coder_createFile` or `eclipse-coder_replaceFileContent`
+**⚠️ Everything runs through Code Mode.** The Eclipse MCP servers (`eclipse-coder`, `eclipse-ide`,
+`eclipse-git`, `eclipse-pde`, `eclipse-runner`, `eclipse-context`) and the other MCP tools
+(`memory`, `time`) are exposed **only through Code Mode** — there is no direct top-level tool.
+Call every one from inside the **`execute`** tool using bracket notation, e.g.
+`await tools["eclipse-coder"].replaceString({ ... })` or
+`await tools["eclipse-ide"].getCompilationErrors({ ... })`. **NEVER** call them as plain tools
+(`eclipse-coder_replaceString`, `eclipse-ide_getCompilationErrors`, `tools.eclipse_ide...`) —
+those names do not exist in Code Mode and the call fails with *"No tool named ... is currently
+available."* When that happens, **do not fall back to the built-in `edit`/`write`** — fix the
+call by wrapping it in `execute` with the bracket form. If a tool is not shown, find it with
+`search(...)` inside an `execute` script (synchronous — no `await`). The only tools called
+directly are the built-in `read`, `grep`, `glob`, and `shell`.
+
+**Every file inside an Eclipse workspace project MUST be edited through `eclipse-coder`**, never
+the built-in `edit`/`write` (they write behind Eclipse's back and desync the editor, JDT model
+and undo history). This is a hard rule.
+
+- **File reading**: `tools["eclipse-ide"].readProjectResource` (plus `getSource`,
+  `getFilteredSource`, `getMethodSource`, `getClassOutline`) instead of the generic `read` tool.
+- **File writing & creating**: `tools["eclipse-coder"].createFile` or `replaceFileContent`
   instead of the generic `write` tool.
-- **File editing**: use `eclipse-coder_applyPatch`, `eclipse-coder_insertIntoFile`,
-  `eclipse-coder_replaceString`, or `eclipse-coder_deleteLinesInFile` instead of the generic
-  `edit` tool.
-- **File / class searching**: use `eclipse-ide_fileSearch`, `eclipse-ide_fileSearchRegExp`, or
-  `eclipse-ide_findFiles` instead of generic `grep` / `glob`.
-- **Git operations**: use the `eclipse-git_*` tools instead of shell `git` commands in `bash`.
+- **File editing**: `tools["eclipse-coder"].applyPatch`, `insertIntoFile`, `replaceString`,
+  `applyTextEdits`, or `deleteLinesInFile` instead of the generic `edit` tool.
+- **File / class searching**: `tools["eclipse-ide"].fileSearch`, `fileSearchRegExp`, or
+  `findFiles` instead of generic `grep` / `glob`.
+- **Git operations**: `tools["eclipse-git"]` (`gitStatus`, `gitDiff`, `gitCommit`, …) instead of
+  shell `git` commands.
+
+The built-in `edit`/`write` are acceptable only for files NOT inside any Eclipse project
+(repo-root docs, CI YAML, `opencode.json`, shell scripts). When in doubt, use `eclipse-coder`.
 
 > Note: this project is a **GWT module**, not an Eclipse plugin, and its tests run through the
 > GWT/JSUnit exporter flow (not standard JUnit/surefire). The Eclipse test-runner and
@@ -360,10 +381,10 @@ or AI-assisted changes must follow these rules:
 
 After any code change made through the Eclipse MCP tools, run this self-verification loop:
 
-1. **Check for errors**: call `eclipse-ide_getCompilationErrors()` to inspect the build state.
+1. **Check for errors**: call `tools["eclipse-ide"].getCompilationErrors(...)` (via `execute`) to inspect the build state.
 2. **Review quick fixes**: if errors were introduced or found, look at the returned quick-fix list.
 3. **Apply quick fixes**: if a fix is applicable and safe, apply it with
-   `eclipse-ide_executeQuickFix` using the corresponding `markerId` and `proposalIndex`.
+   `tools["eclipse-ide"].executeQuickFix` using the corresponding `markerId` and `proposalIndex`.
 4. **Re-check**: verify compilation again to confirm the workspace is clean.
 
 Because Eclipse's Java build does not exercise the GWT compiler, also run a GWT compile
