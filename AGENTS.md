@@ -379,6 +379,14 @@ The built-in `edit`/`write` are acceptable only for files NOT inside any Eclipse
 > dependency note under "Maven profiles" for why this must be run via the `bash` tool rather
 > than Eclipse's own Maven integration.
 
+## Jira API
+
+For anything Jira — reading, creating, updating, commenting on, linking, searching (JQL),
+assigning or transitioning issues — load the **`servoy-jira`** skill (global opencode skill)
+and follow its instructions. It holds the connection details (base URL, `ATLASSIAN_AUTH_BASIC`
+auth), the per-OS command recipes and the ADF templates. Always load the skill first rather
+than hand-rolling the REST calls.
+
 ## Commit message convention: `[ai]`
 
 To keep the origin of changes transparent, any Git commit consisting primarily of AI-generated
