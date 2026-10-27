@@ -129,7 +129,36 @@ ant build_mobile_in_developer
 
 ### Tests
 
-Tests are **not** standard JUnit/surefire. The `servoy_mobile_jsunit` module is a separate
+#### Running tests (GWT unit tests, `GWTTestCase`)
+
+Java unit tests for `client.*` code are `GWTTestCase` tests (JUnit 3 style `testXxx` methods, run in
+HtmlUnit by `gwt-maven-plugin:test`). They live in `servoy_mobile/src/test/java`, in the same package as the
+class under test, and use the test module `com.servoy.mobile.MobileClientTest`
+(`src/test/java/com/servoy/mobile/MobileClientTest.gwt.xml`). That module does **not** inherit `MobileClient`,
+so the app entry point does not boot inside the tests. Name new tests `*Test.java`. A test can subclass
+`MobileClient` (without calling `initialize()`) to stub `getI18nProvider()`, see `TagStringConvertorTest`.
+
+```bash
+# Jenkins / normal build (default not_dev profile): the tests run in the `test` phase of `mvn install`.
+# The servoy_base sources come from the unpacked servoy_base:sources artifact.
+mvn -B install
+
+# Local run against the sibling ../servoy-client checkout (no servoy_base sources artifact needed):
+mvn -B -Pgwttest test -pl servoy_mobile
+```
+
+- The default `not_dev` profile (used by Jenkins, `goals=install`) runs them: it adds test-scope JUnit 4.13.2,
+  binds `gwt:test` (htmlunit mode) to the `test` phase and skips surefire, which cannot run `GWTTestCase`.
+  The JUnit XML lands in `target/surefire-reports/`, where the Jenkins `junit` step reads it.
+- The `gwttest` profile is the same setup for local use: it takes the `servoy_base` sources from the sibling
+  checkout, like `-Pgwtcompile`. Naming a profile explicitly switches `not_dev` off, so do not combine them.
+- `-Pgwtcompile` skips the tests (`maven.test.skip=true`).
+- Both profiles pass `--add-opens java.base/java.lang=ALL-UNNAMED` to the GWT test JVM (needed on JDK 17+).
+- First run compiles the test module to JS (about a minute), later runs are faster. HtmlUnit is not a real browser.
+
+#### JSUnit (solution tests)
+
+The `servoy_mobile_jsunit` module is a separate
 GWT app (`MobileTestClient`) that runs **Servoy solution unit tests inside the compiled
 mobile client**, coordinating via GWT-RPC (`ITestSuiteController`). Generated test code is
 injected via `testSuite_generatedCodeLocation.js` by the Servoy test-war exporter. Jenkins
@@ -372,10 +401,11 @@ and undo history). This is a hard rule.
 The built-in `edit`/`write` are acceptable only for files NOT inside any Eclipse project
 (repo-root docs, CI YAML, `opencode.json`, shell scripts). When in doubt, use `eclipse-coder`.
 
-> Note: this project is a **GWT module**, not an Eclipse plugin, and its tests run through the
-> GWT/JSUnit exporter flow (not standard JUnit/surefire). The Eclipse test-runner and
-> PDE-plugin-test MCP tools do **not** apply here — use a GWT compile (command-line
-> `mvn install -Pgwtcompile` or `ant gwtc`) as the verification step instead. See the build
+> Note: this project is a **GWT module**, not an Eclipse plugin, and its tests run through
+> `GWTTestCase` (`mvn -Pgwttest test`, see "Tests") or the GWT/JSUnit exporter flow (not plain
+> JUnit/surefire). The Eclipse test-runner and PDE-plugin-test MCP tools do **not** apply here — use
+> the command-line `mvn -Pgwttest test` (or `mvn install`) plus a GWT compile (command-line
+> `mvn install -Pgwtcompile` or `ant gwtc`) as the verification steps instead. See the build
 > dependency note under "Maven profiles" for why this must be run via the `bash` tool rather
 > than Eclipse's own Maven integration.
 
