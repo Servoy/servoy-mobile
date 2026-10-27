@@ -363,6 +363,8 @@ JS-unit stack traces map back to solution methods.
    `mvn -Pgwtcompile compile`), or `ant gwtc`. GWT compilation is the primary safety net —
    pure-Java changes can still fail GWT compilation due to unsupported JRE features. Do not
    rely on Eclipse's m2e to run this (see the build dependency note above).
+5. Add or extend a `GWTTestCase` unit test for converter logic (see "Running tests") and run it with
+   `mvn -B -Pgwttest test -pl servoy_mobile`.
 
 ## Working inside the Eclipse workspace
 
