@@ -24,7 +24,8 @@ live in `pom.xml`, there is no OSGi MANIFEST / target platform, and the build is
 ```
 servoy-mobile-parent/            # parent reactor pom (packaging=pom)
 ├── servoy_mobile/               # the GWT client — packaging=war, has a gwtcompile profile
-└── servoy_mobile_jsunit/        # GWT JSUnit tests
+│   └── src/test/java/           # GWTTestCase unit tests for client.* code (run in HtmlUnit)
+└── servoy_mobile_jsunit/        # GWT JSUnit tests (Servoy solution tests inside the compiled client)
 ```
 
 ## Development essentials
@@ -43,8 +44,12 @@ This is a **standard Maven / GWT project**:
 mvn clean install                       # full reactor build
 mvn -q -pl servoy_mobile compile        # quick compile check
 mvn -pl servoy_mobile -Pgwtcompile package   # GWT-compile + war
-mvn test                                # tests (servoy_mobile_jsunit for GWT JSUnit)
+mvn -B -Pgwttest test -pl servoy_mobile # GWTTestCase unit tests only (needs sibling ../servoy-client checkout)
 ```
+
+`mvn install` (default `not_dev` profile, what Jenkins runs) also runs the GWTTestCase unit tests in the
+`test` phase. Naming a profile explicitly (`-Pgwtcompile`, `-Pgwttest`) switches `not_dev` off, so do not
+combine them.
 
 ## Code conventions
 
@@ -55,8 +60,16 @@ mvn test                                # tests (servoy_mobile_jsunit for GWT JS
 
 ## Testing
 
-- GWT JSUnit tests live in `servoy_mobile_jsunit`. Run via Maven (`mvn test` / the module's
-  configured GWT test goal). This is standard Maven surefire/GWT, not an OSGi/PDE runner.
+- **Unit tests for `client.*` code are `GWTTestCase` tests, NOT JUnit 5 / Mockito.** They live in
+  `servoy_mobile/src/test/java` (same package as the class under test, named `*Test.java`), extend
+  `com.google.gwt.junit.client.GWTTestCase` (JUnit 3 style `testXxx` methods, JUnit 4.13.2 on the classpath) and
+  use the test module `com.servoy.mobile.MobileClientTest` (it does not inherit `MobileClient`, so the app entry
+  point does not boot). They run in HtmlUnit via `gwt-maven-plugin:test`, not plain surefire. Mockito and JUnit 5
+  do not work for GWT-compiled code: stub collaborators by subclassing (see `TagStringConvertorTest`). This
+  overrides the JUnit 5 + Mockito defaults of the shared test-gen phase.
+- Only code that compiles under GWT can be tested this way; keep tests within the GWT JRE emulation subset too.
+- GWT JSUnit tests (Servoy solution tests inside the compiled client) live in `servoy_mobile_jsunit`.
+- See `AGENTS.md` "Running tests" for commands and caveats.
 
 ## AGENTS.md
 

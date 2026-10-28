@@ -45,6 +45,7 @@ import com.servoy.mobile.client.properties.FormConvertor;
 import com.servoy.mobile.client.properties.FormatConvertor;
 import com.servoy.mobile.client.properties.IPropertyConverter;
 import com.servoy.mobile.client.properties.RuntimeComponentConvertor;
+import com.servoy.mobile.client.properties.TagStringConvertor;
 import com.servoy.mobile.client.properties.ValueListConfigConverter;
 import com.servoy.mobile.client.properties.ValuelistConvertor;
 import com.servoy.mobile.client.properties.VarArgsConvertor;
@@ -174,6 +175,7 @@ public class MobileClient implements EntryPoint
 		converters.put("valuelistConfig", new ValueListConfigConverter());
 		converters.put("form", new FormConvertor());
 		converters.put("runtimecomponent", new RuntimeComponentConvertor());
+		converters.put("tagstring", new TagStringConvertor(this));
 	}
 
 	public IPropertyConverter getConverter(String typeName)

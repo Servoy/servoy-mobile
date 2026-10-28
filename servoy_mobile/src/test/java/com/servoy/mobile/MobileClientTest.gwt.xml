@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  GWT module used by the GWTTestCase unit tests (see AGENTS.md, "Tests").
+  It deliberately does NOT inherit com.servoy.mobile.MobileClient: that module declares an entry point which
+  would boot the whole mobile client (needing the _solutiondata_ globals of an exported solution) inside the test.
+-->
+<module>
+  <inherits name='com.google.gwt.user.User'/>
+  <inherits name='com.google.gwt.json.JSON'/>
+  <inherits name='com.google.gwt.junit.JUnit'/>
+
+  <inherits name="com.servoy.base.ServoyBase" />
+  <inherits name='org.timepedia.exporter.Exporter'/>
+  <inherits name="jsinterop.base.Base" />
+
+  <inherits name="com.allen_sauer.gwt.log.gwt-log-DEBUG" />
+  <extend-property name="log_level" values="DEBUG"/>
+  <set-property name="log_ConsoleLogger" value="DISABLED" />
+  <set-property name="log_DivLogger" value="DISABLED" />
+  <set-property name="log_FirebugLogger" value="DISABLED" />
+  <set-property name="log_GWTLogger" value="DISABLED" />
+  <set-property name="log_SystemLogger" value="DISABLED" />
+
+  <set-property name="export" value="yes"/>
+  <set-property name="user.agent" value="safari"/>
+
+  <!-- client Java source + the tests, which live in the same packages under src/test/java -->
+  <source path='client'/>
+</module>

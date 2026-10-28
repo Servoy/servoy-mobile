@@ -14,6 +14,11 @@
     <artifactId>servoy_mobile</artifactId>
     <packaging>war</packaging>
 
+    <properties>
+        <!-- tests are skipped unless the not_dev (default) or gwttest profile is active, which re-enable them -->
+        <maven.test.skip>true</maven.test.skip>
+    </properties>
+
     <profiles>
         <profile>
             <id>gwtcompile</id>
@@ -109,10 +114,88 @@
             </build>
         </profile>
         <profile>
+            <!-- GWTTestCase unit tests (src/test/java), run in HtmlUnit: mvn -Pgwttest test
+                 Needs the sibling servoy-client checkout, like gwtcompile. Does not run the production GWT compile. -->
+            <id>gwttest</id>
+            <properties>
+                <maven.test.skip>false</maven.test.skip>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                    <version>4.13.2</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>add-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>${project.basedir}/../../servoy-client/servoy_base/src</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <!-- GWTTestCase needs the source roots on the classpath, which only gwt:test provides -->
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>3.5.4</version>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>gwt-maven-plugin</artifactId>
+                        <version>2.10.0</version>
+                        <executions>
+                            <execution>
+                                <id>gwt-test</id>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <mode>htmlunit</mode>
+                            <includes>**/*Test.java</includes>
+                            <testTimeOut>300</testTimeOut>
+                            <extraJvmArgs>-Xmx1024m --add-opens java.base/java.lang=ALL-UNNAMED</extraJvmArgs>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>not_dev</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
+            <properties>
+                <!-- the GWTTestCase tests (src/test/java) run as part of the normal build (mvn install) -->
+                <maven.test.skip>false</maven.test.skip>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                    <version>4.13.2</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
             <build>
                 <plugins>
                     <plugin>
@@ -174,6 +257,15 @@
                         </executions>
                     </plugin>
                     <plugin>
+                        <!-- GWTTestCase can't run under plain surefire (it needs the source roots on the classpath, which only gwt:test provides) -->
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>3.5.4</version>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                    <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>gwt-maven-plugin</artifactId>
                         <version>2.10.0</version>
@@ -183,6 +275,19 @@
                                 <goals>
                                     <goal>compile</goal>
                                 </goals>
+                            </execution>
+                            <execution>
+                                <id>gwt-test</id>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                                <configuration>
+                                    <mode>htmlunit</mode>
+                                    <includes>**/*Test.java</includes>
+                                    <testTimeOut>300</testTimeOut>
+                                    <extraJvmArgs>-Xmx1024m --add-opens java.base/java.lang=ALL-UNNAMED</extraJvmArgs>
+                                </configuration>
                             </execution>
                         </executions>
                         <configuration>
