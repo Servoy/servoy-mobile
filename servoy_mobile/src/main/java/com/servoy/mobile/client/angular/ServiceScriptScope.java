@@ -131,6 +131,12 @@ public class ServiceScriptScope
 		function convertForWire(val, typeName, propSpec) {
 			if (val === null || val === undefined) return val;
 			if (typeof val === 'function') return null;
+			// primitives can have a converter too (for example a tagstring is a plain String), so give the
+			// registered converter of the property type a chance before returning them; convertValueForType
+			// returns the value unchanged when the type has no converter
+			if (typeName && typeof val !== 'object') {
+				return mobileClient.@com.servoy.mobile.client.MobileClient::convertValueForType(Ljava/lang/String;Ljava/lang/Object;Lcom/servoy/mobile/client/ui/PropertySpec;)(typeName, val, propSpec);
+			}
 			if (typeof val !== 'object') return val;
 			if (Array.isArray(val)) {
 				var arr = [];

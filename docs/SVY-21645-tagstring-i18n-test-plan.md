@@ -103,9 +103,13 @@ The checks that are fully covered by the unit tests (AC5 to AC7) only need a qui
 - Call a service or component API whose argument has spec type `tagstring` with `'i18n:test.other'`
   (goes through `MobileClient.convertApiArgsForClient`, where `component` is `null`).
 - **Expect:** no exception, and the translated text is sent to the client.
-- Note: a plain String service model property typed `tagstring` goes through
-  `ServiceScriptScope.convertForWire`/`MobileClient.convertValueForType`, which returns early for
-  non-object values. That path is outside this change and is not expected to translate.
+- Also set a service model property typed `tagstring` to `'i18n:test.other'` from the service script
+  (`scope.model.<prop> = 'i18n:test.other'`). It goes through `ServiceScriptScope.convertForWire`, which
+  gives the registered converter of the property type a chance before returning a primitive value.
+  Check that a primitive service property of a type without a converter (plain string, number, boolean)
+  is still sent unchanged.
+- **Expect:** the translated text is sent to the Angular client. This path is not covered by the
+  GWTTestCase tests (it is JSNI), so check it manually.
 
 ### AC10 - Initialisation order
 - Start the client with a form that has `i18n:` text on the first form shown.
